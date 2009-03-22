@@ -1,0 +1,21 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName b
+        formalParameterList ( )
+        throws
+        block {
+          whileStatement while
+            parenList (
+              postfixExpression
+                parenList ( 3 )
+                qualifiedSuperInvocationSelector . super . snort
+                  argumentList (
+                    argument
+                      nameNode gar ) )
+            emptyStatement ; } }

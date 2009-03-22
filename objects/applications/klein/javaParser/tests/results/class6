@@ -1,0 +1,9 @@
+
+compilationUnit
+  classDcl class simple
+    extendsClass
+    implementsInterfaces
+    classBody { }
+  interfaceDcl interface simple
+    extendsInterfaces
+    interfaceBody { }

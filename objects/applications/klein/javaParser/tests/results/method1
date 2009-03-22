@@ -1,0 +1,14 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        modifiers public
+        basicType int
+        attributeName snort
+        formalParameterList ( )
+        throws
+        block { } }
+  emptyStatement ;

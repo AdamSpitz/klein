@@ -1,0 +1,3 @@
+closing bracket without an open `{ foo
+bar }
+]' at: [1@1, 1@3]

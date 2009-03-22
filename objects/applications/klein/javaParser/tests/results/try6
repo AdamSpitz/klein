@@ -1,0 +1,21 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName b
+        formalParameterList ( )
+        throws
+        block {
+          tryStatement try
+            block { ( /*A*/ )  }
+            catchClause catch
+              formalParameterList (
+                formalParameter
+                  classOrInterfaceType
+                    nameNode foobar up )
+              block { ( /*B*/ )  } finally
+            block { ( /*C*/ )  } } }

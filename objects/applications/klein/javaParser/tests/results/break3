@@ -1,0 +1,13 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName a
+        formalParameterList ( )
+        throws
+        block {
+          breakStatement break ; } }

@@ -1,0 +1,15 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName b
+        formalParameterList ( )
+        throws
+        block {
+          switchStatement switch
+            parenList ( 34 )
+            switchBlock { } } }

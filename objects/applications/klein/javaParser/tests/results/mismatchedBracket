@@ -1,0 +1,4 @@
+Opening `{' does not match closing `]' in `{
+foobar
+(snort)
+]' at: [1@1, 1@4]

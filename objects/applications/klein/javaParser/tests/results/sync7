@@ -1,0 +1,4 @@
+unmatched open bracket `{
+  int foo() { synchronized ( 3 ) {  }
+}
+' at: [9@1, 2@3]

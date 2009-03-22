@@ -1,0 +1,10 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      varDclsStatement
+        basicType int
+        variableDeclarator foo =
+          scalarInitializer 5 ; }

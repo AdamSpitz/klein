@@ -1,0 +1,2271 @@
+February 1, 2004
+
+Mapping Statistics
+ - Real   time   : 145 s
+ - CPU    time   : 128 s
+ - User   time   : 127 s
+ - System time   : 1 s
+ - Objects mapped : 32574
+   - Maps         : 2516
+   - NMethods     : 1623 (on 684 maps)
+ - Slot lookups   : 977
+
+Time to graph: 32574 objects, 128 seconds cpuTime
+
+
+March 1, 2004
+
+Mapping Statistics
+ - Real   time   : 92 s
+ - CPU    time   : 84 s
+ - User   time   : 83 s
+ - System time   : 0 s
+ - Objects mapped : 35031
+   - Maps         : 2714
+   - NMethods     : 1747 (on 742 maps)
+
+Time to graph: 35031 objects, 84 seconds cpuTime (TODO: something interesting happened since Feb 1; find out what)
+
+
+April 1, 2004
+
+Mapping Statistics
+ - Real   time   : 81 s
+ - CPU    time   : 71 s
+ - User   time   : 71 s
+ - System time   : 0 s
+ - Objects mapped : 35031
+   - Maps         : 2715
+   - NMethods     : 1747 (on 742 maps)
+
+Time to graph: 35031 objects, 71 seconds cpuTime   TODO: This surprises me - did we actually do any Klein work during March? I thought we mostly worked on the Self release.
+
+
+May 1, 2004
+
+Mapping Statistics
+ - Real   time   : 112 s
+ - CPU    time   : 98 s
+ - User   time   : 97 s
+ - System time   : 0 s
+ - Objects mapped : 55889
+   - Maps         : 2987
+   - NMethods     : 3359 (on 837 maps)
+
+Time to graph: 55889 objects, 98 seconds  (slight improvement in the ratio, nothing major but worth figuring out why)
+
+
+June 1, 2004:
+
+Mapping Statistics
+ - Real   time   : 636 s
+ - CPU    time   : 398 s
+ - User   time   : 383 s
+ - System time   : 14 s
+ - Objects mapped : 108588
+   - Maps         : 7124
+   - NMethods     : 354737 (on 2317 maps)
+
+53 seconds linearizing
+
+Time to graph: 108588 objects, Mapping 398 seconds, Linearizing 53 seconds
+
+
+June 4, 2004:
+
+For full selfVM mapping & compiling & linearizing:
+
+320 seconds - inlining off, no check to make sure methods are reusable
+355 seconds - inlining off, but with check
+400 seconds - inlining on but don't inline accesses to slots in parents
+800 seconds - inlining on
+
+Time to graph: TODO: ??? objects, 355 seconds
+
+
+June 15, 2004:
+
+For full selfVM mapping & compiling & linearizing (inlining off, but with check, from now on, until I say otherwise):
+
+Time to graph: 162500 objects, 526 seconds
+
+
+Experiment: map twice as many relocators (but don't do anything with them; just map them).
+
+miniVM:
+Before: 30500 objects, 78 seconds.
+After: 45500 objects, 96 seconds.
+
+selfVM:
+Before: 162500 objects, 526 seconds.
+After: 243500 objects, 834 seconds.
+
+
+June 20, 2004:
+
+Mapping Statistics
+ - Real   time   : 578 s
+ - CPU    time   : 514 s
+ - User   time   : 510 s
+ - System time   : 4 s
+ - Objects mapped : 154663
+   - Maps         : 10653
+   - NMethods     : 619951 (on 3857 maps)
+
+Linearization took 76 seconds.
+
+Time to graph: 154663 objects, Mapping 514 seconds, Linearizing 76 seconds
+
+
+June 30, 2004:
+
+miniVM:
+Mapping 19 seconds, Linearizing 2 seconds, Launching 2 seconds
+
+selfVM:
+Time to graph: Mapping 500 seconds, Linearizing 89 seconds, Launching 76 seconds
+
+
+July 1, 2004:
+
+Mapping Statistics
+ - Real   time   : 952 s
+ - CPU    time   : 647 s
+ - User   time   : 625 s
+ - System time   : 22 s
+ - Objects mapped : 155153
+   - Maps         : 10697
+   - NMethods     : 629956 (on 3874 maps)
+
+Linearizing Statistics
+ - Real   time   : 200 s
+ - CPU    time   : 147 s
+ - User   time   : 143 s
+ - System time   : 3 s
+
+Time to graph: 155153 objects, Mapping 647 seconds, Linearizing 147 seconds
+
+
+Linearizing Statistics
+ - Real   time   : 173 s
+ - CPU    time   : 135 s
+ - User   time   : 134 s
+ - System time   : 1 s
+
+100
+   3 - addAll:
+  40 - assignOopsToMemoryObjects
+     4 - assignOopToMemoryObject:
+    36 - recordOop:
+      35 - at:Put:
+  27 - linearizeContents
+  30 - insertOopsInMachineCode
+
+Launching Statistics
+ - Real   time   : 149 s
+ - CPU    time   : 105 s
+ - User   time   : 104 s
+ - System time   : 1 s
+
+100
+  46 - copyForLaunching
+    18 - copyNMethods
+      12 - addNMethod:MapOop:
+        10 - at:Put:
+    28 - copyForLaunchingImage:
+  53 - relocateTo:
+    18 - relocateOop...tesPartsBy:
+    24 - relocateOop...ionariesBy:
+      22 - at:Put:
+    10 - relocateOop...hineCodeBy:
+
+
+July 13, 2004:
+
+Optimizing the vmImage's dictionaries' capacities.
+
+Mapping, Linearizing, Launching (CPU time)
+
+Before: 652, 149, 87
+After: 626, 80, 93
+
+Now I'm trying hard-coding the oracle's dictionary's capacity to 200000.
+
+After after: 603, 95, 110
+
+(I'm not sure why those Launch numbers are changing so much. I haven't done anything that ought to affect them. It's probably just noise. I tried it again and it was back down at 90.)
+
+Time to graph: ??? objects, 603 seconds
+
+
+July 15, 2004:
+
+Mapping Statistics
+ - Real   time   : 681 s
+ - CPU    time   : 611 s
+ - User   time   : 606 s
+ - System time   : 5 s
+ - Objects mapped : 165527
+   - Maps         : 10987
+   - NMethods     : 652715 (on 3968 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 108 s
+ - CPU    time   : 105 s
+ - User   time   : 104 s
+ - System time   : 0 s
+
+Time to graph: 165527 objects, Mapping 611 seconds, Linearizing 105 seconds
+
+
+July 21, 2004:
+
+Implementing the thing that uses the transporter's logic for exporting slots (so it'll use the "initial contents" expression if there is one).
+
+Before: 688 seconds
+After:  798 seconds
+
+Time to graph: 798 seconds
+
+
+August 1, 2004:
+
+Mapping Statistics
+ - Real   time   : 1004 s
+ - CPU    time   : 800 s
+ - User   time   : 778 s
+ - System time   : 22 s
+ - Objects mapped : 169794
+   - Maps         : 11161
+   - NMethods     : 688656 (on 4015 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 102 s
+ - CPU    time   : 90 s
+ - User   time   : 89 s
+ - System time   : 0 s
+
+Time to graph: 169794 objects, Mapping 800 seconds, Linearizing 90 seconds
+
+
+August 9, 2004:
+
+Launching Statistics
+ - Real   time   : 126 s
+ - CPU    time   : 115 s
+ - User   time   : 114 s
+ - System time   : 1 s
+
+100
+  39 - copyForLaunching
+    18 - copyNMethods
+      9 - addNMethod:MapOop:
+        8 - at:Put:
+    21 - copyForLaunchingImage:
+  61 - relocateTo:
+    12 - relocateOop...tesPartsBy:
+    38 - relocateOop...ionariesBy:
+      37 - at:Put:
+    10 - relocateOop...hineCodeBy:
+
+
+Sunday, September 19, 2004
+
+Mapping Statistics
+ - Real   time   : 3150 s
+ - CPU    time   : 2725 s
+ - User   time   : 2707 s
+ - System time   : 17 s
+ - Objects mapped : 626544
+   - Maps         : 23849
+   - NMethods     : 1722190 (on 9383 maps)
+
+That number of nmethods just looks wrong.
+
+Oh, right. It's counting 'em wrong. It's actually 49144.
+
+Time to graph: 626544 objects, 2725 seconds (not in mainline yet)
+
+
+October 1, 2004
+
+Mapping Statistics
+ - Real   time   : 836 s
+ - CPU    time   : 722 s
+ - User   time   : 716 s
+ - System time   : 5 s
+ - Objects mapped : 169520
+   - Maps         : 11495
+   - NMethods     : 725073 (on 4159 maps)
+
+Linearizing Statistics
+ - Real   time   : 88 s
+ - CPU    time   : 81 s
+ - User   time   : 81 s
+ - System time   : 0 s
+
+Time to graph: 169520 objects, Mapping 722 seconds, Linearizing 81 seconds
+
+
+Monday, October  4, 2004
+
+This is an image without the assembler and compiler being mapped, which is why the numbers are so much smaller than before. And this is before the optimization where we make the relocators into one object instead of many.
+
+Mapping Statistics
+ - Real   time   : 614 s
+ - CPU    time   : 565 s
+ - User   time   : 561 s
+ - System time   : 4 s
+ - Objects mapped : 164298
+   - Maps         : 9302
+   - NMethods     : 542040 (on 3095 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 74 s
+ - CPU    time   : 69 s
+ - User   time   : 69 s
+ - System time   : 0 s
+
+Launching Statistics
+ - Real   time   : 116 s
+ - CPU    time   : 80 s
+ - User   time   : 78 s
+ - System time   : 2 s
+
+After doing the optimization just at the nmethod level (each nmethod has its own linearized list of relocation info), but still recreating the relocator objects every time we want to do anything with them:
+
+Mapping Statistics
+ - Real   time   : 642 s
+ - CPU    time   : 481 s
+ - User   time   : 476 s
+ - System time   : 5 s
+ - Objects mapped : 74284
+   - Maps         : 9322
+   - NMethods     : 542407 (on 3097 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 87 s
+ - CPU    time   : 64 s
+ - User   time   : 63 s
+ - System time   : 1 s
+
+And here's a profile after my changes:
+
+100
+   86 - mapping & compiling
+       6 - compiling the immediate maps
+      77 - mapTransitiveClosure
+         16 - mapping
+         59 - compiling
+       2 - mapNMethodCaches
+   14 - linearizing
+       2 - assignOopsToMemoryObjects
+       6 - linearizeContents
+       5 - insertOopsInMachineCode
+
+
+October 7, 2004
+
+Mapping Statistics
+ - Real   time   : 535 s
+ - CPU    time   : 478 s
+ - User   time   : 458 s
+ - System time   : 20 s
+ - Objects mapped : 74209
+   - Maps         : 9324
+   - NMethods     : 542593 (on 3098 maps)
+
+Linearizing Statistics
+ - Real   time   : 47 s
+ - CPU    time   : 43 s
+ - User   time   : 43 s
+ - System time   : 0 s
+
+Time to graph: 74209 objects, mapping 478 seconds, linearizing 43 seconds
+
+
+Friday, October  8, 2004
+
+After the label optimization:
+
+Mapping Statistics
+ - Real   time   : 443 s
+ - CPU    time   : 413 s
+ - User   time   : 410 s
+ - System time   : 2 s
+ - Objects mapped : 74200
+   - Maps         : 9324
+   - NMethods     : 542593 (on 3098 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 46 s
+ - CPU    time   : 42 s
+ - User   time   : 41 s
+ - System time   : 0 s
+
+
+This is bizarre. I'm sure I had it down to a total of 6 minutes. But this is giving me almost 8.
+
+634
+545
+455
+
+
+TOOD: Get October 15.
+
+
+Saturday, October 16, 2004
+
+Got the big giant VM working. (So we now include all the functionality that the talk demo had.) Here are the numbers:
+
+Mapping Statistics
+ - Real   time   : 1638 s
+ - CPU    time   : 1544 s
+ - User   time   : 1534 s
+ - System time   : 9 s
+ - Objects mapped : 295591
+   - Maps         : 21819
+   - NMethods     : 1582645 (on 8559 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 234 s
+ - CPU    time   : 207 s
+ - User   time   : 202 s
+ - System time   : 4 s
+
+
+Launching Statistics
+ - Real   time   : 47 s
+ - CPU    time   : 15 s
+ - User   time   : 12 s
+ - System time   : 2 s
+
+
+Sunday, October 17, 2004
+
+The midiVM:
+
+Mapping Statistics
+ - Real   time   : 347 s
+ - CPU    time   : 329 s
+ - User   time   : 326 s
+ - System time   : 2 s
+ - Objects mapped : 77057
+   - Maps         : 9594
+   - NMethods     : 564347 (on 3187 maps)
+
+And the midiVM after making the assembler do twice as much work:
+
+Mapping Statistics
+ - Real   time   : 422 s
+ - CPU    time   : 396 s
+ - User   time   : 394 s
+ - System time   : 2 s
+ - Objects mapped : 77020
+   - Maps         : 9589
+   - NMethods     : 564133 (on 3186 maps)
+
+And the selfVM after doubling:
+
+Mapping Statistics
+ - Real   time   : 2308 s
+ - CPU    time   : 2193 s
+ - User   time   : 2178 s
+ - System time   : 14 s
+ - Objects mapped : 304279
+   - Maps         : 23395
+   - NMethods     : 1726849 (on 9347 maps)
+
+
+TODO: Get October 19.
+
+
+Wednesday, October 20, 2004
+
+The midiVM:
+
+Mapping Statistics
+ - Real   time   : 347 s
+ - CPU    time   : 334 s
+ - User   time   : 332 s
+ - System time   : 2 s
+ - Objects mapped : 77057
+   - Maps         : 9594
+   - NMethods     : 564347 (on 3187 maps)
+
+Linearizing Statistics
+ - Real   time   : 42 s
+ - CPU    time   : 41 s
+ - User   time   : 40 s
+ - System time   : 0 s
+
+The midiVM, with my new int32 multi-way prims:
+
+Mapping Statistics
+ - Real   time   : 353 s
+ - CPU    time   : 322 s
+ - User   time   : 319 s
+ - System time   : 3 s
+ - Objects mapped : 77321
+   - Maps         : 9626
+   - NMethods     : 566443 (on 3199 maps)
+
+Linearizing Statistics
+ - Real   time   : 53 s
+ - CPU    time   : 48 s
+ - User   time   : 48 s
+ - System time   : 0 s
+
+(The reason the numbers of objects mapped are slightly different is because the int32 code is part of the midiVM, and I had to modify it to add the code that calls the new primitives. So the )
+
+
+Monday, November  1, 2004
+
+Mapping Statistics
+ - Real   time   : 442 s
+ - CPU    time   : 410 s
+ - User   time   : 407 s
+ - System time   : 2 s
+ - Objects mapped : 74340
+   - Maps         : 9337
+   - NMethods     : 543058 (on 3101 maps)
+
+Linearizing Statistics
+ - Real   time   : 44 s
+ - CPU    time   : 41 s
+ - User   time   : 41 s
+ - System time   : 0 s
+
+Time to graph: 74340 objects, Mapping 410 seconds, Linearizing 41 seconds
+
+
+Wednesday, November  3, 2004
+
+Gathering repeated numbers on the big selfVM.
+
+Mapping Statistics
+ - Real   time   : 1584 s
+ - CPU    time   : 1378 s
+ - User   time   : 1366 s
+ - System time   : 12 s
+ - Objects mapped : 296450
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 236 s
+ - CPU    time   : 212 s
+ - User   time   : 210 s
+ - System time   : 2 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1725 s
+ - CPU    time   : 1523 s
+ - User   time   : 1510 s
+ - System time   : 13 s
+ - Objects mapped : 296450
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 293 s
+ - CPU    time   : 256 s
+ - User   time   : 254 s
+ - System time   : 2 s
+
+
+And one more time:
+
+Mapping Statistics
+ - Real   time   : 1607 s
+ - CPU    time   : 1401 s
+ - User   time   : 1360 s
+ - System time   : 40 s
+ - Objects mapped : 296450
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 236 s
+ - CPU    time   : 205 s
+ - User   time   : 203 s
+ - System time   : 1 s
+
+
+After doubling the assembler:
+
+Mapping Statistics
+ - Real   time   : 2608 s
+ - CPU    time   : 2199 s
+ - User   time   : 2180 s
+ - System time   : 19 s
+ - Objects mapped : 305098
+   - Maps         : 23457
+   - NMethods     : 1731786 (on 9368 maps)
+
+Linearizing Statistics
+ - Real   time   : 472 s
+ - CPU    time   : 399 s
+ - User   time   : 394 s
+ - System time   : 4 s
+
+
+Again after doubling:
+
+Mapping Statistics
+ - Real   time   : 2549 s
+ - CPU    time   : 1855 s
+ - User   time   : 1827 s
+ - System time   : 28 s
+ - Objects mapped : 305099
+   - Maps         : 23457
+   - NMethods     : 1731786 (on 9368 maps)
+
+Linearizing Statistics
+ - Real   time   : 569 s
+ - CPU    time   : 300 s
+ - User   time   : 288 s
+ - System time   : 12 s
+
+A third time with the doubling:
+
+Mapping Statistics
+ - Real   time   : 2424 s
+ - CPU    time   : 2076 s
+ - User   time   : 2058 s
+ - System time   : 18 s
+ - Objects mapped : 305099
+   - Maps         : 23457
+   - NMethods     : 1731786 (on 9368 maps)
+
+Linearizing Statistics
+ - Real   time   : 415 s
+ - CPU    time   : 364 s
+ - User   time   : 362 s
+ - System time   : 2 s
+
+
+And, just for fun, I switched back to using functions for the argument conversions, instead of calling the macros directly:
+
+Mapping Statistics
+ - Real   time   : 1561 s
+ - CPU    time   : 1487 s
+ - User   time   : 1476 s
+ - System time   : 10 s
+ - Objects mapped : 296450
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 235 s
+ - CPU    time   : 226 s
+ - User   time   : 223 s
+ - System time   : 2 s
+
+
+And again:
+
+Mapping Statistics
+ - Real   time   : 1541 s
+ - CPU    time   : 1369 s
+ - User   time   : 1358 s
+ - System time   : 10 s
+ - Objects mapped : 296450
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 241 s
+ - CPU    time   : 205 s
+ - User   time   : 203 s
+ - System time   : 1 s
+
+
+Now without the data32: call.
+
+Mapping Statistics
+ - Real   time   : 2016 s
+ - CPU    time   : 1800 s
+ - User   time   : 1782 s
+ - System time   : 18 s
+ - Objects mapped : 305084
+   - Maps         : 23455
+   - NMethods     : 1731603 (on 9367 maps)
+
+Linearizing Statistics
+ - Real   time   : 335 s
+ - CPU    time   : 291 s
+ - User   time   : 286 s
+ - System time   : 4 s
+
+
+Now with the data32: call, but we reset the locationCounter beforehand so it doesn't create a twice-as-big assembled byteVector.
+
+Mapping Statistics
+ - Real   time   : 2829 s
+ - CPU    time   : 2572 s
+ - User   time   : 2523 s
+ - System time   : 48 s
+ - Objects mapped : 305090
+   - Maps         : 23455
+   - NMethods     : 1731603 (on 9367 maps)
+
+Linearizing Statistics
+ - Real   time   : 592 s
+ - CPU    time   : 568 s
+ - User   time   : 566 s
+ - System time   : 2 s
+
+
+Now without the asmPredicate stuff:
+
+Mapping Statistics
+ - Real   time   : 2882 s
+ - CPU    time   : 2720 s
+ - User   time   : 2704 s
+ - System time   : 16 s
+ - Objects mapped : 305088
+   - Maps         : 23455
+   - NMethods     : 1731603 (on 9367 maps)
+
+Linearizing Statistics
+ - Real   time   : 588 s
+ - CPU    time   : 560 s
+ - User   time   : 557 s
+ - System time   : 3 s
+
+
+And again:
+
+Mapping Statistics
+ - Real   time   : 2086 s
+ - CPU    time   : 1915 s
+ - User   time   : 1874 s
+ - System time   : 40 s
+ - Objects mapped : 305088
+   - Maps         : 23455
+   - NMethods     : 1731603 (on 9367 maps)
+
+Linearizing Statistics
+ - Real   time   : 312 s
+ - CPU    time   : 285 s
+ - User   time   : 283 s
+ - System time   : 2 s
+
+
+One more time:
+
+Mapping Statistics
+ - Real   time   : 2444 s
+ - CPU    time   : 2196 s
+ - User   time   : 2178 s
+ - System time   : 17 s
+ - Objects mapped : 305088
+   - Maps         : 23455
+   - NMethods     : 1731603 (on 9367 maps)
+
+Linearizing Statistics
+ - Real   time   : 386 s
+ - CPU    time   : 360 s
+ - User   time   : 357 s
+ - System time   : 2 s
+
+
+Friday, November  5, 2004
+
+After doing the For: asm thing and the asmPredicate true thing:
+
+Mapping Statistics
+ - Real   time   : 1843 s
+ - CPU    time   : 1700 s
+ - User   time   : 1688 s
+ - System time   : 11 s
+ - Objects mapped : 272816
+   - Maps         : 17572
+   - NMethods     : 1193338 (on 6426 maps)
+
+Then it ran out of memory.
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 2088 s
+ - CPU    time   : 1515 s
+ - User   time   : 1483 s
+ - System time   : 32 s
+ - Objects mapped : 272818
+   - Maps         : 17572
+   - NMethods     : 1193338 (on 6426 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 238 s
+ - CPU    time   : 221 s
+ - User   time   : 219 s
+ - System time   : 1 s
+
+
+And again:
+
+Mapping Statistics
+ - Real   time   : 1720 s
+ - CPU    time   : 1647 s
+ - User   time   : 1637 s
+ - System time   : 10 s
+ - Objects mapped : 272817
+   - Maps         : 17572
+   - NMethods     : 1193338 (on 6426 maps)
+
+Linearizing Statistics
+ - Real   time   : 284 s
+ - CPU    time   : 273 s
+ - User   time   : 271 s
+ - System time   : 1 s
+
+
+Doubling the data32:
+
+Mapping Statistics
+ - Real   time   : 2106 s
+ - CPU    time   : 1957 s
+ - User   time   : 1939 s
+ - System time   : 18 s
+ - Objects mapped : 296457
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 331 s
+ - CPU    time   : 311 s
+ - User   time   : 308 s
+ - System time   : 3 s
+
+
+And again:
+
+Mapping Statistics
+ - Real   time   : 1921 s
+ - CPU    time   : 1770 s
+ - User   time   : 1757 s
+ - System time   : 13 s
+ - Objects mapped : 296457
+   - Maps         : 21887
+   - NMethods     : 1588131 (on 8583 maps)
+
+Linearizing Statistics
+ - Real   time   : 274 s
+ - CPU    time   : 261 s
+ - User   time   : 259 s
+ - System time   : 1 s
+
+
+After unsafe_data8:
+
+Mapping Statistics
+ - Real   time   : 1991 s
+ - CPU    time   : 1828 s
+ - User   time   : 1791 s
+ - System time   : 37 s
+ - Objects mapped : 296539
+   - Maps         : 21897
+   - NMethods     : 1588865 (on 8587 maps)
+
+Linearizing Statistics
+ - Real   time   : 356 s
+ - CPU    time   : 333 s
+ - User   time   : 330 s
+ - System time   : 2 s
+
+
+Monday, November  8, 2004
+
+With the dataBytes: optimization and also with unsafe_data8:. (I should try it without unsafe_data8:.)
+
+Mapping Statistics
+ - Real   time   : 1874 s
+ - CPU    time   : 1513 s
+ - User   time   : 1488 s
+ - System time   : 24 s
+ - Objects mapped : 296571
+   - Maps         : 21900
+   - NMethods     : 1589049 (on 8588 maps)
+
+
+Without unsafe_data8:, but with the dataBytes: optimization:
+
+Mapping Statistics
+ - Real   time   : 1350 s
+ - CPU    time   : 1311 s
+ - User   time   : 1303 s
+ - System time   : 7 s
+ - Objects mapped : 296582
+   - Maps         : 21902
+   - NMethods     : 1589232 (on 8589 maps)
+
+Linearizing Statistics
+ - Real   time   : 203 s
+ - CPU    time   : 196 s
+ - User   time   : 195 s
+ - System time   : 1 s
+
+
+OK, I am seriously baffled. Here's the result from the includesOptionAOfFieldAA experiment:
+
+Mapping Statistics
+ - Real   time   : 2176 s
+ - CPU    time   : 2057 s
+ - User   time   : 2016 s
+ - System time   : 40 s
+ - Objects mapped : 303306
+   - Maps         : 21900
+   - NMethods     : 1591749 (on 8587 maps)
+
+Linearizing Statistics
+ - Real   time   : 448 s
+ - CPU    time   : 404 s
+ - User   time   : 402 s
+ - System time   : 2 s
+
+
+Wednesday, November 10, 2004
+
+The midiVM, before the includesOptionAOfFieldAA optimization:
+
+Mapping Statistics
+ - Real   time   : 649 s
+ - CPU    time   : 563 s
+ - User   time   : 558 s
+ - System time   : 4 s
+ - Objects mapped : 80058
+   - Maps         : 10497
+   - NMethods     : 634885 (on 3590 maps)
+
+Linearizing Statistics
+ - Real   time   : 51 s
+ - CPU    time   : 47 s
+ - User   time   : 47 s
+ - System time   : 0 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 584 s
+ - CPU    time   : 544 s
+ - User   time   : 539 s
+ - System time   : 4 s
+ - Objects mapped : 80059
+   - Maps         : 10497
+   - NMethods     : 634885 (on 3590 maps)
+
+Linearizing Statistics
+ - Real   time   : 60 s
+ - CPU    time   : 56 s
+ - User   time   : 56 s
+ - System time   : 0 s
+
+
+One more time:
+
+Mapping Statistics
+ - Real   time   : 585 s
+ - CPU    time   : 546 s
+ - User   time   : 542 s
+ - System time   : 4 s
+ - Objects mapped : 80059
+   - Maps         : 10497
+   - NMethods     : 634885 (on 3590 maps)
+
+Linearizing Statistics
+ - Real   time   : 46 s
+ - CPU    time   : 44 s
+ - User   time   : 44 s
+ - System time   : 0 s
+
+
+And after:
+
+Mapping Statistics
+ - Real   time   : 603 s
+ - CPU    time   : 524 s
+ - User   time   : 493 s
+ - System time   : 31 s
+ - Objects mapped : 80058
+   - Maps         : 10497
+   - NMethods     : 634885 (on 3590 maps)
+
+Linearizing Statistics
+ - Real   time   : 54 s
+ - CPU    time   : 47 s
+ - User   time   : 46 s
+ - System time   : 0 s
+
+
+Again after:
+
+Mapping Statistics
+ - Real   time   : 618 s
+ - CPU    time   : 555 s
+ - User   time   : 549 s
+ - System time   : 5 s
+ - Objects mapped : 80058
+   - Maps         : 10497
+   - NMethods     : 634885 (on 3590 maps)
+
+Linearizing Statistics
+ - Real   time   : 78 s
+ - CPU    time   : 70 s
+ - User   time   : 70 s
+ - System time   : 0 s
+
+
+Again again after:
+
+Mapping Statistics
+ - Real   time   : 555 s
+ - CPU    time   : 519 s
+ - User   time   : 515 s
+ - System time   : 4 s
+ - Objects mapped : 80059
+   - Maps         : 10497
+   - NMethods     : 634885 (on 3590 maps)
+
+Linearizing Statistics
+ - Real   time   : 49 s
+ - CPU    time   : 46 s
+ - User   time   : 46 s
+ - System time   : 0 s
+
+
+
+The big selfVM, after the de-megamorphizing:
+
+Mapping Statistics
+ - Real   time   : 1123 s
+ - CPU    time   : 930 s
+ - User   time   : 921 s
+ - System time   : 8 s
+ - Objects mapped : 186373
+   - Maps         : 20685
+   - NMethods     : 1363452 (on 7404 maps)
+
+Linearizing Statistics
+ - Real   time   : 162 s
+ - CPU    time   : 140 s
+ - User   time   : 139 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1231 s
+ - CPU    time   : 998 s
+ - User   time   : 988 s
+ - System time   : 10 s
+ - Objects mapped : 185920
+   - Maps         : 20685
+   - NMethods     : 1363452 (on 7404 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 176 s
+ - CPU    time   : 146 s
+ - User   time   : 144 s
+ - System time   : 1 s
+
+
+Thursday, November 11, 2004
+
+After fixing that silly signedInteger performance bug:
+
+Mapping Statistics
+ - Real   time   : 795 s
+ - CPU    time   : 774 s
+ - User   time   : 769 s
+ - System time   : 5 s
+ - Objects mapped : 177721
+   - Maps         : 19185
+   - NMethods     : 1226029 (on 6653 maps)
+
+Linearizing Statistics
+ - Real   time   : 130 s
+ - CPU    time   : 127 s
+ - User   time   : 126 s
+ - System time   : 0 s
+
+
+Friday, November 12, 2004
+
+Crap. After rebuilding the image, it got slower. Why? The caching??????????
+
+Mapping Statistics
+ - Real   time   : 1137 s
+ - CPU    time   : 1050 s
+ - User   time   : 1025 s
+ - System time   : 25 s
+ - Objects mapped : 184871
+   - Maps         : 20760
+   - NMethods     : 1369093 (on 7435 maps)
+
+Linearizing Statistics
+ - Real   time   : 203 s
+ - CPU    time   : 186 s
+ - User   time   : 184 s
+ - System time   : 1 s
+
+
+After undoing the caching thing (and thus breaking the assembler, but I'll fix it):
+
+Mapping Statistics
+ - Real   time   : 945 s
+ - CPU    time   : 900 s
+ - User   time   : 894 s
+ - System time   : 6 s
+ - Objects mapped : 184894
+   - Maps         : 20762
+   - NMethods     : 1369276 (on 7436 maps)
+
+Linearizing Statistics
+ - Real   time   : 141 s
+ - CPU    time   : 135 s
+ - User   time   : 134 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1265 s
+ - CPU    time   : 1177 s
+ - User   time   : 1168 s
+ - System time   : 9 s
+ - Objects mapped : 184895
+   - Maps         : 20762
+   - NMethods     : 1369276 (on 7436 maps)
+
+Linearizing Statistics
+ - Real   time   : 244 s
+ - CPU    time   : 231 s
+ - User   time   : 229 s
+ - System time   : 1 s
+
+
+OK, after making it just check against asmGeneratedSlots instead of the set:
+
+Mapping Statistics
+ - Real   time   : 1010 s
+ - CPU    time   : 901 s
+ - User   time   : 890 s
+ - System time   : 10 s
+ - Objects mapped : 184895
+   - Maps         : 20762
+   - NMethods     : 1369276 (on 7436 maps)
+
+Linearizing Statistics
+ - Real   time   : 158 s
+ - CPU    time   : 143 s
+ - User   time   : 141 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1420 s
+ - CPU    time   : 1153 s
+ - User   time   : 1135 s
+ - System time   : 18 s
+ - Objects mapped : 184896
+   - Maps         : 20762
+   - NMethods     : 1369276 (on 7436 maps)
+
+
+Again, but with the VM warmed up:
+
+Mapping Statistics
+ - Real   time   : 1106 s
+ - CPU    time   : 916 s
+ - User   time   : 900 s
+ - System time   : 15 s
+ - Objects mapped : 184545
+   - Maps         : 20667
+   - NMethods     : 1361255 (on 7392 maps)
+
+Linearizing Statistics
+ - Real   time   : 170 s
+ - CPU    time   : 144 s
+ - User   time   : 142 s
+ - System time   : 1 s
+
+
+Monday, November 15, 2004
+
+Before doubling the assembler:
+
+Mapping Statistics
+ - Real   time   : 1136 s
+ - CPU    time   : 1032 s
+ - User   time   : 1011 s
+ - System time   : 21 s
+ - Objects mapped : 200496
+   - Maps         : 20679
+   - NMethods     : 1361828 (on 7395 maps)
+
+Linearizing Statistics
+ - Real   time   : 281 s
+ - CPU    time   : 220 s
+ - User   time   : 217 s
+ - System time   : 3 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1266 s
+ - CPU    time   : 961 s
+ - User   time   : 939 s
+ - System time   : 21 s
+ - Objects mapped : 200497
+   - Maps         : 20679
+   - NMethods     : 1361828 (on 7395 maps)
+
+Linearizing Statistics
+ - Real   time   : 211 s
+ - CPU    time   : 163 s
+ - User   time   : 160 s
+ - System time   : 2 s
+
+
+Again again:
+
+Mapping Statistics
+ - Real   time   : 1477 s
+ - CPU    time   : 1179 s
+ - User   time   : 1159 s
+ - System time   : 19 s
+ - Objects mapped : 200497
+   - Maps         : 20679
+   - NMethods     : 1361828 (on 7395 maps)
+
+Linearizing Statistics
+ - Real   time   : 273 s
+ - CPU    time   : 254 s
+ - User   time   : 253 s
+ - System time   : 1 s
+
+
+One more time:
+
+Mapping Statistics
+ - Real   time   : 1224 s
+ - CPU    time   : 1100 s
+ - User   time   : 1072 s
+ - System time   : 27 s
+ - Objects mapped : 200497
+   - Maps         : 20679
+   - NMethods     : 1361828 (on 7395 maps)
+
+
+Another more time:
+
+Mapping Statistics
+ - Real   time   : 1189 s
+ - CPU    time   : 936 s
+ - User   time   : 919 s
+ - System time   : 16 s
+ - Objects mapped : 208362
+   - Maps         : 22247
+   - NMethods     : 1505301 (on 8179 maps)
+
+Linearizing Statistics
+ - Real   time   : 166 s
+ - CPU    time   : 134 s
+ - User   time   : 119 s
+ - System time   : 15 s
+
+
+Linearizing Statistics
+ - Real   time   : 266 s
+ - CPU    time   : 234 s
+ - User   time   : 232 s
+ - System time   : 1 s
+
+
+After doubling the assembler:
+
+Mapping Statistics
+ - Real   time   : 1322 s
+ - CPU    time   : 1166 s
+ - User   time   : 1147 s
+ - System time   : 19 s
+ - Objects mapped : 208357
+   - Maps         : 22247
+   - NMethods     : 1505300 (on 8179 maps)
+
+Linearizing Statistics
+ - Real   time   : 251 s
+ - CPU    time   : 223 s
+ - User   time   : 222 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1311 s
+ - CPU    time   : 1109 s
+ - User   time   : 1094 s
+ - System time   : 14 s
+ - Objects mapped : 208358
+   - Maps         : 22247
+   - NMethods     : 1505300 (on 8179 maps)
+
+Linearizing Statistics
+ - Real   time   : 231 s
+ - CPU    time   : 217 s
+ - User   time   : 215 s
+ - System time   : 1 s
+
+
+Again again:
+
+Mapping Statistics
+ - Real   time   : 1056 s
+ - CPU    time   : 903 s
+ - User   time   : 893 s
+ - System time   : 10 s
+ - Objects mapped : 208358
+   - Maps         : 22247
+   - NMethods     : 1505300 (on 8179 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 164 s
+ - CPU    time   : 151 s
+ - User   time   : 150 s
+ - System time   : 1 s
+
+
+And one more time:
+
+Mapping Statistics
+ - Real   time   : 1367 s
+ - CPU    time   : 1001 s
+ - User   time   : 964 s
+ - System time   : 37 s
+ - Objects mapped : 208358
+   - Maps         : 22247
+   - NMethods     : 1505300 (on 8179 maps)
+
+Linearizing Statistics
+ - Real   time   : 216 s
+ - CPU    time   : 170 s
+ - User   time   : 167 s
+ - System time   : 2 s
+
+
+Monday, November 22, 2004
+
+Before doubling:
+
+Mapping Statistics
+ - Real   time   : 1197 s
+ - CPU    time   : 949 s
+ - User   time   : 940 s
+ - System time   : 9 s
+ - Objects mapped : 191326
+   - Maps         : 22272
+   - NMethods     : 1512126 (on 8175 maps)
+
+Linearizing Statistics
+ - Real   time   : 219 s
+ - CPU    time   : 174 s
+ - User   time   : 173 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1174 s
+ - CPU    time   : 997 s
+ - User   time   : 972 s
+ - System time   : 25 s
+ - Objects mapped : 191326
+   - Maps         : 22272
+   - NMethods     : 1512126 (on 8175 maps)
+
+Linearizing Statistics
+ - Real   time   : 182 s
+ - CPU    time   : 155 s
+ - User   time   : 154 s
+ - System time   : 1 s
+
+
+After doubling:
+
+Mapping Statistics
+ - Real   time   : 1639 s
+ - CPU    time   : 1371 s
+ - User   time   : 1360 s
+ - System time   : 11 s
+ - Objects mapped : 191326
+   - Maps         : 22272
+   - NMethods     : 1512126 (on 8175 maps)
+
+Linearizing Statistics
+ - Real   time   : 254 s
+ - CPU    time   : 220 s
+ - User   time   : 218 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1528 s
+ - CPU    time   : 1199 s
+ - User   time   : 1167 s
+ - System time   : 32 s
+ - Objects mapped : 191326
+   - Maps         : 22272
+   - NMethods     : 1512126 (on 8175 maps)
+
+Linearizing Statistics
+ - Real   time   : 374 s
+ - CPU    time   : 257 s
+ - User   time   : 252 s
+ - System time   : 5 s
+
+
+Again again:
+
+Mapping Statistics
+ - Real   time   : 1329 s
+ - CPU    time   : 1073 s
+ - User   time   : 1039 s
+ - System time   : 34 s
+ - Objects mapped : 191327
+   - Maps         : 22272
+   - NMethods     : 1512126 (on 8175 maps)
+
+Linearizing Statistics
+ - Real   time   : 219 s
+ - CPU    time   : 191 s
+ - User   time   : 190 s
+ - System time   : 1 s
+
+
+Thursday, November 25, 2004
+
+Christ. I hate these numbers. OK, a few times with the new data32: optimization, as well as the gprFor: optimization and lazy-label optimization:
+
+Mapping Statistics
+ - Real   time   : 1260 s
+ - CPU    time   : 1158 s
+ - User   time   : 1147 s
+ - System time   : 11 s
+ - Objects mapped : 186100
+   - Maps         : 21673
+   - NMethods     : 1449256 (on 7835 maps)
+
+Mapping Statistics
+ - Real   time   : 1140 s
+ - CPU    time   : 1101 s
+ - User   time   : 1093 s
+ - System time   : 8 s
+ - Objects mapped : 186065
+   - Maps         : 21665
+   - NMethods     : 1448520 (on 7831 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 139 s
+ - CPU    time   : 135 s
+ - User   time   : 134 s
+ - System time   : 1 s
+
+
+Mapping Statistics
+ - Real   time   : 1368 s
+ - CPU    time   : 1217 s
+ - User   time   : 1193 s
+ - System time   : 24 s
+ - Objects mapped : 186065
+   - Maps         : 21665
+   - NMethods     : 1448520 (on 7831 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 177 s
+ - CPU    time   : 167 s
+ - User   time   : 165 s
+ - System time   : 1 s
+
+
+Now without the data32: optimization:
+
+Mapping Statistics
+ - Real   time   : 1529 s
+ - CPU    time   : 1202 s
+ - User   time   : 1182 s
+ - System time   : 19 s
+ - Objects mapped : 186097
+   - Maps         : 21673
+   - NMethods     : 1449256 (on 7835 maps)
+
+Mapping Statistics
+ - Real   time   : 1143 s
+ - CPU    time   : 1099 s
+ - User   time   : 1089 s
+ - System time   : 9 s
+ - Objects mapped : 186097
+   - Maps         : 21673
+   - NMethods     : 1449256 (on 7835 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 137 s
+ - CPU    time   : 132 s
+ - User   time   : 131 s
+ - System time   : 1 s
+
+
+Now with just the lazy-label optimization:
+
+Mapping Statistics
+ - Real   time   : 1297 s
+ - CPU    time   : 1249 s
+ - User   time   : 1239 s
+ - System time   : 10 s
+ - Objects mapped : 186018
+   - Maps         : 21669
+   - NMethods     : 1449048 (on 7834 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 194 s
+ - CPU    time   : 184 s
+ - User   time   : 183 s
+ - System time   : 1 s
+
+
+With none (baseline CVS, I think):
+
+Mapping Statistics
+ - Real   time   : 1723 s
+ - CPU    time   : 1368 s
+ - User   time   : 1333 s
+ - System time   : 34 s
+ - Objects mapped : 185956
+   - Maps         : 21659
+   - NMethods     : 1448290 (on 7830 maps)
+
+
+Mapping Statistics
+ - Real   time   : 1663 s
+ - CPU    time   : 1132 s
+ - User   time   : 1106 s
+ - System time   : 25 s
+ - Objects mapped : 185957
+   - Maps         : 21659
+   - NMethods     : 1448290 (on 7830 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 172 s
+ - CPU    time   : 155 s
+ - User   time   : 153 s
+ - System time   : 2 s
+
+
+Tuesday, November 30, 2004
+
+Just going back and checking the numbers on the CVS version (which doesn't have the lazy-label optimization or the gprFor: optimization or the new prims:
+
+Mapping Statistics
+ - Real   time   : 1342 s
+ - CPU    time   : 1187 s
+ - User   time   : 1165 s
+ - System time   : 22 s
+ - Objects mapped : 185958
+   - Maps         : 21659
+   - NMethods     : 1448290 (on 7830 maps)
+
+Linearizing Statistics
+ - Real   time   : 185 s
+ - CPU    time   : 164 s
+ - User   time   : 155 s
+ - System time   : 9 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 1159 s
+ - CPU    time   : 1105 s
+ - User   time   : 1096 s
+ - System time   : 8 s
+ - Objects mapped : 185957
+   - Maps         : 21659
+   - NMethods     : 1448290 (on 7830 maps)
+
+Linearizing Statistics
+ - Real   time   : 180 s
+ - CPU    time   : 149 s
+ - User   time   : 146 s
+ - System time   : 2 s
+
+
+Wednesday, December  1, 2004
+
+Mapping Statistics
+ - Real   time   : 1140 s
+ - CPU    time   : 1059 s
+ - User   time   : 1051 s
+ - System time   : 7 s
+ - Objects mapped : 182850
+   - Maps         : 20729
+   - NMethods     : 1369897 (on 7402 maps)
+
+Linearizing Statistics
+ - Real   time   : 198 s
+ - CPU    time   : 186 s
+ - User   time   : 185 s
+ - System time   : 1 s
+
+Time to graph: 182859 objects, mapping 1059 seconds, linearizing 186 seconds
+
+
+Wednesday, December  8, 2004
+
+Counting time spent in buildNMethodForCompiler: 17% realTime out of 1133 s realTime for the whole mapping+compiling phase.
+Again: 17% out of 1069 s total.
+
+This time counting time spent in compileThisMethod (so that it includes the reusability check and the recording): 28% of 1147 s total.
+
+18% in buildNMethodForCompiler:, 6% in recordNewNMethod:For:, 1073 s total
+
+2.4% recording nmethods, 6% recording new mapped objects, 17% compiling, 1050 total
+
+32% mapping, 16% compiling, 5% recording new mapped objects, 2.6% recording nmethods, 1245 total
+
+
+Thursday, December  9, 2004
+
+Just a regular stock CVS image:
+
+Mapping Statistics
+ - Real   time   : 1277 s
+ - CPU    time   : 1191 s
+ - User   time   : 1182 s
+ - System time   : 9 s
+ - Objects mapped : 185960
+   - Maps         : 21657
+   - NMethods     : 1433365 (on 7829 maps)
+
+Linearizing Statistics
+ - Real   time   : 196 s
+ - CPU    time   : 187 s
+ - User   time   : 186 s
+ - System time   : 1 s
+
+
+Quintupled:
+
+Mapping Statistics
+ - Real   time   : 1875 s
+ - CPU    time   : 1765 s
+ - User   time   : 1753 s
+ - System time   : 11 s
+ - Objects mapped : 189771
+   - Maps         : 21657
+   - NMethods     : 1433365 (on 7829 maps)
+
+
+Singled (but with the extra layer of methods in there):
+
+Mapping Statistics
+ - Real   time   : 1326 s
+ - CPU    time   : 1137 s
+ - User   time   : 1127 s
+ - System time   : 10 s
+ - Objects mapped : 189772
+   - Maps         : 21657
+   - NMethods     : 1433365 (on 7829 maps)
+
+
+Monday, December 13, 2004
+
+Just going through that vmProfile:
+
+52.4% - _CompiledSelfCode
+25.4% - _SaveSelfNonVolRegs_returnPC
+13.1% - __ZN8universe8scavengeEP8oopClass
+ 9.3% - __ZN15RegisterLocator9for_frameEP5frame
+ 9.0% - __Z10new_vframeP5frameP15RegisterLocator
+ 8.7% - __ZN4zone17scavenge_contentsEv
+ 8.2% - _SendMessage_stub_returnPC
+
+Those add up to more than 100%, and I'm not done yet. I don't understand this profile output format.
+
+After the auto-generation fix:
+
+Mapping Statistics
+ - Real   time   : 1003 s
+ - CPU    time   : 910 s
+ - User   time   : 902 s
+ - System time   : 8 s
+ - Objects mapped : 182875
+   - Maps         : 20734
+   - NMethods     : 1356375 (on 7404 maps)
+
+Linearizing Statistics
+ - Real   time   : 229 s
+ - CPU    time   : 199 s
+ - User   time   : 197 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 993 s
+ - CPU    time   : 817 s
+ - User   time   : 808 s
+ - System time   : 9 s
+ - Objects mapped : 182876
+   - Maps         : 20734
+   - NMethods     : 1356375 (on 7404 maps)
+
+Linearizing Statistics
+ - Real   time   : 193 s
+ - CPU    time   : 146 s
+ - User   time   : 144 s
+ - System time   : 1 s
+
+
+With the nodeName fix:
+
+Mapping Statistics
+ - Real   time   : 830 s
+ - CPU    time   : 782 s
+ - User   time   : 777 s
+ - System time   : 5 s
+ - Objects mapped : 182890
+   - Maps         : 20736
+   - NMethods     : 1356557 (on 7405 maps)
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 782 s
+ - CPU    time   : 731 s
+ - User   time   : 726 s
+ - System time   : 5 s
+ - Objects mapped : 182890
+   - Maps         : 20736
+   - NMethods     : 1356557 (on 7405 maps)
+
+With the nodeName fix and also commenting out the (reflect: oop) name thing:
+
+Mapping Statistics
+ - Real   time   : 833 s
+ - CPU    time   : 748 s
+ - User   time   : 727 s
+ - System time   : 20 s
+ - Objects mapped : 182894
+   - Maps         : 20736
+   - NMethods     : 1356557 (on 7405 maps)
+
+
+OK, rebuilt the image and tried it again (so there's no nodeName fix anymore):
+
+Mapping Statistics
+ - Real   time   : 890 s
+ - CPU    time   : 831 s
+ - User   time   : 825 s
+ - System time   : 6 s
+ - Objects mapped : 183403
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+Linearizing Statistics
+ - Real   time   : 150 s
+ - CPU    time   : 144 s
+ - User   time   : 143 s
+ - System time   : 0 s
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 981 s
+ - CPU    time   : 874 s
+ - User   time   : 866 s
+ - System time   : 8 s
+ - Objects mapped : 183399
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+Linearizing Statistics
+ - Real   time   : 178 s
+ - CPU    time   : 161 s
+ - User   time   : 160 s
+ - System time   : 1 s
+
+
+Tuesday, December 14, 2004
+
+With the two-mirror nameSpace fix:
+
+Mapping Statistics
+ - Real   time   : 925 s
+ - CPU    time   : 858 s
+ - User   time   : 851 s
+ - System time   : 7 s
+ - Objects mapped : 183442
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+With that and the nodeName optimization:
+
+Mapping Statistics
+ - Real   time   : 1082 s
+ - CPU    time   : 902 s
+ - User   time   : 892 s
+ - System time   : 9 s
+ - Objects mapped : 182966
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+With those two and also doing the _MemoryTenuringThreshold divide-by-10 thing:
+
+Mapping Statistics
+ - Real   time   : 760 s
+ - CPU    time   : 672 s
+ - User   time   : 647 s
+ - System time   : 24 s
+ - Objects mapped : 182965
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+Dividing by 5 instead:
+
+Mapping Statistics
+ - Real   time   : 855 s
+ - CPU    time   : 704 s
+ - User   time   : 681 s
+ - System time   : 22 s
+ - Objects mapped : 182965
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+Dividing by 10, without the nodeName optimization:
+
+Mapping Statistics
+ - Real   time   : 942 s
+ - CPU    time   : 786 s
+ - User   time   : 778 s
+ - System time   : 7 s
+ - Objects mapped : 182904
+   - Maps         : 20749
+   - NMethods     : 1357641 (on 7411 maps)
+
+
+Wednesday, December 15, 2004
+
+After the resends optimization:
+
+Mapping Statistics
+ - Real   time   : 805 s
+ - CPU    time   : 686 s
+ - User   time   : 680 s
+ - System time   : 6 s
+ - Objects mapped : 182994
+   - Maps         : 20739
+   - NMethods     : 1356641 (on 7405 maps)
+
+Linearizing Statistics
+ - Real   time   : 155 s
+ - CPU    time   : 130 s
+ - User   time   : 129 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 706 s
+ - CPU    time   : 636 s
+ - User   time   : 630 s
+ - System time   : 6 s
+ - Objects mapped : 182994
+   - Maps         : 20739
+   - NMethods     : 1356641 (on 7405 maps)
+
+Linearizing Statistics
+ - Real   time   : 116 s
+ - CPU    time   : 110 s
+ - User   time   : 109 s
+ - System time   : 0 s
+
+
+After the at:IfAbsentPut: optimization:
+
+Mapping Statistics
+ - Real   time   : 628 s
+ - CPU    time   : 588 s
+ - User   time   : 583 s
+ - System time   : 4 s
+ - Objects mapped : 182993
+   - Maps         : 20739
+   - NMethods     : 1356641 (on 7405 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 115 s
+ - CPU    time   : 111 s
+ - User   time   : 110 s
+ - System time   : 0 s
+
+
+Thursday, December 16, 2004
+
+After rebuilding the image without the nodeName optimization and without the survivor space increase:
+
+Mapping Statistics
+ - Real   time   : 607 s
+ - CPU    time   : 585 s
+ - User   time   : 580 s
+ - System time   : 4 s
+ - Objects mapped : 185960
+   - Maps         : 21659
+   - NMethods     : 1433547 (on 7830 maps)
+
+Linearizing Statistics
+ - Real   time   : 136 s
+ - CPU    time   : 126 s
+ - User   time   : 125 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 670 s
+ - CPU    time   : 595 s
+ - User   time   : 589 s
+ - System time   : 6 s
+ - Objects mapped : 185961
+   - Maps         : 21659
+   - NMethods     : 1433547 (on 7830 maps)
+
+Linearizing Statistics
+ - Real   time   : 130 s
+ - CPU    time   : 119 s
+ - User   time   : 107 s
+ - System time   : 11 s
+
+
+With the survivor space increase:
+
+Mapping Statistics
+ - Real   time   : 604 s
+ - CPU    time   : 580 s
+ - User   time   : 575 s
+ - System time   : 4 s
+ - Objects mapped : 185961
+   - Maps         : 21659
+   - NMethods     : 1433547 (on 7830 maps)
+
+Linearizing Statistics
+ - Real   time   : 131 s
+ - CPU    time   : 126 s
+ - User   time   : 125 s
+ - System time   : 0 s
+
+
+No survivor space thing, but with the isPrefixOf: instead of matchesPattern:.
+
+Mapping Statistics
+ - Real   time   : 505 s
+ - CPU    time   : 409 s
+ - User   time   : 404 s
+ - System time   : 5 s
+ - Objects mapped : 182831
+   - Maps         : 20729
+   - NMethods     : 1356010 (on 7402 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 125 s
+ - CPU    time   : 109 s
+ - User   time   : 108 s
+ - System time   : 1 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 555 s
+ - CPU    time   : 477 s
+ - User   time   : 472 s
+ - System time   : 5 s
+ - Objects mapped : 182831
+   - Maps         : 20729
+   - NMethods     : 1356010 (on 7402 maps)
+
+Linearizing Statistics
+ - Real   time   : 175 s
+ - CPU    time   : 143 s
+ - User   time   : 142 s
+ - System time   : 1 s
+
+
+With the finderOfSlotsBlah optimization:
+
+Mapping Statistics
+ - Real   time   : 743 s
+ - CPU    time   : 517 s
+ - User   time   : 509 s
+ - System time   : 7 s
+ - Objects mapped : 182851
+   - Maps         : 20730
+   - NMethods     : 1356033 (on 7402 maps)
+
+Linearizing Statistics
+ - Real   time   : 199 s
+ - CPU    time   : 146 s
+ - User   time   : 144 s
+ - System time   : 1 s
+
+
+Friday, December 17, 2004
+
+Before the addAll: optimization:
+
+Linearizing Statistics
+ - Real   time   : 139 s
+ - CPU    time   : 119 s
+ - User   time   : 117 s
+ - System time   : 1 s
+
+Again:
+
+Linearizing Statistics
+ - Real   time   : 134 s
+ - CPU    time   : 118 s
+ - User   time   : 117 s
+ - System time   : 0 s
+
+
+With the addAll: optimization:
+
+Linearizing Statistics
+ - Real   time   : 121 s
+ - CPU    time   : 114 s
+ - User   time   : 113 s
+ - System time   : 0 s
+
+Again:
+
+Linearizing Statistics
+ - Real   time   : 117 s
+ - CPU    time   : 110 s
+ - User   time   : 110 s
+ - System time   : 0 s
+
+
+After that and the lens-swapping optimization:
+
+Linearizing Statistics
+ - Real   time   : 95 s
+ - CPU    time   : 78 s
+ - User   time   : 66 s
+ - System time   : 11 s
+
+
+After the nmOop: optimization:
+
+Linearizing Statistics
+ - Real   time   : 68 s
+ - CPU    time   : 62 s
+ - User   time   : 61 s
+ - System time   : 1 s
+
+
+After cleaning up the objectMapper a bit more:
+
+Mapping Statistics
+ - Real   time   : 453 s
+ - CPU    time   : 421 s
+ - User   time   : 417 s
+ - System time   : 3 s
+ - Objects mapped : 182833
+   - Maps         : 20729
+   - NMethods     : 1356010 (on 7402 maps)
+
+Linearizing Statistics
+ - Real   time   : 60 s
+ - CPU    time   : 54 s
+ - User   time   : 53 s
+ - System time   : 0 s
+
+
+Counting up realTime in the mapping part:
+
+45539 ms - for:CopyAddAllSlots:InitializeSlotsBy:
+1495 ms - forReflecteeOf:AddAllMappedVMSlotsTo:
+4833 ms - createEmptyMappedObjectForReflecteeOf:
+19437 ms - asList copyFilteredBy:
+6062 ms - for:CopySetAnnotation: blah at: blah
+
+
+Tuesday, December 21, 2004
+
+Before the big lens-swapping optimization (but after the little ones, 'cause I didn't feel like reversing those):
+
+Linearizing Statistics
+ - Real   time   : 99 s
+ - CPU    time   : 93 s
+ - User   time   : 93 s
+ - System time   : 0 s
+
+Again:
+
+Linearizing Statistics
+ - Real   time   : 106 s
+ - CPU    time   : 89 s
+ - User   time   : 79 s
+ - System time   : 10 s
+
+After the big lens-swapping optimization:
+
+Linearizing Statistics
+ - Real   time   : 79 s
+ - CPU    time   : 71 s
+ - User   time   : 71 s
+ - System time   : 0 s
+
+Again:
+
+Linearizing Statistics
+ - Real   time   : 78 s
+ - CPU    time   : 69 s
+ - User   time   : 68 s
+ - System time   : 0 s
+
+
+After the NoNLR optimization instead:
+
+Linearizing Statistics
+ - Real   time   : 82 s
+ - CPU    time   : 73 s
+ - User   time   : 73 s
+ - System time   : 0 s
+
+Again:
+
+Linearizing Statistics
+ - Real   time   : 75 s
+ - CPU    time   : 70 s
+ - User   time   : 69 s
+ - System time   : 0 s
+
+
+Without the slotsToCompileForBlocks optimization, but with the one that speeds up isSlotToBeMapped:
+
+Mapping Statistics
+ - Real   time   : 733 s
+ - CPU    time   : 640 s
+ - User   time   : 633 s
+ - System time   : 6 s
+ - Objects mapped : 182975
+   - Maps         : 20759
+   - NMethods     : 1358390 (on 7415 maps)
+
+With the optimization:
+
+Mapping Statistics
+ - Real   time   : 519 s
+ - CPU    time   : 431 s
+ - User   time   : 426 s
+ - System time   : 5 s
+ - Objects mapped : 182974
+   - Maps         : 20759
+   - NMethods     : 1358390 (on 7415 maps)
+
+
+Without the annotation = optimization:
+
+Mapping Statistics
+ - Real   time   : 551 s
+ - CPU    time   : 493 s
+ - User   time   : 489 s
+ - System time   : 4 s
+ - Objects mapped : 182877
+   - Maps         : 20737
+   - NMethods     : 1356577 (on 7405 maps)
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 504 s
+ - CPU    time   : 435 s
+ - User   time   : 432 s
+ - System time   : 3 s
+ - Objects mapped : 182878
+   - Maps         : 20737
+   - NMethods     : 1356577 (on 7405 maps)
+
+
+After rebuilding the image:
+
+Mapping Statistics
+ - Real   time   : 712 s
+ - CPU    time   : 614 s
+ - User   time   : 607 s
+ - System time   : 6 s
+ - Objects mapped : 186015
+   - Maps         : 21667
+   - NMethods     : 1434114 (on 7833 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 92 s
+ - CPU    time   : 80 s
+ - User   time   : 80 s
+ - System time   : 0 s
+
+
+Even with the annotation optimization:
+
+Mapping Statistics
+ - Real   time   : 712 s
+ - CPU    time   : 620 s
+ - User   time   : 613 s
+ - System time   : 6 s
+ - Objects mapped : 186103
+   - Maps         : 21689
+   - NMethods     : 1435927 (on 7843 maps)
+
+Linearizing Statistics
+ - Real   time   : 84 s
+ - CPU    time   : 77 s
+ - User   time   : 77 s
+ - System time   : 0 s
+
+
+Wednesday, December 22, 2004
+
+Of the 20759 objects going through slotsToCompileForReceiver:Do:, 12784 are isReflecteeMethod (which don't pass the isOkayToCompileBlah test), 6899 are isReflecteeBlock (which are being handled specially now), 65 are isReflecteeEmptyBlock, 20 don't have a prototypeIfPresent:IfAbsent: but look reasonable to me (stuff like comparison objects for sorting), 17 have their prototype in there twice (and 16 of those are generators, from the assembler, and the last one is omittedBitRange) and I don't know why, and the remaining 957 all have different prototypes.

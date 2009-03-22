@@ -1,0 +1,130 @@
+
+compilationUnit
+  packageDcl package
+    nameNode com . sun . kanban . character_sets ;
+  importDcl import
+    nameNode com . sun . kanban . utilities . DebugTools ;
+  classDcl
+    modifiers( // used to test if a charcter is in a given class )  public class CharacterSetInclusion
+    extendsClass
+    implementsInterfaces implements
+      classOrInterfaceName CharacterSetClosure
+    classBody {
+      varDclsStatement
+        modifiers protected
+        basicType boolean
+        variableDeclarator _table
+          squareList [ ] ;
+      constructorDcl
+        modifiers public
+        classOrInterfaceType
+          nameNode CharacterSetInclusion
+        attributeName CharacterSetInclusion
+        formalParameterList (
+          formalParameter
+            classOrInterfaceType
+              nameNode CharacterSet cc )
+        throws
+        block {
+          expressionStatement
+            infixExpression
+              nameNode _table =
+              newArray new
+                basicType boolean
+                dimensionExpression [
+                  infixExpression
+                    nameNode CharacterSet . max_character_value + 1 ] ;
+          expressionStatement
+            methodInvocation
+              nameNode cc . Do
+              argumentList (
+                argument this ) ; }
+      methodDcl
+        modifiers public
+        basicType void
+        attributeName for_char_in_class
+        formalParameterList (
+          formalParameter
+            basicType char c )
+        throws
+        block {
+          ifStatement if
+            parenList (
+              arrayAccess
+                nameNode _table
+                dimensionExpression [
+                  nameNode c ] )
+            throwStatement throw
+              methodInvocation
+                nameNode DebugTools . new_error
+                argumentList (
+                  argument
+                    infixExpression 'Duplicate character: ' +
+                      nameNode c ) ;
+          expressionStatement
+            infixExpression
+              arrayAccess
+                nameNode _table
+                dimensionExpression [
+                  nameNode c ] = true ; }
+      methodDcl
+        modifiers public
+        classOrInterfaceType
+          nameNode String
+        attributeName toString
+        formalParameterList ( )
+        throws
+        block {
+          varDclsStatement
+            classOrInterfaceType
+              nameNode String
+            variableDeclarator s =
+              scalarInitializer
+                infixExpression
+                  superInvocation super toString
+                    argumentList ( ) + ' including: "' ;
+          forStatement for
+            forParenList (
+              forInit
+                varDclsStatement
+                  basicType char
+                  variableDeclarator c =
+                    scalarInitializer 0 ;
+              forCond
+                infixExpression
+                  nameNode c <
+                  nameNode _table . length ;
+              forUpdate
+                statementExpressionList
+                  prefixExpression ++
+                    nameNode c )
+            ifStatement if
+              parenList (
+                methodInvocation
+                  nameNode includes
+                  argumentList (
+                    argument
+                      nameNode c ) )
+              expressionStatement
+                infixExpression
+                  nameNode s =
+                  infixExpression
+                    nameNode s +
+                    nameNode c ;
+          returnStatement return
+            infixExpression
+              nameNode s + '"' ; }
+      methodDcl
+        modifiers public
+        basicType boolean
+        attributeName includes
+        formalParameterList (
+          formalParameter
+            basicType char c )
+        throws
+        block {
+          returnStatement return
+            arrayAccess
+              nameNode _table
+              dimensionExpression [
+                nameNode c ] ; } }

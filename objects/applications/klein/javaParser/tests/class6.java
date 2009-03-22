@@ -1,0 +1,2 @@
+class simple {}
+interface simple {}

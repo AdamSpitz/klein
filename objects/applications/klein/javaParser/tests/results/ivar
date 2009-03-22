@@ -1,0 +1,11 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      varDclsStatement
+        modifiers private static
+        classOrInterfaceType
+          nameNode a . b . c
+        variableDeclarator snort ; }

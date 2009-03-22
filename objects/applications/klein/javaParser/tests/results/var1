@@ -1,0 +1,14 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      varDclsStatement
+        modifiers protected
+        classOrInterfaceType
+          nameNode c . d
+        variableDeclarator foo ,
+        variableDeclarator bar ,
+        variableDeclarator baz ; }
+  emptyStatement ;

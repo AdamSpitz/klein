@@ -1,0 +1,1 @@
+static final prototype snort {}

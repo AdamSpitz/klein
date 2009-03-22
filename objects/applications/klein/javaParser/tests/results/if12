@@ -1,0 +1,21 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        classOrInterfaceType
+          nameNode b
+        attributeName c
+        formalParameterList ( )
+        throws
+        block {
+          ifStatement if
+            parenList ( 23 )
+            ifStatement if
+              parenList ( 2 )
+              expressionStatement 3 ; else
+              expressionStatement 4 ; else
+            blockStatement
+              block { } } }

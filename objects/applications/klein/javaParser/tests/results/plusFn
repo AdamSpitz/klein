@@ -1,0 +1,1 @@
+Statement is not static initializer, constructor, method declaration, or variable declaration `public Foo +() {}' at: [3@2, 19@2]

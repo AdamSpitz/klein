@@ -1,0 +1,76 @@
+Here's a list of commonalities between primitives:
+
+TT = type tests
+ML = materializeLocs
+ED = encode/decode smi
+CS = conditional stuff
+TR = tempReg
+AS = arithmetic stuff
+MS = magic slot
+LO = load oop
+ST = stub thingy
+LF = location fiddling
+CA = constant args
+OF = overflow
+BC = bounds check
+LS = loading/storing
+
+[TT, ML, ED, AS] ForBytesPart: At: IfFail:
+[TT, ML, ED, CS, TR, AS] ForBytesPart: At: Put: IfFail:
+[TT, ML, MS] ForBytesPart: SetIndexableSize: IfFail:
+[TT, ML, MS] IndexableSizeOfBytesPart: IfFail:
+
+[] BreakpointIfFail:
+[CA] Breakpoint: IfFail:
+
+[ML, TR, AS] LookupTypeIsNormalIfFail:
+[ML, TR, AS] LookupTypeMatches: IfFail:
+
+[ST, LF] CloneIfFail:
+[ML, CS, TT] CreateObjectReferenceWithTag: AndValue: IfFail:
+[ML, CS] Eq: IfFail:
+[ML, TR, CA] In: WhichIsOfType: Get: IfFail:
+[ML] MapIfFail:
+[ML, AS] TagPartOfObjectReferenceIfFail:
+[ML, AS] ValuePartOfObjectReferenceIfFail:
+
+[ML, TT, ED] IntForCIfFail:
+[ML, TR, ED, CS] IntFromCIfFail:
+
+[ML, TT, CS, AS, OF] IntAdd: IfFail:
+[ML, TT, CS, ED, AS, OF] IntDiv: IfFail:
+[ML, TT, CS, ED, AS, OF] IntMul: IfFail:
+[ML, TT, CS, AS, OF] IntSub: IfFail:
+
+[ML, TT, CS, ED, AS, OF] IntArithmeticShiftLeft: IfFail:
+[ML, TT, CS, ED, AS] IntArithmeticShiftRight: IfFail:
+
+[ML, TT, CS, AS] IntEQ: IfFail:
+[ML, TT, CS, AS] IntLE: IfFail:
+
+[ML, TT, TR, AS] ForMemoryObject: At: IfFail:
+[ML, TT, AS] ForMemoryObject: At: Put: IfFail:
+[ML, TT, AS, CS] ForMemoryObject: IsMarkAt: IfFail:
+[ML, TT, ED] ForMemoryObject: SetMarkValue: IfFail:
+[ML, TT, ED] MarkValueOfMemoryObject: IfFail:
+
+[ML, TT, TR] CloneBlockHomeFrame: IfFail:
+
+[ML, TT, TR, MS] ByteSizeIfFail:
+[ML, TT, TR, MS, AS] ByteVectorForCIfFail:
+
+[ML, TT, TR] NMethodEntryPointIfFail:
+
+[ML, TT, TR, AS, BC] At: IfFail:
+[ML, TT, TR, MS] SizeIfFail:
+
+[ML, TT, TR, MS] NMethodCacheIfFail:
+
+[ML, TR, LS] BackpatchSendDescTo: IfFail:
+[ML] CallingSendDescIfFail:
+[] RetrySendDescIfFail:
+[ML] SendDescDelegateeIfFail:
+[ML] SendDescLookupTypeIfFail:
+[ML] SendDescSelectorIfFail:
+
+[ML, LO] TheVMIfFail:

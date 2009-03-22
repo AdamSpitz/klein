@@ -1,0 +1,10 @@
+
+compilationUnit
+  packageDcl package
+    nameNode a ;
+  importDcl import
+    nameNode b ;
+  importDcl import
+    nameNode b . c ;
+  importDcl import
+    nameNode b . c . * ;

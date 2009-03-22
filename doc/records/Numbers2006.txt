@@ -1,0 +1,67 @@
+Friday, January  6, 2006
+
+smallImage:
+
+Mapping Statistics
+ - Real   time   : 46 s
+ - CPU    time   : 36 s
+   - Fill 1 time: 35 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 1 s
+   - Compilation Phase  time: 0 s
+     - Compilation time: 0 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 0 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 0 s
+     - reusable nmethod hit time: 0 s
+     - hasAlreadyCompiledNMethodForThisMap time: 0 s
+     - nmethod allocation time: 0 s
+     - recording nmethods time: 0 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 0 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 0 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+   - Fixing Klein mirrors time: 0 s
+   - Compact map table time: 0 s
+   - Object table time: 0 s
+   - Fill 5 time: 0 s
+ - User   time   : 35 s
+ - System time   : 1 s
+ - Objects mapped : 24425
+   - Maps         : 6877
+   - NMethods     : 0
+   - Compilations : 0
+   - Relocators eager/non-eager: 0/0
+   - Eager nmethod optimism justified/unjustified: 0/0
+   - Local initialization needed/unneeded 0/0
+   - SelectorsToCompile hits/misses: 0/0
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 0/0
+   - ReusableNMethod hits/misses: 0/0
+   - NMethodsByMap hits/misses: 0/0
+
+Image Initialization Statistics
+ - Real   time   : 0 s
+ - CPU    time   : 0 s
+ - User   time   : 0 s
+ - System time   : 0 s
+
+Eden Space Size Statistics
+ - Total: 1283 KBytes if 32-bit oops,
+          698 KBytes if 16-bit oops
+   - Oops: 292 KOops
+   - Bytes: 112 KBytes
+
+
+
+
+
+
+Friday, December 14, 2007
+
+I'm not sure why these numbers stop at January 2006 - wasn't there still active work going on on this project until August 2006?

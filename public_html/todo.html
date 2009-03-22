@@ -1,0 +1,51 @@
+<html>
+
+<head>
+  <title>Klein Metacircular Virtual Machine Kit</title>
+</head>
+
+<body>
+
+<h1>Klein Metacircular Virtual Machine Kit</h1>
+
+<h2>Work already done</h2>
+
+<p>Here's a quick list of what works in Klein today:</p>
+
+<ul>
+  <li>The compiler can produce correct (but slow) machine code for most Self code (not including code that uses dynamic inheritance).</li>
+  <li>The export system can produce a Klein bootstrap image containing a given list of modules. (We have used this to create several Klein images; the two most interesting ones are the full selfVM image, which contains the Klein compiler and object system and enough of the core Self functionality to support them, and the Yoda smallImage, which is a stripped-down image that might someday be suitable for putting on some sort of small device.)</li>
+  <li>Reflection (inside the Klein image) seems to work.</li>
+  <li>The Klein compiler, running inside Klein, can compile simple methods. (It could probably compile more complex ones, but it runs out of memory, since there's no garbage collector yet.)</li>
+  <li>The remote debugging environment allows source- and machine-level viewing and debugging of live Klein objects and processes.</li>
+  <li>The incremental update system allows changes to be made to Klein objects (in either a not-yet-running bootstrap image or a live, running image) without needing to rebuild the entire Klein image.</li>
+  <li>There is a half-written Self interpreter written in C++, called Yoda. (Some functionality seems to work, including a very rudimentary and unfinished garbage collector.) Yoda is not really part of the main Klein system; it was an experimental offshoot of it that we never got a chance to finish.</li>
+</ul>
+
+<h2>Work left to be done</h2>
+
+<p>There is a lot of stuff that would need to be done before Klein could be a useful VM for the Self language:</p>
+
+<ul>
+  <li>Garbage collection. We expect this to be trickier in Klein than in a normal VM, because of Klein's metacircularity. (For example, what if the GC runs out of memory during a collection? What if the GC moves its own code out from under itself?)</li>
+  <li>A lot of primitives (graphics, etc.).
+  <li>Performance. We've put almost no effort at all into making Klein run efficiently; at present, it's hideously inefficient (in both time and space). The compiler produces very slow code, and we haven't even begun to implement any Self-style dynamic optimization tricks.</li>
+  <li>We haven't implemented dependencies yet (which is fine for now because we haven't implemented recompilation either).</li>
+  <li>Source-level single-stepping in the debugger. (There is a sometimes-useful approximation implemented now, but not proper source-level single-stepping.)</li>
+  <li>Porting the assembler and compiler (so far there's only a PowerPC and SPARC assembler, and only a PowerPC compiler).</li>
+  <li>Multiple processes inside Klein.</li>
+  <li>Dynamic inheritance (though we hardly ever use it, and it may not be worth the cost).</li>
+  <li>Floating-point numbers.</li>
+  <li>Many other things - search for senders of <code>todo</code> to find some of them.</li>
+</ul>
+
+
+
+<hr/>
+
+<a href="http://sourceforge.net/projects/kleinvm"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=211747&amp;type=10" width="80" height="15" alt="Get Klein at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>
+
+
+</body>
+
+</html>

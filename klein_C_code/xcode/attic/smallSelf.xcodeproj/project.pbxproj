@@ -1,0 +1,649 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA2A032B092D6F8F002B064C /* machDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A01F4092D6615002B064C /* machDebugServer.hh */; };
+		FA2A032C092D6F8F002B064C /* unixDebugServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA2A01F5092D6615002B064C /* unixDebugServer.cpp */; };
+		FA2A032D092D6F8F002B064C /* unixDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A01F6092D6615002B064C /* unixDebugServer.hh */; };
+		FA2A032E092D6F8F002B064C /* machMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA2A01FA092D6638002B064C /* machMain.cpp */; };
+		FA2A032F092D6F8F002B064C /* machMain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A0278092D6B16002B064C /* machMain.h */; };
+		FA753F98092D878D003B33B4 /* theVM.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA753F2B092D8625003B33B4 /* theVM.h */; };
+		FA753F99092D878D003B33B4 /* theVM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA753F2C092D8625003B33B4 /* theVM.cpp */; };
+		FA753F9A092D878D003B33B4 /* kleinObject.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA753F2D092D8625003B33B4 /* kleinObject.h */; };
+		FA753F9B092D878D003B33B4 /* kleinObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA753F2E092D8625003B33B4 /* kleinObject.cpp */; };
+		FA753F9C092D878D003B33B4 /* debugServerConstants.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A0382092D7D94002B064C /* debugServerConstants.hh */; };
+		FA753F9D092D878D003B33B4 /* smallSelfMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA2A017B092C1A00002B064C /* smallSelfMain.cpp */; };
+		FA753F9E092D878D003B33B4 /* smallSelfMain.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A03CB092D8009002B064C /* smallSelfMain.h */; };
+		FA753F9F092D878D003B33B4 /* SlotsMapLayout_otherDecls.incl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226EA092BEFC2008869E4 /* SlotsMapLayout_otherDecls.incl.h */; };
+		FA753FA0092D878D003B33B4 /* MapLayout_otherDecls.incl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226EB092BEFC2008869E4 /* MapLayout_otherDecls.incl.h */; };
+		FA753FA1092D878D003B33B4 /* markLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226F7092BEFC2008869E4 /* markLayout.h */; };
+		FA753FA2092D878D003B33B4 /* markLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226F8092BEFC2008869E4 /* markLayout.cpp */; };
+		FA753FA4092D878D003B33B4 /* wordLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226CF092BEFC1008869E4 /* wordLayout.h */; };
+		FA753FA5092D878D003B33B4 /* wordLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226D0092BEFC1008869E4 /* wordLayout.cpp */; };
+		FA753FA6092D878D003B33B4 /* objVectorLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226D4092BEFC1008869E4 /* objVectorLayout.h */; };
+		FA753FA7092D878D003B33B4 /* objVectorLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226D5092BEFC1008869E4 /* objVectorLayout.cpp */; };
+		FA753FA8092D878D003B33B4 /* layouts.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226D6092BEFC1008869E4 /* layouts.h */; };
+		FA753FA9092D878D003B33B4 /* layouts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226D7092BEFC1008869E4 /* layouts.cpp */; };
+		FA753FAA092D878D003B33B4 /* immediateLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226D8092BEFC1008869E4 /* immediateLayout.h */; };
+		FA753FAB092D878D003B33B4 /* byteVectorLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226DB092BEFC1008869E4 /* byteVectorLayout.h */; };
+		FA753FAC092D878D003B33B4 /* byteVectorLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226DC092BEFC1008869E4 /* byteVectorLayout.cpp */; };
+		FA753FAD092D878D003B33B4 /* bytesPartLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226DD092BEFC1008869E4 /* bytesPartLayout.h */; };
+		FA753FAE092D878D003B33B4 /* bytesPartLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226DE092BEFC1008869E4 /* bytesPartLayout.cpp */; };
+		FA753FAF092D878D003B33B4 /* blockLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226DF092BEFC1008869E4 /* blockLayout.cpp */; };
+		FA753FB0092D878D003B33B4 /* allNonMapLayouts.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226ED092BEFC2008869E4 /* allNonMapLayouts.h */; };
+		FA753FB1092D878D003B33B4 /* abstractVectorLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226F2092BEFC2008869E4 /* abstractVectorLayout.h */; };
+		FA753FB2092D878D003B33B4 /* abstractVectorLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226F3092BEFC2008869E4 /* abstractVectorLayout.cpp */; };
+		FA753FB3092D878D003B33B4 /* immediateLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226FA092BEFC2008869E4 /* immediateLayout.cpp */; };
+		FA753FB4092D878D003B33B4 /* universe.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226D1092BEFC1008869E4 /* universe.h */; };
+		FA753FB5092D878D003B33B4 /* universe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226D2092BEFC1008869E4 /* universe.cpp */; };
+		FA753FB6092D878D003B33B4 /* space.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E2092BEFC1008869E4 /* space.h */; };
+		FA753FB7092D878D003B33B4 /* space.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226E3092BEFC2008869E4 /* space.cpp */; };
+		FA753FB8092D878D003B33B4 /* generation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E9092BEFC2008869E4 /* generation.h */; };
+		FA753FB9092D878D003B33B4 /* generation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226EC092BEFC2008869E4 /* generation.cpp */; };
+		FA753FBA092D878D003B33B4 /* tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226D3092BEFC1008869E4 /* tests.cpp */; };
+		FA753FBB092D878D003B33B4 /* headerFields.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226D9092BEFC1008869E4 /* headerFields.h */; };
+		FA753FBC092D878D003B33B4 /* headerFields.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226DA092BEFC1008869E4 /* headerFields.cpp */; };
+		FA753FBD092D878D003B33B4 /* verifier.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E0092BEFC1008869E4 /* verifier.h */; };
+		FA753FBE092D878D003B33B4 /* verifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226E1092BEFC1008869E4 /* verifier.cpp */; };
+		FA753FBF092D878D003B33B4 /* maps.incl.impl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E4092BEFC2008869E4 /* maps.incl.impl.h */; };
+		FA753FC0092D878D003B33B4 /* maps.incl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E5092BEFC2008869E4 /* maps.incl.h */; };
+		FA753FC1092D878D003B33B4 /* maps.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E6092BEFC2008869E4 /* maps.h */; };
+		FA753FC2092D878D003B33B4 /* mapTypeTesters.incl.impl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226E7092BEFC2008869E4 /* mapTypeTesters.incl.impl.h */; };
+		FA753FC3092D878D003B33B4 /* maps.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226E8092BEFC2008869E4 /* maps.cpp */; };
+		FA753FC4092D878D003B33B4 /* headerFields.incl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226EF092BEFC2008869E4 /* headerFields.incl.h */; };
+		FA753FC5092D878D003B33B4 /* blockLayout.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226F0092BEFC2008869E4 /* blockLayout.h */; };
+		FA753FC6092D878D003B33B4 /* base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226F1092BEFC2008869E4 /* base.cpp */; };
+		FA753FC7092D878D003B33B4 /* slotTypeFields.incl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226F4092BEFC2008869E4 /* slotTypeFields.incl.h */; };
+		FA753FC8092D878D003B33B4 /* slotType.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226F5092BEFC2008869E4 /* slotType.h */; };
+		FA753FC9092D878D003B33B4 /* slotType.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226F6092BEFC2008869E4 /* slotType.cpp */; };
+		FA753FCA092D878D003B33B4 /* markFields.incl.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226F9092BEFC2008869E4 /* markFields.incl.h */; };
+		FA753FCB092D878D003B33B4 /* base.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226FB092BEFC2008869E4 /* base.h */; };
+		FA753FCC092D878D003B33B4 /* tests.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226FC092BEFC2008869E4 /* tests.h */; };
+		FA753FCD092D878D003B33B4 /* tag.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA6226FD092BEFC2008869E4 /* tag.h */; };
+		FA753FCE092D878D003B33B4 /* tag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA6226FE092BEFC2008869E4 /* tag.cpp */; };
+		FA753FCF092D87BC003B33B4 /* machDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A01F4092D6615002B064C /* machDebugServer.hh */; };
+		FA753FD0092D87BC003B33B4 /* unixDebugServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA2A01F5092D6615002B064C /* unixDebugServer.cpp */; };
+		FA753FD1092D87BC003B33B4 /* unixDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA2A01F6092D6615002B064C /* unixDebugServer.hh */; };
+		FAC3A5740936824F00D386A8 /* theVMAccessors.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = FAC3A5730936824F00D386A8 /* theVMAccessors.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		014CEA520018CE5811CA2923 /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		014CEA530018CE5811CA2923 /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76FAF0486AB0100D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				FA753F98092D878D003B33B4 /* theVM.h in CopyFiles */,
+				FA753F9A092D878D003B33B4 /* kleinObject.h in CopyFiles */,
+				FA753F9C092D878D003B33B4 /* debugServerConstants.hh in CopyFiles */,
+				FA753F9E092D878D003B33B4 /* smallSelfMain.h in CopyFiles */,
+				FA753F9F092D878D003B33B4 /* SlotsMapLayout_otherDecls.incl.h in CopyFiles */,
+				FA753FA0092D878D003B33B4 /* MapLayout_otherDecls.incl.h in CopyFiles */,
+				FA753FA1092D878D003B33B4 /* markLayout.h in CopyFiles */,
+				FA753FA4092D878D003B33B4 /* wordLayout.h in CopyFiles */,
+				FA753FA6092D878D003B33B4 /* objVectorLayout.h in CopyFiles */,
+				FA753FA8092D878D003B33B4 /* layouts.h in CopyFiles */,
+				FA753FAA092D878D003B33B4 /* immediateLayout.h in CopyFiles */,
+				FA753FAB092D878D003B33B4 /* byteVectorLayout.h in CopyFiles */,
+				FA753FAD092D878D003B33B4 /* bytesPartLayout.h in CopyFiles */,
+				FA753FB0092D878D003B33B4 /* allNonMapLayouts.h in CopyFiles */,
+				FA753FB1092D878D003B33B4 /* abstractVectorLayout.h in CopyFiles */,
+				FA753FB4092D878D003B33B4 /* universe.h in CopyFiles */,
+				FA753FB6092D878D003B33B4 /* space.h in CopyFiles */,
+				FA753FB8092D878D003B33B4 /* generation.h in CopyFiles */,
+				FA753FBB092D878D003B33B4 /* headerFields.h in CopyFiles */,
+				FA753FBD092D878D003B33B4 /* verifier.h in CopyFiles */,
+				FA753FBF092D878D003B33B4 /* maps.incl.impl.h in CopyFiles */,
+				FA753FC0092D878D003B33B4 /* maps.incl.h in CopyFiles */,
+				FA753FC1092D878D003B33B4 /* maps.h in CopyFiles */,
+				FA753FC2092D878D003B33B4 /* mapTypeTesters.incl.impl.h in CopyFiles */,
+				FA753FC4092D878D003B33B4 /* headerFields.incl.h in CopyFiles */,
+				FA753FC5092D878D003B33B4 /* blockLayout.h in CopyFiles */,
+				FA753FC7092D878D003B33B4 /* slotTypeFields.incl.h in CopyFiles */,
+				FA753FC8092D878D003B33B4 /* slotType.h in CopyFiles */,
+				FA753FCA092D878D003B33B4 /* markFields.incl.h in CopyFiles */,
+				FA753FCB092D878D003B33B4 /* base.h in CopyFiles */,
+				FA753FCC092D878D003B33B4 /* tests.h in CopyFiles */,
+				FA753FCD092D878D003B33B4 /* tag.h in CopyFiles */,
+				FA753FCF092D87BC003B33B4 /* machDebugServer.hh in CopyFiles */,
+				FA753FD1092D87BC003B33B4 /* unixDebugServer.hh in CopyFiles */,
+				FAC3A5740936824F00D386A8 /* theVMAccessors.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		FA2A02B9092D6D0F002B064C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				FA2A032B092D6F8F002B064C /* machDebugServer.hh in CopyFiles */,
+				FA2A032D092D6F8F002B064C /* unixDebugServer.hh in CopyFiles */,
+				FA2A032F092D6F8F002B064C /* machMain.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8DD76FB20486AB0100D96B5E /* smallSelf */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smallSelf; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6A0FF2C0290799A04C91782 /* smallSelf.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = smallSelf.1; sourceTree = "<group>"; };
+		FA2A017B092C1A00002B064C /* smallSelfMain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = smallSelfMain.cpp; path = src/smallSelfMain.cpp; sourceTree = "<group>"; };
+		FA2A01F4092D6615002B064C /* machDebugServer.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = machDebugServer.hh; path = ../bin/src/machDebugServer.hh; sourceTree = SOURCE_ROOT; };
+		FA2A01F5092D6615002B064C /* unixDebugServer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = unixDebugServer.cpp; path = ../bin/src/unixDebugServer.cpp; sourceTree = SOURCE_ROOT; };
+		FA2A01F6092D6615002B064C /* unixDebugServer.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = unixDebugServer.hh; path = ../bin/src/unixDebugServer.hh; sourceTree = SOURCE_ROOT; };
+		FA2A01FA092D6638002B064C /* machMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = machMain.cpp; path = ../bin/src/machMain.cpp; sourceTree = SOURCE_ROOT; };
+		FA2A0278092D6B16002B064C /* machMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = machMain.h; path = ../bin/src/machMain.h; sourceTree = SOURCE_ROOT; };
+		FA2A02DE092D6D0F002B064C /* unixDebugServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = unixDebugServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA2A0382092D7D94002B064C /* debugServerConstants.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = debugServerConstants.hh; path = src/debugServerConstants.hh; sourceTree = "<group>"; };
+		FA2A03CB092D8009002B064C /* smallSelfMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = smallSelfMain.h; path = src/smallSelfMain.h; sourceTree = "<group>"; };
+		FA6226CF092BEFC1008869E4 /* wordLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = wordLayout.h; path = src/wordLayout.h; sourceTree = "<group>"; };
+		FA6226D0092BEFC1008869E4 /* wordLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = wordLayout.cpp; path = src/wordLayout.cpp; sourceTree = "<group>"; };
+		FA6226D1092BEFC1008869E4 /* universe.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = universe.h; path = src/universe.h; sourceTree = "<group>"; };
+		FA6226D2092BEFC1008869E4 /* universe.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = universe.cpp; path = src/universe.cpp; sourceTree = "<group>"; };
+		FA6226D3092BEFC1008869E4 /* tests.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = tests.cpp; path = src/tests.cpp; sourceTree = "<group>"; };
+		FA6226D4092BEFC1008869E4 /* objVectorLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = objVectorLayout.h; path = src/objVectorLayout.h; sourceTree = "<group>"; };
+		FA6226D5092BEFC1008869E4 /* objVectorLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = objVectorLayout.cpp; path = src/objVectorLayout.cpp; sourceTree = "<group>"; };
+		FA6226D6092BEFC1008869E4 /* layouts.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = layouts.h; path = src/layouts.h; sourceTree = "<group>"; };
+		FA6226D7092BEFC1008869E4 /* layouts.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = layouts.cpp; path = src/layouts.cpp; sourceTree = "<group>"; };
+		FA6226D8092BEFC1008869E4 /* immediateLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = immediateLayout.h; path = src/immediateLayout.h; sourceTree = "<group>"; };
+		FA6226D9092BEFC1008869E4 /* headerFields.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = headerFields.h; path = src/headerFields.h; sourceTree = "<group>"; };
+		FA6226DA092BEFC1008869E4 /* headerFields.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = headerFields.cpp; path = src/headerFields.cpp; sourceTree = "<group>"; };
+		FA6226DB092BEFC1008869E4 /* byteVectorLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = byteVectorLayout.h; path = src/byteVectorLayout.h; sourceTree = "<group>"; };
+		FA6226DC092BEFC1008869E4 /* byteVectorLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = byteVectorLayout.cpp; path = src/byteVectorLayout.cpp; sourceTree = "<group>"; };
+		FA6226DD092BEFC1008869E4 /* bytesPartLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bytesPartLayout.h; path = src/bytesPartLayout.h; sourceTree = "<group>"; };
+		FA6226DE092BEFC1008869E4 /* bytesPartLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = bytesPartLayout.cpp; path = src/bytesPartLayout.cpp; sourceTree = "<group>"; };
+		FA6226DF092BEFC1008869E4 /* blockLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = blockLayout.cpp; path = src/blockLayout.cpp; sourceTree = "<group>"; };
+		FA6226E0092BEFC1008869E4 /* verifier.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = verifier.h; path = src/verifier.h; sourceTree = "<group>"; };
+		FA6226E1092BEFC1008869E4 /* verifier.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = verifier.cpp; path = src/verifier.cpp; sourceTree = "<group>"; };
+		FA6226E2092BEFC1008869E4 /* space.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = space.h; path = src/space.h; sourceTree = "<group>"; };
+		FA6226E3092BEFC2008869E4 /* space.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = space.cpp; path = src/space.cpp; sourceTree = "<group>"; };
+		FA6226E4092BEFC2008869E4 /* maps.incl.impl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maps.incl.impl.h; path = src/maps.incl.impl.h; sourceTree = "<group>"; };
+		FA6226E5092BEFC2008869E4 /* maps.incl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maps.incl.h; path = src/maps.incl.h; sourceTree = "<group>"; };
+		FA6226E6092BEFC2008869E4 /* maps.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maps.h; path = src/maps.h; sourceTree = "<group>"; };
+		FA6226E7092BEFC2008869E4 /* mapTypeTesters.incl.impl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapTypeTesters.incl.impl.h; path = src/mapTypeTesters.incl.impl.h; sourceTree = "<group>"; };
+		FA6226E8092BEFC2008869E4 /* maps.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = maps.cpp; path = src/maps.cpp; sourceTree = "<group>"; };
+		FA6226E9092BEFC2008869E4 /* generation.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = generation.h; path = src/generation.h; sourceTree = "<group>"; };
+		FA6226EA092BEFC2008869E4 /* SlotsMapLayout_otherDecls.incl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SlotsMapLayout_otherDecls.incl.h; path = src/SlotsMapLayout_otherDecls.incl.h; sourceTree = "<group>"; };
+		FA6226EB092BEFC2008869E4 /* MapLayout_otherDecls.incl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MapLayout_otherDecls.incl.h; path = src/MapLayout_otherDecls.incl.h; sourceTree = "<group>"; };
+		FA6226EC092BEFC2008869E4 /* generation.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = generation.cpp; path = src/generation.cpp; sourceTree = "<group>"; };
+		FA6226ED092BEFC2008869E4 /* allNonMapLayouts.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = allNonMapLayouts.h; path = src/allNonMapLayouts.h; sourceTree = "<group>"; };
+		FA6226EF092BEFC2008869E4 /* headerFields.incl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = headerFields.incl.h; path = src/headerFields.incl.h; sourceTree = "<group>"; };
+		FA6226F0092BEFC2008869E4 /* blockLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = blockLayout.h; path = src/blockLayout.h; sourceTree = "<group>"; };
+		FA6226F1092BEFC2008869E4 /* base.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = base.cpp; path = src/base.cpp; sourceTree = "<group>"; };
+		FA6226F2092BEFC2008869E4 /* abstractVectorLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = abstractVectorLayout.h; path = src/abstractVectorLayout.h; sourceTree = "<group>"; };
+		FA6226F3092BEFC2008869E4 /* abstractVectorLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = abstractVectorLayout.cpp; path = src/abstractVectorLayout.cpp; sourceTree = "<group>"; };
+		FA6226F4092BEFC2008869E4 /* slotTypeFields.incl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = slotTypeFields.incl.h; path = src/slotTypeFields.incl.h; sourceTree = "<group>"; };
+		FA6226F5092BEFC2008869E4 /* slotType.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = slotType.h; path = src/slotType.h; sourceTree = "<group>"; };
+		FA6226F6092BEFC2008869E4 /* slotType.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = slotType.cpp; path = src/slotType.cpp; sourceTree = "<group>"; };
+		FA6226F7092BEFC2008869E4 /* markLayout.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = markLayout.h; path = src/markLayout.h; sourceTree = "<group>"; };
+		FA6226F8092BEFC2008869E4 /* markLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = markLayout.cpp; path = src/markLayout.cpp; sourceTree = "<group>"; };
+		FA6226F9092BEFC2008869E4 /* markFields.incl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = markFields.incl.h; path = src/markFields.incl.h; sourceTree = "<group>"; };
+		FA6226FA092BEFC2008869E4 /* immediateLayout.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = immediateLayout.cpp; path = src/immediateLayout.cpp; sourceTree = "<group>"; };
+		FA6226FB092BEFC2008869E4 /* base.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = base.h; path = src/base.h; sourceTree = "<group>"; };
+		FA6226FC092BEFC2008869E4 /* tests.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = tests.h; path = src/tests.h; sourceTree = "<group>"; };
+		FA6226FD092BEFC2008869E4 /* tag.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = tag.h; path = src/tag.h; sourceTree = "<group>"; };
+		FA6226FE092BEFC2008869E4 /* tag.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = tag.cpp; path = src/tag.cpp; sourceTree = "<group>"; };
+		FA753F2B092D8625003B33B4 /* theVM.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = theVM.h; path = src/theVM.h; sourceTree = "<group>"; };
+		FA753F2C092D8625003B33B4 /* theVM.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = theVM.cpp; path = src/theVM.cpp; sourceTree = "<group>"; };
+		FA753F2D092D8625003B33B4 /* kleinObject.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = kleinObject.h; path = src/kleinObject.h; sourceTree = "<group>"; };
+		FA753F2E092D8625003B33B4 /* kleinObject.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = kleinObject.cpp; path = src/kleinObject.cpp; sourceTree = "<group>"; };
+		FAC3A5730936824F00D386A8 /* theVMAccessors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = theVMAccessors.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76FAD0486AB0100D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA2A02B8092D6D0F002B064C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* smallSelf */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6A0FF2B0290797F04C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = smallSelf;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FA753F2B092D8625003B33B4 /* theVM.h */,
+				FA753F2C092D8625003B33B4 /* theVM.cpp */,
+				FA753F2D092D8625003B33B4 /* kleinObject.h */,
+				FA753F2E092D8625003B33B4 /* kleinObject.cpp */,
+				FA2A0381092D7D7B002B064C /* smallSelf */,
+				FA2A0176092C1927002B064C /* Layouts */,
+				FA2A0177092C1959002B064C /* Memory */,
+				FA6226D3092BEFC1008869E4 /* tests.cpp */,
+				FA6226D9092BEFC1008869E4 /* headerFields.h */,
+				FA6226DA092BEFC1008869E4 /* headerFields.cpp */,
+				FA6226E0092BEFC1008869E4 /* verifier.h */,
+				FA6226E1092BEFC1008869E4 /* verifier.cpp */,
+				FA2A0178092C1990002B064C /* Maps */,
+				FA6226EF092BEFC2008869E4 /* headerFields.incl.h */,
+				FA6226F0092BEFC2008869E4 /* blockLayout.h */,
+				FA6226F1092BEFC2008869E4 /* base.cpp */,
+				FA6226F4092BEFC2008869E4 /* slotTypeFields.incl.h */,
+				FA6226F5092BEFC2008869E4 /* slotType.h */,
+				FA6226F6092BEFC2008869E4 /* slotType.cpp */,
+				FA6226F9092BEFC2008869E4 /* markFields.incl.h */,
+				FA6226FB092BEFC2008869E4 /* base.h */,
+				FA6226FC092BEFC2008869E4 /* tests.h */,
+				FA6226FD092BEFC2008869E4 /* tag.h */,
+				FA6226FE092BEFC2008869E4 /* tag.cpp */,
+				FAFD5EA2092BF60A005B41DA /* debug server */,
+				FAC3A5730936824F00D386A8 /* theVMAccessors.h */,
+			);
+			name = Source;
+			sourceTree = SOURCE_ROOT;
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76FB20486AB0100D96B5E /* smallSelf */,
+				FA2A02DE092D6D0F002B064C /* unixDebugServer */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6A0FF2C0290799A04C91782 /* smallSelf.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+		FA2A0176092C1927002B064C /* Layouts */ = {
+			isa = PBXGroup;
+			children = (
+				FA6226EA092BEFC2008869E4 /* SlotsMapLayout_otherDecls.incl.h */,
+				FA6226EB092BEFC2008869E4 /* MapLayout_otherDecls.incl.h */,
+				FA6226F7092BEFC2008869E4 /* markLayout.h */,
+				FA6226F8092BEFC2008869E4 /* markLayout.cpp */,
+				FA6226CF092BEFC1008869E4 /* wordLayout.h */,
+				FA6226D0092BEFC1008869E4 /* wordLayout.cpp */,
+				FA6226D4092BEFC1008869E4 /* objVectorLayout.h */,
+				FA6226D5092BEFC1008869E4 /* objVectorLayout.cpp */,
+				FA6226D6092BEFC1008869E4 /* layouts.h */,
+				FA6226D7092BEFC1008869E4 /* layouts.cpp */,
+				FA6226D8092BEFC1008869E4 /* immediateLayout.h */,
+				FA6226DB092BEFC1008869E4 /* byteVectorLayout.h */,
+				FA6226DC092BEFC1008869E4 /* byteVectorLayout.cpp */,
+				FA6226DD092BEFC1008869E4 /* bytesPartLayout.h */,
+				FA6226DE092BEFC1008869E4 /* bytesPartLayout.cpp */,
+				FA6226DF092BEFC1008869E4 /* blockLayout.cpp */,
+				FA6226ED092BEFC2008869E4 /* allNonMapLayouts.h */,
+				FA6226F2092BEFC2008869E4 /* abstractVectorLayout.h */,
+				FA6226F3092BEFC2008869E4 /* abstractVectorLayout.cpp */,
+				FA6226FA092BEFC2008869E4 /* immediateLayout.cpp */,
+			);
+			name = Layouts;
+			sourceTree = "<group>";
+		};
+		FA2A0177092C1959002B064C /* Memory */ = {
+			isa = PBXGroup;
+			children = (
+				FA6226D1092BEFC1008869E4 /* universe.h */,
+				FA6226D2092BEFC1008869E4 /* universe.cpp */,
+				FA6226E2092BEFC1008869E4 /* space.h */,
+				FA6226E3092BEFC2008869E4 /* space.cpp */,
+				FA6226E9092BEFC2008869E4 /* generation.h */,
+				FA6226EC092BEFC2008869E4 /* generation.cpp */,
+			);
+			name = Memory;
+			sourceTree = "<group>";
+		};
+		FA2A0178092C1990002B064C /* Maps */ = {
+			isa = PBXGroup;
+			children = (
+				FA6226E4092BEFC2008869E4 /* maps.incl.impl.h */,
+				FA6226E5092BEFC2008869E4 /* maps.incl.h */,
+				FA6226E6092BEFC2008869E4 /* maps.h */,
+				FA6226E7092BEFC2008869E4 /* mapTypeTesters.incl.impl.h */,
+				FA6226E8092BEFC2008869E4 /* maps.cpp */,
+			);
+			name = Maps;
+			sourceTree = "<group>";
+		};
+		FA2A0381092D7D7B002B064C /* smallSelf */ = {
+			isa = PBXGroup;
+			children = (
+				FA2A0382092D7D94002B064C /* debugServerConstants.hh */,
+				FA2A017B092C1A00002B064C /* smallSelfMain.cpp */,
+				FA2A03CB092D8009002B064C /* smallSelfMain.h */,
+			);
+			name = smallSelf;
+			sourceTree = "<group>";
+		};
+		FAFD5EA2092BF60A005B41DA /* debug server */ = {
+			isa = PBXGroup;
+			children = (
+				FA2A01F4092D6615002B064C /* machDebugServer.hh */,
+				FA2A01F5092D6615002B064C /* unixDebugServer.cpp */,
+				FA2A01F6092D6615002B064C /* unixDebugServer.hh */,
+				FA2A01FA092D6638002B064C /* machMain.cpp */,
+				FA2A0278092D6B16002B064C /* machMain.h */,
+			);
+			name = "debug server";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76FA90486AB0100D96B5E /* smallSelf */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 66898E8D09246495005FC673 /* Build configuration list for PBXNativeTarget "smallSelf" */;
+			buildPhases = (
+				8DD76FAB0486AB0100D96B5E /* Sources */,
+				8DD76FAD0486AB0100D96B5E /* Frameworks */,
+				8DD76FAF0486AB0100D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = smallSelf;
+			};
+			dependencies = (
+			);
+			name = smallSelf;
+			productInstallPath = "$(HOME)/bin";
+			productName = smallSelf;
+			productReference = 8DD76FB20486AB0100D96B5E /* smallSelf */;
+			productType = "com.apple.product-type.tool";
+		};
+		FA2A02A1092D6D0F002B064C /* unixDebugServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA2A02DA092D6D0F002B064C /* Build configuration list for PBXNativeTarget "unixDebugServer" */;
+			buildPhases = (
+				FA2A02A2092D6D0F002B064C /* Sources */,
+				FA2A02B8092D6D0F002B064C /* Frameworks */,
+				FA2A02B9092D6D0F002B064C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = smallSelf;
+			};
+			dependencies = (
+			);
+			name = unixDebugServer;
+			productInstallPath = "$(HOME)/bin";
+			productName = smallSelf;
+			productReference = FA2A02DE092D6D0F002B064C /* unixDebugServer */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 66898E9109246495005FC673 /* Build configuration list for PBXProject "smallSelf" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				014CEA520018CE5811CA2923 /* Debug */,
+				014CEA530018CE5811CA2923 /* Release */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* smallSelf */;
+			projectDirPath = "";
+			targets = (
+				8DD76FA90486AB0100D96B5E /* smallSelf */,
+				FA2A02A1092D6D0F002B064C /* unixDebugServer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76FAB0486AB0100D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA753F99092D878D003B33B4 /* theVM.cpp in Sources */,
+				FA753F9B092D878D003B33B4 /* kleinObject.cpp in Sources */,
+				FA753F9D092D878D003B33B4 /* smallSelfMain.cpp in Sources */,
+				FA753FA2092D878D003B33B4 /* markLayout.cpp in Sources */,
+				FA753FA5092D878D003B33B4 /* wordLayout.cpp in Sources */,
+				FA753FA7092D878D003B33B4 /* objVectorLayout.cpp in Sources */,
+				FA753FA9092D878D003B33B4 /* layouts.cpp in Sources */,
+				FA753FAC092D878D003B33B4 /* byteVectorLayout.cpp in Sources */,
+				FA753FAE092D878D003B33B4 /* bytesPartLayout.cpp in Sources */,
+				FA753FAF092D878D003B33B4 /* blockLayout.cpp in Sources */,
+				FA753FB2092D878D003B33B4 /* abstractVectorLayout.cpp in Sources */,
+				FA753FB3092D878D003B33B4 /* immediateLayout.cpp in Sources */,
+				FA753FB5092D878D003B33B4 /* universe.cpp in Sources */,
+				FA753FB7092D878D003B33B4 /* space.cpp in Sources */,
+				FA753FB9092D878D003B33B4 /* generation.cpp in Sources */,
+				FA753FBA092D878D003B33B4 /* tests.cpp in Sources */,
+				FA753FBC092D878D003B33B4 /* headerFields.cpp in Sources */,
+				FA753FBE092D878D003B33B4 /* verifier.cpp in Sources */,
+				FA753FC3092D878D003B33B4 /* maps.cpp in Sources */,
+				FA753FC6092D878D003B33B4 /* base.cpp in Sources */,
+				FA753FC9092D878D003B33B4 /* slotType.cpp in Sources */,
+				FA753FCE092D878D003B33B4 /* tag.cpp in Sources */,
+				FA753FD0092D87BC003B33B4 /* unixDebugServer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA2A02A2092D6D0F002B064C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA2A032C092D6F8F002B064C /* unixDebugServer.cpp in Sources */,
+				FA2A032E092D6F8F002B064C /* machMain.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		66898E8E09246495005FC673 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = smallSelf;
+				SYMROOT = build;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		66898E8F09246495005FC673 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = smallSelf;
+				SYMROOT = build;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		66898E9009246495005FC673 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = smallSelf;
+				SYMROOT = build;
+			};
+			name = Default;
+		};
+		66898E9209246495005FC673 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		66898E9309246495005FC673 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		66898E9409246495005FC673 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+		FA2A02DB092D6D0F002B064C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = unixDebugServer;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		FA2A02DC092D6D0F002B064C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = unixDebugServer;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		FA2A02DD092D6D0F002B064C /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
+				PREBINDING = NO;
+				PRODUCT_NAME = unixDebugServer;
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		66898E8D09246495005FC673 /* Build configuration list for PBXNativeTarget "smallSelf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66898E8E09246495005FC673 /* Debug */,
+				66898E8F09246495005FC673 /* Release */,
+				66898E9009246495005FC673 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		66898E9109246495005FC673 /* Build configuration list for PBXProject "smallSelf" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66898E9209246495005FC673 /* Debug */,
+				66898E9309246495005FC673 /* Release */,
+				66898E9409246495005FC673 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		FA2A02DA092D6D0F002B064C /* Build configuration list for PBXNativeTarget "unixDebugServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA2A02DB092D6D0F002B064C /* Debug */,
+				FA2A02DC092D6D0F002B064C /* Release */,
+				FA2A02DD092D6D0F002B064C /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

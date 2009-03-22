@@ -1,0 +1,20 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName b
+        formalParameterList ( )
+        throws
+        block {
+          whileStatement while
+            parenList (
+              infixExpression
+                parenList (
+                  dotClassType
+                    basicType int . class ) +
+                nameNode foo )
+            emptyStatement ; } }

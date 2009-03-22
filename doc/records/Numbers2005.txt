@@ -1,0 +1,2937 @@
+January 1, 2005:
+
+Mapping Statistics
+ - Real   time   : 448 s
+ - CPU    time   : 426 s
+ - User   time   : 423 s
+ - System time   : 3 s
+ - Objects mapped : 182904
+   - Maps         : 20737
+   - NMethods     : 1356577 (on 7405 maps)
+
+Linearizing Statistics
+ - Real   time   : 60 s
+ - CPU    time   : 54 s
+ - User   time   : 54 s
+ - System time   : 0 s
+
+Time to graph: 182904 objects, mapping 426 seconds, linearizing 54 seconds
+
+
+Tuesday, January  4, 2005
+
+Rebuilding a new image and then building a green thing:
+
+Mapping Statistics
+ - Real   time   : 639 s
+ - CPU    time   : 581 s
+ - User   time   : 576 s
+ - System time   : 5 s
+ - Objects mapped : 186068
+   - Maps         : 21676
+   - NMethods     : 1434844 (on 7837 maps)
+
+Linearizing Statistics
+ - Real   time   : 77 s
+ - CPU    time   : 70 s
+ - User   time   : 70 s
+ - System time   : 0 s
+
+
+After throwing out that green thing, restarting the desktop and the scheduler, and doing a GC:
+
+Mapping Statistics
+ - Real   time   : 490 s
+ - CPU    time   : 433 s
+ - User   time   : 429 s
+ - System time   : 3 s
+ - Objects mapped : 182932
+   - Maps         : 20746
+   - NMethods     : 1357307 (on 7409 maps)
+
+Linearizing Statistics
+ - Real   time   : 64 s
+ - CPU    time   : 61 s
+ - User   time   : 60 s
+ - System time   : 0 s
+
+
+Counting up time getting annotations in for:CopyAddAllSlots:InitializeSlotsBy:
+  - for the first  green thing: 68523
+  - for the second green thing:  8435
+
+Tried it again, also counted up time in traits mirrors abstractMirror annotationIfFail:, and it gave me 57149 (plus 54542 in the slot one), for the first green thing. For the second green thing, it was 8176 and 5528.
+
+One more time, this time with the counters in annotationIfFail:. 45940 + 95666 for the first one, 7214 + 12128 for the second one.
+
+
+Monday, January 10, 2005
+
+After doing some stuff to get rid of most of those objects with unparsed annotations: 11527 + 61899 for the first one.
+
+
+Tuesday, January 18, 2005
+
+Grand flat totals from looking at the pruned profile:
+  4.6 in mapMap:For: (breaks down to two-thirds mapping, one-third cache lookup)
+  21 in for:ContentsMapBy: (I'm confused about how this one breaks down)
+  50.1 in compileThisMethod (of which just over half is in the actual compiler, I think - the other time is going to reusability checks, cache checks, recording new ones, and mapping the resulting nmethod object)
+  15.5 in miscellaneous compilation-related stuff (checking caches, etc.), but not actually in compileThisMethod
+  6.7 in mapNMethodCaches
+  1.1 in createStringTable
+
+So it's something like 35-40% in the mapping area, 30-35% in the actual compiler, 25-30% doing other compilation-related stuff.
+
+
+Counting realTime:
+  447 s total mapping+compiling (this was with profiling on, by accident, but that's only slightly higher than the regular number)
+  247 s compileThisMethod
+    156 s of that was in buildNMethodForCompiler:
+
+
+Tuesday, February  1, 2005
+
+Mapping Statistics
+ - Real   time   : 491 s
+ - CPU    time   : 460 s
+ - User   time   : 457 s
+ - System time   : 3 s
+ - Objects mapped : 182903
+   - Maps         : 20737
+   - NMethods     : 1356577 (on 7405 maps)
+
+Linearizing Statistics
+ - Real   time   : 90 s
+ - CPU    time   : 84 s
+ - User   time   : 83 s
+ - System time   : 0 s
+
+Time to graph: 182903 objects, mapping 460 seconds, linearizing 84 seconds
+
+
+Thursday, February  3, 2005
+
+Mapping Statistics
+ - Real   time   : 514 s
+ - CPU    time   : 464 s
+ - User   time   : 460 s
+ - System time   : 4 s
+ - Objects mapped : 182945
+   - Maps         : 20750
+   - NMethods     : 1357355 (on 7409 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 80 s
+ - CPU    time   : 76 s
+ - User   time   : 75 s
+ - System time   : 0 s
+
+
+After adding the code that creates the inBetweenObjects (but doesn't do anything with them):
+
+Mapping Statistics
+ - Real   time   : 539 s
+ - CPU    time   : 467 s
+ - User   time   : 435 s
+ - System time   : 32 s
+ - Objects mapped : 183338
+   - Maps         : 20780
+   - NMethods     : 1359279 (on 7421 maps)
+
+
+Linearizing Statistics
+ - Real   time   : 84 s
+ - CPU    time   : 71 s
+ - User   time   : 71 s
+ - System time   : 0 s
+
+
+Tuesday, February 15, 2005
+
+First time building a green thing (and this is a stock CVS image with Dave's new algorithm, though he's not done cleaning up yet):
+
+Mapping Statistics
+ - Real   time   : 739 s
+ - CPU    time   : 647 s
+ - User   time   : 641 s
+ - System time   : 5 s
+ - Objects mapped : 183469
+   - Maps         : 20822
+   - NMethods     : 1362587
+
+That's pretty good. No linearization phase, so that's the whole thing. And that's the first time. Let's see how fast it goes the second time.
+
+
+OK, counting up the number of times we call the present block and the absent block in mappedObjectFor:IfAbsentPut:.
+
+timesAbsent: 183460
+timesPresent: 2707045
+time spent in absent block: 100 seconds
+time spent in present block: 38 seconds
+
+Mapping Statistics
+ - Real   time   : 590 s
+ - CPU    time   : 461 s
+ - User   time   : 457 s
+ - System time   : 3 s
+ - Objects mapped : 183460
+   - Maps         : 20822
+   - NMethods     : 1362587
+
+But the profiler told us that, like, 52% of our total time, or something like that, was being spent in mappedObjectFor:IfAbsentPut:. So the profiler is lying to us.
+
+
+Thursday, February 17, 2005
+
+After the don't-compile-uncalled-selectors optimization:
+
+Mapping Statistics
+ - Real   time   : 463 s
+ - CPU    time   : 365 s
+ - User   time   : 360 s
+ - System time   : 5 s
+ - Objects mapped : 155190
+   - Maps         : 20843
+   - NMethods     : 1014509
+
+
+Launching Statistics
+ - Real   time   : 6 s
+ - CPU    time   : 4 s
+ - User   time   : 3 s
+ - System time   : 0 s
+
+
+In a rebuilt image from CVS:
+
+Mapping Statistics
+ - Real   time   : 525 s
+ - CPU    time   : 493 s
+   - Compilation   time: 169 s
+   - NMethod cache time: 6 s
+ - User   time   : 489 s
+ - System time   : 3 s
+ - Objects mapped : 155068
+   - Maps         : 20828
+   - NMethods     : 1013573
+   - Compilations : 11955
+   - BlockNMethod$ hits/misses: 927145/135
+   - CachedResend  hits/misses: 612566/7962
+   - ReusableNMethod hits/misses: 74473/9634
+   - BlockOuterMethod probes: 6920
+   - NMethodsByMap hits/misses: 24662/1013573
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 327 s
+ - CPU    time   : 306 s
+   - Compilation   time: 168 s
+   - NMethod cache time: 9 s
+ - User   time   : 303 s
+ - System time   : 2 s
+ - Objects mapped : 155069
+   - Maps         : 20828
+   - NMethods     : 1013573
+   - Compilations : 11955
+   - BlockNMethod$ hits/misses: 927145/135
+   - CachedResend  hits/misses: 612566/7962
+   - ReusableNMethod hits/misses: 74473/9634
+   - BlockOuterMethod probes: 6920
+   - NMethodsByMap hits/misses: 24662/1013573
+
+Cool!
+
+
+Monday, February 21, 2005
+
+After my copying-cachedBlockNMethodOIDs optimization:
+
+Mapping Statistics
+ - Real   time   : 280 s
+ - CPU    time   : 260 s
+   - Compilation   time: 132 s
+   - NMethod cache time: 8 s
+ - User   time   : 257 s
+ - System time   : 2 s
+ - Objects mapped : 155069
+   - Maps         : 20828
+   - NMethods     : 1013573
+   - Compilations : 11955
+   - CachedResend  hits/misses: 65966/7962
+   - ReusableNMethod hits/misses: 74473/9634
+   - NMethodsByMap hits/misses: 24662/86428
+
+After the expectedNumberOfObjects: optimization:
+
+Mapping Statistics
+ - Real   time   : 284 s
+ - CPU    time   : 246 s
+   - Compilation   time: 135 s
+   - NMethod cache time: 7 s
+ - User   time   : 243 s
+ - System time   : 3 s
+ - Objects mapped : 155073
+   - Maps         : 20828
+   - NMethods     : 1013573
+   - Compilations : 11955
+   - CachedResend  hits/misses: 65966/7962
+   - ReusableNMethod hits/misses: 74473/9634
+   - NMethodsByMap hits/misses: 24662/86428
+
+After the origin-and-bounds-check optimization:
+
+Mapping Statistics
+ - Real   time   : 255 s
+ - CPU    time   : 226 s
+   - Compilation   time: 129 s
+   - NMethod cache time: 9 s
+ - User   time   : 223 s
+ - System time   : 2 s
+ - Objects mapped : 155116
+   - Maps         : 20833
+   - NMethods     : 1013845
+   - Compilations : 11958
+   - CachedResend  hits/misses: 65967/7965
+   - ReusableNMethod hits/misses: 74474/9637
+   - NMethodsByMap hits/misses: 24664/86432
+
+
+Friday, February 25, 2005
+
+Stock CVS results:
+
+Mapping Statistics
+ - Real   time   : 301 s
+ - CPU    time   : 253 s
+   - Fill 1 time: 52 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 180 s
+     - Compilation time: 90 s
+     - Filling during compilation time: 33 s
+     - isReusable: time: 20 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 17 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 242 s
+ - System time   : 11 s
+ - Objects mapped : 155093
+   - Maps         : 20829
+   - NMethods     : 1013578
+   - Compilations : 11959
+   - SelectorsToCompile hits/misses: 82094/21657
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 65967/7965
+   - ReusableNMethod hits/misses: 74474/9638
+   - NMethodsByMap hits/misses: 24663/86433
+
+After including compileReusableNMethodsForBlocks in the compilation phase:
+
+Mapping Statistics
+ - Real   time   : 603 s
+ - CPU    time   : 249 s
+   - Fill 1 time: 46 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 184 s
+     - Compilation time: 88 s
+     - Filling during compilation time: 39 s
+     - isReusable: time: 19 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 238 s
+ - System time   : 11 s
+ - Objects mapped : 155094
+   - Maps         : 20829
+   - NMethods     : 1013578
+   - Compilations : 11959
+   - SelectorsToCompile hits/misses: 82094/21657
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 65967/7965
+   - ReusableNMethod hits/misses: 74474/9638
+   - NMethodsByMap hits/misses: 24663/86433
+unknown font: arialBold
+
+After adding counters for a couple more things:
+
+Mapping Statistics
+ - Real   time   : 241 s
+ - CPU    time   : 214 s
+   - Fill 1 time: 47 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 159 s
+     - Compilation time: 77 s
+     - Filling during compilation time: 28 s
+     - isReusable: time: 15 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - recording nmethods time: 2 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 184 s
+ - System time   : 30 s
+ - Objects mapped : 155093
+   - Maps         : 20829
+   - NMethods     : 1013578
+   - Compilations : 11959
+   - SelectorsToCompile hits/misses: 82094/21657
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 65967/7965
+   - ReusableNMethod hits/misses: 74474/9638
+   - NMethodsByMap hits/misses: 24663/86433
+unknown font: arialBold
+
+And more:
+
+Mapping Statistics
+ - Real   time   : 332 s
+ - CPU    time   : 310 s
+   - Fill 1 time: 87 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 213 s
+     - Compilation time: 85 s
+     - Filling during compilation time: 59 s
+     - slotsToCompileForReceiver: time: 5 s
+     - isReusable: time: 19 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - recording nmethods time: 3 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 296 s
+ - System time   : 14 s
+ - Objects mapped : 155093
+   - Maps         : 20829
+   - NMethods     : 1013578
+   - Compilations : 11959
+   - SelectorsToCompile hits/misses: 82094/21657
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 65967/7965
+   - ReusableNMethod hits/misses: 74474/9638
+   - NMethodsByMap hits/misses: 24663/86433
+
+And another more:
+
+Mapping Statistics
+ - Real   time   : 260 s
+ - CPU    time   : 233 s
+   - Fill 1 time: 46 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 174 s
+     - Compilation time: 80 s
+     - Filling during compilation time: 33 s
+     - slotsToCompileForReceiver: time: 5 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 3 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - recording nmethods time: 3 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 11 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 220 s
+ - System time   : 12 s
+ - Objects mapped : 155093
+   - Maps         : 20829
+   - NMethods     : 1013578
+   - Compilations : 11959
+   - SelectorsToCompile hits/misses: 82094/21657
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 65967/7965
+   - ReusableNMethod hits/misses: 74474/9638
+   - NMethodsByMap hits/misses: 24663/86433
+
+
+Tuesday, March  1, 2005
+
+With eager-relocation turned on (though it's only working halfway so far):
+
+
+Mapping Statistics
+ - Real   time   : 404 s
+ - CPU    time   : 315 s
+   - Fill 1 time: 80 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 213 s
+     - Compilation time: 88 s
+     - Filling during compilation time: 63 s
+     - slotsToCompileForReceiver: time: 5 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - recording nmethods time: 2 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 19 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 262 s
+ - System time   : 53 s
+ - Objects mapped : 155421
+   - Maps         : 20859
+   - NMethods     : 1015067
+   - Compilations : 11984
+   - SelectorsToCompile hits/misses: 82234/21687
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7984
+   - ReusableNMethod hits/misses: 74598/9658
+   - NMethodsByMap hits/misses: 24687/86582
+
+Image Initialization Statistics
+ - Real   time   : 29 s
+ - CPU    time   : 24 s
+ - User   time   : 24 s
+ - System time   : 0 s
+
+
+With it turned off:
+
+Mapping Statistics
+ - Real   time   : 355 s
+ - CPU    time   : 298 s
+   - Fill 1 time: 71 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 209 s
+     - Compilation time: 82 s
+     - Filling during compilation time: 65 s
+     - slotsToCompileForReceiver: time: 4 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - recording nmethods time: 2 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 15 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 246 s
+ - System time   : 52 s
+ - Objects mapped : 155403
+   - Maps         : 20857
+   - NMethods     : 1014931
+   - Compilations : 11982
+   - SelectorsToCompile hits/misses: 82233/21688
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66049/7982
+   - ReusableNMethod hits/misses: 74598/9656
+   - NMethodsByMap hits/misses: 24683/86580
+
+Image Initialization Statistics
+ - Real   time   : 27 s
+ - CPU    time   : 25 s
+ - User   time   : 25 s
+ - System time   : 0 s
+
+
+Thursday, March  3, 2005
+
+With the eager-relocation stuff:
+
+Mapping Statistics
+ - Real   time   : 251 s
+ - CPU    time   : 236 s
+   - Fill 1 time: 45 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 182 s
+     - Compilation time: 86 s
+     - Filling during compilation time: 33 s
+     - slotsToCompileForReceiver: time: 5 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - recording nmethods time: 3 s
+     - unaccounted-for compilation time: 26 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 221 s
+ - System time   : 14 s
+ - Objects mapped : 155316
+   - Maps         : 20857
+   - NMethods     : 1014933
+   - Compilations : 11984
+   - Relocators eager/non-eager: 103346/11025
+   - SelectorsToCompile hits/misses: 82234/21691
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7983
+   - ReusableNMethod hits/misses: 74598/9658
+   - NMethodsByMap hits/misses: 24691/86582
+
+Image Initialization Statistics
+ - Real   time   : 19 s
+ - CPU    time   : 19 s
+ - User   time   : 19 s
+ - System time   : 0 s
+
+
+Again, after taking a couple more stats:
+
+Mapping Statistics
+ - Real   time   : 260 s
+ - CPU    time   : 239 s
+   - Fill 1 time: 47 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 184 s
+     - Compilation time: 85 s
+     - Filling during compilation time: 33 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 16 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - recording nmethods time: 3 s
+     - unaccounted-for compilation time: 26 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 224 s
+ - System time   : 15 s
+ - Objects mapped : 155316
+   - Maps         : 20857
+   - NMethods     : 1014933
+   - Compilations : 11984
+   - Relocators eager/non-eager: 103346/11025
+   - SelectorsToCompile hits/misses: 82234/21691
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7983
+   - ReusableNMethod hits/misses: 74598/9658
+   - NMethodsByMap hits/misses: 24691/86582
+
+Image Initialization Statistics
+ - Real   time   : 22 s
+ - CPU    time   : 21 s
+ - User   time   : 21 s
+ - System time   : 0 s
+
+
+Again with one more:
+
+Mapping Statistics
+ - Real   time   : 258 s
+ - CPU    time   : 242 s
+   - Fill 1 time: 46 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 188 s
+     - Compilation time: 87 s
+     - Filling during compilation time: 36 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 1 s
+     - isReusable: time: 16 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 2 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 224 s
+ - System time   : 17 s
+ - Objects mapped : 155316
+   - Maps         : 20857
+   - NMethods     : 1014933
+   - Compilations : 11984
+   - Relocators eager/non-eager: 103346/11025
+   - SelectorsToCompile hits/misses: 82234/21691
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7983
+   - ReusableNMethod hits/misses: 74598/9658
+   - NMethodsByMap hits/misses: 24691/86582
+
+Image Initialization Statistics
+ - Real   time   : 20 s
+ - CPU    time   : 20 s
+ - User   time   : 19 s
+ - System time   : 0 s
+
+
+Tuesday, March 22, 2005
+
+With eager relocation (the simple kind, and the nmethod kind, but not the optimistic nmethod kind) on:
+
+Mapping Statistics
+ - Real   time   : 290 s
+ - CPU    time   : 244 s
+   - Fill 1 time: 48 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 188 s
+     - Compilation time: 88 s
+     - Filling during compilation time: 35 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 1 s
+     - isReusable: time: 17 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - unaccounted-for compilation time: 19 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 224 s
+ - System time   : 19 s
+ - Objects mapped : 155338
+   - Maps         : 20859
+   - NMethods     : 1014930
+   - Compilations : 11984
+   - Relocators eager/non-eager: 103350/11025
+   - SelectorsToCompile hits/misses: 82231/21695
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7983
+   - ReusableNMethod hits/misses: 74595/9658
+   - NMethodsByMap hits/misses: 24691/86579
+
+Image Initialization Statistics
+ - Real   time   : 21 s
+ - CPU    time   : 16 s
+ - User   time   : 16 s
+ - System time   : 0 s
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 291 s
+ - CPU    time   : 245 s
+   - Fill 1 time: 46 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 191 s
+     - Compilation time: 90 s
+     - Filling during compilation time: 34 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 1 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 2 s
+     - unaccounted-for compilation time: 19 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 227 s
+ - System time   : 18 s
+ - Objects mapped : 155338
+   - Maps         : 20859
+   - NMethods     : 1014930
+   - Compilations : 11984
+   - Relocators eager/non-eager: 103350/11025
+   - SelectorsToCompile hits/misses: 82231/21695
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7983
+   - ReusableNMethod hits/misses: 74595/9658
+   - NMethodsByMap hits/misses: 24691/86579
+
+Image Initialization Statistics
+ - Real   time   : 17 s
+ - CPU    time   : 14 s
+ - User   time   : 14 s
+ - System time   : 0 s
+
+
+With the optimistic thing:
+
+Mapping Statistics
+ - Real   time   : 316 s
+ - CPU    time   : 248 s
+   - Fill 1 time: 50 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 190 s
+     - Compilation time: 89 s
+     - Filling during compilation time: 33 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 1 s
+     - isReusable: time: 19 s
+     - reusable nmethod hit time: 3 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - unaccounted-for compilation time: 19 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 228 s
+ - System time   : 19 s
+ - Objects mapped : 155371
+   - Maps         : 20863
+   - NMethods     : 1015200
+   - Compilations : 11986
+   - Relocators eager/non-eager: 103368/11027
+   - SelectorsToCompile hits/misses: 82231/21695
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66052/7985
+   - ReusableNMethod hits/misses: 74595/9660
+   - NMethodsByMap hits/misses: 24693/86581
+
+Image Initialization Statistics
+ - Real   time   : 19 s
+ - CPU    time   : 15 s
+ - User   time   : 14 s
+ - System time   : 0 s
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 328 s
+ - CPU    time   : 269 s
+   - Fill 1 time: 48 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 212 s
+     - Compilation time: 99 s
+     - Filling during compilation time: 39 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 20 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - unaccounted-for compilation time: 22 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 8 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 249 s
+ - System time   : 20 s
+ - Objects mapped : 155434
+   - Maps         : 20863
+   - NMethods     : 1015206
+   - Compilations : 11998
+   - Relocators eager/non-eager: 103416/11036
+   - SelectorsToCompile hits/misses: 82370/21722
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66140/7986
+   - ReusableNMethod hits/misses: 74723/9664
+   - NMethodsByMap hits/misses: 24706/86721
+
+Image Initialization Statistics
+ - Real   time   : 25 s
+ - CPU    time   : 20 s
+ - User   time   : 20 s
+ - System time   : 0 s
+
+
+With eager relocation turned off:
+
+Mapping Statistics
+ - Real   time   : 308 s
+ - CPU    time   : 255 s
+   - Fill 1 time: 52 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 196 s
+     - Compilation time: 90 s
+     - Filling during compilation time: 35 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 20 s
+     - reusable nmethod hit time: 3 s
+     - hasAlreadyCompiledNMethodForThisMap time: 2 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 3 s
+     - unaccounted-for compilation time: 21 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 236 s
+ - System time   : 19 s
+ - Objects mapped : 155433
+   - Maps         : 20863
+   - NMethods     : 1015206
+   - Compilations : 11998
+   - Relocators eager/non-eager: 0/0
+   - SelectorsToCompile hits/misses: 82370/21722
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66140/7986
+   - ReusableNMethod hits/misses: 74723/9664
+   - NMethodsByMap hits/misses: 24706/86721
+
+Image Initialization Statistics
+ - Real   time   : 32 s
+ - CPU    time   : 27 s
+ - User   time   : 26 s
+ - System time   : 0 s
+
+
+Wednesday, March 23, 2005
+
+With doEagerRelocationIfPossible on:
+
+Mapping Statistics
+ - Real   time   : 275 s
+ - CPU    time   : 253 s
+   - Fill 1 time: 49 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 195 s
+     - Compilation time: 90 s
+     - Filling during compilation time: 38 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 2 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 234 s
+ - System time   : 19 s
+ - Objects mapped : 155443
+   - Maps         : 20863
+   - NMethods     : 1015202
+   - Compilations : 11998
+   - Relocators eager/non-eager: 103426/11036
+   - SelectorsToCompile hits/misses: 82366/21722
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66136/7986
+   - ReusableNMethod hits/misses: 74719/9664
+   - NMethodsByMap hits/misses: 24708/86717
+
+Image Initialization Statistics
+ - Real   time   : 16 s
+ - CPU    time   : 15 s
+ - User   time   : 15 s
+ - System time   : 0 s
+
+
+With doEagerRelocationIfPossible off:
+
+Mapping Statistics
+ - Real   time   : 256 s
+ - CPU    time   : 237 s
+   - Fill 1 time: 48 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 180 s
+     - Compilation time: 81 s
+     - Filling during compilation time: 34 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 17 s
+     - reusable nmethod hit time: 3 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 6 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 218 s
+ - System time   : 18 s
+ - Objects mapped : 155443
+   - Maps         : 20863
+   - NMethods     : 1015202
+   - Compilations : 11998
+   - Relocators eager/non-eager: 0/0
+   - SelectorsToCompile hits/misses: 82366/21722
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66136/7986
+   - ReusableNMethod hits/misses: 74719/9664
+   - NMethodsByMap hits/misses: 24708/86717
+
+Image Initialization Statistics
+ - Real   time   : 28 s
+ - CPU    time   : 26 s
+ - User   time   : 25 s
+ - System time   : 0 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 288 s
+ - CPU    time   : 263 s
+   - Fill 1 time: 55 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 190 s
+     - Compilation time: 83 s
+     - Filling during compilation time: 41 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 21 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 16 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 244 s
+ - System time   : 20 s
+ - Objects mapped : 155444
+   - Maps         : 20863
+   - NMethods     : 1015202
+   - Compilations : 11998
+   - Relocators eager/non-eager: 0/0
+   - SelectorsToCompile hits/misses: 82366/21722
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66136/7986
+   - ReusableNMethod hits/misses: 74719/9664
+   - NMethodsByMap hits/misses: 24708/86717
+
+Image Initialization Statistics
+ - Real   time   : 29 s
+ - CPU    time   : 28 s
+ - User   time   : 28 s
+ - System time   : 0 s
+
+
+Thursday, March 24, 2005
+
+Again with doEagerRelocationIfPossible on:
+
+Mapping Statistics
+ - Real   time   : 272 s
+ - CPU    time   : 244 s
+   - Fill 1 time: 47 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 188 s
+     - Compilation time: 88 s
+     - Filling during compilation time: 33 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 5 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 18 s
+     - reusable nmethod hit time: 3 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 2 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 7 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 225 s
+ - System time   : 19 s
+ - Objects mapped : 155387
+   - Maps         : 20863
+   - NMethods     : 1015202
+   - Compilations : 11998
+   - Relocators eager/non-eager: 103426/11036
+   - Eager nmethod optimism justified/unjustified: 7773/0
+   - SelectorsToCompile hits/misses: 82366/21722
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 66136/7986
+   - ReusableNMethod hits/misses: 74719/9664
+   - NMethodsByMap hits/misses: 24708/86717
+
+Image Initialization Statistics
+ - Real   time   : 16 s
+ - CPU    time   : 14 s
+ - User   time   : 14 s
+ - System time   : 0 s
+
+
+Wednesday, March 30, 2005
+
+After getting the compiler working:
+
+Mapping Statistics
+ - Real   time   : 344 s
+ - CPU    time   : 284 s
+   - Fill 1 time: 53 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 222 s
+     - Compilation time: 101 s
+     - Filling during compilation time: 40 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 3 s
+     - isReusable: time: 21 s
+     - reusable nmethod hit time: 7 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 4 s
+     - eager nmethod loading relocation time: 2 s
+     - unaccounted-for compilation time: 23 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 7 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 263 s
+ - System time   : 22 s
+ - Objects mapped : 163843
+   - Maps         : 21604
+   - NMethods     : 1063781
+   - Compilations : 13102
+   - Relocators eager/non-eager: 115235/11971
+   - Eager nmethod optimism justified/unjustified: 8575/0
+   - SelectorsToCompile hits/misses: 92674/23293
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74094/8832
+   - ReusableNMethod hits/misses: 84485/10671
+   - NMethodsByMap hits/misses: 27827/97587
+
+Image Initialization Statistics
+ - Real   time   : 21 s
+ - CPU    time   : 17 s
+ - User   time   : 17 s
+ - System time   : 0 s
+
+
+Launching Statistics
+ - Real   time   : 3 s
+ - CPU    time   : 1 s
+ - User   time   : 1 s
+ - System time   : 0 s
+
+
+Thursday, March 31, 2005
+
+Without Alex's word-caching:
+  - Opening up stack - 5, 4, 6, 6, 13 seconds
+  - More stack - 1.25 seconds
+
+With Alex's word-caching:
+  - Opening up stack - 2, 1, 1.5, 0.5, 3 seconds
+  - More stack -  seconds
+
+Time spend in readMemoryAt:Size:IfFail: that gets through the caching:
+  - Launching: 161
+  - Continue: 5
+  - Open stack: 1000
+
+
+Friday, April 15, 2005
+
+Full selfVM:
+
+Mapping Statistics
+ - Real   time   : 296 s
+ - CPU    time   : 277 s
+   - Fill 1 time: 49 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 221 s
+     - Compilation time: 104 s
+     - Filling during compilation time: 39 s
+     - slotsToCompileForReceiver: time: 7 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 21 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 4 s
+     - eager nmethod loading relocation time: 2 s
+     - unaccounted-for compilation time: 23 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 5 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 258 s
+ - System time   : 19 s
+ - Objects mapped : 164294
+   - Maps         : 21627
+   - NMethods     : 1064420
+   - Compilations : 13138
+   - Relocators eager/non-eager: 113966/11592
+   - Eager nmethod optimism justified/unjustified: 8607/0
+   - SelectorsToCompile hits/misses: 92762/23312
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74241/8856
+   - ReusableNMethod hits/misses: 84548/10699
+   - NMethodsByMap hits/misses: 27916/97686
+
+Image Initialization Statistics
+ - Real   time   : 20 s
+ - CPU    time   : 19 s
+ - User   time   : 19 s
+ - System time   : 0 s
+
+
+Incremental update (breakpoint in runAutomatedTestsForVM:):
+
+Mapping Statistics
+ - Real   time   : 9 s
+ - CPU    time   : 8 s
+   - Fill 1 time: 0 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 8 s
+     - Compilation time: 1 s
+     - Filling during compilation time: 1 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 0 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 0 s
+     - reusable nmethod hit time: 0 s
+     - hasAlreadyCompiledNMethodForThisMap time: 0 s
+     - nmethod allocation time: 0 s
+     - recording nmethods time: 0 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 5 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 0 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 8 s
+ - System time   : 0 s
+ - Objects mapped : 860
+   - Maps         : 12
+   - NMethods     : 4216
+   - Compilations : 193
+   - Relocators eager/non-eager: 896/675
+   - Eager nmethod optimism justified/unjustified: 108/0
+   - SelectorsToCompile hits/misses: 271/72
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 67/116
+   - ReusableNMethod hits/misses: 109/193
+   - NMethodsByMap hits/misses: 51/302
+
+Image Update Statistics
+ - Real   time   : 33 s
+ - CPU    time   : 31 s
+ - User   time   : 31 s
+ - System time   : 0 s
+
+
+Monday, April 18, 2005
+
+Times for the source-level debugger: 2 - 3 seconds to open a stack, 0.5 - 0.8 seconds to open a method.
+
+get a mirror on self
+  - open stack: 3.78
+  - open changeSomething method: < 1
+  - step: 6
+  - step: 8.62
+  - step: 5.30
+  - switching to internal form: < 1
+  - modifying an instruction: < 1, but it closes the method which is annoying
+  - run to here: 3
+
+
+Wednesday, May 11, 2005
+
+With shouldOptimizeNMethodCacheCreation turned on:
+
+Mapping Statistics
+ - Real   time   : 325 s
+ - CPU    time   : 288 s
+   - Fill 1 time: 48 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 233 s
+     - Compilation time: 107 s
+     - Filling during compilation time: 35 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 37 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 4 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 23 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 5 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 266 s
+ - System time   : 21 s
+ - Objects mapped : 164786
+   - Maps         : 21634
+   - NMethods     : 1065518
+   - Compilations : 13234
+   - Relocators eager/non-eager: 114414/11675
+   - Eager nmethod optimism justified/unjustified: 13234/0
+   - SelectorsToCompile hits/misses: 93426/22932
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75065/8854
+   - ReusableNMethod hits/misses: 85145/10709
+   - NMethodsByMap hits/misses: 28240/98379
+
+Image Initialization Statistics
+ - Real   time   : 26 s
+ - CPU    time   : 19 s
+ - User   time   : 19 s
+ - System time   : 0 s
+
+
+With shouldOptimizeNMethodCacheCreation off:
+
+Mapping Statistics
+ - Real   time   : 331 s
+ - CPU    time   : 276 s
+   - Fill 1 time: 47 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 213 s
+     - Compilation time: 97 s
+     - Filling during compilation time: 36 s
+     - slotsToCompileForReceiver: time: 5 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 30 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 21 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 16 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 235 s
+ - System time   : 41 s
+ - Objects mapped : 164787
+   - Maps         : 21634
+   - NMethods     : 1065518
+   - Compilations : 13234
+   - Relocators eager/non-eager: 114414/11675
+   - Eager nmethod optimism justified/unjustified: 13234/0
+   - SelectorsToCompile hits/misses: 93426/22932
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75065/8854
+   - ReusableNMethod hits/misses: 85145/10709
+   - NMethodsByMap hits/misses: 28240/98379
+
+Image Initialization Statistics
+ - Real   time   : 22 s
+ - CPU    time   : 21 s
+ - User   time   : 21 s
+ - System time   : 0 s
+
+
+With some OID stuff changed to regular Self-object stuff:
+
+Mapping Statistics
+ - Real   time   : 360 s
+ - CPU    time   : 322 s
+   - Fill 1 time: 46 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 252 s
+     - Compilation time: 110 s
+     - Filling during compilation time: 38 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 37 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 9 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 10 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 23 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 22 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 301 s
+ - System time   : 21 s
+ - Objects mapped : 164785
+   - Maps         : 21634
+   - NMethods     : 1065518
+   - Compilations : 13234
+   - Relocators eager/non-eager: 114414/11675
+   - Eager nmethod optimism justified/unjustified: 13234/0
+   - SelectorsToCompile hits/misses: 93426/22932
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75065/8854
+   - ReusableNMethod hits/misses: 85145/10709
+   - NMethodsByMap hits/misses: 28240/98379
+
+Image Initialization Statistics
+ - Real   time   : 14 s
+ - CPU    time   : 8 s
+ - User   time   : 8 s
+ - System time   : 0 s
+
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 369 s
+ - CPU    time   : 316 s
+   - Fill 1 time: 54 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 250 s
+     - Compilation time: 109 s
+     - Filling during compilation time: 40 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 3 s
+     - isReusable: time: 36 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 7 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 8 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 25 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 11 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 295 s
+ - System time   : 21 s
+ - Objects mapped : 164785
+   - Maps         : 21634
+   - NMethods     : 1065518
+   - Compilations : 13234
+   - Relocators eager/non-eager: 114414/11675
+   - Eager nmethod optimism justified/unjustified: 13234/0
+   - SelectorsToCompile hits/misses: 93426/22932
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75065/8854
+   - ReusableNMethod hits/misses: 85145/10709
+   - NMethodsByMap hits/misses: 28240/98379
+
+Image Initialization Statistics
+ - Real   time   : 11 s
+ - CPU    time   : 10 s
+ - User   time   : 10 s
+ - System time   : 0 s
+
+
+Tuesday, May 17, 2005
+
+Incremental update on a selfVM with isSameSizeOptimizationEnabled:
+
+Image Update Statistics
+ - Real   time   : 6 s
+ - CPU    time   : 5 s
+ - User   time   : 5 s
+ - System time   : 0 s
+
+Again:
+
+Image Update Statistics
+ - Real   time   : 5 s
+ - CPU    time   : 4 s
+ - User   time   : 4 s
+ - System time   : 0 s
+
+Without it:
+
+Image Update Statistics
+ - Real   time   : 16 s
+ - CPU    time   : 16 s
+ - User   time   : 15 s
+ - System time   : 0 s
+
+Again:
+
+Image Update Statistics
+ - Real   time   : 14 s
+ - CPU    time   : 13 s
+ - User   time   : 13 s
+ - System time   : 0 s
+
+
+Wednesday, May 18, 2005
+
+Before turning on the eager selfObjFor: relocation:
+
+Mapping Statistics
+ - Real   time   : 437 s
+ - CPU    time   : 319 s
+   - Fill 1 time: 62 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 249 s
+     - Compilation time: 115 s
+     - Filling during compilation time: 46 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 33 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 4 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 23 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 7 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 282 s
+ - System time   : 38 s
+ - Objects mapped : 165397
+   - Maps         : 21632
+   - NMethods     : 1062448
+   - Compilations : 13239
+   - Relocators eager/non-eager: 116361/11686
+   - Eager nmethod optimism justified/unjustified: 13239/0
+   - SelectorsToCompile hits/misses: 93615/22934
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75088/8862
+   - ReusableNMethod hits/misses: 85310/10714
+   - NMethodsByMap hits/misses: 28144/98549
+
+Image Initialization Statistics
+ - Real   time   : 27 s
+ - CPU    time   : 23 s
+ - User   time   : 23 s
+ - System time   : 0 s
+
+After:
+
+Mapping Statistics
+ - Real   time   : 369 s
+ - CPU    time   : 279 s
+   - Fill 1 time: 46 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 222 s
+     - Compilation time: 97 s
+     - Filling during compilation time: 39 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 3 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 35 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 22 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 9 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 236 s
+ - System time   : 43 s
+ - Objects mapped : 165397
+   - Maps         : 21632
+   - NMethods     : 1062448
+   - Compilations : 13239
+   - Relocators eager/non-eager: 118909/9138
+   - Eager nmethod optimism justified/unjustified: 13239/0
+   - SelectorsToCompile hits/misses: 93615/22934
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75088/8862
+   - ReusableNMethod hits/misses: 85310/10714
+   - NMethodsByMap hits/misses: 28144/98549
+
+Image Initialization Statistics
+ - Real   time   : 20 s
+ - CPU    time   : 19 s
+ - User   time   : 19 s
+ - System time   : 0 s
+
+
+Tuesday, May 31, 2005
+
+With shouldOptimizeNMethodCacheCreation on:
+
+Mapping Statistics
+ - Real   time   : 330 s
+ - CPU    time   : 304 s
+   - Fill 1 time: 52 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 234 s
+     - Compilation time: 109 s
+     - Filling during compilation time: 35 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 36 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 22 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 17 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 284 s
+ - System time   : 20 s
+ - Objects mapped : 165469
+   - Maps         : 21641
+   - NMethods     : 13242
+   - Compilations : 13242
+   - Relocators eager/non-eager: 116934/9141
+   - Eager nmethod optimism justified/unjustified: 13242/0
+   - SelectorsToCompile hits/misses: 93620/22962
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75088/8865
+   - ReusableNMethod hits/misses: 85312/10717
+   - NMethodsByMap hits/misses: 28141/98554
+
+Image Initialization Statistics
+ - Real   time   : 5 s
+ - CPU    time   : 5 s
+ - User   time   : 5 s
+ - System time   : 0 s
+
+
+With it off:
+
+Mapping Statistics
+ - Real   time   : 374 s
+ - CPU    time   : 324 s
+   - Fill 1 time: 51 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 244 s
+     - Compilation time: 109 s
+     - Filling during compilation time: 45 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 3 s
+     - isReusable: time: 36 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 22 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 28 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 303 s
+ - System time   : 21 s
+ - Objects mapped : 165470
+   - Maps         : 21641
+   - NMethods     : 13242
+   - Compilations : 13242
+   - Relocators eager/non-eager: 116934/9141
+   - Eager nmethod optimism justified/unjustified: 13242/0
+   - SelectorsToCompile hits/misses: 93620/22962
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75088/8865
+   - ReusableNMethod hits/misses: 85312/10717
+   - NMethodsByMap hits/misses: 28141/98554
+
+Image Initialization Statistics
+ - Real   time   : 7 s
+ - CPU    time   : 6 s
+ - User   time   : 6 s
+ - System time   : 0 s
+
+
+Counting up time spent in initializeCompiledOop:IfFail: for objectSlotOffset relocators:
+  using imported maps: 1.35 seconds
+  using the original Self object map: 0.38 seconds
+
+
+Wednesday, June  1, 2005
+
+Just the regular big selfVM:
+
+Mapping Statistics
+ - Real   time   : 298 s
+ - CPU    time   : 260 s
+   - Fill 1 time: 40 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 195 s
+     - Compilation time: 93 s
+     - Filling during compilation time: 30 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 22 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 25 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 211 s
+ - System time   : 49 s
+ - Objects mapped : 162359
+   - Maps         : 21485
+   - NMethods     : 12826
+   - Compilations : 12826
+   - Relocators eager/non-eager: 112837/8725
+   - Eager nmethod optimism justified/unjustified: 12826/0
+   - SelectorsToCompile hits/misses: 93461/23008
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74916/8444
+   - ReusableNMethod hits/misses: 85220/10296
+   - NMethodsByMap hits/misses: 27702/98046
+
+Image Initialization Statistics
+ - Real   time   : 5 s
+ - CPU    time   : 5 s
+ - User   time   : 4 s
+ - System time   : 0 s
+
+
+Thursday, June  2, 2005
+
+With isTrackingObjs true:
+
+Mapping Statistics
+ - Real   time   : 293 s
+ - CPU    time   : 271 s
+   - Fill 1 time: 45 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 210 s
+     - Compilation time: 101 s
+     - Filling during compilation time: 37 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 21 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 21 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 15 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 252 s
+ - System time   : 19 s
+ - Objects mapped : 162363
+   - Maps         : 21485
+   - NMethods     : 12826
+   - Compilations : 12826
+   - Relocators eager/non-eager: 112835/8725
+   - Eager nmethod optimism justified/unjustified: 12826/0
+   - SelectorsToCompile hits/misses: 93461/23008
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74916/8444
+   - ReusableNMethod hits/misses: 85220/10296
+   - NMethodsByMap hits/misses: 27702/98046
+
+Image Initialization Statistics
+ - Real   time   : 5 s
+ - CPU    time   : 5 s
+ - User   time   : 5 s
+ - System time   : 0 s
+
+
+With it false:
+
+Mapping Statistics
+ - Real   time   : 290 s
+ - CPU    time   : 274 s
+   - Fill 1 time: 50 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 214 s
+     - Compilation time: 101 s
+     - Filling during compilation time: 40 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 22 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 3 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 21 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 8 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 253 s
+ - System time   : 20 s
+ - Objects mapped : 162364
+   - Maps         : 21485
+   - NMethods     : 12826
+   - Compilations : 12826
+   - Relocators eager/non-eager: 112835/8725
+   - Eager nmethod optimism justified/unjustified: 12826/0
+   - SelectorsToCompile hits/misses: 93461/23008
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74916/8444
+   - ReusableNMethod hits/misses: 85220/10296
+   - NMethodsByMap hits/misses: 27702/98046
+
+Image Initialization Statistics
+ - Real   time   : 5 s
+ - CPU    time   : 5 s
+ - User   time   : 5 s
+ - System time   : 0 s
+
+
+
+Friday, June  3, 2005
+
+After changing the data structures to always have one side be OIDs:
+
+Mapping Statistics
+ - Real   time   : 310 s
+ - CPU    time   : 288 s
+   - Fill 1 time: 48 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 220 s
+     - Compilation time: 101 s
+     - Filling during compilation time: 42 s
+     - slotsToCompileForReceiver: time: 6 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 22 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 24 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 19 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 265 s
+ - System time   : 23 s
+ - Objects mapped : 162394
+   - Maps         : 21487
+   - NMethods     : 12827
+   - Compilations : 12827
+   - Relocators eager/non-eager: 112922/8646
+   - Eager nmethod optimism justified/unjustified: 12827/0
+   - SelectorsToCompile hits/misses: 93461/23008
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74916/8445
+   - ReusableNMethod hits/misses: 85220/10297
+   - NMethodsByMap hits/misses: 27705/98047
+
+Image Initialization Statistics
+ - Real   time   : 5 s
+ - CPU    time   : 5 s
+ - User   time   : 5 s
+ - System time   : 0 s
+
+Again:
+
+Mapping Statistics
+ - Real   time   : 325 s
+ - CPU    time   : 297 s
+   - Fill 1 time: 48 s
+   - SelectorsToCompile creation time: 0 s
+   - Compilation Phase  time: 233 s
+     - Compilation time: 105 s
+     - Filling during compilation time: 49 s
+     - slotsToCompileForReceiver: time: 7 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 2 s
+     - isReusable: time: 21 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 9 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 24 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 15 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 274 s
+ - System time   : 23 s
+ - Objects mapped : 162382
+   - Maps         : 21487
+   - NMethods     : 12827
+   - Compilations : 12827
+   - Relocators eager/non-eager: 112922/8646
+   - Eager nmethod optimism justified/unjustified: 12827/0
+   - SelectorsToCompile hits/misses: 93461/23008
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 74916/8445
+   - ReusableNMethod hits/misses: 85220/10297
+   - NMethodsByMap hits/misses: 27705/98047
+
+Image Initialization Statistics
+ - Real   time   : 6 s
+ - CPU    time   : 6 s
+ - User   time   : 6 s
+ - System time   : 0 s
+
+
+After my stupid hack to make sure all the slot contents are allocated:
+
+Mapping Statistics
+ - Real   time   : 370 s
+ - CPU    time   : 342 s
+   - Fill 1 time: 85 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 12 s
+   - Compilation Phase  time: 176 s
+     - Compilation time: 107 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 22 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 7 s
+     - nmethod allocation time: 10 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 18 s
+   - Fill 2 time: 51 s
+   - NMethod cache time: 16 s
+   - Fill 3 time: 0 s
+   - String table time: 1 s
+   - Fill 4 time: 0 s
+ - User   time   : 324 s
+ - System time   : 18 s
+ - Objects mapped : 162384
+   - Maps         : 21487
+   - NMethods     : 12831
+   - Compilations : 12831
+   - Relocators eager/non-eager: 68004/53583
+   - Eager nmethod optimism justified/unjustified: 12831/0
+   - SelectorsToCompile hits/misses: 187162/46053
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75434/8445
+   - ReusableNMethod hits/misses: 85592/10298
+   - NMethodsByMap hits/misses: 27933/98423
+
+Image Initialization Statistics
+ - Real   time   : 12 s
+ - CPU    time   : 10 s
+ - User   time   : 10 s
+ - System time   : 0 s
+
+
+Friday, July  1, 2005
+
+First time building a SelfVM:
+
+Mapping Statistics
+ - Real   time   : 503 s
+ - CPU    time   : 454 s
+   - Fill 1 time: 133 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 77 s
+   - Compilation Phase  time: 175 s
+     - Compilation time: 105 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 22 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 15 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 18 s
+   - Fill 2 time: 51 s
+   - NMethod cache time: 16 s
+   - Fill 3 time: 0 s
+   - String table time: 2 s
+   - Fill 4 time: 0 s
+ - User   time   : 424 s
+ - System time   : 30 s
+ - Objects mapped : 160610
+   - Maps         : 21041
+   - NMethods     : 12752
+   - Compilations : 12752
+   - Relocators eager/non-eager: 67441/53109
+   - Eager nmethod optimism justified/unjustified: 12752/0
+   - SelectorsToCompile hits/misses: 188319/45772
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75649/8373
+   - ReusableNMethod hits/misses: 86148/10221
+   - NMethodsByMap hits/misses: 28045/98900
+
+Image Initialization Statistics
+ - Real   time   : 17 s
+ - CPU    time   : 16 s
+ - User   time   : 16 s
+ - System time   : 0 s
+
+
+Launching Statistics
+ - Real   time   : 2 s
+ - CPU    time   : 1 s
+ - User   time   : 1 s
+ - System time   : 0 s
+
+
+Second time:
+
+Mapping Statistics
+ - Real   time   : 317 s
+ - CPU    time   : 298 s
+   - Fill 1 time: 51 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 12 s
+   - Compilation Phase  time: 170 s
+     - Compilation time: 106 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 21 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 5 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 47 s
+   - NMethod cache time: 17 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 281 s
+ - System time   : 17 s
+ - Objects mapped : 163062
+   - Maps         : 21608
+   - NMethods     : 12863
+   - Compilations : 12863
+   - Relocators eager/non-eager: 68137/53781
+   - Eager nmethod optimism justified/unjustified: 12863/0
+   - SelectorsToCompile hits/misses: 188447/45770
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75649/8484
+   - ReusableNMethod hits/misses: 86148/10332
+   - NMethodsByMap hits/misses: 28107/99011
+
+Image Initialization Statistics
+ - Real   time   : 9 s
+ - CPU    time   : 9 s
+ - User   time   : 9 s
+ - System time   : 0 s
+
+
+Saturday, July  2, 2005
+
+After Dave's SIC fix:
+
+Mapping Statistics
+ - Real   time   : 413 s
+ - CPU    time   : 319 s
+   - Fill 1 time: 50 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 13 s
+   - Compilation Phase  time: 170 s
+     - Compilation time: 105 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 23 s
+     - reusable nmethod hit time: 4 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 19 s
+   - Fill 2 time: 50 s
+   - NMethod cache time: 36 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+ - User   time   : 296 s
+ - System time   : 23 s
+ - Objects mapped : 163062
+   - Maps         : 21608
+   - NMethods     : 12863
+   - Compilations : 12863
+   - Relocators eager/non-eager: 68137/53781
+   - Eager nmethod optimism justified/unjustified: 12863/0
+   - SelectorsToCompile hits/misses: 188447/45770
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75649/8484
+   - ReusableNMethod hits/misses: 86148/10332
+   - NMethodsByMap hits/misses: 28107/99011
+
+Image Initialization Statistics
+ - Real   time   : 10 s
+ - CPU    time   : 9 s
+ - User   time   : 8 s
+ - System time   : 0 s
+
+
+Wednesday, July  6, 2005
+
+shouldOptimizeNMethodCacheCreation true: 25 seconds
+shouldOptimizeNMethodCacheCreation false:: more than 700 seconds
+
+
+Thursday, August 18, 2005
+
+Time to run (not build) the big selfVM, without initializing dead locals: 37 seconds.
+                                           with initializing dead locals: 37 seconds.
+                                        without initializing dead locals, and with zap-a-lot: 39 seconds
+
+
+Friday, October 14, 2005
+
+Building the big SelfVM the first time after rebuilding the snapshot:
+
+Mapping Statistics
+ - Real   time   : 857 s
+ - CPU    time   : 777 s
+   - Fill 1 time: 119 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 96 s
+   - Compilation Phase  time: 234 s
+     - Compilation time: 167 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 25 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 6 s
+     - recording nmethods time: 3 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 20 s
+   - Fill 2 time: 285 s
+   - NMethod cache time: 42 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+   - Fixing Klein mirrors time: 0 s
+ - User   time   : 745 s
+ - System time   : 32 s
+ - Objects mapped : 181128
+   - Maps         : 21851
+   - NMethods     : 13546
+   - Compilations : 13546
+   - Relocators eager/non-eager: 70810/55934
+   - Eager nmethod optimism justified/unjustified: 13546/0
+   - Local initialization needed/unneeded 1407/0
+   - SelectorsToCompile hits/misses: 195502/46245
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 76579/8811
+   - ReusableNMethod hits/misses: 88965/10704
+   - NMethodsByMap hits/misses: 28103/102511
+
+Image Initialization Statistics
+ - Real   time   : 8 s
+ - CPU    time   : 8 s
+ - User   time   : 7 s
+ - System time   : 0 s
+
+
+Sunday, October 30, 2005
+
+An image with the allCore module (and its children), but no compilation:
+
+Mapping Statistics
+ - Real   time   : 172 s
+ - CPU    time   : 133 s
+   - Fill 1 time: 109 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 3 s
+   - Compilation Phase  time: 1 s
+     - Compilation time: 0 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 0 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 0 s
+     - reusable nmethod hit time: 0 s
+     - hasAlreadyCompiledNMethodForThisMap time: 0 s
+     - nmethod allocation time: 0 s
+     - recording nmethods time: 0 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 0 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 0 s
+   - Fill 3 time: 0 s
+   - String table time: 2 s
+   - Fill 4 time: 0 s
+   - Fixing Klein mirrors time: 1 s
+   - Object table time: 17 s
+   - Fill 5 time: 0 s
+ - User   time   : 130 s
+ - System time   : 4 s
+ - Objects mapped : 95756
+   - Maps         : 20382
+   - NMethods     : 0
+   - Compilations : 0
+   - Relocators eager/non-eager: 0/0
+   - Eager nmethod optimism justified/unjustified: 0/0
+   - Local initialization needed/unneeded 0/0
+   - SelectorsToCompile hits/misses: 0/0
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 0/0
+   - ReusableNMethod hits/misses: 0/0
+   - NMethodsByMap hits/misses: 0/0
+
+Image Initialization Statistics
+ - Real   time   : 0 s
+ - CPU    time   : 0 s
+ - User   time   : 0 s
+ - System time   : 0 s
+
+Eden Space Size Statistics
+ - Total: 6767 KB
+   - Oops: 4981 KB
+   - Bytes: 1785 KB
+
+
+Without source stuff:
+
+Mapping Statistics
+ - Real   time   : 281 s
+ - CPU    time   : 158 s
+   - Fill 1 time: 127 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 3 s
+   - Compilation Phase  time: 1 s
+     - Compilation time: 0 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 0 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 0 s
+     - reusable nmethod hit time: 0 s
+     - hasAlreadyCompiledNMethodForThisMap time: 0 s
+     - nmethod allocation time: 0 s
+     - recording nmethods time: 0 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 0 s
+   - Fill 2 time: 0 s
+   - NMethod cache time: 0 s
+   - Fill 3 time: 0 s
+   - String table time: 2 s
+   - Fill 4 time: 0 s
+   - Fixing Klein mirrors time: 2 s
+   - Object table time: 24 s
+   - Fill 5 time: 0 s
+ - User   time   : 152 s
+ - System time   : 6 s
+ - Objects mapped : 91056
+   - Maps         : 20389
+   - NMethods     : 0
+   - Compilations : 0
+   - Relocators eager/non-eager: 0/0
+   - Eager nmethod optimism justified/unjustified: 0/0
+   - Local initialization needed/unneeded 0/0
+   - SelectorsToCompile hits/misses: 0/0
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 0/0
+   - ReusableNMethod hits/misses: 0/0
+   - NMethodsByMap hits/misses: 0/0
+
+Image Initialization Statistics
+ - Real   time   : 0 s
+ - CPU    time   : 0 s
+ - User   time   : 0 s
+ - System time   : 0 s
+
+Eden Space Size Statistics
+ - Total: 5206 KB
+   - Oops: 4313 KB
+   - Bytes: 892 KB
+
+With no processesAndIO either:
+
+Eden Space Size Statistics
+ - Total: 4227 KB
+   - Oops: 3505 KB
+   - Bytes: 721 KB
+
+With no programmingSupport either:
+
+Eden Space Size Statistics
+ - Total: 3089 KB
+   - Oops: 2588 KB
+   - Bytes: 500 KB
+
+With sourceLength and sourceOffset (for blocks) gone:
+
+Eden Space Size Statistics
+ - Total: 2951 KB
+   - Oops: 2451 KB
+   - Bytes: 500 KB
+
+With cachedSlots and addedOrChangedSlots initialized (through a hack) to the empty vector:
+
+Eden Space Size Statistics
+ - Total: 2574 KB
+   - Oops: 2092 KB
+   - Bytes: 481 KB
+
+With keeping the objectTable exactly as big as it needs to be:
+
+Eden Space Size Statistics
+ - Total: 2405 KB
+   - Oops: 1924 KB
+   - Bytes: 481 KB
+
+Without profiling, profiler, or ttySupport:
+
+Eden Space Size Statistics
+ - Total: 2225 KB
+   - Oops: 1783 KB
+   - Bytes: 442 KB
+
+With myComment and object annotations and slot annotations transformed into '':
+
+Eden Space Size Statistics
+ - Total: 1839 KB
+   - Oops: 1676 KB
+   - Bytes: 162 KB
+
+With most of processesAndIO back in, but without all_OS, fileStream, stdin, or stat:
+
+Eden Space Size Statistics
+ - Total: 2177 KB
+   - Oops: 1983 KB
+   - Bytes: 194 KB
+
+With omitting the annotation element of each slotDesc:
+
+Eden Space Size Statistics
+ - Total: 2000 KB
+   - Oops: 1806 KB
+   - Bytes: 194 KB
+
+With the value slot in the block:
+
+Eden Space Size Statistics
+ - Total: 1758 KB
+   - Oops: 1564 KB
+   - Bytes: 194 KB
+
+After removing activationText, annotation, bytecodeFormat, debugger, defaultPreferences, methodText, moduleInfo, oldStyleRectangle, prompt, rectangle, selectionText, shell, socketServer, textLines:
+
+Eden Space Size Statistics
+ - Total: 1542 KB
+   - Oops: 1372 KB
+   - Bytes: 170 KB
+
+After removing foreign, hosts, interceptor, snapshotAction, systemOddballs:
+
+Eden Space Size Statistics
+ - Total: 1366 KB
+   - Oops: 1216 KB
+   - Bytes: 149 KB
+
+
+Wednesday, November  2, 2005
+
+Before canonicalizing empty vectors:
+
+ - Objects mapped : 31120
+   - Maps         : 6883
+
+Eden Space Size Statistics
+ - Total: 1367 KB
+   - Oops: 1217 KB
+   - Bytes: 149 KB
+
+After:
+
+ - Objects mapped : 31103
+   - Maps         : 6886
+
+Eden Space Size Statistics
+ - Total: 1364 KB
+   - Oops: 1215 KB
+   - Bytes: 149 KB
+
+Before adding kleinMaps:
+
+Eden Space Size Statistics
+ - Total: 1366 KBytes if 32-bit oops,
+          757 KBytes if 16-bit oops
+   - Oops: 304 KOops
+   - Bytes: 149 KBytes
+
+After:
+
+Eden Space Size Statistics
+ - Total: 1496 KBytes if 32-bit oops,
+          828 KBytes if 16-bit oops
+   - Oops: 333 KOops
+   - Bytes: 161 KBytes
+
+So it wouldn't be a disaster if we added them back in.
+
+Before making strings compact:
+
+
+Eden Space Size Statistics
+ - Total: 1513 KBytes if 32-bit oops,
+          837 KBytes if 16-bit oops
+   - Oops: 337 KOops
+   - Bytes: 161 KBytes
+
+After:
+
+Eden Space Size Statistics
+ - Total: 1484 KBytes if 32-bit oops,
+          822 KBytes if 16-bit oops
+   - Oops: 330 KOops
+   - Bytes: 161 KBytes
+
+After making blocks compact, too:
+
+Eden Space Size Statistics
+ - Total: 1469 KBytes if 32-bit oops,
+          815 KBytes if 16-bit oops
+   - Oops: 326 KOops
+   - Bytes: 161 KBytes
+
+After some fiddling:
+
+Eden Space Size Statistics
+ - Total: 1454 KBytes if 32-bit oops,
+          808 KBytes if 16-bit oops
+   - Oops: 323 KOops
+   - Bytes: 162 KBytes
+
+After making vectors compact, too:
+
+Eden Space Size Statistics
+ - Total: 1413 KBytes if 32-bit oops,
+          787 KBytes if 16-bit oops
+   - Oops: 312 KOops
+   - Bytes: 161 KBytes
+
+Eden Space Size Statistics
+ - Total: 1483 KBytes if 32-bit oops,
+          822 KBytes if 16-bit oops
+   - Oops: 330 KOops
+   - Bytes: 161 KBytes
+
+Big selfVM with no compact maps, but not optimizing away the mark checks. Also might be first time building the selfVM in this snapshot:
+
+Mapping Statistics
+ - Real   time   : 979 s
+ - CPU    time   : 485 s
+   - Fill 1 time: 61 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 13 s
+   - Compilation Phase  time: 294 s
+     - Compilation time: 217 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 25 s
+     - reusable nmethod hit time: 7 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 7 s
+     - recording nmethods time: 4 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 25 s
+   - Fill 2 time: 84 s
+   - NMethod cache time: 12 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+   - Fixing Klein mirrors time: 0 s
+   - Object table time: 20 s
+   - Fill 5 time: 0 s
+ - User   time   : 450 s
+ - System time   : 34 s
+ - Objects mapped : 183658
+   - Maps         : 22754
+   - NMethods     : 13566
+   - Compilations : 13566
+   - Relocators eager/non-eager: 85348/57272
+   - Eager nmethod optimism justified/unjustified: 13566/0
+   - Local initialization needed/unneeded 1418/0
+   - SelectorsToCompile hits/misses: 190936/45575
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75543/9090
+   - ReusableNMethod hits/misses: 86780/10980
+   - NMethodsByMap hits/misses: 28491/100346
+
+Image Initialization Statistics
+ - Real   time   : 31 s
+ - CPU    time   : 18 s
+ - User   time   : 18 s
+ - System time   : 0 s
+
+Eden Space Size Statistics
+ - Total: 34774 KBytes if 32-bit oops,
+          26854 KBytes if 16-bit oops
+   - Oops: 3960 KOops
+   - Bytes: 18933 KBytes
+unknown font: arialBold
+
+Launching Statistics
+ - Real   time   : 71 s
+ - CPU    time   : 48 s
+ - User   time   : 47 s
+ - System time   : 1 s
+
+Big selfVM with strings compact:
+
+Mapping Statistics
+ - Real   time   : 675 s
+ - CPU    time   : 465 s
+   - Fill 1 time: 59 s
+   - SelectorsToCompile creation time: 0 s
+   - Unmapped slots hack time: 11 s
+   - Compilation Phase  time: 274 s
+     - Compilation time: 201 s
+     - Filling during compilation time: 0 s
+     - slotsToCompileForReceiver: time: 0 s
+     - resend detection time: 4 s
+     - selectorsToCompile lookup time: 0 s
+     - isReusable: time: 24 s
+     - reusable nmethod hit time: 5 s
+     - hasAlreadyCompiledNMethodForThisMap time: 4 s
+     - nmethod allocation time: 8 s
+     - recording nmethods time: 4 s
+     - eager nmethod loading relocation time: 0 s
+     - unaccounted-for compilation time: 24 s
+   - Fill 2 time: 84 s
+   - NMethod cache time: 11 s
+   - Fill 3 time: 0 s
+   - String table time: 0 s
+   - Fill 4 time: 0 s
+   - Fixing Klein mirrors time: 0 s
+   - Object table time: 25 s
+   - Fill 5 time: 0 s
+ - User   time   : 436 s
+ - System time   : 28 s
+ - Objects mapped : 183563
+   - Maps         : 22754
+   - NMethods     : 13566
+   - Compilations : 13566
+   - Relocators eager/non-eager: 85350/57274
+   - Eager nmethod optimism justified/unjustified: 13566/0
+   - Local initialization needed/unneeded 1418/0
+   - SelectorsToCompile hits/misses: 190936/45575
+   - BlockNMethod$ hits/misses: 0/0
+   - CachedResend  hits/misses: 75543/9090
+   - ReusableNMethod hits/misses: 86780/10980
+   - NMethodsByMap hits/misses: 28491/100346
+
+Image Initialization Statistics
+ - Real   time   : 26 s
+ - CPU    time   : 11 s
+ - User   time   : 10 s
+ - System time   : 0 s
+
+Eden Space Size Statistics
+ - Total: 34681 KBytes if 32-bit oops,
+          26807 KBytes if 16-bit oops
+   - Oops: 3936 KOops
+   - Bytes: 18933 KBytes
+
+
+Before making method maps compact:
+
+Eden Space Size Statistics
+ - Total: 1413 KBytes if 32-bit oops,
+          787 KBytes if 16-bit oops
+   - Oops: 313 KOops
+   - Bytes: 161 KBytes
+No 'copyAtMost' slot found in a vector.
+
+After:
+
+Eden Space Size Statistics
+ - Total: 1389 KBytes if 32-bit oops,
+          775 KBytes if 16-bit oops
+   - Oops: 306 KOops
+   - Bytes: 161 KBytes
+
+Without anything being compact:
+
+Eden Space Size Statistics
+ - Total: 1485 KBytes if 32-bit oops,
+          823 KBytes if 16-bit oops
+   - Oops: 330 KOops
+   - Bytes: 161 KBytes
+
+
+Thursday, November  3, 2005
+
+With blocks, strings, vectors, and methodMaps compact:
+
+Eden Space Size Statistics
+ - Total: 1287 KBytes if 32-bit oops,
+          719 KBytes if 16-bit oops
+   - Oops: 284 KOops
+   - Bytes: 150 KBytes
+
+Without generatedCases:
+
+Eden Space Size Statistics
+ - Total: 1083 KBytes if 32-bit oops,
+          607 KBytes if 16-bit oops
+   - Oops: 237 KOops
+   - Bytes: 132 KBytes
+
+There are about 26K objects. So if we got rid of the object table and the OID in each object, that'd save us 52 KOops, bringing us to 185 KOops and 132 KBytes, which, if we used 32-bit oops, would be 872 KBytes.
+
+With blocks each having their own map (and not being compact):
+
+Eden Space Size Statistics
+ - Total: 1238 KBytes if 32-bit oops,
+          685 KBytes if 16-bit oops
+   - Oops: 276 KOops
+   - Bytes: 132 KBytes
+
+Before:
+
+Eden Space Size Statistics
+ - Total: 1084 KBytes if 32-bit oops,
+          608 KBytes if 16-bit oops
+   - Oops: 237 KOops
+   - Bytes: 132 KBytes
+
+After getting rid of bigInt:
+
+Eden Space Size Statistics
+ - Total: 1059 KBytes if 32-bit oops,
+          594 KBytes if 16-bit oops
+   - Oops: 232 KOops
+   - Bytes: 129 KBytes
+
+Without sequence:
+
+Eden Space Size Statistics
+ - Total: 1031 KBytes if 32-bit oops,
+          579 KBytes if 16-bit oops
+   - Oops: 226 KOops
+   - Bytes: 127 KBytes
+
+Without processStack:
+
+Eden Space Size Statistics
+ - Total: 1023 KBytes if 32-bit oops,
+          574 KBytes if 16-bit oops
+   - Oops: 224 KOops
+   - Bytes: 125 KBytes
+
+Without ping:
+
+Eden Space Size Statistics
+ - Total: 1009 KBytes if 32-bit oops,
+          566 KBytes if 16-bit oops
+   - Oops: 221 KOops
+   - Bytes: 124 KBytes
+
+Without sortedSequence:
+
+Eden Space Size Statistics
+ - Total: 1002 KBytes if 32-bit oops,
+          563 KBytes if 16-bit oops
+   - Oops: 219 KOops
+   - Bytes: 123 KBytes
+
+Without the 'annotation' slot always being mapped, and with eviscerating the module objects instead of just initializing their slots to empty vectors:
+
+Eden Space Size Statistics
+ - Total: 965 KBytes if 32-bit oops,
+          543 KBytes if 16-bit oops
+   - Oops: 211 KOops
+   - Bytes: 121 KBytes
+
+After getting rid of stringTests:
+
+Eden Space Size Statistics
+ - Total: 960 KBytes if 32-bit oops,
+          540 KBytes if 16-bit oops
+   - Oops: 209 KOops
+   - Bytes: 120 KBytes
+
+
+Wednesday, November  9, 2005
+
+Without the indexableSize in the mark:
+
+Eden Space Size Statistics
+ - Total: 851 KBytes if 32-bit oops,
+          480 KBytes if 16-bit oops
+   - Oops: 185 KOops
+   - Bytes: 108 KBytes
+
+With it:
+
+Eden Space Size Statistics
+ - Total: 820 KBytes if 32-bit oops,
+          464 KBytes if 16-bit oops
+   - Oops: 177 KOops
+   - Bytes: 108 KBytes
+
+With indexableOrigin encodeable in the mark, too:
+
+Eden Space Size Statistics
+ - Total: 787 KBytes if 32-bit oops,
+          448 KBytes if 16-bit oops
+   - Oops: 169 KOops
+   - Bytes: 109 KBytes
+
+
+Thursday, November 10, 2005
+
+After some cleanup:
+
+Eden Space Size Statistics
+ - Total: 784 KBytes if 32-bit oops,
+          446 KBytes if 16-bit oops
+   - Oops: 168 KOops
+   - Bytes: 108 KBytes
+
+There are   73  block literal arguments of &&                            
+There are    1  block literal arguments of if:Then:                      
+There are    2  block literal arguments of if:Then:Else:                 
+There are    6  block literal arguments of if:Then:If:Then:              
+There are   12  block literal arguments of if:Then:If:Then:Else:         
+There are    5  block literal arguments of if:Then:If:Then:If:Then:      
+There are   12  block literal arguments of if:Then:If:Then:If:Then:Else: 
+There are  107  block literal arguments of ifFalse:                      
+There are   28  block literal arguments of ifFalse:True:                 
+There are  387  block literal arguments of ifTrue:                       
+There are  280  block literal arguments of ifTrue:False:                 
+There are   12  block literal arguments of loop                          
+There are    3  block literal arguments of to:By:Do:                     
+There are   10  block literal arguments of to:Do:                        
+There are    1  block literal arguments of whileFalse                    
+There are   34  block literal arguments of whileFalse:                   
+There are    1  block literal arguments of whileTrue                     
+There are   44  block literal arguments of whileTrue:                    
+There are   58  block literal arguments of ||                            
+That adds up to 1076 blocks to inline in total (out of 2064 blocks in the image).
+
+There are 30 browsing tags.
+Selectors that have over 10 uninlined block literal arguments:
+ 35 uninlined block literals are arguments of if:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:If:Then:Else:
+ 24 uninlined block literals are arguments of ifDead:
+ 61 uninlined block literals are arguments of findFirst:IfPresent:IfAbsent:
+135 uninlined block literals are arguments of do:
+ 17 uninlined block literals are arguments of compare:IfLess:Equal:Greater:
+ 14 uninlined block literals are arguments of doFirst:MiddleLast:IfEmpty:
+ 12 uninlined block literals are arguments of ifSchedulerRunningThen:Else:
+There are 946 uninlined block literal arguments in total.
+
+
+
+251313 in total
+ 51985: mirror
+ 16990: scheduler
+ 16268: slot
+ 16053: string
+ 13353: process
+ 11300: collection
+  9741: setAndDictionary
+  8031: indexable
+  7304: integer
+  6475: sending
+  6093: time
+  5782: semaphore
+  5326: vector
+  4955: block
+  4729: processErrors
+  4580: smallInt
+  4107: path
+  4052: monitor
+  3883: list
+  3858: errorHandling
+  3794: float
+  3706: message
+  3485: caseStatement
+  3473: init
+  2884: kleinUniverse
+  2751: selector
+  2652: pair
+  2641: priorityQueue
+  2449: lock
+  2440: random
+  2207: defaultBehavior
+  2169: sharedQueue
+  2153: collector
+  2048: customizableSetAndDictionary
+  1381: number
+  1074: point
+   955: rootTraits
+   863: kleinVM
+   824: memoryState
+   633: barrier
+   403: visibility
+   391: boolean
+   241: nil
+   232: sharedSetAndDictionary
+   204: serializer
+   138: metaCollections
+   134: processStatus
+   115: idSetAndDictionary
+     2: systemStructure
+     2: processesAndIO
+     2: allCore
+     2: coreObjects
+
+Removed:
+
+absBCInterpreter
+activationText
+all_OS
+ancestorTraversal
+annotation
+bigInt
+bytecodeFormat
+debugger
+defaultPreferences
+fakeSlot
+fakeSlotsIterator
+fileStream
+foreign
+generatedCases
+hosts
+int32and64
+interceptor
+methodText
+missingSlots
+moduleInfo
+mutationObservers
+oldStyleRectangle
+orderedDictionary
+orderedSet
+patternMatching
+ping
+processStack
+profiler
+profiling
+programmingSupport
+prompt
+rectangle
+selectionText
+sequence
+shell
+snapshotAction
+socketServer
+sortedSequence
+stat
+stdin
+stringTests
+systemOddballs
+textLines
+tree
+ttySupport
+universalSetAndDictionary
+
+
+Friday, November 18, 2005
+
+Without kleinifying mirrors:
+
+Eden Space Size Statistics
+ - Total: 785 KBytes if 32-bit oops,
+          447 KBytes if 16-bit oops
+   - Oops: 169 KOops
+   - Bytes: 108 KBytes
+
+With (but without adding the kleinReflection module, so the mirrors aren't really functional):
+
+Eden Space Size Statistics
+ - Total: 786 KBytes if 32-bit oops,
+          447 KBytes if 16-bit oops
+   - Oops: 169 KOops
+   - Bytes: 109 KBytes
+
+With shouldBlockValueSlotsBeObjectSlots false, and blockMaps compact instead of blocks:
+
+Eden Space Size Statistics
+ - Total: 874 KBytes if 32-bit oops,
+          491 KBytes if 16-bit oops
+   - Oops: 191 KOops
+   - Bytes: 108 KBytes
+
+The smallInterpreter (pretty much the same as where the smallImage left off, at first), with kleinOops, kleinSlotType, kleinLayouts, and kleinMaps being mapped (but not compiled):
+
+Eden Space Size Statistics
+ - Total: 1155 KBytes if 32-bit oops,
+          648 KBytes if 16-bit oops
+   - Oops: 253 KOops
+   - Bytes: 140 KBytes
+
+
+Tuesday, November 22, 2005
+
+The smallInterpreter, with that stuff, and also kleinSpace, kleinGeneration, kleinUniverse, kleinWordLayout, and kleinPrims, and with all that Klein stuff being compiled:
+
+Eden Space Size Statistics
+ - Total: 1810 KBytes if 32-bit oops,
+          1111 KBytes if 16-bit oops
+   - Oops: 349 KOops
+   - Bytes: 412 KBytes
+
+With the relocationInfo slot excluded:
+
+Eden Space Size Statistics
+ - Total: 1668 KBytes if 32-bit oops,
+          1040 KBytes if 16-bit oops
+   - Oops: 313 KOops
+   - Bytes: 413 KBytes
+
+After getting rid of a few code-generation methods:
+
+Eden Space Size Statistics
+ - Total: 1657 KBytes if 32-bit oops,
+          1033 KBytes if 16-bit oops
+   - Oops: 312 KOops
+   - Bytes: 409 KBytes
+
+After getting rid of a few more methods:
+
+Eden Space Size Statistics
+ - Total: 1648 KBytes if 32-bit oops,
+          1027 KBytes if 16-bit oops
+   - Oops: 310 KOops
+   - Bytes: 406 KBytes
+
+After moving some mapping methods into kleinObjMapper:
+
+Eden Space Size Statistics
+ - Total: 1627 KBytes if 32-bit oops,
+          1013 KBytes if 16-bit oops
+   - Oops: 307 KOops
+   - Bytes: 399 KBytes

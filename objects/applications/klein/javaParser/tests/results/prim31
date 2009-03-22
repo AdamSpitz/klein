@@ -1,0 +1,19 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName b
+        formalParameterList ( )
+        throws
+        block {
+          whileStatement while
+            parenList (
+              newArray new
+                basicType int
+                dimensionExpression [ 3 ]
+                dimensionExpression [ 4 ] )
+            emptyStatement ; } }

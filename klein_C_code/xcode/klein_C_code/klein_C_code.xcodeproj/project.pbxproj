@@ -1,0 +1,561 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6644476809D20EBC00A0069C /* freeLists.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6644476609D20EBC00A0069C /* freeLists.hh */; };
+		664447BD09D210BE00A0069C /* freeLists.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 664447BB09D210BE00A0069C /* freeLists.cpp */; };
+		664A80870A13910800AD0C8E /* lookupType.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 664A80850A13910800AD0C8E /* lookupType.hh */; };
+		6659DE4B09958680009D2F46 /* asserts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7434909442EDB000B8247 /* asserts.cpp */; };
+		66DBF21F0A17D45B007D9B39 /* tag.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DBF21D0A17D45B007D9B39 /* tag.hh */; };
+		66DBF22D0A17D4C8007D9B39 /* mark.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DBF22B0A17D4C8007D9B39 /* mark.hh */; };
+		66DBF23B0A17D589007D9B39 /* objectTable.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DBF2390A17D589007D9B39 /* objectTable.hh */; };
+		66DBF2480A17D5DB007D9B39 /* wellKnownObjects.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DBF2460A17D5DB007D9B39 /* wellKnownObjects.hh */; };
+		66DBF2780A17D69D007D9B39 /* objectTable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66DBF2760A17D69D007D9B39 /* objectTable.cpp */; };
+		66DBF28C0A17D75A007D9B39 /* objVector.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DBF28A0A17D75A007D9B39 /* objVector.hh */; };
+		66DBF29A0A17D7CC007D9B39 /* abstractVector.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66DBF2980A17D7CC007D9B39 /* abstractVector.hh */; };
+		66DBF2BC0A17D889007D9B39 /* objVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66DBF2BA0A17D889007D9B39 /* objVector.cpp */; };
+		66DBF2D30A17D99D007D9B39 /* wellKnownObjects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66DBF2D10A17D99D007D9B39 /* wellKnownObjects.cpp */; };
+		8DD76F6A0486A84900D96B5E /* klein_C_code.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* klein_C_code.1 */; };
+		BC02ECFC0A29461A0021F847 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66289FC909CF68E8006C728B /* memory.cpp */; };
+		BC17D781093FF3EE009766CE /* smallVMDeclarationsOrStubs.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC17D77F093FF3EE009766CE /* smallVMDeclarationsOrStubs.hh */; };
+		BC56BF880966616100BFF06E /* utils.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC56BF860966616100BFF06E /* utils.hh */; };
+		BC5DDEE8093FDE0700FC105C /* machDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC5DDEE1093FDE0700FC105C /* machDebugServer.hh */; };
+		BC5DDEEB093FDE0700FC105C /* kleinDebugServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC5DDEE4093FDE0700FC105C /* kleinDebugServer.cpp */; };
+		BC5DDEEC093FDE0700FC105C /* kleinDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC5DDEE5093FDE0700FC105C /* kleinDebugServer.hh */; };
+		BC66082609BEC05800CF94F6 /* kleinDebugServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC5DDEE4093FDE0700FC105C /* kleinDebugServer.cpp */; };
+		BC66082709BEC05800CF94F6 /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7431709442A4A000B8247 /* object.cpp */; };
+		BC66082809BEC05800CF94F6 /* asserts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCD7434909442EDB000B8247 /* asserts.cpp */; };
+		BC66082909BEC05800CF94F6 /* map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BCAC20A30945142C00BAC851 /* map.cpp */; };
+		BC66082A09BEC05800CF94F6 /* lookup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC5DDF0D093FDE6200FC105C /* lookup.cpp */; };
+		BC66082B09BEC05800CF94F6 /* interpreter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC1606BE094C176900683849 /* interpreter.cpp */; };
+		BC66082C09BEC05800CF94F6 /* stringObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC6F51630950BAF40033CA60 /* stringObj.cpp */; };
+		BC66082D09BEC05800CF94F6 /* prims.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC9045BE0959510600760AB3 /* prims.cpp */; };
+		BC66082E09BEC05800CF94F6 /* activation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66088A040992F80100C1CFFE /* activation.cpp */; };
+		BC66082F09BEC05800CF94F6 /* errorCodes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66149FAC099D4CB800F22F2E /* errorCodes.cpp */; };
+		BC66083009BEC05800CF94F6 /* byteVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6614A0C2099DC9EC00F22F2E /* byteVector.cpp */; };
+		BC66083109BEC05800CF94F6 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FA229C8D09A5485400C6F492 /* utils.cpp */; };
+		BC66083409BEC05800CF94F6 /* klein_C_code.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* klein_C_code.1 */; };
+		BC66083509BEC05800CF94F6 /* machDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC5DDEE1093FDE0700FC105C /* machDebugServer.hh */; };
+		BC66083609BEC05800CF94F6 /* kleinDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC5DDEE5093FDE0700FC105C /* kleinDebugServer.hh */; };
+		BC66083709BEC05800CF94F6 /* smallVMDeclarationsOrStubs.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC17D77F093FF3EE009766CE /* smallVMDeclarationsOrStubs.hh */; };
+		BC66083809BEC05800CF94F6 /* object.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCD742C1094404E5000B8247 /* object.hh */; };
+		BC66083909BEC05800CF94F6 /* asserts.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCD7432009442BBC000B8247 /* asserts.hh */; };
+		BC66083A09BEC05800CF94F6 /* small_self_types.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCD7433D09442D5D000B8247 /* small_self_types.hh */; };
+		BC66083B09BEC05800CF94F6 /* byteVector.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCAC1EFC0944EF6D00BAC851 /* byteVector.hh */; };
+		BC66083C09BEC05800CF94F6 /* map.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCAC1F5A0944F7E000BAC851 /* map.hh */; };
+		BC66083D09BEC05800CF94F6 /* smallSelfDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCF2041209467941007E7BD7 /* smallSelfDebugServer.hh */; };
+		BC66083E09BEC05800CF94F6 /* lookup.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC5DDF0E093FDE6200FC105C /* lookup.hh */; };
+		BC66083F09BEC05800CF94F6 /* interpreter.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC1606B7094C172F00683849 /* interpreter.hh */; };
+		BC66084009BEC05800CF94F6 /* stringObj.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC6F515C0950BAB50033CA60 /* stringObj.hh */; };
+		BC66084109BEC05800CF94F6 /* prims.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC9045B50959508100760AB3 /* prims.hh */; };
+		BC66084209BEC05800CF94F6 /* utils.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BC56BF860966616100BFF06E /* utils.hh */; };
+		BC66084309BEC05800CF94F6 /* activationMap.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 660889F00992F69600C1CFFE /* activationMap.hh */; };
+		BC66084409BEC05800CF94F6 /* activation.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 660889F90992F77C00C1CFFE /* activation.hh */; };
+		BC66084509BEC05800CF94F6 /* blockObj.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6676AF95099AC65F002ECCD3 /* blockObj.hh */; };
+		BC66084609BEC05800CF94F6 /* errorCodes.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 66149FAB099D4CB800F22F2E /* errorCodes.hh */; };
+		BCF2041409467941007E7BD7 /* smallSelfDebugServer.hh in CopyFiles */ = {isa = PBXBuildFile; fileRef = BCF2041209467941007E7BD7 /* smallSelfDebugServer.hh */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F6A0486A84900D96B5E /* klein_C_code.1 in CopyFiles */,
+				BC5DDEE8093FDE0700FC105C /* machDebugServer.hh in CopyFiles */,
+				BC5DDEEC093FDE0700FC105C /* kleinDebugServer.hh in CopyFiles */,
+				BC17D781093FF3EE009766CE /* smallVMDeclarationsOrStubs.hh in CopyFiles */,
+				BCF2041409467941007E7BD7 /* smallSelfDebugServer.hh in CopyFiles */,
+				BC56BF880966616100BFF06E /* utils.hh in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		BC66083309BEC05800CF94F6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				BC66083409BEC05800CF94F6 /* klein_C_code.1 in CopyFiles */,
+				BC66083509BEC05800CF94F6 /* machDebugServer.hh in CopyFiles */,
+				BC66083609BEC05800CF94F6 /* kleinDebugServer.hh in CopyFiles */,
+				BC66083709BEC05800CF94F6 /* smallVMDeclarationsOrStubs.hh in CopyFiles */,
+				BC66083809BEC05800CF94F6 /* object.hh in CopyFiles */,
+				BC66083909BEC05800CF94F6 /* asserts.hh in CopyFiles */,
+				BC66083A09BEC05800CF94F6 /* small_self_types.hh in CopyFiles */,
+				BC66083B09BEC05800CF94F6 /* byteVector.hh in CopyFiles */,
+				BC66083C09BEC05800CF94F6 /* map.hh in CopyFiles */,
+				BC66083D09BEC05800CF94F6 /* smallSelfDebugServer.hh in CopyFiles */,
+				BC66083E09BEC05800CF94F6 /* lookup.hh in CopyFiles */,
+				BC66083F09BEC05800CF94F6 /* interpreter.hh in CopyFiles */,
+				BC66084009BEC05800CF94F6 /* stringObj.hh in CopyFiles */,
+				BC66084109BEC05800CF94F6 /* prims.hh in CopyFiles */,
+				BC66084209BEC05800CF94F6 /* utils.hh in CopyFiles */,
+				BC66084309BEC05800CF94F6 /* activationMap.hh in CopyFiles */,
+				BC66084409BEC05800CF94F6 /* activation.hh in CopyFiles */,
+				BC66084509BEC05800CF94F6 /* blockObj.hh in CopyFiles */,
+				BC66084609BEC05800CF94F6 /* errorCodes.hh in CopyFiles */,
+				6644476809D20EBC00A0069C /* freeLists.hh in CopyFiles */,
+				664A80870A13910800AD0C8E /* lookupType.hh in CopyFiles */,
+				66DBF21F0A17D45B007D9B39 /* tag.hh in CopyFiles */,
+				66DBF22D0A17D4C8007D9B39 /* mark.hh in CopyFiles */,
+				66DBF23B0A17D589007D9B39 /* objectTable.hh in CopyFiles */,
+				66DBF2480A17D5DB007D9B39 /* wellKnownObjects.hh in CopyFiles */,
+				66DBF28C0A17D75A007D9B39 /* objVector.hh in CopyFiles */,
+				66DBF29A0A17D7CC007D9B39 /* abstractVector.hh in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		660889F00992F69600C1CFFE /* activationMap.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = activationMap.hh; path = objects/activationMap.hh; sourceTree = "<group>"; };
+		660889F90992F77C00C1CFFE /* activation.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = activation.hh; path = ../../src/smallVM/objects/activation.hh; sourceTree = SOURCE_ROOT; };
+		66088A040992F80100C1CFFE /* activation.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = activation.cpp; path = ../../src/smallVM/objects/activation.cpp; sourceTree = SOURCE_ROOT; };
+		66149FAB099D4CB800F22F2E /* errorCodes.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = errorCodes.hh; path = ../../src/smallVM/prims/errorCodes.hh; sourceTree = SOURCE_ROOT; };
+		66149FAC099D4CB800F22F2E /* errorCodes.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = errorCodes.cpp; path = ../../src/smallVM/prims/errorCodes.cpp; sourceTree = SOURCE_ROOT; };
+		6614A0C2099DC9EC00F22F2E /* byteVector.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = byteVector.cpp; path = ../../src/smallVM/objects/byteVector.cpp; sourceTree = SOURCE_ROOT; };
+		66289FB209CF688F006C728B /* memory.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = memory.hh; path = memory/memory.hh; sourceTree = "<group>"; };
+		66289FC909CF68E8006C728B /* memory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = memory.cpp; path = ../../src/smallVM/memory/memory.cpp; sourceTree = SOURCE_ROOT; };
+		6644476609D20EBC00A0069C /* freeLists.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = freeLists.hh; path = ../../src/smallVM/memory/freeLists.hh; sourceTree = SOURCE_ROOT; };
+		664447BB09D210BE00A0069C /* freeLists.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = freeLists.cpp; path = ../../src/smallVM/memory/freeLists.cpp; sourceTree = SOURCE_ROOT; };
+		664A80850A13910800AD0C8E /* lookupType.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = lookupType.hh; path = ../../src/smallVM/lookup/lookupType.hh; sourceTree = SOURCE_ROOT; };
+		6676AF95099AC65F002ECCD3 /* blockObj.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = blockObj.hh; path = ../../src/smallVM/objects/blockObj.hh; sourceTree = SOURCE_ROOT; };
+		66DBF21D0A17D45B007D9B39 /* tag.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = tag.hh; path = ../../src/smallVM/objects/tag.hh; sourceTree = SOURCE_ROOT; };
+		66DBF22B0A17D4C8007D9B39 /* mark.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = mark.hh; path = ../../src/smallVM/objects/mark.hh; sourceTree = SOURCE_ROOT; };
+		66DBF2390A17D589007D9B39 /* objectTable.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = objectTable.hh; path = ../../src/smallVM/objects/objectTable.hh; sourceTree = SOURCE_ROOT; };
+		66DBF2460A17D5DB007D9B39 /* wellKnownObjects.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = wellKnownObjects.hh; path = ../../src/smallVM/objects/wellKnownObjects.hh; sourceTree = SOURCE_ROOT; };
+		66DBF2760A17D69D007D9B39 /* objectTable.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = objectTable.cpp; path = ../../src/smallVM/objects/objectTable.cpp; sourceTree = SOURCE_ROOT; };
+		66DBF28A0A17D75A007D9B39 /* objVector.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = objVector.hh; path = ../../src/smallVM/objects/objVector.hh; sourceTree = SOURCE_ROOT; };
+		66DBF2980A17D7CC007D9B39 /* abstractVector.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = abstractVector.hh; path = ../../src/smallVM/objects/abstractVector.hh; sourceTree = SOURCE_ROOT; };
+		66DBF2BA0A17D889007D9B39 /* objVector.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = objVector.cpp; path = ../../src/smallVM/objects/objVector.cpp; sourceTree = SOURCE_ROOT; };
+		66DBF2D10A17D99D007D9B39 /* wellKnownObjects.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = wellKnownObjects.cpp; path = ../../src/smallVM/objects/wellKnownObjects.cpp; sourceTree = SOURCE_ROOT; };
+		8DD76F6C0486A84900D96B5E /* kleinDebugServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = kleinDebugServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC1606B7094C172F00683849 /* interpreter.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = interpreter.hh; sourceTree = "<group>"; };
+		BC1606BE094C176900683849 /* interpreter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = interpreter.cpp; sourceTree = "<group>"; };
+		BC17D77F093FF3EE009766CE /* smallVMDeclarationsOrStubs.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = smallVMDeclarationsOrStubs.hh; path = ../../src/smallVM/misc/smallVMDeclarationsOrStubs.hh; sourceTree = SOURCE_ROOT; };
+		BC56BF860966616100BFF06E /* utils.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = utils.hh; path = runtime/utils.hh; sourceTree = "<group>"; };
+		BC5DDEE0093FDE0700FC105C /* linuxDebugServer.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = linuxDebugServer.hh; sourceTree = "<group>"; };
+		BC5DDEE1093FDE0700FC105C /* machDebugServer.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = machDebugServer.hh; sourceTree = "<group>"; };
+		BC5DDEE4093FDE0700FC105C /* kleinDebugServer.cpp */ = {isa = PBXFileReference; comments = "UNIX is a registered trademark in the U.S. and other countries, exclusively licensed through X/Open Company, Ltd.\n"; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = kleinDebugServer.cpp; sourceTree = "<group>"; };
+		BC5DDEE5093FDE0700FC105C /* kleinDebugServer.hh */ = {isa = PBXFileReference; comments = "UNIX is a registered trademark in the U.S. and other countries, exclusively licensed through X/Open Company, Ltd.\n"; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = kleinDebugServer.hh; sourceTree = "<group>"; };
+		BC5DDF08093FDE6200FC105C /* byteCodes.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = byteCodes.cpp; path = ../../src/smallVM/interpreter/byteCodes.cpp; sourceTree = SOURCE_ROOT; };
+		BC5DDF09093FDE6200FC105C /* byteCodes.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = byteCodes.hh; path = ../../src/smallVM/interpreter/byteCodes.hh; sourceTree = SOURCE_ROOT; };
+		BC5DDF0D093FDE6200FC105C /* lookup.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = lookup.cpp; path = ../../src/smallVM/lookup/lookup.cpp; sourceTree = SOURCE_ROOT; };
+		BC5DDF0E093FDE6200FC105C /* lookup.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = lookup.hh; path = ../../src/smallVM/lookup/lookup.hh; sourceTree = SOURCE_ROOT; };
+		BC66084A09BEC05800CF94F6 /* yoda */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = yoda; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC6F515C0950BAB50033CA60 /* stringObj.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = stringObj.hh; path = objects/stringObj.hh; sourceTree = "<group>"; };
+		BC6F51630950BAF40033CA60 /* stringObj.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = stringObj.cpp; path = objects/stringObj.cpp; sourceTree = "<group>"; };
+		BC9045B50959508100760AB3 /* prims.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = prims.hh; path = prims/prims.hh; sourceTree = "<group>"; };
+		BC9045BE0959510600760AB3 /* prims.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = prims.cpp; path = prims/prims.cpp; sourceTree = "<group>"; };
+		BCAC1EFC0944EF6D00BAC851 /* byteVector.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = byteVector.hh; path = objects/byteVector.hh; sourceTree = "<group>"; };
+		BCAC1F5A0944F7E000BAC851 /* map.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = map.hh; path = ../../src/smallVM/objects/map.hh; sourceTree = SOURCE_ROOT; };
+		BCAC20A30945142C00BAC851 /* map.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = map.cpp; path = objects/map.cpp; sourceTree = "<group>"; };
+		BCD742C1094404E5000B8247 /* object.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = object.hh; path = objects/object.hh; sourceTree = "<group>"; };
+		BCD7431709442A4A000B8247 /* object.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = object.cpp; path = objects/object.cpp; sourceTree = "<group>"; };
+		BCD7432009442BBC000B8247 /* asserts.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = asserts.hh; path = runtime/asserts.hh; sourceTree = "<group>"; };
+		BCD7433D09442D5D000B8247 /* small_self_types.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = small_self_types.hh; path = runtime/small_self_types.hh; sourceTree = "<group>"; };
+		BCD7434909442EDB000B8247 /* asserts.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = asserts.cpp; path = runtime/asserts.cpp; sourceTree = "<group>"; };
+		BCF2041209467941007E7BD7 /* smallSelfDebugServer.hh */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = smallSelfDebugServer.hh; sourceTree = "<group>"; };
+		C6859E8B029090EE04C91782 /* klein_C_code.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = klein_C_code.1; sourceTree = "<group>"; };
+		FA229C8D09A5485400C6F492 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = utils.cpp; path = runtime/utils.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC66083209BEC05800CF94F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* klein_C_code */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = klein_C_code;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				BC5DDF02093FDE6200FC105C /* smallVM */,
+				BC5DDEDE093FDE0700FC105C /* kleinDebugServer */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* kleinDebugServer */,
+				BC66084A09BEC05800CF94F6 /* yoda */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		66289FC209CF68A0006C728B /* memory */ = {
+			isa = PBXGroup;
+			children = (
+				6644476609D20EBC00A0069C /* freeLists.hh */,
+				664447BB09D210BE00A0069C /* freeLists.cpp */,
+				66289FB209CF688F006C728B /* memory.hh */,
+				66289FC909CF68E8006C728B /* memory.cpp */,
+			);
+			name = memory;
+			sourceTree = "<group>";
+		};
+		BC5DDEDE093FDE0700FC105C /* kleinDebugServer */ = {
+			isa = PBXGroup;
+			children = (
+				BC17D77F093FF3EE009766CE /* smallVMDeclarationsOrStubs.hh */,
+				BC5DDEE0093FDE0700FC105C /* linuxDebugServer.hh */,
+				BC5DDEE1093FDE0700FC105C /* machDebugServer.hh */,
+				BC5DDEE5093FDE0700FC105C /* kleinDebugServer.hh */,
+				BC5DDEE4093FDE0700FC105C /* kleinDebugServer.cpp */,
+				BCF2041209467941007E7BD7 /* smallSelfDebugServer.hh */,
+			);
+			comments = "UNIX is a registered trademark in the U.S. and other countries, exclusively licensed through X/Open Company, Ltd.";
+			name = kleinDebugServer;
+			path = ../../src/kleinDebugServer;
+			sourceTree = SOURCE_ROOT;
+		};
+		BC5DDF02093FDE6200FC105C /* smallVM */ = {
+			isa = PBXGroup;
+			children = (
+				66289FC209CF68A0006C728B /* memory */,
+				BC8DEF72095B3AEE009ACA5C /* prims */,
+				BCD7432209442BC4000B8247 /* runtime */,
+				BCD742E709440A0C000B8247 /* objects */,
+				BC5DDF03093FDE6200FC105C /* interpreter */,
+				BC5DDF0C093FDE6200FC105C /* lookup */,
+			);
+			name = smallVM;
+			path = ../../src/smallVM;
+			sourceTree = SOURCE_ROOT;
+		};
+		BC5DDF03093FDE6200FC105C /* interpreter */ = {
+			isa = PBXGroup;
+			children = (
+				BC1606B7094C172F00683849 /* interpreter.hh */,
+				BC1606BE094C176900683849 /* interpreter.cpp */,
+				BC5DDF08093FDE6200FC105C /* byteCodes.cpp */,
+				BC5DDF09093FDE6200FC105C /* byteCodes.hh */,
+			);
+			name = interpreter;
+			path = ../../src/smallVM/interpreter;
+			sourceTree = SOURCE_ROOT;
+		};
+		BC5DDF0C093FDE6200FC105C /* lookup */ = {
+			isa = PBXGroup;
+			children = (
+				BC5DDF0D093FDE6200FC105C /* lookup.cpp */,
+				BC5DDF0E093FDE6200FC105C /* lookup.hh */,
+				664A80850A13910800AD0C8E /* lookupType.hh */,
+			);
+			path = lookup;
+			sourceTree = "<group>";
+		};
+		BC8DEF72095B3AEE009ACA5C /* prims */ = {
+			isa = PBXGroup;
+			children = (
+				66149FAB099D4CB800F22F2E /* errorCodes.hh */,
+				66149FAC099D4CB800F22F2E /* errorCodes.cpp */,
+				BC9045B50959508100760AB3 /* prims.hh */,
+				BC9045BE0959510600760AB3 /* prims.cpp */,
+			);
+			name = prims;
+			sourceTree = "<group>";
+		};
+		BCD742E709440A0C000B8247 /* objects */ = {
+			isa = PBXGroup;
+			children = (
+				66DBF2980A17D7CC007D9B39 /* abstractVector.hh */,
+				660889F00992F69600C1CFFE /* activationMap.hh */,
+				660889F90992F77C00C1CFFE /* activation.hh */,
+				66088A040992F80100C1CFFE /* activation.cpp */,
+				6676AF95099AC65F002ECCD3 /* blockObj.hh */,
+				BCAC1EFC0944EF6D00BAC851 /* byteVector.hh */,
+				6614A0C2099DC9EC00F22F2E /* byteVector.cpp */,
+				BCD742C1094404E5000B8247 /* object.hh */,
+				BCD7431709442A4A000B8247 /* object.cpp */,
+				66DBF28A0A17D75A007D9B39 /* objVector.hh */,
+				66DBF2BA0A17D889007D9B39 /* objVector.cpp */,
+				66DBF2390A17D589007D9B39 /* objectTable.hh */,
+				66DBF2760A17D69D007D9B39 /* objectTable.cpp */,
+				BCAC1F5A0944F7E000BAC851 /* map.hh */,
+				BCAC20A30945142C00BAC851 /* map.cpp */,
+				66DBF22B0A17D4C8007D9B39 /* mark.hh */,
+				BC6F515C0950BAB50033CA60 /* stringObj.hh */,
+				BC6F51630950BAF40033CA60 /* stringObj.cpp */,
+				66DBF21D0A17D45B007D9B39 /* tag.hh */,
+				66DBF2460A17D5DB007D9B39 /* wellKnownObjects.hh */,
+				66DBF2D10A17D99D007D9B39 /* wellKnownObjects.cpp */,
+			);
+			name = objects;
+			sourceTree = "<group>";
+		};
+		BCD7432209442BC4000B8247 /* runtime */ = {
+			isa = PBXGroup;
+			children = (
+				FA229C8D09A5485400C6F492 /* utils.cpp */,
+				BCD7432009442BBC000B8247 /* asserts.hh */,
+				BCD7433D09442D5D000B8247 /* small_self_types.hh */,
+				BCD7434909442EDB000B8247 /* asserts.cpp */,
+				BC56BF860966616100BFF06E /* utils.hh */,
+			);
+			name = runtime;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* klein_C_code.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* OSX debug server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "OSX debug server" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "OSX debug server";
+			productInstallPath = "$(HOME)/bin";
+			productName = klein_C_code;
+			productReference = 8DD76F6C0486A84900D96B5E /* kleinDebugServer */;
+			productType = "com.apple.product-type.tool";
+		};
+		BC66082409BEC05800CF94F6 /* Yoda */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC66084709BEC05800CF94F6 /* Build configuration list for PBXNativeTarget "Yoda" */;
+			buildPhases = (
+				BC66082509BEC05800CF94F6 /* Sources */,
+				BC66083209BEC05800CF94F6 /* Frameworks */,
+				BC66083309BEC05800CF94F6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Yoda;
+			productInstallPath = "$(HOME)/bin";
+			productName = klein_C_code;
+			productReference = BC66084A09BEC05800CF94F6 /* yoda */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "klein_C_code" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* klein_C_code */;
+			projectDirPath = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* OSX debug server */,
+				BC66082409BEC05800CF94F6 /* Yoda */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC5DDEEB093FDE0700FC105C /* kleinDebugServer.cpp in Sources */,
+				6659DE4B09958680009D2F46 /* asserts.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC66082509BEC05800CF94F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC66082609BEC05800CF94F6 /* kleinDebugServer.cpp in Sources */,
+				BC66082709BEC05800CF94F6 /* object.cpp in Sources */,
+				BC66082809BEC05800CF94F6 /* asserts.cpp in Sources */,
+				BC66082909BEC05800CF94F6 /* map.cpp in Sources */,
+				BC66082A09BEC05800CF94F6 /* lookup.cpp in Sources */,
+				BC66082B09BEC05800CF94F6 /* interpreter.cpp in Sources */,
+				BC66082C09BEC05800CF94F6 /* stringObj.cpp in Sources */,
+				BC66082D09BEC05800CF94F6 /* prims.cpp in Sources */,
+				BC66082E09BEC05800CF94F6 /* activation.cpp in Sources */,
+				BC66082F09BEC05800CF94F6 /* errorCodes.cpp in Sources */,
+				BC66083009BEC05800CF94F6 /* byteVector.cpp in Sources */,
+				BC66083109BEC05800CF94F6 /* utils.cpp in Sources */,
+				664447BD09D210BE00A0069C /* freeLists.cpp in Sources */,
+				BC02ECFC0A29461A0021F847 /* memory.cpp in Sources */,
+				66DBF2780A17D69D007D9B39 /* objectTable.cpp in Sources */,
+				66DBF2BC0A17D889007D9B39 /* objVector.cpp in Sources */,
+				66DBF2D30A17D99D007D9B39 /* wellKnownObjects.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				CONFIGURATION_BUILD_DIR = ../../../bin/mac_osx;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "OOP_SIZE=32";
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = unixDebugServer;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				CONFIGURATION_BUILD_DIR = ../../../bin/mac_osx;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = "OOP_SIZE=32";
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = kleinDebugServer;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(NATIVE_ARCH)",
+					ppc,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		BC66084809BEC05800CF94F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = ../../../bin/mac_osx;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					SMALL_VM,
+					"OOP_SIZE=32",
+				);
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = yoda;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		BC66084909BEC05800CF94F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = ../../../bin/mac_osx;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					SMALL_VM,
+					"OOP_SIZE=32",
+				);
+				INSTALL_PATH = "$(HOME)/bin";
+				PRODUCT_NAME = yoda;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "OSX debug server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "klein_C_code" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC66084709BEC05800CF94F6 /* Build configuration list for PBXNativeTarget "Yoda" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC66084809BEC05800CF94F6 /* Debug */,
+				BC66084909BEC05800CF94F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

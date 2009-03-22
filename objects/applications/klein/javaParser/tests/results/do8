@@ -1,0 +1,16 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        classOrInterfaceType
+          nameNode b
+        attributeName c
+        formalParameterList ( )
+        throws
+        block {
+          doStatement do
+            emptyStatement ; while
+            parenList ( 23 ) ; } }

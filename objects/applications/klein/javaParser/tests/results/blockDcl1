@@ -1,0 +1,11 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      staticInitializer static
+        block {
+          varDclsStatement
+            basicType int
+            variableDeclarator a ; } }

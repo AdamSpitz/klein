@@ -1,0 +1,15 @@
+
+compilationUnit
+  interfaceDcl interface snort
+    extendsInterfaces
+    interfaceBody {
+      methodDcl
+        basicType int
+        attributeName foo
+        formalParameterList ( )
+        throws ;
+      varDclsStatement
+        modifiers final
+        basicType int
+        variableDeclarator snort =
+          scalarInitializer 3 ; }

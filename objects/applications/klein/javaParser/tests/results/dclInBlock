@@ -1,0 +1,20 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName snort
+        formalParameterList ( )
+        throws
+        block {
+          varDclsStatement
+            basicType long
+            variableDeclarator foo ;
+          varDclsStatement
+            classOrInterfaceType
+              nameNode b . c
+            variableDeclarator blat =
+              scalarInitializer 3 ; } }

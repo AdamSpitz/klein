@@ -1,0 +1,240 @@
+
+Here's what's not implemented from prim.cpp:
+
+process prims:
+
+AbortProcess
+ActivationAt:
+ActivationStack
+KillActivationsUpTo:
+NewProcessSize:Receiver:Selector:Arguments:
+ProcessReturnValue
+StackDepth
+ThisProcess
+
+scheduler prims:
+
+BlockSignals
+
+programming prims:
+
+AddSlots:
+AddSlotsIfAbsent:
+RemoveAllSlots
+RemoveSlot:
+
+C types prims:
+
+BitSize
+CFloatDouble:At:
+CFloatDouble:At:Put:
+CSignedIntSize:At:
+CSignedIntSize:At:Put:
+CUnsignedIntSize:At:
+CUnsignedIntSize:At:Put:
+
+foreign calls prims:
+
+Call
+Call:
+Call:With:
+Call:With:With:
+Call:With:With:With:
+Call:With:With:With:With:
+Call:With:With:With:With:With:
+Call:With:With:With:With:With:With:
+Call:With:With:With:With:With:With:With:
+Call:With:With:With:With:With:With:With:With:
+Call:With:With:With:With:With:With:With:With:With:
+CallAndConvert
+CallAndConvertWith:And:
+CallAndConvertWith:And:With:And:
+CallAndConvertWith:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:With:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:With:And:With:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:With:And:With:And:With:And:With:And:With:And:
+CallAndConvertWith:And:With:And:With:And:With:And:With:And:With:And:With:And:With:And:With:And:With:And:
+ForeignHash
+ForeignIsLive
+ForeignIsNull
+ForeignKill
+NoOfArgs
+NoOfArgs:
+SamePointerAs:
+TypeSealResultProxy:
+
+compiled code cache prims:
+
+Compact
+Flush
+FlushUnusedCode
+MarkCodeUnused
+
+creating methods prims:
+
+CreateBlockMethodBytecodes:Literals:File:Line:Source:
+CreateOuterMethodBytecodes:Literals:File:Line:Source:
+
+identity hash prims:
+
+CurrentHash:
+
+enumerating prims:
+
+EnumerateAllLimit:
+EnumerateVectorImplementorsLimit:
+EnumerateVectorReferencesLimit:
+
+floating-point prims:
+
+FloatAdd:
+FloatAsInt
+FloatCeil
+FloatDiv:
+FloatEQ:
+FloatFloor
+FloatGE:
+FloatGT:
+FloatLE:
+FloatLT:
+FloatMod:
+FloatMul:
+FloatNE:
+FloatPrintString
+FloatPrintStringPrecision:
+FloatRound
+FloatSub:
+FloatTruncate
+IntAsFloat
+
+inline cache prims:
+
+FlushInlineCache
+
+garbage collection prims:
+
+GarbageCollect
+Scavenge
+Tenure
+
+memory prims:
+
+MemoryCurrentSpaceSizes:
+MemoryCurrentState:
+MemoryDefaultSpaceSizes
+MemoryExpandHeap:
+MemoryLowSpaceThreshold
+MemoryLowSpaceThreshold:
+MemorySwapSpace
+MemoryTenuringThreshold
+MemoryTenuringThreshold:
+MemoryVMReservedAmount
+MemoryWriteSnapshot:Compress:Sizes:SaveCode:
+
+mirror prims:
+
+MirrorAnnotation (overridden by klein)
+MirrorAnnotationAt: (overridden by klein)
+MirrorByteCodePosition (overridden by klein)
+MirrorCodes (overridden by klein)
+MirrorContentsAt: (overridden by klein)
+MirrorCopyAt:Put:IsParent:IsArgument:Annotation:
+MirrorCopyAnnotation:
+AARDVARK: a bunch more Mirror ones that I don't have the patience to go through right now
+
+object ID prims:
+
+AsObject
+ObjectID
+
+parsing prims:
+
+ParseObjectFileName:ErrorObj:
+ParseObjectIntoPositionTable
+
+primitives prims:
+
+PrimitiveDocumentation
+PrimitiveList
+
+profiler prims:
+
+Profile:
+ProfilerCopyGraphMethod:Block:Access:Prim:Leaf:Fold:Unknown:Cutoff:
+ProfilerDisengage
+ProfilerEngage:
+ProfilerPrint:
+ProfilerProcess
+ProfilerReset
+ProfilerTicks:
+ProfilerTimes:
+ResetFlatProfile
+ResetProfile
+
+TWAINS prims:
+
+TWAINSResultSize
+TWAINSResultVector:SingleStep:StopAt:
+Yield:
+
+miscellaneous prims:
+
+AddressAsObject (never called)
+AnnotateSpyLog (never called)
+CommandLine
+CompileCounts
+Compilers
+Compilers:Limits:
+CoreDump
+Credits
+CurrentTimeString
+DateTime:
+Define:
+ErrorMessage
+FindNmethodsRcvr:Selector:
+GotoByteCode:ExpressionStack:IfFail: (never called)
+Manufacturer
+MethodPointer
+OperatingSystem
+Print
+PrintDebugSpace
+PrintEventLog:
+PrintFlatProfile:
+PrintMemory
+PrintMemoryHistogram:
+PrintNMethodCode
+PrintNMethodHistogram:
+PrintSlotStats
+PrintZoneStats
+PrintOptionPrimitives
+PrintChangedOptionPrimitives
+PrintPICHistogram
+PrintProcessStack
+PrintProfileCutoff:Skip:MaxDepth:
+PrintVMObj
+ProgrammingTimestamp
+SetProgrammingTimestamp
+Quit
+RecompileLimits
+ResetSpyLog
+RunScript
+SetCPUTimer
+SetRealTimer
+TestA1:A2:A3:A4:A5:A6:A7:A8:A9:A10:A11:A12:A13:A14:A15:A16:
+TimeCPU
+TimeReal
+TimeSystem
+TimeUser
+ConvertToDayMs
+Verify
+VerifyOptions
+VMversion
+WriteSnapshot
+ZombieProcesses
+SICParamsAt:
+SICParamsAt:Put:
+ITrace:
+SpyHeight

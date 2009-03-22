@@ -1,0 +1,32 @@
+Here's a list of various aspects of Klein that we could talk about.
+
+----
+
+Principles: We are following certain principles which have traditionally been difficult to adhere to when building VMs: object-orientation, metacircularity, heavy code reuse, reactivity, early unit testing, mirror-based reflection, and subjectivity.
+
+Architecture: An overview of the anatomy of Klein, including the object system, the compiler, the export system, and the remote debugging environment.
+
+Metacircularity: The Klein VM is written in the language that it implements (Self). This has the potential to allow us to greatly simplify the VM. The VM and the application both use the same calling convention. Garbage collection (not there yet) will use the same mechanism to find roots in application stack frames as in VM stack frames. Whereas in a C(++)-based virtual machine, an object is described by another object (a class or map), which in turn is described by a different mechanism (hard-compiled C(++) structure declarations), in a metacircular VM, an object is described by another object (the class or map), which is described by another object (the map's map), etc. This infinite recursion must be terminated by choosing to "hardwire" some facts about object layout. Many strategies are possible. We can go over what we have done so far, which we view as possibly an interim solution.
+
+Self-testing assembler: The Klein assembler and disassembler are generated from the machine's instruction set architecture (ISA) spec. The system tests itself by automatically generating test cases, assembling and then disassembling them to make sure the result matches the original, and also by running those test cases through the Unix assembler to make sure the Klein assembler produces the same code as the Unix assembler. This system has even uncovered minor bugs in both Apple's and Sun's assemblers. The Klein assembler system has been ported to Java.
+
+Patent: Dual-mode disassembler: We have a patent on the way the Klein disassembler can interpret an instruction as either the most specific or the most general form of that instruction.
+
+Primitives: One of the goals of Klein is to find out whether a VM can be written with no C code at all, but it seems that a C-like layer may be emerging naturally (simply as a result of good factoring) in the part of the compiler that implements primitive operations.
+
+Performance problems with the export cycle: Our dedication to our principles has led us to performance problems with the Klein export cycle. Consequently, Klein development seems to consist of a cycle of two distinct phases: a functionality phase, where we add new functionality to the Klein VM, until the export cycle becomes unbearably slow, at which point we go into an optimization phase.
+
+Graphical profiling: Our frustration with the textual Self performance profiler has led us to create a graphical profiler widget. In the graphical profiler, we have the advantage of all of the Self UI's direct-manipulation facilities. The graphical profiler also includes a pruning algorithm, since most nodes in a performance profile are uninteresting.
+
+Programming environment: We reuse the Self programming environment, which contains features some people may not be acquainted with. These include various browsing tools (e.g. cross-referencing), working in a dynamic world of live objects, a mirror-based reflection architecture, and others.
+
+Remote debugging environment: Klein's metacircularity and Self's mirror-based reflection architecture have let us reuse a vast amount of code from the Self programming environment in order to create a Klein environment. The Klein environment allows us to view and debug a remote Klein process from a Self world, at either source- or machine- level.
+
+Patent: Register-showing: We have a patent on the way the Klein machine-level debugger shows you the contents of only the registers mentioned by the particular machine code displayed in the debugger.
+
+Reuse of the reflection system: We use a "lens-based" architecture to allow Klein's reflective code to function in several different contexts: as the code used to build the objects in the bootstrap image, as the code used to examine remote Klein objects in the Klein remote debugging environment, and as Klein's runtime reflection system.
+
+Comparison to related projects: An overview of the differences between Klein and other metacircular VMs: Squeak, Squawk, Jikes, Joeq, OVM.
+
+Demo of current functionality: Neither the Klein development environment nor the VM itself are complete yet, but they do include significant functionality. The development environment includes source-level object outliners, and a source-level and machine-level debugger, though these are missing much of the on-the-fly modification facilities of the regular Self environment. The VM itself is capable of running its own compiler to compile a very simple method.
+

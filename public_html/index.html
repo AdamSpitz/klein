@@ -1,0 +1,52 @@
+<html>
+
+<head>
+  <title>Klein Metacircular Virtual Machine Kit</title>
+</head>
+
+<body>
+
+<h1>Klein Metacircular Virtual Machine Kit</h1>
+
+<p>Version 0.1<br/>
+<a href="http://adamspitz.com">Adam Spitz</a>, Alex Ausch, and David Ungar<br/>
+August 14, 2006</p>
+
+<h2>What is this?</h2>
+
+<p>Klein is (or will be, someday, hopefully) a virtual machine for the <a href="http://selflanguage.org">Self language</a>, written entirely in Self, and a development environment for that VM. (The project is named after the <a href="http://en.wikipedia.org/wiki/Klein_bottle">Klein bottle</a>.)</p>
+
+<p>Here's <a href="running.html">how to download and build Klein</a>.</p>
+
+<p>There is a lot of <a href="todo.html">work left to be done</a> before Klein will be a usable VM for Self. For example, garbage collection has not been implemented yet. Also, the VM runs very, very slowly - we have put almost no effort into optimizing the generated code. And so far, the VM runs only on the PowerPC architecture (though the development environment can be run on any system that runs Self). This release is not intended to be used as a practical VM; our hope is that it will be of interest to people who are interested in developing metacircular virtual machines for dynamic object-oriented languages. (The Klein project has not been active at Sun since late 2005, and it was looking like Sun had no further interest in funding it, so we asked for permission to open-source it.) Following are some brief explanatory notes.</p>
+
+
+<h2>Why build a VM this way?</h2>
+
+<p>For a more thorough description of the principles behind Klein, see our OOPSLA 2005 paper, <a href="http://portal.acm.org/citation.cfm?id=1094855.1094865">"Constructing a Metacircular Virtual Machine in an Exploratory Programming Environment"</a>.</p>
+
+<p>In constructing Klein, we have attempted to adhere to various principles, including object-orientation, metacircularity, heavy code reuse, reactiveness, and mirror-based reflection. We expect these principles to yield many benefits, including:</p>
+
+<ul>
+  <li>A simpler, more malleable VM (because it is written almost entirely in a high-level language).</li>
+  <li>Less replicated code (because the VM and the applications running on top of it are written in the same language and can share code, as can the VM and its development environment).</li>
+  <li>Better performance (because the VM will be able to do optimizations across the entire code base, including the VM code itself - imagine being able to inline the hotspots of the VM right up into an application).</li>
+  <li>Faster turnaround when making changes to the VM (because the VM will no longer be tied to C++ and its compilation system).</li>
+</ul>
+
+
+
+
+
+<hr/>
+
+<a href="http://sourceforge.net/projects/kleinvm"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=211747&amp;type=10" width="80" height="15" alt="Get Klein at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>
+
+
+
+</body>
+
+
+
+
+</html>

@@ -1,0 +1,18 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        classOrInterfaceType
+          nameNode b
+        attributeName c
+        formalParameterList ( )
+        throws
+        block {
+          blockStatement
+            label foo :
+            label bar :
+            block { }
+          emptyStatement ; } }

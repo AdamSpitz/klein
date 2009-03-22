@@ -1,0 +1,14 @@
+
+compilationUnit
+  classDcl class x
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        classOrInterfaceType
+          nameNode y
+        attributeName z
+        formalParameterList ( )
+        throws
+        block {
+          expressionStatement 234 ; } }

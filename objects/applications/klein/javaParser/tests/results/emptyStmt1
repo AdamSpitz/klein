@@ -1,0 +1,9 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      staticInitializer static
+        block {
+          emptyStatement ; } }

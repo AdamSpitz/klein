@@ -1,0 +1,19 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        classOrInterfaceType
+          nameNode a . b
+        attributeName snort
+        formalParameterList (
+          formalParameter
+            classOrInterfaceType
+              nameNode c . d e ,
+          formalParameter
+            classOrInterfaceType
+              nameNode foo bar )
+        throws
+        block { } }

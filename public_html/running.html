@@ -1,0 +1,61 @@
+<html>
+
+<head>
+  <title>Klein Metacircular Virtual Machine Kit</title>
+</head>
+
+<body>
+
+<h1>Klein Metacircular Virtual Machine Kit</h1>
+
+<h2>Building and running Klein</h2>
+
+
+<h3>Downloading the Klein source code</h3>
+
+<p>You can <a href="http://research.sun.com/self/Klein/klein-0.1.zip">download Klein here</a>.</p>
+
+<h3>Building the Klein debug server</h3>
+
+<ul>
+  <li>Use Apple's Xcode to open up the klein_C_code.xcodeproj file in the klein_C_code/xcode/klein_C_code directory.</li>
+  <li>Make sure that the active target is "OSX debug server", and that the active build configuration is "Release" (we've had problems using it in Debug mode - it tends to put the Klein image at too high an address in memory, which Klein isn't smart enough to be able to handle yet).</li>
+  <li>Click "Build".</li>
+</ul>
+
+<h3>Filing the Klein source code into Self</h3>
+
+<p>The Klein development and build environment runs inside Self, so you will need to:</p>
+
+<ul>
+  <li><a href="http://selflanguage.org">Download Self</a> and install it.</li>
+  <li>Execute the Self code &nbsp; <code>'applications/klein/vmKits.self' runScript</code>.</li>
+</ul>
+
+<h3>Building Klein inside Self</h3>
+
+<ul>
+  <li>Start the Self desktop if it is not already started  (run the code &nbsp; <code>desktop open</code> &nbsp; ).</li>
+  <li>Right-click the background and choose "Klein host" from the menu. A yellow box should come to your hand, with the status message, "down: connect failed: EINVAL". This yellow box represents the Klein debug server.</li>
+  <li>Open a Terminal window, navigate to the self/bin/mac_osx directory, and run the kleinDebugServer executable that you built earlier. (Leave the Terminal window open.)  The yellow thing's status message should change to "up on a PPC".</li>
+  <li>Right-click the yellow box and choose "Get program." Then choose the image you wish to build. (The full Klein VM is named "selfVM".) A green box should appear; this represents the Klein image.</li>
+  <li>Wait for the build process to complete. (This may take a while for a large image - on a 1.33 GHz G4 Powerbook, it takes about ten minutes to build the full selfVM image.) The build process is complete when the status line on the green box says "ready".</li>
+</ul>
+
+<h3>Running Klein</h3>
+
+<ul>
+  <li>Pick up the green thing and drop it on the yellow thing. A green debugger should appear.
+  <li>Click "Continue" to make the Klein process start running.
+</ul>
+
+
+<hr/>
+
+<a href="http://sourceforge.net/projects/kleinvm"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=211747&amp;type=10" width="80" height="15" alt="Get Klein at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a>
+
+
+
+</body>
+
+</html>

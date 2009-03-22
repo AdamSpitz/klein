@@ -1,0 +1,14 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass extends
+      classOrInterfaceName c . d
+    implementsInterfaces implements
+      classOrInterfaceName x
+      classOrInterfaceName y . z
+    classBody { }
+  interfaceDcl interface b
+    extendsInterfaces extends
+      classOrInterfaceName c . d
+      classOrInterfaceName e . f
+    interfaceBody { }

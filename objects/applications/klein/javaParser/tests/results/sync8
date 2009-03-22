@@ -1,0 +1,15 @@
+
+compilationUnit
+  classDcl class a
+    extendsClass
+    implementsInterfaces
+    classBody {
+      methodDcl
+        basicType int
+        attributeName foo
+        formalParameterList ( )
+        throws
+        block {
+          synchronizedStatement synchronized
+            parenList ( 3 )
+            block { } } }
