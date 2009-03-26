@@ -1,6 +1,7 @@
  '$Revision: 30.11 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -489,7 +490,7 @@ So need this slot.\x7fModuleInfo: Module: vmKitProcess InitialContents: FollowSl
         
          localOopAt: addr IfFail: fb = ( |
             | 
-            addr _UnsafeObjectForAddressIfFail: fb).
+            _UnsafeObjectForOopAtAddress: addr IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcess' -> 'parent' -> () From: ( | {

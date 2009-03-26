@@ -1,6 +1,7 @@
  '$Revision: 30.17 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -828,14 +829,13 @@ SlotsToOmit: parent.
              maybe the rtoc?, or the non-vol regs that aren't being used by the nmethod, this'll break
              because we shouldn't try to follow those registers. -- Adam"
 
-            [todo optimization]. "Could cache this list of registers."
-            registerLocs: myAssemblerSystem allRegisters copyMappedBy: [|:r| klein locations register copyForRegister: r].
+            registerLocs: myAssemblerSystem allRegisterLocations.
             memoryLocs: (stackFrameIfAbsent: raiseError) locationsForNonVolLocals.
 
             gcMaskLayout: myProcess sendDescForMyPlatform gcMaskLayout.
             gcMaskBooleanVector: myProcess intNN booleanVectorFor: gcMaskIfFail: raiseError.
 
-            (registerLocs, memoryLocs) do: [|:loc|
+            registerLocs, memoryLocs  do: [|:loc|
               gcMaskLayout
                                   ifLocation: loc
                  ShouldBeRepresentedInGCMask: [|:bitNumber| (gcMaskBooleanVector at: bitNumber) ifTrue: [blk value: loc]]

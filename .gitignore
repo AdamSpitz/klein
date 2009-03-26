@@ -1,1 +1,4 @@
 .DS_Store
+*.OLD
+klein_C_code/xcode/klein_C_code/build/*
+bin/mac_osx/kleinDebugServer

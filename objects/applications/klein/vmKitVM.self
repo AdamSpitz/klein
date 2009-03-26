@@ -1,6 +1,7 @@
  '$Revision: 30.11 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -406,6 +407,12 @@ to just keep upping it by hand.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
+         'Category: mapped\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         machineMemoryForExecution = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
          'Category: mapped\x7fCategory: mirrors\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: private'
         
          mapProtoForOop: oop IfFail: fb = ( |
@@ -499,7 +506,7 @@ to just keep upping it by hand.
         
          objectLocatorProto = ( |
             | 
-            vmKit directPointerObjectLocator).
+            vmKit indirectPointerObjectLocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
@@ -642,7 +649,8 @@ to just keep upping it by hand.
                          test if we ever call this module during normal
                          execution. -- Adam, 5/04"
 
-            lens:   lensForExecution. "lens gets munged during export"
+            lens:                   lensForExecution. "lens gets munged during export"
+            machineMemory: machineMemoryForExecution.
             _TheVM: self.
 
             start).

@@ -4490,7 +4490,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generatePrimitiveInto: dstReg Receiver: addrReg UnsafeObjectForAddressIfFail: fh = ( |
+         generatePrimitiveInto: dstReg Receiver: unusedRcvrReg UnsafeObjectForOopAtAddress: addrReg IfFail: fh = ( |
             | 
             fh assertInt32: addrReg.
             moveValueOfInt32: addrReg ToRegister: dstReg IfFail: fh.
@@ -4498,6 +4498,18 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             FromAddressInRegister: dstReg
                        ToRegister: dstReg.
             fh assertNotMarkInDstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: objReg UnsafePutOopAtAddress: addrReg IfFail: fh = ( |
+            | 
+            fh assertInt32: addrReg.
+            moveValueOfInt32: addrReg ToRegister: dstReg IfFail: fh.
+            storeRegister: objReg ToOffset: 0 FromAddressInRegister: dstReg.
+            moveRegister: objReg ToRegister: dstReg.
             self).
         } | ) 
 
@@ -4514,6 +4526,20 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
               storeRegister: dstReg ToOffset: 0 FromAddressInRegister: tempReg.
             ].
             moveRegister: rcvrReg ToRegister: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: unusedRcvrReg UnsafeTagOfOopAtAddress: addrReg IfFail: fh = ( |
+            | 
+            fh assertInt32: addrReg.
+            withTemporaryRegisterDo: [|:rawAddrReg|
+              moveValueOfInt32: addrReg ToRegister: rawAddrReg IfFail: fh.
+              loadValueAtOffset: 0 FromAddressInRegister: rawAddrReg ToRegister: dstReg.
+              layouts object generateTagOf: dstReg Into: dstReg With: self.
+            ].
             self).
         } | ) 
 

@@ -1,6 +1,7 @@
  '$Revision: 30.9 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -26,6 +27,22 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
          'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
          oidForInvalidEntry: f In: anObjectLocator = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oidOfMem: mem In: anObjectLocator = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         switchPointersFromObjectWithOID: oid ToHaveAddress: newAddr In: anObjectLocator = ( |
             | 
             childMustImplement).
         } | ) 
@@ -687,10 +704,8 @@ SlotsToOmit: parent.
 
             mm: theVM machineMemory.
             newOop: encodeMemOopFromAddress: newAddr.
-            theVM universe oopsDo: [|:oop. :addr|
-              (oldOop _Eq: oop) ifTrue: [
-                mm at: addr PutOop: newOop.
-              ].
+            theVM universe oopsMatching: oldOop Do: [|:oop. :addr|
+              mm at: addr PutOop: newOop.
             ].
 
                          recordAddress: newAddr ForOID: oid.
@@ -763,7 +778,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
         
          decodeOIDFromMemOop: x = ( |
             | 
@@ -779,7 +794,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
         
          encodeMemOopFromOID: oid = ( |
             | 
@@ -836,6 +851,22 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oidOfMem: mem = ( |
+            | 
+            theVM lens oidOfMem: mem In: self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oidOfRemoteMem: mem = ( |
+            | 
+            decodeOIDFromMemOop: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
          oopForOID: oid Address: addr = ( |
@@ -860,7 +891,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot'
+         'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> ().
         } | ) 
@@ -899,16 +930,40 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: double dispatch\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         switchPointersFromLocalObjectWithOID: oid ToHaveAddress: newAddr = ( |
+            | 
+            recordAddress: newAddr ForOID: oid.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         switchPointersFromObjectWithOID: oid ToHaveAddress: newAddr = ( |
+            | 
+            theVM lens switchPointersFromObjectWithOID: oid
+                                         ToHaveAddress: newAddr
+                                                    In: self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
          switchPointersFromObjectWithOop: oldOop ToHaveAddress: newAddr = ( |
-             oid.
             | 
-            oid: decodeOIDFromMemOop: oldOop.
+            switchPointersFromObjectWithOID: (oidOfMem: oldOop)
+                              ToHaveAddress: newAddr).
+        } | ) 
 
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: double dispatch\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         switchPointersFromRemoteObjectWithOID: oid ToHaveAddress: newAddr = ( |
+            | 
                          recordAddress: newAddr ForOID: oid.
             inRemoteImageRecordAddress: newAddr ForOID: oid.
-
             self).
         } | ) 
 
@@ -942,6 +997,22 @@ SlotsToOmit: parent.
             anObjectLocator oidForInvalidLocalEntry: f).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oidOfMem: mem In: anObjectLocator = ( |
+            | 
+            anObjectLocator oidOfLocalMem: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         switchPointersFromObjectWithOID: oid ToHaveAddress: newAddr In: anObjectLocator = ( |
+            | 
+            anObjectLocator switchPointersFromLocalObjectWithOID: oid ToHaveAddress: newAddr).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -964,6 +1035,22 @@ SlotsToOmit: parent.
          oidForInvalidEntry: f In: anObjectLocator = ( |
             | 
             anObjectLocator oidForInvalidRemoteEntry: f).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oidOfMem: mem In: anObjectLocator = ( |
+            | 
+            anObjectLocator oidOfRemoteMem: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: object table\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         switchPointersFromObjectWithOID: oid ToHaveAddress: newAddr In: anObjectLocator = ( |
+            | 
+            anObjectLocator switchPointersFromRemoteObjectWithOID: oid ToHaveAddress: newAddr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

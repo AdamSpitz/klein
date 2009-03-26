@@ -1,6 +1,7 @@
  '$Revision: 30.5 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -53,7 +54,15 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             _NoGCAllowed.
 
             "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e| ^ fb value: e].
+            failBlock: [|:e|
+              __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
+              _Breakpoint: 'ran out of memory; about to do a scavenge'.
+              vmKit garbageCollector scavenge.
+              _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
+              [todo gc]. _Breakpoint: 'not implemented yet: try the clone again'.
+              __DefineLabel: 'someOtherKindOfError'.
+              ^ fb value: e
+            ].
 
             nextWordIndex: indexToStartCopyingContents.
 
@@ -72,7 +81,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             [todo gc]. "Not implemented: do a GC and try again."
             _Breakpoint: 'ran out of memory'.
-            failBlock value: 'Out of memory in edenSpace'.
+            failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'enoughMemoryForHeader'.
@@ -113,7 +122,15 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             [todo cleanup]. "Can we get rid of the duplication between this method and cloneLocalObject:IfFail: ?"
 
             "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e| ^ fb value: e].
+            failBlock: [|:e|
+              __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
+              _Breakpoint: 'ran out of memory; about to do a scavenge'.
+              vmKit garbageCollector scavenge.
+              _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
+              [todo gc]. _Breakpoint: 'not implemented yet: try the clone again'.
+              __DefineLabel: 'someOtherKindOfError'.
+              ^ fb value: e
+            ].
 
             nextWordIndex: indexToStartCopyingContents.
 
@@ -135,7 +152,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             [todo gc]. "Not implemented: do a GC and try again."
             _Breakpoint: 'ran out of memory'.
-            failBlock value: 'Out of memory in edenSpace'.
+            failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'enoughMemoryForHeader'.
@@ -187,7 +204,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             [todo gc]. "Not implemented: do a GC and try again."
             _Breakpoint: 'ran out of memory while copying contents during cloning'.
-            failBlock value: 'Out of memory in edenSpace'.
+            failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'copyContentsDone'.
@@ -245,7 +262,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             [todo gc]. "Not implemented: do a GC and try again."
             _Breakpoint: 'ran out of memory while filling in contents during cloning'.
-            failBlock value: 'Out of memory in edenSpace'.
+            failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'fillerDone'.
@@ -257,15 +274,16 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
          finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: sizeInWords IfFail: failBlock = ( |
+             objsTop.
             | 
             __BranchIfTrue: (theCloneAddress _Eq: _TheVM universe allocationSpace objsTop) To: 'noCloningHappened'.
             _Breakpoint: 'Uh-oh! We goofed - something got cloned during the cloning algorithm.'.
             __DefineLabel: 'noCloningHappened'.
 
-            _TheVM universe allocationSpace objsTop:
-                theCloneAddress _IntAdd:   sizeInWords _IntMul: oopSize.
+            objsTop: theCloneAddress _IntAdd:   sizeInWords _IntMul: oopSize.
+            _TheVM universe allocationSpace objsTop: objsTop.
 
-            _TheVM universe allocationSpace setLocalTrailingMark.
+            _TheVM universe allocationSpace setLocalTrailingMarkAt: objsTop.
 
             "Note: From this point onwards it is once again safe to allocate
                    from the heap."
@@ -316,7 +334,15 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             _NoGCAllowed.
 
             "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e| ^ fb value: e].
+            failBlock: [|:e|
+              __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
+              _Breakpoint: 'ran out of memory; about to do a scavenge'.
+              vmKit garbageCollector scavenge.
+              _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
+              [todo gc]. _Breakpoint: 'not implemented yet: try the clone again'.
+              __DefineLabel: 'someOtherKindOfError'.
+              ^ fb value: e
+            ].
 
             nextWordIndex: indexToStartCopyingContents.
 
@@ -335,7 +361,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             [todo gc]. "Not implemented: do a GC and try again."
             _Breakpoint: 'ran out of memory'.
-            failBlock value: 'Out of memory in edenSpace'.
+            failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'enoughMemoryForHeader'.
@@ -435,7 +461,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             [todo gc]. "Not implemented: do a GC and try again."
             _Breakpoint: 'ran out of memory'.
-            failBlock value: 'Out of memory in edenSpace'.
+            failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'copyNonIndexableContentsLoop'.

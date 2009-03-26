@@ -1,6 +1,7 @@
  '$Revision: 30.2 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -23,7 +24,6 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
              oldAddr.
              sizeInBytes.
             | 
-            _Breakpoint: 'untested code - moving an object'.
             oldAddr: layouts memoryObject addressOfMem: o.
             sizeInBytes: nOops _IntMul: oopSize.
             endAddr: newAddr _IntAdd: sizeInBytes.
@@ -44,6 +44,14 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             [todo gc]. "If we just moved the object table, we'd better keep track of it and change the objectAddressesBaseRegister."
 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'garbageCollector' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         intNN = ( |
+            | 
+            layouts abstract intNN).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'garbageCollector' -> () From: ( | {
@@ -95,7 +103,9 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         
          movedSomeObjects = ( |
             | 
-            [todo gc]. "Are there well-known objects we should be keeping track of?"
+            [todo gc]. "Are there well-known objects we should be keeping track of?
+                        And should we be doing something to make sure the development-side
+                        objectLocator updates itself?"
             self).
         } | ) 
 
@@ -109,6 +119,14 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
          'Category: remembered set\x7fModuleInfo: Module: vmKitGC InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          numberOfRememberedObjects <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'garbageCollector' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         oopSize = ( |
+            | 
+            layouts abstract oopSize).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'garbageCollector' -> () From: ( | {
@@ -151,12 +169,10 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
              nOops.
              newAddr.
             | 
-            _Breakpoint: 'About to promote an object'.
             nOops: o _Map myLayout wordSizeOf: o.
-            newAddr: theVM universe tenuredSpace allocateOops: sizeInOops.
+            newAddr: theVM universe tenuredSpace allocateOops: nOops.
             copyObject: o Size: nOops ToAddress: newAddr.
-            theVM recordNewAddress: newAddr For: o.
-            _Breakpoint: 'Can we still see the object in the UI?'.
+            theVM objectLocator switchPointersFromObjectWithOop: o ToHaveAddress: newAddr.
             self).
         } | ) 
 
@@ -187,16 +203,19 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         
          recycleOopsOfObjectsIn: aSpace = ( |
             | 
-            aSpace objectAddressesDo: [|:addr. o. recordedAddr|
+            aSpace objectAddressesDo: [|:addr. o. recordedAddr. hasBeenScavenged. mv. oid |
               o:            layouts memoryObject memForAddress: addr.
-              recordedAddr: layouts memoryObject addressForMem: o.
-              addr = recordedAddr ifTrue: [ "has not been scavenged"
-                | mv. oid |
-                [todo optimize time gc]. "Haven't we already gotten the object's mark?"
-                mv: layouts memoryObject markValueOf: o.
-                oid: layouts mark oidOfMarkValue: mv.
-                theVM objectLocator invalidateEntryForOID: oid.
-              ].
+              recordedAddr: layouts memoryObject addressOfMem:  o.
+              hasBeenScavenged: addr != recordedAddr.
+              __BranchIfTrue: hasBeenScavenged To: 'done'.
+                  "has not been scavenged"
+                  [todo optimize time gc]. "Haven't we already gotten the object's mark?"
+              _Breakpoint: 'has not been scavenged'.
+                  mv: layouts memoryObject markValueOf: o.
+                  oid: layouts mark oidOfMarkValue: mv.
+                  theVM objectLocator invalidateEntryForOID: oid.
+              _Breakpoint: 'OK, recycled the oop'.
+              __DefineLabel: 'done'.
             ].
             self).
         } | ) 
@@ -285,9 +304,12 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             [todo cleanup gc]. _Breakpoint: 'Cool! Now what?'.
             movedSomeObjects.
 
-            recycleOopsOfObjectsIn: _TheVM universe edenSpace.
+            recycleOopsOfObjectsIn: previousSpace.
+            _Breakpoint: 'recycled edenSpace oops'.
             _TheVM universe switchAllocationSpaceTo: previousSpace.
-            recycleOopsOfObjectsIn: _TheVM universe scavengeGarbageSpace.
+            _Breakpoint: 'switched back to previousSpace'.
+            recycleOopsOfObjectsIn: garbageSpace.
+            _Breakpoint: 'recycled garbageSpace oops. Done!'.
             'Done scavenging\n' _StringPrint.
 
             self).

@@ -1,6 +1,7 @@
  '$Revision: 30.6 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -271,6 +272,14 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitUniverse Ini
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isScavenging = ( |
+            | 
+            allocationSpace == scavengeGarbageSpace).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
          'Category: heap\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
         
          objsTopFor: start = ( |
@@ -282,22 +291,21 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitUniverse Ini
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
-         'Category: heap\x7fComment: invoke blk with contents and addr of each oop\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
-        
-         oopsDo: blk = ( |
-             r.
-            | 
-            spacesDo: [|:s| r: s oopsDo: blk].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
          'Category: heap\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
         
          oopsIncludesAddress: addr = ( |
             | 
             generationsDo: [|:g| (g oopsIncludesAddress: addr) ifTrue: [^ true]].
             false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
+         'Category: heap\x7fComment: invoke blk with contents and addr of each oop matching the desiredOop\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopsMatching: desiredOop Do: blk = ( |
+            | 
+            spacesDo: [|:s| s oopsMatching: desiredOop Do: blk].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
@@ -336,21 +344,13 @@ SlotsToOmit: parent.
              previousSpace.
             | 
             previousSpace: allocationSpace.
-            allocationSpace: scavengeGarbageSpace.
-            previousSpace).
-        } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
-         'Category: heap\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
-        
-         switchPointersFrom: oldOop To: newOop = ( |
-             mm.
-            | 
-            mm: theVM machineMemory.
-            oopsDo: [|:oop. :addr|
-              (oldOop _Eq: oop) ifTrue: [mm at: addr PutWord: newOop].
-            ].
-            self).
+            __BranchIfFalse: (previousSpace _Eq: aSpace) To: 'notAlreadyUsingThatSpace'.
+            _Breakpoint: 'Already using that space. Maybe we ran out of memory in the middle of a GC?'.
+
+            __DefineLabel: 'notAlreadyUsingThatSpace'.
+            allocationSpace: aSpace.
+            previousSpace).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {

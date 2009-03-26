@@ -1,6 +1,7 @@
  '$Revision: 30.11 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -154,6 +155,22 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr Layout: aLayout = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetSize: s Layout: aLayout = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: bytes part layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          indexableSizeOfBytesPart: bpRef IfFail: fb = ( |
@@ -197,6 +214,14 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nextEntryForEntryAtAddress: addr Layout: aLayout = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: immediate layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          oopForValue: v WithLayout: lo = ( |
@@ -208,6 +233,14 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: memory object layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          oopOfMem: mem = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sizeForEntryAtAddress: addr Layout: aLayout = ( |
             | 
             childMustImplement).
         } | ) 
@@ -1724,6 +1757,41 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
          'Category: next entry field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
+         forEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr = ( |
+            | 
+            lens forEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr Layout: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: size field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetSize: s = ( |
+            | 
+            lens forEntryAtAddress: addr SetSize: s Layout: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: next entry field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forLocalEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr = ( |
+            | 
+            "Encode it as a mark so as to serve as the end-of-object sentinel."
+            (layouts mark encode: nextEntryShiftedAddr) _UnsafePutWordAtAddress: addr + (nextEntryIndex * oopSize)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: size field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forLocalEntryAtAddress: addr SetSize: s = ( |
+            | 
+            _NoGCAllowed.
+            s _UnsafePutOopAtAddress: addr + (sizeIndex * oopSize).
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: next entry field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
          forRemoteEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr = ( |
             | 
             "Encode it as a mark so as to serve as the end-of-object sentinel."
@@ -1733,13 +1801,10 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
-         'Category: size field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: size field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          forRemoteEntryAtAddress: addr SetSize: s = ( |
             | 
-            [todo localAllocation]. "Gotta be really careful if we start using this code
-                                     locally, because we're passing around addresses; we'll
-                                     need to mark these methods as _NoGCAllowed. -- Adam, 5/06"
             machineMemory at: (addr + (sizeIndex * oopSize))
                       PutOop: layouts smi encode: s.
             self).
@@ -1755,6 +1820,23 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
          'Category: next entry field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nextEntryForEntryAtAddress: addr = ( |
+            | 
+            lens nextEntryForEntryAtAddress: addr Layout: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: next entry field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nextEntryForLocalEntryAtAddress: addr = ( |
+            | 
+            "It's encoded as a mark so as to serve as the end-of-object sentinel."
+            layouts mark decode:  intNN copy _UnsafeWordAtAddress: addr + (nextEntryIndex * oopSize)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: next entry field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          nextEntryForRemoteEntryAtAddress: addr = ( |
             | 
@@ -1782,6 +1864,23 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
          'Category: size field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sizeForEntryAtAddress: addr = ( |
+            | 
+            lens sizeForEntryAtAddress: addr Layout: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: size field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sizeForLocalEntryAtAddress: addr = ( |
+            | 
+            _NoGCAllowed.
+            _UnsafeObjectForOopAtAddress: addr + (sizeIndex * oopSize)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'freeOopsListEntry' -> () From: ( | {
+         'Category: size field\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          sizeForRemoteEntryAtAddress: addr = ( |
             | 
@@ -4292,6 +4391,22 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr Layout: aLayout = ( |
+            | 
+            aLayout forLocalEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetSize: s Layout: aLayout = ( |
+            | 
+            aLayout forLocalEntryAtAddress: addr SetSize: s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: bytes part layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          indexableSizeOfBytesPart: bpRef IfFail: fb = ( |
@@ -4328,6 +4443,14 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nextEntryForEntryAtAddress: addr Layout: aLayout = ( |
+            | 
+            aLayout nextEntryForLocalEntryAtAddress: addr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: immediate layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          oopForValue: v WithLayout: lo = ( |
@@ -4340,6 +4463,14 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         
          oopOfMem: mem = ( |
             | layouts memoryObject oopOfLocalMem: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sizeForEntryAtAddress: addr Layout: aLayout = ( |
+            | 
+            aLayout sizeForLocalEntryAtAddress: addr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
@@ -4497,6 +4628,22 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr Layout: aLayout = ( |
+            | 
+            aLayout forRemoteEntryAtAddress: addr SetNextEntry: nextEntryShiftedAddr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forEntryAtAddress: addr SetSize: s Layout: aLayout = ( |
+            | 
+            aLayout forRemoteEntryAtAddress: addr SetSize: s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: bytes part layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          indexableSizeOfBytesPart: bpRef IfFail: fb = ( |
@@ -4533,6 +4680,14 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nextEntryForEntryAtAddress: addr Layout: aLayout = ( |
+            | 
+            aLayout nextEntryForRemoteEntryAtAddress: addr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: immediate layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          oopForValue: v WithLayout: lo = ( |
@@ -4545,6 +4700,14 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         
          oopOfMem: mem = ( |
             | layouts memoryObject oopOfRemoteMem: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: layouts\x7fCategory: free list layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sizeForEntryAtAddress: addr Layout: aLayout = ( |
+            | 
+            aLayout sizeForRemoteEntryAtAddress: addr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {

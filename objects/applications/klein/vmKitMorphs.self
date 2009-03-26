@@ -1,6 +1,7 @@
  '$Revision: 30.10 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -667,8 +668,8 @@ downloaded and debugged. -- dmu 1/02\x7fModuleInfo: Creator: globals kleinAndYod
         
          buildProgramForEvent: evt = ( |
             | 
-            isProfilingOn ifTrue: [[buildProgramIfFail: [|:e| ^ reportError: e Event: evt]] profileSlice ]
-                           False: [ buildProgramIfFail: [|:e| ^ reportError: e Event: evt]               ].
+            isProfilingOn ifTrue: [[buildProgramIfFail: [|:e| ^ reportError: e Event: evt]] profile: 0.02 ]
+                           False: [ buildProgramIfFail: [|:e| ^ reportError: e Event: evt]                ].
             self).
         } | ) 
 

@@ -1,6 +1,7 @@
  '$Revision: 30.7 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -9,7 +10,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: spaces\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         setTrailingMarkIn: aSpace = ( |
+         setTrailingMarkAt: addr In: aSpace = ( |
             | 
             childMustImplement).
         } | ) 
@@ -81,9 +82,9 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifOop: oop At: a MarksStartOfObject: objBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
+         ifOopAt: a MarksStartOfObject: objBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
             | 
-            (layouts object isMark: oop) ifTrue: objBlk False: elseBlk).
+            theVM machineMemory ifOopAt: a IsObject: elseBlk IsMark: objBlk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
@@ -97,14 +98,23 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         segregatedOopsDo: blk = ( |
+         segregatedOopsMatching: desiredOop Do: blk = ( |
             | 
             "Optimization - we can just iterate straight from
              objsBottom to objsTop. -- Adam, 5/06"
+
+            "Um, wait, that'll only work in the remote case. We can't
+             run this code in the live local image; it'll need the
+             'oops' to be the actual object references. -- Adam, 3/09"
+            theVM lens = kleinAndYoda localObjectLens ifTrue: [
+              halt. "Fix this later; we're not even using segregated
+                     spaces right now. -- Adam, 3/09"
+            ].
+
             theVM machineMemory
                          wordsAt: objsBottom
                             Size: (objsTop - objsBottom) / oopSize
-                              Do: blk.
+                              Do: [|:w. :addr| (w _Eq: desiredOop) ifTrue: [blk value: w With: addr]].
             self).
         } | ) 
 
@@ -125,17 +135,16 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             [_NoGCAllowed].
             searchFreeOopsListsForSpaceForAnObjectOfSize: nOops AndDo: [|:addr. :previousAddr. :i. :size. nextEntry. extraOops|
               "Remove the entry from the list."
-              nextEntry: vmKit layouts freeOopsListEntry nextEntryForRemoteEntryAtAddress: addr.
+              nextEntry: vmKit layouts freeOopsListEntry nextEntryForEntryAtAddress: addr.
               previousAddr ifNil: [setFirstEntryInListAt: i To: nextEntry]
-                        IfNotNil: [vmKit layouts freeOopsListEntry forRemoteEntryAtAddress: previousAddr SetNextEntry: nextEntry].
+                        IfNotNil: [vmKit layouts freeOopsListEntry forEntryAtAddress: previousAddr SetNextEntry: nextEntry].
 
               "If we used a chunk that was too big, put the extra oops back on the appropriate list."
               extraOops: size - nOops.
               extraOops = 0 ifFalse: [| extraOopsAddr |
                 extraOopsAddr: addr + (nOops * oopSize).
                 record: extraOops FreeOopsAtAddress: extraOopsAddr.
-                machineMemory at: extraOopsAddr
-                          PutOop: theVM vmKit layouts mark trailingMark.
+                setTrailingMarkAt: extraOopsAddr.
               ].
               addr
             ]).
@@ -188,22 +197,23 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifOop: oop At: a MarksStartOfObject: objBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
-             nextOop.
+         ifOopAt: a MarksStartOfObject: objBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
+             mm.
             | 
-            (layouts object isMark: oop) ifFalse: [^ elseBlk value].
+            mm: theVM machineMemory.
+            mm ifOopAt: a IsObject: elseBlk IsMark: [|:mv. nextOop |
+              nextOop: mm oopAt: a + oopSize.
 
-            nextOop: theVM machineMemory oopAt: a + oopSize.
+              "nextOop should be either a mem (if there's an object here)
+               or a smi (if this is free space). -- Adam, 5/06"
+              [layouts memoryObject mapField fixedIndex = 1] assert.
+              [layouts freeOopsListEntry sizeIndex      = 1] assert.
 
-            "nextOop should be either a mem (if there's an object here)
-             or a smi (if this is free space). -- Adam, 5/06"
-            [layouts memoryObject mapField fixedIndex = 1] assert.
-            [layouts freeOopsListEntry sizeIndex      = 1] assert.
+              (layouts object isSmi: nextOop) ifTrue: [^ freeBlk value: layouts smi valueOf: nextOop].
+              [layouts object isMem: nextOop] assert.
 
-            (layouts object isSmi: nextOop) ifTrue: [^ freeBlk value: layouts smi valueOf: nextOop].
-            [layouts object isMem: nextOop] assert.
-
-            objBlk value).
+              objBlk value: mv
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
@@ -238,8 +248,8 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             | 
             [nOops >= vmKit layouts freeOopsListEntry numberOfFields] assert.
             i: indexForListContainingEntriesOfSize: nOops.
-            vmKit layouts freeOopsListEntry forRemoteEntryAtAddress: addr SetNextEntry: firstEntryInListAt: i.
-            vmKit layouts freeOopsListEntry forRemoteEntryAtAddress: addr SetSize: nOops.
+            vmKit layouts freeOopsListEntry forEntryAtAddress: addr SetNextEntry: firstEntryInListAt: i.
+            vmKit layouts freeOopsListEntry forEntryAtAddress: addr SetSize: nOops.
             setFirstEntryInListAt: i To: vmKit layouts smi decode: addr.
             self).
         } | ) 
@@ -249,9 +259,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         
          searchFreeOopsListsForSpaceForAnObjectOfSize: nOops AndDo: blk = ( |
              addr.
-             entry.
              i.
-             nextAddr.
              previousAddr.
              s.
             | 
@@ -266,13 +274,13 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
                          ifFalse: 1
                             True: [vmKit layouts freeOopsListEntry numberOfFields]). "don't leave holes too small for an entry"
             ].
-            s: vmKit layouts freeOopsListEntry sizeForRemoteEntryAtAddress: addr.
+            s: vmKit layouts freeOopsListEntry sizeForEntryAtAddress: addr.
             i = lastFreeOopsListIndex ifTrue: [
               [vmKit layouts freeOopsListEntry isAnEntryOfSize: s AcceptableForHoldingAnObjectOfSize: nOops] whileFalse: [
                  previousAddr: addr.
-                 addr: vmKit layouts smi encode: vmKit layouts freeOopsListEntry nextEntryForRemoteEntryAtAddress: addr.
+                 addr: vmKit layouts smi encode: vmKit layouts freeOopsListEntry nextEntryForEntryAtAddress: addr.
                  addr = 0 ifTrue: [^ 0].
-                 s: vmKit layouts freeOopsListEntry sizeForRemoteEntryAtAddress: addr.
+                 s: vmKit layouts freeOopsListEntry sizeForEntryAtAddress: addr.
               ].
             ].
 
@@ -284,24 +292,18 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         segregatedOopsDo: blk = ( |
+         segregatedOopsMatching: desiredOop Do: blk = ( |
              a.
-             mm.
             | 
-            mm: theVM machineMemory.
             a: objsBottom.
-            [a < objsTop] whileTrue: [| oop |
-              oop: mm oopAt: a.
-
-              ifOop: oop
-              At: a
+            [a < objsTop] whileTrue: [
+              ifOopAt: a
               MarksStartOfFreeOops: [|:s|
                 "Skip over the free oops."
                 a: a + (s * oopSize).
               ]
-              Else: [
-                "Just do this oop."
-                blk value: oop With: a.
+              Else: [|:oop|
+                (oop _Eq: desiredOop) ifTrue: [blk value: oop With: a].
                 a: a + oopSize.
               ].
             ].
@@ -331,17 +333,17 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: spaces\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         setTrailingMarkIn: aSpace = ( |
+         setTrailingMarkAt: addr In: aSpace = ( |
             | 
-            aSpace setLocalTrailingMark).
+            aSpace setLocalTrailingMarkAt: addr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: spaces\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         setTrailingMarkIn: aSpace = ( |
+         setTrailingMarkAt: addr In: aSpace = ( |
             | 
-            aSpace setRemoteTrailingMark).
+            aSpace setRemoteTrailingMarkAt: addr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
@@ -499,10 +501,9 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifOop: oop At: a MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
+         ifOopAt: a MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
             | 
-                           ifOop: oop
-                              At: a
+                         ifOopAt: a
               MarksStartOfObject: elseBlk
             MarksStartOfFreeOops: freeBlk
                             Else: elseBlk).
@@ -554,17 +555,12 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         
          objectAddressesDo: blk = ( |
              a.
-             mm.
              ot.
             | 
-            mm: theVM machineMemory.
             a: objsBottom.
             ot: objsTop.
-            [a < ot] whileTrue: [| oop |
-              oop: mm oopAt: a.
-
-              ifOop: oop
-              At: a
+            [a < ot] whileTrue: [
+              ifOopAt: a
               MarksStartOfObject: [
                 blk value: a.
                 a: a + oopSize.
@@ -599,9 +595,9 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopsDo: blk = ( |
+         oopsMatching: desiredOop Do: blk = ( |
             | 
-            segregatedOopsDo: blk).
+            segregatedOopsMatching: desiredOop Do: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
@@ -819,18 +815,18 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
          'Category: allocating\x7fCategory: double dispatch\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         setLocalTrailingMark = ( |
+         setLocalTrailingMarkAt: addr = ( |
             | 
-            objsTop _UnsafeWriteTrailingMark.
+            addr _UnsafeWriteTrailingMark.
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
          'Category: allocating\x7fCategory: double dispatch\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         setRemoteTrailingMark = ( |
+         setRemoteTrailingMarkAt: addr = ( |
             | 
-            machineMemory at: objsTop
+            machineMemory at: addr
                       PutOop: layouts mark trailingMark.
             self).
         } | ) 
@@ -840,7 +836,15 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         
          setTrailingMark = ( |
             | 
-            theVM lens setTrailingMarkIn: self).
+            setTrailingMarkAt: objsTop).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
+        
+         setTrailingMarkAt: addr = ( |
+            | 
+            theVM lens setTrailingMarkAt: addr In: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
@@ -1002,10 +1006,10 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifOop: oop At: a MarksStartOfBV: bvBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
+         ifOopAt: a MarksStartOfBV: bvBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
             | 
-                           ifOop: oop
-                              At: a
+            [aaa]. halt. "Um, no. Sometimes this elseBlk wants an oop, and sometimes a mark value? Not cool"
+                         ifOopAt: a
                   MarksStartOfBV: bvBlk
                MarksStartOfNonBV: elseBlk
             MarksStartOfFreeOops: freeBlk
@@ -1015,14 +1019,13 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifOop: oop At: a MarksStartOfBV: bvBlk MarksStartOfNonBV: nonBVBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
+         ifOopAt: a MarksStartOfBV: bvBlk MarksStartOfNonBV: nonBVBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
             | 
-                           ifOop: oop
-                              At: a
-              MarksStartOfObject: [(layouts mark isMarkForByteVector: oop)
-                                        ifTrue: [bvBlk value: (layouts byteVector indexableOriginOfObjectWithAddress: a IfFail: raiseError)
-                                                        With:  layouts byteVector indexableSizeOfObjectWithAddress:   a IfFail: raiseError ]
-                                         False: nonBVBlk]
+                         ifOopAt: a
+              MarksStartOfObject: [|:mv| (layouts mark isMarkValueForByteVector: mv)
+                                            ifTrue: [bvBlk value: (layouts byteVector indexableOriginOfObjectWithAddress: a IfFail: raiseError)
+                                                            With:  layouts byteVector indexableSizeOfObjectWithAddress:   a IfFail: raiseError ]
+                                             False: [nonBVBlk value: mv]]
             MarksStartOfFreeOops: freeBlk
                             Else: elseBlk).
         } | ) 
@@ -1075,17 +1078,12 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         
          objectAddressesDo: blk = ( |
              a.
-             mm.
              ot.
             | 
-            mm: theVM machineMemory.
             a: objsBottom.
             ot: objsTop.
-            [a < ot] whileTrue: [| oop |
-              oop: mm oopAt: a.
-
-              ifOop: oop
-              At: a
+            [a < ot] whileTrue: [
+              ifOopAt: a
               MarksStartOfBV: [|:io. :s|
                 blk value: a.
                 a: a + (io * oopSize) + (s roundUpTo: oopSize).
@@ -1119,22 +1117,16 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
          oopCount = ( |
              nOops <- 0.
             | 
-            oopsDo: [nOops: nOops succ].
+                  oopsDo: [nOops: nOops succ]
+                 MarksDo: [nOops: nOops succ]
+            BytesPartsDo: [].
             nOops).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
-         'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
-        
-         oopsDo: blk = ( |
-            | 
-            oopsDo: blk AndBytesPartsDo: []).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         oopsDo: blk AndBytesPartsDo: bytesBlk = ( |
+         oopsDo: blk MarksDo: markBlk BytesPartsDo: bytesBlk = ( |
              a.
              mm.
              ot.
@@ -1142,29 +1134,42 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
             mm: theVM machineMemory.
             a: objsBottom.
             ot: objsTop.
-            [a < ot] whileTrue: [| oop |
-              oop: mm oopAt: a.
-
-              ifOop: oop
-              At: a
+            [a < ot] whileTrue: [
+              ifOopAt: a
               MarksStartOfBV: [|:io. :s|
+                markBlk value.
+                a: a + oopSize.
                 "Do all the oops of this byteVector, then jump to the end of its bytes."
-                mm wordsAt: a Size: io Do: blk.
-                a: a + (io * oopSize).
+                mm wordsAt: a Size: io pred Do: blk.
+                a: a + (io pred * oopSize).
                 bytesBlk value: s With: a.
                 a: a + (s roundUpTo: oopSize).
+              ]
+              MarksStartOfNonBV: [|:mv|
+                markBlk value.
+                a: a + oopSize.
               ]
               MarksStartOfFreeOops: [|:s|
                 "Skip over the free oops."
                 a: a + (s * oopSize).
               ]
-              Else: [
+              Else: [|:oop|
                 "Just do this oop."
                 blk value: oop With: a.
                 a: a + oopSize.
               ].
             ].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
+         'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopsMatching: desiredOop Do: blk = ( |
+            | 
+                  oopsDo: [|:oop. :addr| (desiredOop _Eq: oop) ifTrue: [blk value: oop With: addr]]
+                 MarksDo: []
+            BytesPartsDo: []).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
@@ -1256,6 +1261,14 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
          'ModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
          base* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'base' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedTenuredSpace' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copy = ( |
+            | 
+            resend.copy freeOopsLists: freeOopsLists copy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedTenuredSpace' -> 'parent' -> () From: ( | {

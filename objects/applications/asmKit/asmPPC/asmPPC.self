@@ -1,6 +1,7 @@
  '$Revision: 30.32 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -269,6 +270,18 @@ Used for testing.\x7fModuleInfo: Module: asmPPC InitialContents: FollowSlot\x7fV
          'ModuleInfo: Module: asmPPC InitialContents: FollowSlot\x7fVisibility: private'
         
          bigEndianMixin* = bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'bigEndianMixin' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> () From: ( | {
+         'Category: caches\x7fModuleInfo: Module: asmPPC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         cachedAllRegisterLocations.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> () From: ( | {
+         'Category: caches\x7fModuleInfo: Module: asmPPC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         cachedAllRegisters.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> () From: ( | {
@@ -601,7 +614,7 @@ SlotsToOmit: parent.
         
          registerNameSpacesDo: blk = ( |
             | 
-            "until debeggers for fprs & sprs, just do gprs--dmu 1/02"
+            "until debuggers for fprs & sprs, just do gprs--dmu 1/02"
             blk value: gprs.
             "
               blk value: fprs.

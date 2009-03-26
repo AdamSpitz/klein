@@ -1,6 +1,7 @@
  '$Revision: 30.18 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -202,6 +203,18 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: asmSPARC InitialContents: FollowSlot\x7fVisibility: private'
         
          bigEndianMixin* = bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'bigEndianMixin' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'sparc' -> () From: ( | {
+         'Category: caches\x7fModuleInfo: Module: asmSPARC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         cachedAllRegisterLocations.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'sparc' -> () From: ( | {
+         'Category: caches\x7fModuleInfo: Module: asmSPARC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         cachedAllRegisters.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'sparc' -> () From: ( | {
