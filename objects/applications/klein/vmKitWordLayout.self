@@ -1,6 +1,7 @@
  '$Revision: 30.7 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -45,7 +46,8 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
         
          isValueOfWordTrue: w = ( |
             | 
-            (inPlaceValueOfWord: w) asBoolean).
+            "Use the primitive to avoid cloning. -- Adam, Mar. 2009"
+            (inPlaceValueOfWord: w) _IntNE: 0).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'wordLayoutMixin' -> () From: ( | {

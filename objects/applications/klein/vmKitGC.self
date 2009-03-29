@@ -25,6 +25,7 @@ See the LICENSE file for license information.
              sizeInBytes.
             | 
             oldAddr: layouts memoryObject addressOfMem: o.
+            ('about to copy object from ', oldAddr printString, ' to ', newAddr printString, '\n') _StringPrint.
             sizeInBytes: nOops _IntMul: oopSize.
             endAddr: newAddr _IntAdd: sizeInBytes.
 
@@ -202,21 +203,55 @@ See the LICENSE file for license information.
          'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
         
          recycleOopsOfObjectsIn: aSpace = ( |
+             a.
+             elseBlk.
+             freeBlk.
+             objBlk.
+             objectLocator.
+             oopSize.
+             ot.
             | 
-            aSpace objectAddressesDo: [|:addr. o. recordedAddr. hasBeenScavenged. mv. oid |
-              o:            layouts memoryObject memForAddress: addr.
+
+            "Code contorted so as to avoid cloning anything during the loop. -- Adam, Mar. 2009"
+
+            objectLocator: theVM objectLocator.
+
+            a:       aSpace objsBottom.
+            ot:      aSpace objsTop.
+            oopSize: aSpace oopSize.
+
+            objBlk: [|:mv. o. byteSize. recordedAddr. hasBeenScavenged. oid. map|
+              o:            layouts memoryObject memForAddress: a.
               recordedAddr: layouts memoryObject addressOfMem:  o.
-              hasBeenScavenged: addr != recordedAddr.
-              __BranchIfTrue: hasBeenScavenged To: 'done'.
-                  "has not been scavenged"
-                  [todo optimize time gc]. "Haven't we already gotten the object's mark?"
-              _Breakpoint: 'has not been scavenged'.
-                  mv: layouts memoryObject markValueOf: o.
-                  oid: layouts mark oidOfMarkValue: mv.
-                  theVM objectLocator invalidateEntryForOID: oid.
-              _Breakpoint: 'OK, recycled the oop'.
-              __DefineLabel: 'done'.
+
+              [aaa]. "What if it's an int32? We need a polymorphic way to check for
+                      equality without cloning anything. -- Adam, Mar. 2009"
+              hasBeenScavenged: (a _Eq: recordedAddr) not.
+
+              __BranchIfTrue: hasBeenScavenged To: 'doneRecyclingThisOne'.
+                  oid: layouts mark oidOfMarkAtLocalAddress: a.
+                  objectLocator invalidateEntryForLocalOID: oid.
+              __DefineLabel: 'doneRecyclingThisOne'.
+
+              map: layouts memoryObject mapOfObjectWithAddress: a.
+              byteSize: oopSize _IntMul: map myLayout wordSizeOfObjectWithAddress: a.
+              a:  a _IntAdd: byteSize.
             ].
+
+            freeBlk: [|:s|
+              "Skip over the free oops."
+              a:  a _IntAdd:  s _IntMul: oopSize
+            ].
+
+            elseBlk: raiseError. "Should be skipping over all of those."
+
+            __DefineLabel: 'startOfLoop'.
+            __BranchIfFalse: (a _IntLT: ot) To: 'done'.
+            aSpace ifOopAt: a MarksStartOfObject: objBlk MarksStartOfFreeOops: freeBlk Else: elseBlk.
+            __BranchTo: 'startOfLoop'.
+            __DefineLabel: 'done'.
+
+            aSpace objsTop: aSpace objsBottom.
             self).
         } | ) 
 
@@ -301,15 +336,12 @@ See the LICENSE file for license information.
             rememberedSet removeAllAndDo: [|:o| recursiveScavengeYoungObjectsIn: o].
             possiblyLiveOopsDo:           [|:o| recursiveScavenge: o].
 
-            [todo cleanup gc]. _Breakpoint: 'Cool! Now what?'.
+            'Done copying the live objects to tenuredSpace, just gotta recycle oops now. But that can take a while.\n' _StringPrint.
             movedSomeObjects.
 
             recycleOopsOfObjectsIn: previousSpace.
-            _Breakpoint: 'recycled edenSpace oops'.
             _TheVM universe switchAllocationSpaceTo: previousSpace.
-            _Breakpoint: 'switched back to previousSpace'.
             recycleOopsOfObjectsIn: garbageSpace.
-            _Breakpoint: 'recycled garbageSpace oops. Done!'.
             'Done scavenging\n' _StringPrint.
 
             self).

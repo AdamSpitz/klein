@@ -331,7 +331,7 @@ to just keep upping it by hand.
         
          getANewOID = ( |
             | 
-            objectLocator withoutCloningAnythingAllocateAnOID).
+            withoutCloningAnythingGetANewOID).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {

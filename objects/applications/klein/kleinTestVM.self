@@ -286,9 +286,9 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda)
 	& (reflect: kleinAndYoda layouts)
-	& (reflect: kleinAndYoda)) asVmKitExportList) From: ( |
+	& (reflect: klein)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -610,11 +610,15 @@ SlotsToOmit: parent prototype safety.
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          start = ( |
+             false = bootstrap stub -> 'globals' -> 'false' -> ().
+             true = bootstrap stub -> 'globals' -> 'true' -> ().
             | 
             testPrimitiveFailure.
             testFixAndContinue: 10 With: 11 And: 6.
             testOnNonLocalReturn.
             testMapsOfObjectLiterals.
+            testControlFlowOrderCodeGeneration: true.
+            testControlFlowOrderCodeGeneration: false.
             "Uncomment this to see the proxy bug. -- Adam, 12/05"
             "I think the bug is fixed now. -- DMU, 12/05"
             [updatingTester testUpdatingUIWhileRunning].
@@ -625,6 +629,26 @@ SlotsToOmit: parent prototype safety.
             b. "for incremental update test -- dmu 8/04"
             _Breakpoint: 'done'.
             three).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testControlFlowOrderCodeGeneration: b = ( |
+             x.
+            | 
+            __BranchIfFalse: b To: 'arglebargle'.
+            x: 3.
+            __BranchTo: 'done'.
+            x: 4. "Should never get here."
+            __DefineLabel: 'arglebargle'.
+            x: 5.
+            __DefineLabel: 'done'.
+            x: x _IntAdd: 10.
+            "x should be 13 if b was true, 15 if it was false. This test used to
+             crash the VM in the false case, because the compiler wasn't inserting
+             a branch to the controlFlowSuccWhenFallingThrough. -- Adam, Mar. 2009"
+            x).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {

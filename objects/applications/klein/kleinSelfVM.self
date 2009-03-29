@@ -174,20 +174,20 @@ to just keep upping it by hand.
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: traits abstractSetOrDictionary equalityComparisonMixin)
-	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+	& (reflect: kleinAndYoda layouts)
+	& (reflect: kleinAndYoda maps)
+	& (reflect: lobby)
 	& (reflect: traits block)
 	& (reflect: slots)
 	& (reflect: traits abstractSet values)
-	& (reflect: lobby)
-	& (reflect: kleinAndYoda maps)
 	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
-	& (reflect: kleinAndYoda layouts)
-	& (reflect: kleinAndYoda)
-	& (reflect: klein mirrors)
+	& (reflect: klein)
 	& (reflect: klein stackFrames)
-	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
+	& (reflect: klein mirrors)
 	& (reflect: klein sendDescs)
-	& (reflect: klein)) asVmKitExportList) From: ( |
+	& (reflect: kleinAndYoda)
+	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -4528,56 +4528,56 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: assemblerSystems ppc fields)
-	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+	& (reflect: assemblerSystems framework generators)
+	& (reflect: klein sendDescs)
 	& (reflect: traits)
-	& (reflect: assemblerSystems ppc crBits)
-	& (reflect: abstractBytecodeInterpreter bytecodes)
-	& (reflect: klein compiler1s abstract prototypes irNodes)
-	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
-	& (reflect: assemblerSystems ppc)
-	& (reflect: lobby)
 	& (reflect: klein compiler1s abstract prototypes dataValues)
-	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
-	& (reflect: bytecodeFormat instructionSets)
 	& (reflect: assemblerSystems ppc operands)
+	& (reflect: abstractBytecodeInterpreter bytecodes)
 	& (reflect: assemblerSystems ppc crFields)
+	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
+	& (reflect: lobby)
+	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
+	& (reflect: klein compiler1s abstract prototypes irNodes)
+	& (reflect: bytecodeFormat instructionSets)
+	& (reflect: assemblerSystems ppc)
+	& (reflect: assemblerSystems ppc toMasks)
+	& (reflect: klein virtualMachines)
+	& (reflect: klein stackFrames)
+	& (reflect: klein mirrors)
 	& (reflect: kleinAndYoda layouts)
+	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
+	& (reflect: assemblerSystems)
+	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
+	& (reflect: klein compiler1s abstract)
+	& (reflect: assemblerSystems ppc generators)
+	& (reflect: assemblerSystems ppc fprs)
 	& (reflect: assemblerSystems ppc gprs)
+	& (reflect: assemblerSystems ppc instructionTemplates)
 	& (reflect: assemblerSystems ppc sprs)
 	& (reflect: klein compiler1s abstract prototypes)
-	& (reflect: klein mirrors)
-	& (reflect: assemblerSystems)
-	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
-	& (reflect: assemblerSystems ppc fprs)
-	& (reflect: assemblerSystems ppc generators)
-	& (reflect: assemblerSystems ppc instructionTemplates)
-	& (reflect: klein stackFrames)
-	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
-	& (reflect: klein relocators)
-	& (reflect: klein virtualMachines)
-	& (reflect: klein compiler1s abstract)
 	& (reflect: globals)
 	& (reflect: traits block)
 	& (reflect: slots)
 	& (reflect: traits collection ascendingOrder)
-	& (reflect: kleinAndYoda maps)
-	& (reflect: kleinAndYoda lookupType)
-	& (reflect: klein locations)
 	& (reflect: assemblerSystems framework)
-	& (reflect: klein compiler1s abstract prototypes codeGenerators)
-	& (reflect: traits slots)
 	& (reflect: klein compiler1s)
+	& (reflect: kleinAndYoda lookupType)
+	& (reflect: kleinAndYoda maps)
+	& (reflect: klein locations)
+	& (reflect: traits slots)
 	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
+	& (reflect: klein compiler1s abstract prototypes codeGenerators)
 	& (reflect: traits abstractSet values)
-	& (reflect: assemblerSystems ppc toMasks)
-	& (reflect: assemblerSystems framework generators)
+	& (reflect: klein relocators)
 	& (reflect: transporter moduleInfo)
-	& (reflect: kleinAndYoda)
-	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+	& (reflect: assemblerSystems ppc crBits)
 	& (reflect: klein compiler1s abstract prototypes allocators)
-	& (reflect: klein sendDescs)
-	& (reflect: klein)) asVmKitExportList) From: ( |
+	& (reflect: assemblerSystems ppc fields)
+	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
+	& (reflect: klein)
+	& (reflect: kleinAndYoda)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -5045,6 +5045,7 @@ SlotsToOmit: parent.
         
          run = ( |
             | 
+            testTranslatingBetweenAddressAndOop.
             testGeneratingALotOfGarbage.
             self).
         } | ) 
@@ -5063,6 +5064,30 @@ SlotsToOmit: parent.
               i printString _StringPrint. ' GC test iteration\n' _StringPrint.
               vector copySize: vectorSize.
             ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'garbageCollection' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         testTranslatingBetweenAddressAndOop = ( |
+             a1.
+             a2.
+             aa2.
+             o1.
+             o2.
+             oo1.
+            | 
+            o1:  [hereIsABlock].
+            a1:  theVM layouts memoryObject addressOfMem:  o1.
+            oo1: theVM layouts memoryObject memForAddress: a1.
+            assert: o1 _Eq: oo1.
+
+            a2:  theVM universe edenSpace objsBottom. "Let's try the first object in the space."
+            o2:  theVM layouts memoryObject memForAddress: a2.
+            aa2: theVM layouts memoryObject addressOfMem:  o2.
+            assert: a2 = aa2.
+
             self).
         } | ) 
 

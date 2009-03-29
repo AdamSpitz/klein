@@ -1,6 +1,7 @@
  '$Revision: 30.12 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -1365,7 +1366,7 @@ Fixup the oops. -- dmu 3/04\x7fModuleInfo: Module: vmKitVMImage InitialContents:
                   m slots do: [|:s|
                     [|:exit. kleinMir. oop|
                       oop:  oopForOriginalMirror: s holder IfAbsent: exit.
-                      kleinMir: myVM mirrorForOop: oop.
+                      kleinMir: myVM mirrorFor: oop.
                       (kleinMir includesKey: s name) ifTrue: [
                         aBlock value: s.
                       ].

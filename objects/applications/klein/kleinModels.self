@@ -1,6 +1,7 @@
  '$Revision: 30.43 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -1722,7 +1723,7 @@ text widget. -ma 3/02\x7fModuleInfo: Module: kleinModels InitialContents: Follow
             | 
             evt sourceHand attach:
               world outlinerForMirror:
-                activation myProcess theVM mirrorForOop: oop.
+                activation myProcess theVM mirrorFor: oop.
             self).
         } | ) 
 

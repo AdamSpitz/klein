@@ -1,6 +1,7 @@
  '$Revision: 30.9 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -555,7 +556,7 @@ SlotsToOmit: lowBuffer parent.
             io: indexableOriginOf: o IfFail: aVerifier failBlock.
              s: indexableSizeOf:   o IfFail: aVerifier failBlock.
             endOfOopsAddr: origAddr + (io * oopSize).
-            endAddr: endOfOopsAddr + (s roundUpTo: oopSize).
+            endAddr: endOfOopsAddr + (bytesNeededToHoldBytes: s).
             mm: theVM machineMemory.
             lens: theVM lens.
             [|:exit. tag|

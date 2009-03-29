@@ -54,14 +54,17 @@ See the LICENSE file for license information.
             _NoGCAllowed.
 
             "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e|
+            failBlock: [|:e. r|
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
               _Breakpoint: 'ran out of memory; about to do a scavenge'.
               vmKit garbageCollector scavenge.
               _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
-              [todo gc]. _Breakpoint: 'not implemented yet: try the clone again'.
+              r: cloneLocalObject: theOriginal IfFail: raiseError.
+              __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
-              ^ fb value: e
+              r: fb value: e.
+              __DefineLabel: 'done'.
+              ^ r
             ].
 
             nextWordIndex: indexToStartCopyingContents.
@@ -122,14 +125,17 @@ See the LICENSE file for license information.
             [todo cleanup]. "Can we get rid of the duplication between this method and cloneLocalObject:IfFail: ?"
 
             "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e|
+            failBlock: [|:e. r|
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
               _Breakpoint: 'ran out of memory; about to do a scavenge'.
               vmKit garbageCollector scavenge.
               _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
-              [todo gc]. _Breakpoint: 'not implemented yet: try the clone again'.
+              r: cloneLocalObject: theOriginal Size: size FillingWith: filler IfFail: raiseError.
+              __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
-              ^ fb value: e
+              r: fb value: e.
+              __DefineLabel: 'done'.
+              ^ r
             ].
 
             nextWordIndex: indexToStartCopyingContents.
@@ -245,19 +251,20 @@ See the LICENSE file for license information.
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
          fillNewLocalObject: theClone With: filler Size: size StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
-             i <- 0.
+             i.
             | 
+            i: startingWordIndex.
 
             __DefineLabel: 'fillerLoop'.
 
               __BranchIfFalse: (i _IntLT: size)
                            To: 'fillerDone'.
 
-              for: theClone At: (startingWordIndex _IntAdd: i) Put: filler IfFail: failBlock.
+              for: theClone At: i Put: filler IfFail: failBlock.
 
               i: i _IntAdd: 1.
 
-              __BranchIfFalse: (maxWordSize _IntLE:  (startingWordIndex _IntAdd: i))
+              __BranchIfFalse: (maxWordSize _IntLE: i)
                            To: 'fillerLoop'.
 
             [todo gc]. "Not implemented: do a GC and try again."
@@ -267,7 +274,7 @@ See the LICENSE file for license information.
 
             __DefineLabel: 'fillerDone'.
 
-            startingWordIndex _IntAdd: i).
+            i).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -334,14 +341,17 @@ See the LICENSE file for license information.
             _NoGCAllowed.
 
             "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e|
+            failBlock: [|:e. r|
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
               _Breakpoint: 'ran out of memory; about to do a scavenge'.
               vmKit garbageCollector scavenge.
               _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
-              [todo gc]. _Breakpoint: 'not implemented yet: try the clone again'.
+              r: cloneLocalObject: theOriginal IndexableSize: byteSize IfFail: raiseError.
+              __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
-              ^ fb value: e
+              r: fb value: e.
+              __DefineLabel: 'done'.
+              ^ r
             ].
 
             nextWordIndex: indexToStartCopyingContents.
@@ -499,14 +509,6 @@ See the LICENSE file for license information.
                          NotExceeding: maxWordSize
                  AndLeaveRoomForBytes: nBytes
                                IfFail: failBlock).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
-         'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
-        
-         oopsNeededToHoldBytes: nBytes = ( |
-            | 
-            (nBytes _IntAdd:  oopSize _IntSub: 1) _IntDiv: oopSize).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {

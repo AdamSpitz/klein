@@ -200,19 +200,21 @@ See the LICENSE file for license information.
          ifOopAt: a MarksStartOfObject: objBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
              mm.
             | 
+            "Got to avoid cloning, since this is used while recycling an OID. -- Adam, Mar. 2009"
             mm: theVM machineMemory.
-            mm ifOopAt: a IsObject: elseBlk IsMark: [|:mv. nextOop |
-              nextOop: mm oopAt: a + oopSize.
+            mm ifOopAt: a IsObject: elseBlk IsMark: [|:mv. nextOop. r |
+              nextOop: mm oopAtOffset: 1 From: a.
 
               "nextOop should be either a mem (if there's an object here)
                or a smi (if this is free space). -- Adam, 5/06"
-              [layouts memoryObject mapField fixedIndex = 1] assert.
-              [layouts freeOopsListEntry sizeIndex      = 1] assert.
 
-              (layouts object isSmi: nextOop) ifTrue: [^ freeBlk value: layouts smi valueOf: nextOop].
-              [layouts object isMem: nextOop] assert.
-
-              objBlk value: mv
+              __BranchIfTrue: (layouts object isSmi: nextOop) To: 'freeOops'.
+              r:  objBlk value: mv.
+              __BranchTo: 'done'.
+              __DefineLabel: 'freeOops'.
+              r: freeBlk value: layouts smi valueOf: nextOop.
+              __DefineLabel: 'done'.
+              r
             ]).
         } | ) 
 
@@ -551,7 +553,7 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
-         'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
          objectAddressesDo: blk = ( |
              a.
@@ -1006,25 +1008,12 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifOopAt: a MarksStartOfBV: bvBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
-            | 
-            [aaa]. halt. "Um, no. Sometimes this elseBlk wants an oop, and sometimes a mark value? Not cool"
-                         ifOopAt: a
-                  MarksStartOfBV: bvBlk
-               MarksStartOfNonBV: elseBlk
-            MarksStartOfFreeOops: freeBlk
-                            Else: elseBlk).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
-         'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
-        
          ifOopAt: a MarksStartOfBV: bvBlk MarksStartOfNonBV: nonBVBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
             | 
                          ifOopAt: a
               MarksStartOfObject: [|:mv| (layouts mark isMarkValueForByteVector: mv)
-                                            ifTrue: [bvBlk value: (layouts byteVector indexableOriginOfObjectWithAddress: a IfFail: raiseError)
-                                                            With:  layouts byteVector indexableSizeOfObjectWithAddress:   a IfFail: raiseError ]
+                                            ifTrue: [bvBlk value: (layouts byteVector indexableOriginOfObjectWithAddress: a)
+                                                            With:  layouts byteVector indexableSizeOfObjectWithAddress:   a ]
                                              False: [nonBVBlk value: mv]]
             MarksStartOfFreeOops: freeBlk
                             Else: elseBlk).
@@ -1078,27 +1067,48 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         
          objectAddressesDo: blk = ( |
              a.
+             elseBlk.
+             freeBlk.
+             objBlk.
+             oopSize.
              ot.
             | 
+
+            "Code contorted so as to avoid cloning anything during the loop,
+             so that this code can be used when recycling OIDs. -- Adam, Mar. 2009"
+
             a: objsBottom.
             ot: objsTop.
-            [a < ot] whileTrue: [
-              ifOopAt: a
-              MarksStartOfBV: [|:io. :s|
+            oopSize: self oopSize.
+
+            objBlk: [|:mv. io. s. newA|
+                __BranchIfFalse: (layouts mark isMarkValueForByteVector: mv) To: 'notBV'.
+                io:  layouts byteVector indexableOriginOfObjectWithAddress: a.
+                 s:  layouts byteVector indexableSizeOfObjectWithAddress:   a.
                 blk value: a.
-                a: a + (io * oopSize) + (s roundUpTo: oopSize).
-              ]
-              MarksStartOfNonBV: [
+                newA: a _IntAdd: (io _IntMul: oopSize) _IntAdd: (layouts byteVector bytesNeededToHoldBytes: s).
+                __BranchTo: 'doneObject'.
+                __DefineLabel: 'notBV'.
                 blk value: a.
-                a: a + oopSize.
-              ]
-              MarksStartOfFreeOops: [|:s|
+                newA: a _IntAdd: oopSize.
+                __DefineLabel: 'doneObject'.
+                newA
+            ].
+
+            freeBlk: [|:s|
                 "Skip over the free oops."
-                a: a + (s * oopSize).
-              ]
-              Else: [
-                a: a + oopSize.
-              ].
+                a _IntAdd:  s _IntMul: oopSize
+            ].
+
+            elseBlk: [
+                a _IntAdd: oopSize
+            ].
+
+            [a _IntLT: ot] whileTrue: [
+              a: ifOopAt: a
+                 MarksStartOfObject: objBlk
+                 MarksStartOfFreeOops: freeBlk
+                 Else: elseBlk.
             ].
             self).
         } | ) 

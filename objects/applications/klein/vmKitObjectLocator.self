@@ -89,10 +89,17 @@ SlotsToOmit: parent.
          'Category: mapping oids to addresses\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
         
          addressForElement: shiftedAddress IfNotReallyAnAddress: fb = ( |
+             r.
             | 
-            (reflect: shiftedAddress) isReflecteeFloat
-               ifTrue: [fb value: 'unallocated']
-                False: [vmKit layouts smi encode: shiftedAddress]).
+            "Avoid cloning so that this can be used when recycling OIDs."
+            __BranchIfTrue: (isEntryInvalid: shiftedAddress) To: 'notReallyAnAddress'.
+            r: shiftedAddress _IntLogicalShiftLeft: vmKit tag size.
+            [aaa wrong. should be: r: vmKit layouts smi encode: shiftedAddress.].
+            __BranchTo: 'done'.
+            __DefineLabel: 'notReallyAnAddress'.
+            r: fb value: 'unallocated'.
+            __DefineLabel: 'done'.
+            r).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
@@ -272,11 +279,26 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
          'Category: invalid entries\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
+         invalidateEntryForLocalOID: oid = ( |
+             e.
+            | 
+            "Gotta make sure to avoid allocating any new
+             OIDs while recycling one - otherwise there's
+             no point. :) -- Adam, Mar. 2009"
+            e: invalidEntryForLocalOID: oid.
+            _At: oid Put: lastInvalidEntry.
+            lastInvalidEntry: e.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: invalid entries\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
          invalidateEntryForOID: oid = ( |
              e.
             | 
-            at: oid Put: lastInvalidEntry.
             e: invalidEntryForOID: oid.
+            at: oid Put: lastInvalidEntry.
             lastInvalidEntry: e.
             self).
         } | ) 
@@ -294,6 +316,25 @@ SlotsToOmit: parent.
             ts = timestamp ifTrue: [^ self].
             reloadFromDebuggee.
             timestamp: ts).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: mapping oids to addresses\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isEntryInvalid: entry = ( |
+            | 
+            entry isInvalidObjectLocatorEntry).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: mapping oids to addresses\x7fCategory: double dispatch\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         localAddressForOID: oid = ( |
+             r.
+            | 
+            "Avoid cloning so that this can be used when recycling OIDs."
+            r: _At: oid.
+            addressForElement: r IfNotReallyAnAddress: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
@@ -505,8 +546,11 @@ SlotsToOmit: parent.
              oid.
             | 
             oid: nextFreeOID.
+            __BranchIfTrue:  shouldNotBeAllocatingAnyOIDsRightNow To: 'badTimeToAllocateAnOID'.
             __BranchIfFalse: (oid _IntLT: 0) To: 'ok'.
             _Breakpoint: 'no more free OIDs'.
+            __DefineLabel: 'badTimeToAllocateAnOID'.
+            _Breakpoint: 'This is not a good time to allocate an OID. Perhaps the GC is in the middle of recycling one?'.
             __DefineLabel: 'ok'.
             e: _At: oid.
             lastInvalidEntry: e.
@@ -521,6 +565,12 @@ SlotsToOmit: parent.
             "Duplication with" [recordAddress: addr ForOID: oid].
             "Duplication with" [elementForAddress: addr].
             _At: oid Put: addr _IntArithmeticShiftRight: vmKit tag size).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjectLocator InitialContents: InitializeToExpression: (false)\x7fVisibility: private'
+        
+         shouldNotBeAllocatingAnyOIDsRightNow <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
@@ -752,7 +802,7 @@ SlotsToOmit: parent.
          addressOfLocalMem: mem = ( |
             | 
             _NoGCAllowed.
-            addressForOID: oidOfLocalMem: mem).
+            localAddressForOID: oidOfLocalMem: mem).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
@@ -814,7 +864,8 @@ SlotsToOmit: parent.
         
          localMemForAddress: address = ( |
             | 
-            localMemForOID: vmKit layouts mark oidOfMarkValue: address _UnsafeMarkValueAtAddress).
+            _NoGCAllowed.
+            localMemForOID: vmKit layouts mark oidOfMarkAtLocalAddress: address).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
@@ -1109,6 +1160,18 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          'ModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
         
          subpartNames <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'float' -> () From: ( | {
+         'Category: Klein\x7fCategory: object locator\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isInvalidObjectLocatorEntry = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'smallInt' -> () From: ( | {
+         'Category: Klein\x7fCategory: object locator\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isInvalidObjectLocatorEntry = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
 

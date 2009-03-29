@@ -3358,6 +3358,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: low-level operations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         andMask: maskReg AndSetCCFrom: fromReg To: toReg = ( |
+            | 
+            a and_To: toReg From: fromReg With: maskReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: block literals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          blockMapCloneCountAssignmentSlot = ( |
@@ -3460,7 +3469,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedMethodStartInstruction.
+         cachedMethodStartInstruction <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -3500,6 +3509,14 @@ SlotsToOmit: parent.
             | 
             a clrrwiTo: toReg From: fromReg By: nBits.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: prologue & epilogue\x7fCategory: saving and restoring the stack frame\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         firstNonVolRegisterToSave = ( |
+            | 
+            gprFor: 32 - frame nonVolRegSaveAreaWordCount).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -4476,14 +4493,45 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
+         generatePrimitiveInto: dstReg Receiver: unusedRcvrReg UnsafeIsMarkAtOffset: wordOffsetSmiReg FromAddress: baseAddrReg IfFail: fh = ( |
+            | 
+            fh assertInt32: baseAddrReg.
+            fh assertInteger: wordOffsetSmiReg.
+            moveValueOfInt32: baseAddrReg ToRegister: dstReg IfFail: fh.
+            [vmKit tag smi  = 0] assert.
+            [vmKit tag size = 2] assert.
+            withTemporaryRegisterDo: [|:tempReg|
+              loadWordAt: dstReg IndexedBy: wordOffsetSmiReg To: tempReg.
+              vmKit layouts object generateIsMark: tempReg Into: dstReg With: self.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
          generatePrimitiveInto: dstReg Receiver: rcvrReg UnsafeMarkValueAtAddressIfFail: fh = ( |
             | 
             fh assertInt32: rcvrReg.
             withTemporaryRegisterDo: [|:addrReg|
               moveValueOfInt32: rcvrReg ToRegister: addrReg IfFail: fh.
               loadValueAtOffset: 0 FromAddressInRegister: addrReg ToRegister: dstReg.
-              layouts mark generateValueOfMark: dstReg Into: dstReg With: self.
             ].
+            layouts mark generateValueOfMark: dstReg Into: dstReg With: self.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: rcvrReg UnsafeOIDOfMarkAtAddressIfFail: fh = ( |
+            | 
+            fh assertInt32: rcvrReg.
+            withTemporaryRegisterDo: [|:addrReg|
+              moveValueOfInt32: rcvrReg ToRegister: addrReg IfFail: fh.
+              loadValueAtOffset: 0 FromAddressInRegister: addrReg ToRegister: dstReg.
+            ].
+            layouts mark generateOIDOfMark: dstReg Into: dstReg With: self.
             self).
         } | ) 
 
@@ -4497,6 +4545,23 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
                load32BitsAtOffset: 0
             FromAddressInRegister: dstReg
                        ToRegister: dstReg.
+            fh assertNotMarkInDstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: unusedRcvrReg UnsafeObjectForOopAtOffset: wordOffsetSmiReg FromAddress: baseAddrReg IfFail: fh = ( |
+            | 
+            fh assertInt32: baseAddrReg.
+            fh assertInteger: wordOffsetSmiReg.
+            moveValueOfInt32: baseAddrReg ToRegister: dstReg IfFail: fh.
+            [vmKit tag smi  = 0] assert.
+            [vmKit tag size = 2] assert.
+            loadWordAt: dstReg
+             IndexedBy: wordOffsetSmiReg
+                    To: dstReg.
             fh assertNotMarkInDstReg.
             self).
         } | ) 
@@ -4889,22 +4954,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: saving and restoring the stack frame\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         loadStoreMultDisp = ( |
-            | 
-            oopSize negate * frame nonVolRegSaveAreaWordCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: saving and restoring the stack frame\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         loadStoreMultReg = ( |
-            | 
-            gprFor: 32 - frame nonVolRegSaveAreaWordCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          loadValueAtOffset: o FromAddressInRegister: addressReg ToRegister: dstReg = ( |
@@ -5023,8 +5072,17 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          moveWord: w ToLocation: loc = ( |
             | 
             materializeDest: loc AndDo: [|:r|
-              a load32To: r From: w.
+              moveWord: w ToRegister: r.
             ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         moveWord: w ToRegister: r = ( |
+            | 
+            a load32To: r From: w.
             self).
         } | ) 
 
@@ -5032,6 +5090,14 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          myAssemblerSystem = bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: prologue & epilogue\x7fCategory: saving and restoring the stack frame\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         nonVolRegSaveAreaOffset = ( |
+            | 
+            oopSize negate * frame nonVolRegSaveAreaWordCount).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -5063,7 +5129,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             withTemporaryRegisterDo: [|:tr|
               a laTo: sp Disp: frame callersSPOffset * oopSize Base: sp. "reset sp"
               a lwzTo: tr Disp: frame savedPCOffset * oopSize Base: sp. "get return link"
-              a lmwTo: loadStoreMultReg Disp: loadStoreMultDisp Base: sp.
+              a lmwTo: firstNonVolRegisterToSave Disp: nonVolRegSaveAreaOffset Base: sp.
               addiToLRFrom: tr With: wordOffset
             ].
             self).
@@ -5087,8 +5153,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          saveFrame = ( |
             | 
             a mflrTo:   r0.
-            a stmwFrom: loadStoreMultReg
-                  Disp: loadStoreMultDisp
+            a stmwFrom: firstNonVolRegisterToSave
+                  Disp: nonVolRegSaveAreaOffset
                   Base: sp.
             a  stwFrom: r0 
                   Disp: frame savedPCOffset * oopSize
@@ -5482,12 +5548,13 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'block' -> () From: ( | {
          'Category: block cloning - code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         generateInitializeBlock: blockReg From: origBlockReg HomeFrame: homeFPReg With: cg = ( |
+         generateInitializeBlock: blockReg From: origBlockReg HomeFrame: homeFPReg OID: oidReg With: cg = ( |
             | 
             cg comment: 'initializing block'.
 
             generateInitializeHeaderOf:     blockReg
                                   From: origBlockReg
+                    MakingSureToSetOID:       oidReg
                                   With: cg.
 
             [theVM exportPolicy shouldBlockValueSlotsBeObjectSlots not] assert. "If this ever stops being true, we'll
@@ -5505,17 +5572,17 @@ SlotsToOmit: parent.
          generateInitializeBlockAtAddress: addrReg FromBlock: blockReg HomeFrame: homeFPReg OID: oidReg Into: dstBlockReg With: cg = ( |
             | 
             theVM objectLocator generateMemForAddress: addrReg OID: oidReg Into: dstBlockReg With: cg.
-            generateInitializeBlock: dstBlockReg From: blockReg HomeFrame: homeFPReg With: cg.
+            generateInitializeBlock: dstBlockReg From: blockReg HomeFrame: homeFPReg OID: oidReg With: cg.
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'block' -> () From: ( | {
          'Category: block cloning - code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         generateInitializeHeaderOf: blockReg From: origBlockReg With: cg = ( |
+         generateInitializeHeaderOf: blockReg From: origBlockReg MakingSureToSetOID: oidReg With: cg = ( |
             | 
             lastHeaderField reverseDo: [|:f|
-              f generateCopyValueFromObject: origBlockReg ToObject: blockReg With: cg Layout: self.
+              f generateCopyValueFromObject: origBlockReg ToObject: blockReg IfNecessaryEncodingOID: oidReg With: cg Layout: self.
             ].
 
             self).
@@ -5708,11 +5775,30 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'mark' -> () From: ( | {
+         'Category: object ID\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateOIDOfMark: markReg Into: dstReg With: cg = ( |
+            | 
+            oidField generateValueOfWord: markReg Into: dstReg With: cg Layout: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'mark' -> () From: ( | {
          'Category: converting reference to value\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generateValueOfMark: markReg Into: dstSmiReg With: cg = ( |
             | 
             generateValueOf: markReg Into: dstSmiReg With: cg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
+         'Category: accessing value\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateCopyValueFromObject: memObjReg1 ToObject: memObjReg2 IfNecessaryEncodingOID: oidReg With: cg Layout: aLayout = ( |
+            | 
+            generateCopyValueFromObject: memObjReg1
+                               ToObject: memObjReg2
+                                   With: cg
+                                 Layout: aLayout).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
@@ -5769,6 +5855,7 @@ SlotsToOmit: parent.
          generateFor: memObjReg At: indexSmiReg Into: dstObjReg With: cg = ( |
             | 
             [dstObjReg != indexSmiReg] assert.
+            [vmKit tag smi = 0] assert.
             generateAddressOf: memObjReg Into: dstObjReg With: cg.
             cg loadWordAt: dstObjReg IndexedBy: indexSmiReg To: dstObjReg.
             self).
@@ -5932,6 +6019,19 @@ SlotsToOmit: parent.
             | 
             generateMarkOf: memObjReg Into: dstSmiReg With: cg.
             layouts mark generateValueOfMark: dstSmiReg Into: dstSmiReg With: cg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'markField' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateCopyValueFromObject: memObjReg1 ToObject: memObjReg2 IfNecessaryEncodingOID: oidReg With: cg Layout: aLayout = ( |
+            | 
+            cg withTemporaryRegisterDo: [|:newMarkReg|
+              generateValueFor: memObjReg1 Into: newMarkReg With: cg Layout: aLayout.
+              theVM layouts mark oidField generateSetValueOfWord: newMarkReg To: oidReg Into: newMarkReg With: cg.
+              generateSetValueFor: memObjReg2 To: newMarkReg With: cg Layout: aLayout.
+            ].
             self).
         } | ) 
 
@@ -6498,11 +6598,63 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'wordLayoutMixin' -> 'abstractField' -> () From: ( | {
          'Category: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateInPlaceValueOfWord: srcReg Into: dstReg With: cg Layout: aLayout = ( |
+         generateClearValueOfWord: wordReg Into: dstReg With: cg = ( |
             | 
-            cg   andImmMask: (aLayout encode: mask) && aLayout myTag complement
-               AndSetCCFrom: srcReg
-                         To: dstReg.
+            cg   andImmMask: (mask << vmKit tag size) complement
+             MaybeSetCCFrom: wordReg
+                         To: wordReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'wordLayoutMixin' -> 'abstractField' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateInPlaceValueOfWord: srcReg Into: dstReg With: cg Layout: aLayout = ( |
+             m.
+            | 
+            [vmKit tag smi = 0] assert.
+            m: (aLayout encode: mask) && aLayout myTag complement.
+
+            [aaa]. "I don't think  m < 0  is the right test here. We just need
+                    to know whether we can use the immediate version. -- Adam, Mar. 2009"
+            m < 0 ifFalse: [
+              cg   andImmMask: m
+                 AndSetCCFrom: srcReg
+                           To: dstReg.
+            ] True: [
+              cg withTemporaryRegisterDo: [|:maskReg|
+                cg moveWord: m ToRegister: maskReg.
+                cg    andMask: maskReg
+                 AndSetCCFrom: srcReg
+                           To: dstReg.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'wordLayoutMixin' -> 'abstractField' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateSetValueOfWord: wordReg To: valueSmiReg Into: dstReg With: cg = ( |
+            | 
+            [dstReg != valueSmiReg] assert.
+            generateClearValueOfWord: wordReg Into: dstReg With: cg.
+            cg withTemporaryRegisterDo: [|:inPlaceValueReg|
+              [vmKit tag smi = 0] assert.
+              cg shiftLeftImmBy: shift From: valueSmiReg To: inPlaceValueReg.
+              cg orMask: inPlaceValueReg MaybeSetCCFrom: dstReg To: dstReg.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'wordLayoutMixin' -> 'abstractField' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateValueOfWord: srcReg Into: dstReg With: cg Layout: aLayout = ( |
+            | 
+            [vmKit tag smi = 0] assert.
+            generateInPlaceValueOfWord: srcReg Into: dstReg With: cg Layout: aLayout.
+            cg shiftRightImmBy: shift From: dstReg To: dstReg.
             self).
         } | ) 
 

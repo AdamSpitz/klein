@@ -1,6 +1,7 @@
  '$Revision: 30.73 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -265,6 +266,14 @@ node is done before at least one of its preds is.\x7fModuleInfo: Module: kleinC1
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         controlFlowSuccWhenFallingThrough = ( |
+            | 
+            sourceSucc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          copy = ( |
@@ -388,7 +397,9 @@ an argument. -- dmu 9/03\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents:
         
          forgeControlFlowLinks = ( |
             | 
-            forgeControlFlowLinkFrom: self To: sourceSucc).
+            controlFlowSuccWhenFallingThrough ifNotNil: [|:n|
+              forgeControlFlowLinkFrom: self To: n
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -983,6 +994,9 @@ argindex = 0 for rcvr (no matter whether there is an explicit one or not)\x7fMod
 
             s addAll: interferingValueLocations.
 
+            [aaa].
+            (s anySatisfy: [|:loc| loc isRegister && [loc register = (allocator gprFor: 3)]]) ifTrue: [halt].
+
             s).
         } | ) 
 
@@ -1109,7 +1123,7 @@ allocation and can reduce register pressure, yielding better code.
          setSpecialMode = ( |
              s.
             | 
-            [_NoMapTest. _VariableArguments. _NoGCAllowed. _NoSendsAllowed]. "browsing"
+            [_NoMapTest. _VariableArguments. _SaveAllNonVolatileRegisters. _NoGCAllowed. _NoSendsAllowed]. "browsing"
             s: selector.
             isSpecialCompilationMode: true.
             case if: [s = '_NoMapTest'                  ]  Then: [compiler noMapTest:             true]
@@ -1788,15 +1802,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'localReturn' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         forgeControlFlowLinks = ( |
+         controlFlowSuccWhenFallingThrough = ( |
             | 
-            self).
+            "Never falls through."
+            ^ nil).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'localReturn' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          generateSpecificCode = ( |
             | 
@@ -1879,6 +1894,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         controlFlowSuccWhenFallingThrough = ( |
+            | 
+            "Never falls through."
+            ^ nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
          'Category: interference\x7fComment: Loc will always contain a value being consumed; such as
 an argument. -- dmu 9/03\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
         
@@ -1888,14 +1912,6 @@ an argument. -- dmu 9/03\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents:
               ifTrue: [^ true].
                 ( loc = allocator locationForIncomingReceiver     )
             ||  [ loc = allocator locationForOutgoingNLRHomeScope ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
-        
-         forgeControlFlowLinks = ( |
-            | 
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
@@ -2447,6 +2463,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'restartPrimitive' -> 'parent' -> () From: ( | {
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         controlFlowSuccWhenFallingThrough = ( |
+            | 
+            "Never falls through."
+            ^ nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'restartPrimitive' -> 'parent' -> () From: ( | {
          'Category: control flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
         
          forgeControlFlowLinks = ( |
@@ -2502,23 +2527,32 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'scalarBranch' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         controlFlowSuccWhenFallingThrough = ( |
+            | 
+            isConditional ifFalse: [^ nil].
+            resend.controlFlowSuccWhenFallingThrough).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'scalarBranch' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
         
          destinationNode = ( |
             | compiler irNodesByBCI at: bc destination).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'scalarBranch' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
         
          forgeControlFlowLinks = ( |
             | 
-            isConditional ifTrue:  [ resend.forgeControlFlowLinks ].
+            resend.forgeControlFlowLinks.
             forgeControlFlowLinkFrom: self To: destinationNode).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'scalarBranch' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          generateSpecificCode = ( |
             | 
@@ -2534,14 +2568,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'scalarBranch' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
         
          isConditional = ( |
             | bc isConditional).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'scalarBranch' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> ().
         } | ) 

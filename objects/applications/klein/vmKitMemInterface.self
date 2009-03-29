@@ -180,12 +180,18 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
          'Category: tags\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          ifOopAt: addr IsObject: objBlk IsMark: markValueBlk IfFail: fb = ( |
+             r.
              tag.
             | 
-            tag: tagAt: addr IfFail: [|:e| ^ fb value: e].
-            tag = vmKit tag mark
-                ifTrue: [markValueBlk value: markValueAt: addr IfFail: fb]
-                 False: [      objBlk value:       oopAt: addr IfFail: fb]).
+            tag: tagAt: addr.
+            "Got to avoid cloning. -- Adam, Mar. 2009"
+            __BranchIfTrue: (tag _IntEQ: vmKit tag mark) To: 'mark'.
+            r:  objBlk value:  oopAt: addr IfFail: fb.
+            __BranchTo: 'done'.
+            __DefineLabel: 'mark'.
+            r:  markValueBlk value: markValueAt: addr IfFail: fb.
+            __DefineLabel: 'done'.
+            r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
@@ -218,6 +224,22 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
+         isMarkAtOffset: wordOffset From: baseAddr = ( |
+            | 
+            isMarkAtOffset: wordOffset From: baseAddr IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isMarkAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
+            | 
+            ifOopAt: baseAddr + (wordOffset * oopSize) IsObject: false IsMark: true IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
          markValueAt: addr IfFail: fb = ( |
             | 
             layouts mark valueOf:  oopAt: addr IfFail: [|:e| ^ fb value: e]).
@@ -244,6 +266,22 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
          oopAt: addr IfFail: fb = ( |
             | 
             wordAt: addr IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopAtOffset: wordOffset From: baseAddr = ( |
+            | 
+            oopAtOffset: wordOffset From: baseAddr IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
+            | 
+            oopAt: baseAddr + (wordOffset * oopSize) IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {

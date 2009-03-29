@@ -717,9 +717,9 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
          'Category: accessing indexable origin field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
-         indexableOriginOfObjectWithAddress: addr IfFail: fb = ( |
+         indexableOriginOfObjectWithAddress: addr = ( |
             | 
-            indexableOriginField valueForObjectWithAddress: addr Layout: self IfFail: fb).
+            indexableOriginField valueForObjectWithAddress: addr Layout: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
@@ -760,9 +760,9 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
          'Category: accessing indexable size field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
-         indexableSizeOfObjectWithAddress: addr IfFail: fb = ( |
+         indexableSizeOfObjectWithAddress: addr = ( |
             | 
-            indexableSizeField valueForObjectWithAddress: addr Layout: self IfFail: fb).
+            indexableSizeField valueForObjectWithAddress: addr Layout: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
@@ -793,6 +793,19 @@ See the LICENSE file for license information.
             | 
               (            indexableOriginOf: o IfFail: [|:e| ^ fb value: e])
             + (wordsNeededToHoldIndexablesOf: o IfFail: [|:e| ^ fb value: e])).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         wordSizeOfObjectWithAddress: addr = ( |
+             io.
+             s.
+            | 
+            "Using primitives to avoid cloning."
+            io:  indexableOriginOfObjectWithAddress: addr.
+             s:  indexableSizeOfObjectWithAddress:   addr.
+            io _IntAdd: wordsNeededToHoldIndexablesOfSize: s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
@@ -2522,6 +2535,14 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'mark' -> () From: ( | {
          'Category: object ID\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
+         oidOfMarkAtLocalAddress: addr = ( |
+            | 
+            addr _UnsafeOIDOfMarkAtAddress).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'mark' -> () From: ( | {
+         'Category: object ID\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
          oidOfMarkValue: mv = ( |
             | 
             oidField valueOfWord: mv).
@@ -2783,11 +2804,24 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
          'Category: accessing value\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
+         valueForObjectWithAddress: addr Layout: aLayout = ( |
+            | 
+            "Need a version that doesn't take a failblock and doesn't
+             clone anything. -- Adam, Mar. 2009"
+            valueOf:
+              aLayout machineMemory oopAtOffset: fixedIndex
+                                           From: addr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
+         'Category: accessing value\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
          valueForObjectWithAddress: addr Layout: aLayout IfFail: fb = ( |
             | 
             valueOf:
-              aLayout machineMemory oopAt: addr + (fixedIndex * aLayout oopSize)
-                                   IfFail: [|:e| ^ fb value: e]).
+              aLayout machineMemory oopAtOffset: fixedIndex
+                                           From: addr
+                                         IfFail: [|:e| ^ fb value: e]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -3279,6 +3313,14 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
             mapField valueFor: o Layout: self IfFail: fb).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: accessing map\x7fCategory: reading\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mapOfObjectWithAddress: addr = ( |
+            | 
+            mapField valueForObjectWithAddress: addr Layout: self).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'markField' -> () From: ( | {
          'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -3523,6 +3565,30 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
             size).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: getting size\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         wordSizeOfObjectWithAddress: addr = ( |
+             isMark.
+             mm.
+             oopSize.
+             size.
+            | 
+            "Avoiding cloning so we can use this when recycling oops."
+            mm: machineMemory.
+            size: lastField fixedIndexAfterMe.
+            oopSize: self oopSize.
+
+            __DefineLabel: 'startOfLoop'.
+            isMark:  mm isMarkAtOffset: size From: addr.
+            __BranchIfTrue: isMark To: 'foundNextMark'.
+            size: size _IntAdd: 1.
+            __BranchTo: 'startOfLoop'.
+            __DefineLabel: 'foundNextMark'.
+
+            size).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'objVector' -> 'abstractIndexableField' -> () From: ( | {
          'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -3619,6 +3685,14 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
             + mir reflecteeHasMethodPointer asInteger).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'objVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         wordsNeededToHoldIndexablesOfSize: s = ( |
+            | 
+            s).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
          'Category: encoding & decoding tagged oops\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -3632,7 +3706,10 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         
          does: o HaveTag: t = ( |
             | 
-            (tagOf: o) = t).
+            "Using the primitive directly so that this can be
+             called inside Klein in places where cloning is
+             disallowed. -- Adam, Mar. 2009"
+            (tagOf: o) _IntEQ: t).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
@@ -4163,6 +4240,14 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         bytesNeededToHoldBytes: nBytes = ( |
+            | 
+            (oopsNeededToHoldBytes: nBytes) _IntMul: oopSize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
          'Category: importing objects (mirrors)\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          bytesOfLocalObject: o IfFail: fb = ( |
@@ -4238,6 +4323,14 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopsNeededToHoldBytes: nBytes = ( |
+            | 
+            (nBytes _IntAdd:  oopSize _IntSub: 1) _IntDiv: oopSize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
          'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> ().
@@ -4249,6 +4342,14 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
          relocateBytesPartRefAt: addr By: delta = ( |
             | 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         wordsNeededToHoldIndexablesOfSize: s = ( |
+            | 
+            oopsNeededToHoldBytes: s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {

@@ -1,6 +1,7 @@
  '$Revision: 30.67 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -999,10 +1000,25 @@ SlotsToOmit: parent.
          'Category: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          generateCode = ( |
+             previousNode.
             | 
-            startNode controlFlowOrderDo: [|:sn|
-              sn generateCode.
+            startNode controlFlowOrderDo: [|:node|
+              "Need to make sure that when we fall through, we actually fall through
+               to the right place. -- Adam, Mar. 2009"
+              previousNode ifNotNil: [
+                previousNode controlFlowSuccWhenFallingThrough ifNotNil: [|:n|
+                  n = node ifFalse: [
+                    codeGenerator genBranchTo: n.
+                  ].
+                ].
+              ].
+              node generateCode.
+              previousNode: node.
             ].
+            previousNode controlFlowSuccWhenFallingThrough ifNotNil: [|:n|
+              codeGenerator genBranchTo: n.
+            ].
+
             "The assumption that the localReturn/nlr node is the last to 
              show in control flow order is false. Must bind labels in here
              then. -- Ausch, 5/05"

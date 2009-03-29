@@ -76,7 +76,7 @@ See the LICENSE file for license information.
             | 
             _NoMapTest.
             vm: _TheVM.
-            oid: vm getANewOID.
+            oid: vm withoutCloningAnythingGetANewOID.
             space: vm universe allocationSpace.
 
             "Could use this code to do block cloning at the Self level, but for now is inefficient. -- Adam, 7/06"
