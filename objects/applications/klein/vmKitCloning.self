@@ -56,9 +56,7 @@ See the LICENSE file for license information.
             "Clone primitive fail block before we start allocating space"
             failBlock: [|:e. r|
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
-              _Breakpoint: 'ran out of memory; about to do a scavenge'.
               vmKit garbageCollector scavenge.
-              _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
               r: cloneLocalObject: theOriginal IfFail: raiseError.
               __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
@@ -127,9 +125,7 @@ See the LICENSE file for license information.
             "Clone primitive fail block before we start allocating space"
             failBlock: [|:e. r|
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
-              _Breakpoint: 'ran out of memory; about to do a scavenge'.
               vmKit garbageCollector scavenge.
-              _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
               r: cloneLocalObject: theOriginal Size: size FillingWith: filler IfFail: raiseError.
               __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
@@ -267,8 +263,6 @@ See the LICENSE file for license information.
               __BranchIfFalse: (maxWordSize _IntLE: i)
                            To: 'fillerLoop'.
 
-            [todo gc]. "Not implemented: do a GC and try again."
-            _Breakpoint: 'ran out of memory while filling in contents during cloning'.
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
@@ -343,9 +337,7 @@ See the LICENSE file for license information.
             "Clone primitive fail block before we start allocating space"
             failBlock: [|:e. r|
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
-              _Breakpoint: 'ran out of memory; about to do a scavenge'.
               vmKit garbageCollector scavenge.
-              _Breakpoint: 'whoa, did the GC actually finish? did it work?'.
               r: cloneLocalObject: theOriginal IndexableSize: byteSize IfFail: raiseError.
               __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
