@@ -1,0 +1,39 @@
+Current goal:
+
+  - Get the GC more solid. Then I can work on making it fast.
+
+Bugs to fix:
+
+  - The debugger thing, where it can't find an object (maybe newly-created objects?) and so the UI crashes.
+
+What compiler optimizations could I try first?
+
+  - The most important ones, I'm guessing, will be the ones that help us avoid block cloning. That's causing us a lot of grief, with contorting the GC code and a lot of extra time spent in GC and stuff. So I think we're gonna want to:
+    - Avoid cloning failblocks passed to primitives.
+    - Do that type prediction thing where it knows that the call to ifTrue:False: is likely to be true or false, so it inlines those ones.
+    - General inlining.
+  - But ask Dave. He'll have ideas.
+
+Speeding up the export cycle would be really nice. What's the strategy for that?
+
+  - Speed up incremental update? (I don't really understand why it's slow. Try profiling it.)
+  - Fix incremental update so that it can continue to work indefinitely.
+
+Cleanups to do:
+
+  - Addresses. Factor it all so that I can easily switch to untagged addresses.
+  - Factor the layout stuff so that it's a bit more uniform and elegant about handling oops versus addresses. (C is really nice in that way; how close can we get to that?)
+  - Stuff that tries to avoid cloning... is there a way to make it clear which stuff that is? Draw a clear fence around it? And avoid duplication with regular stuff? (The problem is that there's some stuff that needs failblocks when running on a remote image, but needs to avoid cloning when running in a local image.)
+
+----
+
+Maybe I could do the assembler thing. How often is the assembler called, anyway? Are the calls all from the codeGenerator? (If not, maybe they should be.) If I'm never calling any particular assembly method more than once, maybe it really is worth it to just make the methods take an extra parameter (the assembler), so we can just call the method on the IT and not have to generate all those hundreds of instruction assembly methods.
+
+----
+
+Now I've gotta put in a write barrier, make sure to keep track of old->new references in the rememberedSet. (This is coming up with cachedAllRegisterLocations.)
+
+So I need:
+  - A byteVector, and I need the address of the start of its indexables to be stored in a register somewhere, just like for the objectLocator. That doesn't sound too hard.
+  - The compiler to emit code on every store to mark the correct byte in that byteVector. That doesn't sound too hard either, as long as the compiler is factored right.
+  - The GC to know how to check all the objects on that card. Might be trickier. How does that work, again? Oh. If we had segregated byteVectors, then we might be OK because we could just follow every non-mark oop in that card. But because there might be bytes in there, we'll have to be more clever. Crap.
