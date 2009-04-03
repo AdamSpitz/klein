@@ -137,6 +137,7 @@ to just keep upping it by hand.
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (('integer')
+	& ('scheduler')
 	& ('setAndDictionary')
 	& ('smallInt')
 	& ('vmKitBase')
@@ -173,21 +174,22 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda)
+	& (reflect: klein stackFrames)
 	& (reflect: klein mirrors)
 	& (reflect: slots)
-	& (reflect: traits abstractSet values)
 	& (reflect: lobby)
 	& (reflect: traits block)
+	& (reflect: traits abstractSet values)
 	& (reflect: kleinAndYoda maps)
 	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
+	& (reflect: klein)
 	& (reflect: klein sendDescs)
 	& (reflect: kleinAndYoda layouts)
 	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
 	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
 	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
-	& (reflect: kleinAndYoda)
-	& (reflect: klein stackFrames)) asVmKitExportList) From: ( |
+	& (reflect: scheduler)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -196,15 +198,6 @@ SlotsToOmit: parent prototype safety.
 
 \x7fIsComplete: '.
             | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> () From: ( | {
-         'Category: unmapped\x7fCategory: heap size\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         initialSizeForNewGenerationOutOfTotalSize: s = ( |
-            | 
-            [todo optimize gc]. "What's the right way to divide the space? -- Adam, 5/06"
-            s / 2).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> () From: ( | {
@@ -4057,6 +4050,11 @@ SlotsToOmit: parent.
         
          runAllTestsForVM: aVM = ( |
             | 
+            "Not sure why this is necessary - why isn't it already stopped?
+             Anyway, the scheduler is only included in the exportPolicy because
+             the string print method checks to see whether it's running."
+            [aaa]. scheduler stop.
+
             runAutomatedTestsForVM: aVM.
             runInteractiveTests.
             self).
@@ -4094,6 +4092,7 @@ SlotsToOmit: parent.
             mirrors run.
             allocation run.
             lookup run.
+            stringPrinting run.
             self).
         } | ) 
 
@@ -4162,6 +4161,46 @@ SlotsToOmit: parent.
          testCheckingReceiverMap = ( |
             | 
             assert: shouldReturnOne Is: 1).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
+         'Category: test cases\x7fCategory: automated\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         stringPrinting = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'stringPrinting' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals klein virtualMachines midiVM parent tests abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'stringPrinting' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests stringPrinting.
+
+CopyDowns:
+globals klein virtualMachines midiVM parent tests abstract. copy 
+SlotsToOmit: parent.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'stringPrinting' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'stringPrinting' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests stringPrinting parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'stringPrinting' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'abstract' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'stringPrinting' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         run = ( |
+            | 
+            'The string print method works.' printLine.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
@@ -4481,6 +4520,7 @@ to just keep upping it by hand.
 	& ('kleinCompiler1')
 	& ('kleinReflection')
 	& ('mirror')
+	& ('scheduler')
 	& ('setAndDictionary')
 	& ('smallInt')
 	& ('vmKitBase')
@@ -4528,7 +4568,8 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein sendDescs)
+	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
 	& (reflect: klein compiler1s abstract prototypes allocators)
 	& (reflect: traits)
 	& (reflect: assemblerSystems framework generators)
@@ -4542,6 +4583,7 @@ select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: M
 	& (reflect: lobby)
 	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
 	& (reflect: bytecodeFormat instructionSets)
+	& (reflect: klein relocators)
 	& (reflect: assemblerSystems)
 	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
 	& (reflect: kleinAndYoda layouts)
@@ -4550,7 +4592,6 @@ select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: M
 	& (reflect: assemblerSystems ppc toMasks)
 	& (reflect: klein compiler1s abstract prototypes)
 	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
-	& (reflect: klein relocators)
 	& (reflect: assemblerSystems ppc fprs)
 	& (reflect: assemblerSystems ppc generators)
 	& (reflect: klein stackFrames)
@@ -4573,11 +4614,11 @@ select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: M
 	& (reflect: klein mirrors)
 	& (reflect: transporter moduleInfo)
 	& (reflect: assemblerSystems ppc crBits)
-	& (reflect: assemblerSystems ppc fields)
-	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
-	& (reflect: kleinAndYoda)
 	& (reflect: klein)
-	& (reflect: klein sendDescs)) asVmKitExportList) From: ( |
+	& (reflect: assemblerSystems ppc fields)
+	& (reflect: scheduler)
+	& (reflect: kleinAndYoda)
+	& (reflect: assemblerSystems ppc instructionAssemblyMethods)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -4586,15 +4627,6 @@ SlotsToOmit: parent prototype safety.
 
 \x7fIsComplete: '.
             | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> () From: ( | {
-         'Category: unmapped\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         initialSizeForNewGenerationOutOfTotalSize: s = ( |
-            | 
-            [todo optimize gc]. "What's the right way to divide the space? -- Adam, 5/06"
-            s / 2).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> () From: ( | {
@@ -5079,13 +5111,13 @@ SlotsToOmit: parent.
              oo1.
             | 
             o1:  [hereIsABlock].
-            a1:  theVM layouts memoryObject addressOfMem:  o1.
-            oo1: theVM layouts memoryObject memForAddress: a1.
+            a1:  theVM layouts memoryObject addressOfLocalMem:  o1.
+            oo1: theVM layouts memoryObject localMemForAddress: a1.
             assert: o1 _Eq: oo1.
 
             a2:  theVM universe edenSpace objsBottom. "Let's try the first object in the space."
-            o2:  theVM layouts memoryObject memForAddress: a2.
-            aa2: theVM layouts memoryObject addressOfMem:  o2.
+            o2:  theVM layouts memoryObject localMemForAddress: a2.
+            aa2: theVM layouts memoryObject addressOfLocalMem:  o2.
             assert: a2 = aa2.
 
             self).

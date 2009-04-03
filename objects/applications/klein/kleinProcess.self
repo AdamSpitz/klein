@@ -1,6 +1,7 @@
  '$Revision: 30.13 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -174,16 +175,30 @@ SlotsToOmit: parent.
          'Category: inspecting\x7fModuleInfo: Module: kleinProcess InitialContents: FollowSlot\x7fVisibility: public'
         
          objectLocatorTimestampIfFail: fb = ( |
+             indexablesAddr.
+             map.
+             mapOop.
+             olAddr.
+             timestamp.
+             timestampOffset.
+             timestampOop.
             | 
-            [todo cleanup oraclesAndOIDs]. "I think we may need to implement this to get the remote
-                                            environment to update correctly. -- Adam, 7/06"
-            fb value: 'not implemented in Klein (yet)').
+            indexablesAddr: contentsOfRegister: objectAddressesBaseRegister name IfFail: [|:e| ^ fb value: e].
+            indexablesAddr = 0 ifTrue: [^ fb value: 'objectAddressesBaseRegister has not been set yet'].
+            olAddr: indexablesAddr - (myVM image objectsOracle objectLocatorIndexableOrigin * oopSize).
+            mapOop:  myVMKit layouts memoryObject mapOfObjectWithAddress: olAddr.
+            map: myVM image objectsOracle originalObjectForOop: mapOop IfAbsent: [|:e| ^ fb value: e].
+            [myVM objectLocator timestamp]. "browsing"
+            timestampOffset: map offsetOfObjectSlotNamed: 'timestamp' IfAbsent: [|:e| ^ fb value: e].
+            timestampOop: map myLayout forObjectWithAddress: olAddr At: timestampOffset.
+            timestamp: myVMKit layouts smi decode: timestampOop.
+            timestamp).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
          'Category: inspecting\x7fModuleInfo: Module: kleinProcess InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopInRegister: regName IfFail: fb = ( |
+         oopInRegisterNamed: regName IfFail: fb = ( |
             | 
             lens oopInRegister: regName InProcess: self IfFail: fb).
         } | ) 

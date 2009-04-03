@@ -1,6 +1,7 @@
  '$Revision: 30.13 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -3184,7 +3185,7 @@ SlotsToOmit: parent.
 
             "Leave some extra room so that we don't have
              to grow it inside the image, for now."
-            objectsOracle growOIDVectorsToAtLeast: n double + (theVM universe edenSpace sizeOfEntireRegion / (4 * oopSize)).
+            objectsOracle growOIDVectorsToAtLeast: n double + (theVM universe edenSpace sizeOfEntireRegion / oopSize).
 
             self).
         } | ) 

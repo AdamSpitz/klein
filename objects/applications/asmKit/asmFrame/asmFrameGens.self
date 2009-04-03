@@ -276,11 +276,22 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'instructionAssemblyMethods' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: asmFrameGens InitialContents: FollowSlot'
         
+         generateAbstractAssemblyMethodFor: anInstructionTemplate = ( |
+            | 
+            generateMethodFromSource: anInstructionTemplate sourceForAbstractAssemblyMethod
+                         Subcategory: 'abstract').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'instructionAssemblyMethods' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: asmFrameGens InitialContents: FollowSlot'
+        
          generateAll = ( |
             | 
             start.
             myAssemblerSystem realAndPseudoInstructionTemplatesDo: [|:it|
-              generateAssemblyMethodFor: it].
+              generateAssemblyMethodFor: it.
+              generateAbstractAssemblyMethodFor: it.
+            ].
             finish).
         } | ) 
 
@@ -288,16 +299,24 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: asmFrameGens InitialContents: FollowSlot'
         
          generateAssemblyMethodFor: anInstructionTemplate = ( |
+            | 
+            generateMethodFromSource: anInstructionTemplate sourceForAssemblyMethod
+                         Subcategory: anInstructionTemplate category).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'instructionAssemblyMethods' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: asmFrameGens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateMethodFromSource: src Subcategory: cat = ( |
              body.
              m.
              name.
-             src.
             | 
-            src: anInstructionTemplate sourceForAssemblyMethod.
+            src ifNil: [^ nil].
             m: src asSlotIfFail: [|:e| error: e].
             name: m first name.
             body: m first contents.
-            subcategory: anInstructionTemplate category.
+            subcategory: cat.
             at: name PutContents: body.
             body).
         } | ) 

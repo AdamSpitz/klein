@@ -1,6 +1,7 @@
  '$Revision: 30.20 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -810,7 +811,7 @@ SlotsToOmit: parent.
         
          oopInActivation: a Frame: f IfFail: fb = ( |
             | 
-            a oopInRegister: register name IfFail: fb).
+            a oopInRegister: register IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {

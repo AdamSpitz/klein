@@ -452,6 +452,28 @@ an argument. -- dmu 9/03\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationsThatNeedToBePreserved = ( |
+             assignableLocalNames.
+             s.
+            | 
+            s: set copyRemoveAll.
+            s add:    allocator locationForIncomingReceiver.
+            s addAll: allocator memoizedBlockLocations.
+            allocator locationFor_OnNLR_homeScope ifNotNil: [|:loc| s add: loc].
+
+            assignableLocalNames: (allocator assignableLocalSlots copyMappedBy: [|:slot| slot name]) asSet.
+            allocator namedLocations filterBy: [|:loc. :n|
+              (assignableLocalNames includes: n) not || [isLocalLive: n]
+            ] Into: s.
+
+            s addAll: interferingValueLocations.
+
+            s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          locationsUsedByNodeDo: b = ( |
@@ -976,31 +998,6 @@ argindex = 0 for rcvr (no matter whether there is an explicit one or not)\x7fMod
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         locationsThatNeedToBePreserved = ( |
-             assignableLocalNames.
-             s.
-            | 
-            s: set copyRemoveAll.
-            s add:    allocator locationForIncomingReceiver.
-            s addAll: allocator memoizedBlockLocations.
-            allocator locationFor_OnNLR_homeScope ifNotNil: [|:loc| s add: loc].
-
-            assignableLocalNames: (allocator assignableLocalSlots copyMappedBy: [|:slot| slot name]) asSet.
-            allocator namedLocations filterBy: [|:loc. :n|
-              (assignableLocalNames includes: n) not || [isLocalLive: n]
-            ] Into: s.
-
-            s addAll: interferingValueLocations.
-
-            [aaa].
-            (s anySatisfy: [|:loc| loc isRegister && [loc register = (allocator gprFor: 3)]]) ifTrue: [halt].
-
-            s).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractSend' -> 'parent' -> ().
@@ -1080,6 +1077,22 @@ allocation and can reduce register pressure, yielding better code.
             | 
             [todo optimization "see slot comment"]. "might be true for very simple prims"
             false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractPrimitive' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationsThatNeedToBePreserved = ( |
+             s.
+            | 
+            s: resend.locationsThatNeedToBePreserved.
+
+            "For primitives, popped values don't get moved to
+             the outgoing registers; they're just used directly.
+             So they need to be considered live. -- Adam, Mar. 2009"
+            poppedValues do: [|:v| s add: v location].
+
+            s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractPrimitive' -> 'parent' -> () From: ( | {
@@ -1381,6 +1394,15 @@ block cloning and memoization. -- jb 8/03\x7fModuleInfo: Module: kleinC1_IRNodes
             | 
             controlFlowOrderDo: [|:n| n blockLiteralNodesThatMayHaveAlreadyRun add: self].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         rcvrAndArgCountForGeneratedSend = ( |
+            | 
+            "receiver and arg for the call to" [cloneBlockHomeFrame_stub: 0].
+            2).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {

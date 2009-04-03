@@ -36,7 +36,8 @@ See the LICENSE file for license information.
         
          value: e With: p = ( |
             | 
-            kleinAndYoda garbageCollector scavenge).
+            kleinAndYoda garbageCollector scavenge.
+            _Breakpoint: 'uh-oh, how do we retry the block clone?').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -68,7 +69,6 @@ See the LICENSE file for license information.
          cloneBlockHomeFrame_stub: fp = ( |
              addr.
              b.
-             blockCloneFailureHandler = bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'blockCloneFailureHandler' -> ().
              numberOfWordsInABlock = 3.
              oid.
              space.
@@ -89,7 +89,7 @@ See the LICENSE file for license information.
               _InitializeBlockAtAddress: (addr _IntLogicalShiftRight: 2) HomeFrame: fp OID: oid IfFail: blockCloneFailureHandler
             ].
 
-            _CloneBlockHomeFrame: fp OID: oid Space: space IfFail: blockCloneFailureHandler).
+            _CloneBlockHomeFrame: fp OID: oid Space: space).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -100,6 +100,12 @@ See the LICENSE file for license information.
             | 
             _NoMapTest.
             kleinPrimitives clone: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (vector copySize: 1 FillingWith: \'nic\')\x7fVisibility: private'
+        
+         myCompilers <- vector copySize: 1 FillingWith: 'nic'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -185,23 +191,37 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         primReceiver: whoCares CompilersIfFail: fb = ( |
+            | 
+            [ _Compilers           ]. "browsing"
+            [ _CompilersIfFail: fb ]. "browsing"
+            "Not implemented yet. Just here so that we can run
+             the Self tests (which call withAndWithoutInlining)."
+            myCompilers).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: fake primitives (primitives that are just normal methods)\x7fCategory: byte vectors\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          primReceiver: dstByteVector CopyByteRangeDstPos: dstPos Src: srcByteVector SrcPos: srcPos Length: len IfFail: fb = ( |
+             byteAtPutFailBlock.
             | 
             ['' _CopyByteRangeDstPos: 0 Src: '' SrcPos: 0 Length: 0           ]. "browsing"
             ['' _CopyByteRangeDstPos: 0 Src: '' SrcPos: 0 Length: 0 IfFail: fb]. "browsing"
 
-            dstByteVector _IsByteVector ifFalse: [^ fail: 'badTypeError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            srcByteVector _IsByteVector ifFalse: [^ fail: 'badTypeError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            (isSmi: srcPos)             ifFalse: [^ fail: 'badTypeError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            (isSmi: dstPos)             ifFalse: [^ fail: 'badTypeError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            (isSmi: len   )             ifFalse: [^ fail: 'badTypeError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            dstByteVector _IsByteVector ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            srcByteVector _IsByteVector ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            (isSmi: srcPos)             ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            (isSmi: dstPos)             ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            (isSmi: len   )             ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            byteAtPutFailBlock:         [|:e. :p| ^ fail: 'badIndexError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
 
-            len do: [|:i|
-              dstByteVector _ByteAt: dstPos + i
-                                Put: (srcByteVector byteAt: srcPos + i)
-                             IfFail: [|:e. :p| ^ fail: 'badIndexError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            0 upTo: len By: 1 WithoutCloningDo: [|:i|
+              dstByteVector _ByteAt: (                       dstPos _IntAdd: i)
+                                Put: (srcByteVector _ByteAt: srcPos _IntAdd: i)
+                             IfFail: byteAtPutFailBlock.
             ].
             dstByteVector).
         } | ) 
@@ -288,7 +308,21 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Add: 0           ]. "browsing"
             [_Int32: 0 Add: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Add: b IfFail: [|:e. :p| fail: e Name: '_Int32:Add:' Receiver: unused FailBlock: fb]).
+
+            "Optimization: try it first without cloning an int32
+             to stick the value into, in case the result will
+             fit into a smi. Only create an int32 if that fails.
+             (In the long run, make the primitive do this
+             automatically. But that'll be easier with a
+             compiler that's a bit smarter about allocating
+             registers, because right now it's inconvenient to
+             use more than two temp registers. -- Adam, Mar. 2009"
+
+            0              _SetFromInt32: a Add: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Add: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Add:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -299,7 +333,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 And: 0           ]. "browsing"
             [_Int32: 0 And: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a And: b IfFail: [|:e. :p| fail: e Name: '_Int32:And:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a And: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a And: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:And:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -310,7 +348,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Cmp: 0           ]. "browsing"
             [_Int32: 0 Cmp: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Cmp: b IfFail: [|:e. :p| fail: e Name: '_Int32:Cmp:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Cmp: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Cmp: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Cmp:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -319,9 +361,13 @@ See the LICENSE file for license information.
          primReceiver: unused Int32: a Div: b IfFail: fb = ( |
              int32 = bootstrap stub -> 'globals' -> 'int32' -> ().
             | 
-            [_Int32: 0 Div: 1           ]. "browsing"
-            [_Int32: 0 Div: 1 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Div: b IfFail: [|:e. :p| fail: e Name: '_Int32:Div:' Receiver: unused FailBlock: fb]).
+            [_Int32: 0 Div: 0           ]. "browsing"
+            [_Int32: 0 Div: 0 IfFail: fb]. "browsing"
+            0              _SetFromInt32: a Div: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Div: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Div:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -332,7 +378,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Mul: 0           ]. "browsing"
             [_Int32: 0 Mul: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Mul: b IfFail: [|:e. :p| fail: e Name: '_Int32:Mul:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Mul: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Mul: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Mul:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -343,7 +393,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Or: 0           ]. "browsing"
             [_Int32: 0 Or: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Or: b IfFail: [|:e. :p| fail: e Name: '_Int32:Or:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Or: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Or: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Or:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -352,9 +406,13 @@ See the LICENSE file for license information.
          primReceiver: unused Int32: a Rem: b IfFail: fb = ( |
              int32 = bootstrap stub -> 'globals' -> 'int32' -> ().
             | 
-            [_Int32: 0 Rem: 1           ]. "browsing"
-            [_Int32: 0 Rem: 1 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Rem: b IfFail: [|:e. :p| fail: e Name: '_Int32:Rem:' Receiver: unused FailBlock: fb]).
+            [_Int32: 0 Rem: 0           ]. "browsing"
+            [_Int32: 0 Rem: 0 IfFail: fb]. "browsing"
+            0              _SetFromInt32: a Rem: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Rem: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Rem:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -365,7 +423,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Shl: 0           ]. "browsing"
             [_Int32: 0 Shl: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Shl: b IfFail: [|:e. :p| fail: e Name: '_Int32:Shl:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Shl: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Shl: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Shl:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -376,7 +438,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Shr: 0           ]. "browsing"
             [_Int32: 0 Shr: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Shr: b IfFail: [|:e. :p| fail: e Name: '_Int32:Shr:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Shr: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Shr: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Shr:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -387,7 +453,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Sub: 0           ]. "browsing"
             [_Int32: 0 Sub: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Sub: b IfFail: [|:e. :p| fail: e Name: '_Int32:Sub:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Sub: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Sub: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Sub:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -398,7 +468,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Ushr: 0           ]. "browsing"
             [_Int32: 0 Ushr: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Ushr: b IfFail: [|:e. :p| fail: e Name: '_Int32:Ushr:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Ushr: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Ushr: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Ushr:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -409,7 +483,11 @@ See the LICENSE file for license information.
             | 
             [_Int32: 0 Xor: 0           ]. "browsing"
             [_Int32: 0 Xor: 0 IfFail: fb]. "browsing"
-            int32 _Clone _SetFromInt32: a Xor: b IfFail: [|:e. :p| fail: e Name: '_Int32:Xor:' Receiver: unused FailBlock: fb]).
+            0              _SetFromInt32: a Xor: b IfFail: [|:e. :p|
+              int32 _Clone _SetFromInt32: a Xor: b IfFail: [|:e. :p|
+                fail: e Name: '_Int32:Xor:' Receiver: unused FailBlock: fb
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -421,6 +499,18 @@ See the LICENSE file for license information.
             [ _IntComplementIfFail: fb ]. "browsing"
             (isSmi: n) ifFalse: [^ fail: 'badTypeError' Name: '_IntComplement' Receiver: n FailBlock: fb].
             -1 - n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         primReceiver: whoCares InterpretIfFail: fb = ( |
+            | 
+            [ _Interpret           ]. "browsing"
+            [ _InterpretIfFail: fb ]. "browsing"
+            "Not implemented yet. Just here so that we can run
+             the Self tests (which call withAndWithoutInlining)."
+            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {

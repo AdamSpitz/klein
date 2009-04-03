@@ -1,6 +1,7 @@
  '$Revision: 30.28 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -152,38 +153,44 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
          generateCallStubName: stubName LookupKey: key LiveOopTracker: aLiveOopTracker With: cg = ( |
              a.
              branchStart.
+             indexPastMe.
+             isMessageSend.
+             labelPastMe.
              nlr.
-             pastme.
              start.
             | 
             "see CodeGen::SendDesc"
             a: cg a.
+            isMessageSend: key isNotNil.
 
             cg shouldZapDeadLocations ifTrue: [aLiveOopTracker zapDeadLocations].
 
             branchStart: a locationCounter.
             cg branchToStubName: stubName UsingCTRAnd: a r0 SetLink: true.
             start: a locationCounter.
-            nlr: a newLabel.
+            (branchStart - start) = (cg oopSize * retryIndex) ifFalse: [error: 'should agree'].
+
+            indexPastMe:  isMessageSend ifTrue: [size] False: [gcMaskIndex succ].
 
             "Small optimization: define the pastme label in the correct position right now,
              because maintaining the set of unresolvedUses and then resolving it is
              slightly expensive. -- Adam, 11/04"
-            pastme: a defineLabelAt: start + (cg oopSize * size).
+            labelPastMe: a defineLabelAt: start + (cg oopSize * indexPastMe).
 
-            (branchStart - start) = (cg oopSize * retryIndex) ifFalse: [error: 'should agree'].
+            a locationCounter:   start + (cg oopSize * normalReturnIndex).  a bDisp: labelPastMe.
+            a locationCounter:   start + (cg oopSize *       gcMaskIndex).  a data32: aLiveOopTracker gcMask.
 
-            a locationCounter: start + (cg oopSize * normalReturnIndex).  a bDisp: pastme.
-            a locationCounter: start + (cg oopSize *  previousMapIndex).  a data32: 0.
-            a locationCounter: start + (cg oopSize *       gcMaskIndex).  a data32: aLiveOopTracker gcMask.
-            a locationCounter: start + (cg oopSize *         nmlnIndex).  a data32: 0.
-                                                                          a data32: 0. [todo nmln].
-            a locationCounter: start + (cg oopSize *     selectorIndex).  cg assembleObject: key selector.
-            a locationCounter: start + (cg oopSize *   lookupTypeIndex).  cg assembleObject: key lookupType.
-            a locationCounter: start + (cg oopSize *    nlrReturnIndex).  a bDisp: nlr.
-            a locationCounter: start + (cg oopSize *    delegateeIndex).  cg assembleObject: key delegatee.
+            isMessageSend ifTrue: [
+              a locationCounter: start + (cg oopSize *  previousMapIndex).  a data32: 0.
+              a locationCounter: start + (cg oopSize *         nmlnIndex).  a data32: 0.
+                                                                            a data32: 0. [todo nmln].
+              a locationCounter: start + (cg oopSize *     selectorIndex).  cg assembleObject: key selector.
+              a locationCounter: start + (cg oopSize *   lookupTypeIndex).  cg assembleObject: key lookupType.
+              a locationCounter: start + (cg oopSize *    nlrReturnIndex).  nlr: a newLabel. a bDisp: nlr.
+              a locationCounter: start + (cg oopSize *    delegateeIndex).  cg assembleObject: key delegatee.
+            ].
 
-            a locationCounter: start + (cg oopSize *              size).
+            a locationCounter:   start + (cg oopSize *       indexPastMe).
             nlr).
         } | ) 
 

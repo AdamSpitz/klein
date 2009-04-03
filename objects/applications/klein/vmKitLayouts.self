@@ -17,7 +17,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: memory object layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
-         addressOfMem: mem = ( |
+         addressOfMem: mem IfFail: fb = ( |
             | 
             childMustImplement).
         } | ) 
@@ -2809,8 +2809,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
             "Need a version that doesn't take a failblock and doesn't
              clone anything. -- Adam, Mar. 2009"
             valueOf:
-              aLayout machineMemory oopAtOffset: fixedIndex
-                                           From: addr).
+              aLayout forObjectWithAddress: addr At: fixedIndex).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
@@ -2833,10 +2832,27 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: converting reference to address\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addressOfLocalMem: mem IfFail: fb = ( |
+            | 
+            theVM objectLocator addressOfLocalMem: mem IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
          'Category: converting reference to address\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          addressOfMem: mem = ( |
-            | lens addressOfMem: mem).
+            | 
+            addressOfMem: mem IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: converting reference to address\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addressOfMem: mem IfFail: fb = ( |
+            | 
+            lens addressOfMem: mem IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -2845,6 +2861,14 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
          addressOfRemoteMem: mem = ( |
             | 
             theVM objectLocator addressOfRemoteMem: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: converting reference to address\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addressOfRemoteMem: mem IfFail: fb = ( |
+            | 
+            theVM objectLocator addressOfRemoteMem: mem IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -2919,7 +2943,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
         
          for: o AddressOfByteAt: i IfFail: fb = ( |
             | 
-            (addressOfMem: o) + i).
+            (addressOfMem: o IfFail: [|:e| ^ fb value: e]) + i).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -2991,7 +3015,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
          for: o Do: blk IfFail: fb = ( |
             | 
                    for: o
-            StartingAt: (markField indexAfterMeFor: o Layout: self) "skip mark"
+            StartingAt: markField fixedIndexAfterMe "skip mark"
                     Do: blk
                 IfFail: fb).
         } | ) 
@@ -3134,6 +3158,16 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
             | 
             _NoGCAllowed.
             _ForMemoryObject: o SetMarkValue: markValue IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: accessing all words of object including header\x7fCategory: reading\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forObjectWithAddress: addr At: i = ( |
+            | 
+            "Need a version that doesn't take a failblock and doesn't
+             clone anything. -- Adam, Mar. 2009"
+            machineMemory oopAtOffset: i From: addr).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -4362,8 +4396,9 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: memory object layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
-         addressOfMem: mem = ( |
-            | layouts memoryObject addressOfLocalMem: mem).
+         addressOfMem: mem IfFail: fb = ( |
+            | 
+            layouts memoryObject addressOfLocalMem: mem IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
@@ -4599,8 +4634,9 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
          'Category: double-dispatch\x7fCategory: layouts\x7fCategory: memory object layout\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
-         addressOfMem: mem = ( |
-            | layouts memoryObject addressOfRemoteMem: mem).
+         addressOfMem: mem IfFail: fb = ( |
+            | 
+            layouts memoryObject addressOfRemoteMem: mem IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {

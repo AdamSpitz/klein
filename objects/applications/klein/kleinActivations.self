@@ -269,9 +269,9 @@ SlotsToOmit: parent.
         
          contentsOfRegister: regName IfFail: fb = ( |
             | 
-            ifContentsOfRegister: regName
-                     AreInMemory: [|:a| myProcess readMemoryWordAt: a IfFail: fb]
-                   AreInRegister: [myProcess contentsOfRegister: regName IfFail: fb]).
+            ifContentsOfRegisterNamed: regName
+                          AreInMemory: [|:a| myProcess readMemoryWordAt: a IfFail: fb]
+                        AreInRegister: [myProcess contentsOfRegister: regName IfFail: fb]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
@@ -304,7 +304,16 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         gprAddressFor: regName = ( |
+         gprAddressForRegister: r = ( |
+            | 
+            r isGPR ifFalse: [^ 0]. "no stored address"
+            gprAddresses at: r number).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
+        
+         gprAddressForRegisterNamed: regName = ( |
             | 
             gprAddresses at:
               myProcess myAssemblerSystem operands
@@ -316,10 +325,21 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         ifContentsOfRegister: regName AreInMemory: memBlk AreInRegister: regBlk = ( |
+         ifContentsOfRegister: r AreInMemory: memBlk AreInRegister: regBlk = ( |
              a.
             | 
-            a: gprAddressFor: regName.
+            a: gprAddressForRegister: r.
+            0 = a  ifTrue: [regBlk value: r]
+                    False: [memBlk value: a]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
+        
+         ifContentsOfRegisterNamed: regName AreInMemory: memBlk AreInRegister: regBlk = ( |
+             a.
+            | 
+            a: gprAddressForRegisterNamed: regName.
             0 = a  ifTrue: [regBlk value: regName]
                     False: [memBlk value: a      ]).
         } | ) 
@@ -396,11 +416,21 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopInRegister: regName IfFail: fb = ( |
+         oopInRegister: r IfFail: fb = ( |
             | 
-            ifContentsOfRegister: regName
+            ifContentsOfRegister: r
                      AreInMemory: [|:a| myProcess oopAt: a IfFail: fb]
-                   AreInRegister: [myProcess oopInRegister: regName IfFail: fb]).
+                   AreInRegister: [myProcess oopInRegisterNamed: r name IfFail: fb]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopInRegisterNamed: regName IfFail: fb = ( |
+            | 
+            ifContentsOfRegisterNamed: regName
+                          AreInMemory: [|:a| myProcess oopAt: a IfFail: fb]
+                        AreInRegister: [myProcess oopInRegisterNamed: regName IfFail: fb]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
@@ -456,7 +486,7 @@ SlotsToOmit: parent.
             off: (senderSPIfAbsent: [|:e| ^ fb value: e])
                + lastSavedRegisterByteOffset.
             r: gprAddresses copy.
-            c do: [|:i|
+            0 upTo: c By: 1 WithoutCloningDo: [|:i|
               r at: r lastKey - i Put: off - (i * oopSize)
             ].
             r).
@@ -468,7 +498,7 @@ SlotsToOmit: parent.
          setContentsOfRegister: regName To: aNumber IfFail: fb = ( |
              a.
             | 
-            a: gprAddressFor: regName.
+            a: gprAddressForRegisterNamed: regName.
             a = 0 ifTrue: [
               ^ myProcess setContentsOfRegister: regName To: aNumber IfFail: fb
             ].
@@ -732,7 +762,7 @@ SlotsToOmit: parent.
               gprAddr = 0 ifFalse: [
                 [todo cleanup adam]. "Possible use for location objects?"
                 blk value:  (myProcess readMemoryWordAt: gprAddr IfFail: [|:e| ^ fb value: e])
-                     With:  registerNameForNumber: i.
+                     With:  (registerForNumber: i) name.
               ].
             ].
             self).
@@ -752,7 +782,7 @@ SlotsToOmit: parent.
          oopAtSPOffset: spo IfFail: fb = ( |
             | 
                          ifSPOffset: spo
-                 IsForARegisterThen: [|:regNum| oopInRegister: (registerNameForNumber: regNum) IfFail: fb]
+                 IsForARegisterThen: [|:regNum| oopInRegister: (registerForNumber: regNum) IfFail: fb]
             IsForAStackLocationThen: [|:addr| oopAt: addr IfFail: fb]
                              IfFail: fb).
         } | ) 
@@ -769,10 +799,19 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopInRegister: regName IfFail: fb = ( |
+         oopInRegister: r IfFail: fb = ( |
             | 
             myRegisterLocator ifNil: [^ fb value: 'no register locator'].
-            myRegisterLocator oopInRegister: regName IfFail: fb).
+            myRegisterLocator oopInRegister: r IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopInRegisterNamed: regName IfFail: fb = ( |
+            | 
+            myRegisterLocator ifNil: [^ fb value: 'no register locator'].
+            myRegisterLocator oopInRegisterNamed: regName IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
@@ -817,8 +856,10 @@ SlotsToOmit: parent.
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register masks\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          possiblyLiveLocationsDo: blk = ( |
-             gcMaskBooleanVector.
+             gcMask.
              gcMaskLayout.
+             intNN.
+             locBlk.
              memoryLocs.
              registerLocs.
             | 
@@ -833,15 +874,20 @@ SlotsToOmit: parent.
             memoryLocs: (stackFrameIfAbsent: raiseError) locationsForNonVolLocals.
 
             gcMaskLayout: myProcess sendDescForMyPlatform gcMaskLayout.
-            gcMaskBooleanVector: myProcess intNN booleanVectorFor: gcMaskIfFail: raiseError.
+            gcMask: gcMaskIfFail: raiseError.
+            intNN: myProcess intNN.
 
-            registerLocs, memoryLocs  do: [|:loc|
+            locBlk: [|:loc|
               gcMaskLayout
                                   ifLocation: loc
-                 ShouldBeRepresentedInGCMask: [|:bitNumber| (gcMaskBooleanVector at: bitNumber) ifTrue: [blk value: loc]]
+                 ShouldBeRepresentedInGCMask: [|:bitNumber| ((intNN bitAt: bitNumber In: gcMask) _Eq: 0) ifFalse: [blk value: loc]]
                                         Else: ["Assume that it's live, since the GC mask can't tell us."
                                                blk value: loc].
             ].
+
+            registerLocs do: locBlk.
+              memoryLocs do: locBlk.
+
             self).
         } | ) 
 
@@ -909,6 +955,14 @@ SlotsToOmit: parent.
 
             [nmm reflectee incomingRcvrSPOffset]. "browsing"
             (nmm primitiveContentsAt: 'incomingRcvrSPOffset' IfFail: [|:e| ^ fb value: e]) reflectee).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
+        
+         registerForNumber: n = ( |
+            | 
+            myAssemblerSystem operands gprFor: n).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
@@ -995,19 +1049,6 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (nil)'
         
          sp.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
-         'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
-        
-         registerNameForNumber: n = ( |
-             adam.
-             realWay.
-            | 
-            adam: (myAssemblerSystem operands gprFor: n) name.
-            realWay: (assemblerSystems ppc fields ra operandForValue: n) name.
-            [adam = realWay] assert.
-            realWay).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {

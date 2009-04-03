@@ -195,7 +195,7 @@ See the LICENSE file for license information.
          recursiveScavengeYoungObjectsIn: o = ( |
             | 
             [todo optimize gc]. "Do a non-recursive version of this?"
-            oopsIn: o Do: [|:c| recursiveScavenge: o].
+            oopsIn: o Do: [|:c| recursiveScavenge: c].
             self).
         } | ) 
 
@@ -206,6 +206,8 @@ See the LICENSE file for license information.
              a.
              elseBlk.
              freeBlk.
+             markLayout.
+             memoryObjectLayout.
              objBlk.
              objectLocator.
              oopSize.
@@ -218,22 +220,26 @@ See the LICENSE file for license information.
 
             a:       aSpace objsBottom.
             ot:      aSpace objsTop.
+
+            "Optimization: cache some things that are used frequently during the loop."
             oopSize: aSpace oopSize.
+            memoryObjectLayout: layouts memoryObject.
+                    markLayout: layouts mark.
 
             objBlk: [|:mv. o. byteSize. recordedAddr. hasBeenScavenged. oid. map|
-              o:            layouts memoryObject memForAddress: a.
-              recordedAddr: layouts memoryObject addressOfMem:  o.
+              o:            objectLocator localMemForAddress: a.
+              recordedAddr: objectLocator addressOfLocalMem:  o.
 
               [aaa]. "What if it's an int32? We need a polymorphic way to check for
                       equality without cloning anything. -- Adam, Mar. 2009"
-              hasBeenScavenged: (a _Eq: recordedAddr) not.
+              hasBeenScavenged: a _IntNE: recordedAddr.
 
               __BranchIfTrue: hasBeenScavenged To: 'doneRecyclingThisOne'.
-                  oid: layouts mark oidOfMarkAtLocalAddress: a.
+                  oid: markLayout oidOfMarkAtLocalAddress: a.
                   objectLocator invalidateEntryForLocalOID: oid.
               __DefineLabel: 'doneRecyclingThisOne'.
 
-              map: layouts memoryObject mapOfObjectWithAddress: a.
+              map: memoryObjectLayout mapOfObjectWithAddress: a.
               byteSize: oopSize _IntMul: map myLayout wordSizeOfObjectWithAddress: a.
               a:  a _IntAdd: byteSize.
             ].

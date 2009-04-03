@@ -1,6 +1,7 @@
  '$Revision: 30.22 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -273,6 +274,14 @@ SlotsToOmit: parent.
         
          isSymbolicForValue: operand = ( |
             | false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'fields' -> 'parent' -> 'operandField' -> 'parent' -> () From: ( | {
+         'Category: assembling\x7fModuleInfo: Module: asmFrame2 InitialContents: FollowSlot'
+        
+         keywordForAbstractAssemblyMethod = ( |
+            | 
+            keyword replace: ':' With: '_', name, ':').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'fields' -> 'parent' -> 'operandField' -> 'parent' -> () From: ( | {

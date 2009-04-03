@@ -244,7 +244,7 @@ Maps objects and compiles essential nmethods.\x7fModuleInfo: Module: vmKitVMBuil
             | 
             statusReporter show: 'setting up memory...' While: [
               theVM lens: theVM vmKit memoryLens.
-              theVM universe allocateHeapAt: base Size: nBytes.
+              theVM allocateHeapAt: base Size: nBytes.
               theVM machineMemory: theVM universe createBufferMemoryInterface.
               theVM universe getReadyToStartAllocating.
             ].

@@ -522,11 +522,13 @@ See the LICENSE file for license information.
          assertByteVector: reg = ( |
             | 
             cg generateExit: [|:okLabel|
-              layouts byteVector
-                              generateIf: reg
-                                    Temp: dstReg
-                IsByteVectorThenBranchTo: okLabel
-                                    With: cg.
+              cg withTemporaryRegisterDo: [|:tempReg|
+                layouts byteVector
+                                generateIf: reg
+                                      Temp: tempReg
+                  IsByteVectorThenBranchTo: okLabel
+                                      With: cg.
+              ].
               typeError: 'byteVector'.
             ].
             self).
@@ -805,7 +807,7 @@ See the LICENSE file for license information.
          genCallForNode: n = ( |
              nlr.
             | 
-            nlr: genCallForKey: n lookupKey LiveOopTracker: liveOopTrackerForSendNode: n.
+            nlr: genCallForKey: n lookupKey LiveOopTracker: liveOopTracker copyForNode: n.
             compiler nlrPoints add: nlr.
             self).
         } | ) 
@@ -1337,23 +1339,17 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: blocks\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: primitives\x7fCategory: objects\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generatePrimitiveInto: dstReg Receiver: blockReg CloneBlockHomeFrame: homeFPReg OID: oidReg Space: spaceReg IfFail: fh = ( |
+         generatePrimitiveInto: dstReg Receiver: rcvrReg CreateMemoryObjectReferenceWithValue: valueSmiReg IfFail: fh = ( |
             | 
-            fh assertBlock:    blockReg.
-            fh assertInteger:  oidReg.
-
-            layouts block
-                    generateCloneBlock: blockReg
-                             HomeFrame: homeFPReg
-                                   OID: oidReg
-                                 Space: spaceReg
-                                  Into: dstReg
-                     IfOutOfMemoryThen: [[todo gc].
-                                         a breakpoint: 'ran out of memory while cloning a block; GC is not implemented yet'.
-                                         fh outOfMemoryError]
-                                  With: self).
+            fh assertInteger: valueSmiReg.
+            [vmKit tag smi = 0] assert.
+            layouts memoryObject
+              generateAddTagTo: valueSmiReg
+                          Into: dstReg
+                          With: self.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1842,6 +1838,36 @@ Returns an address into a bytes part masquerading as a small integer.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: blocks\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitive_CloneBlockHomeFrame_OID_Space_IfFail_: node = ( |
+            | 
+            [ _CloneBlockHomeFrame: 0 OID: 0 Space: nil            ]. "browsing"
+            [ _CloneBlockHomeFrame: 0 OID: 0 Space: nil IfFail: fb ]. "browsing"
+            materializeLocsAndFailureHandlerOf: node AndDo: [|:dstReg. :blockReg. :homeFPReg. :oidReg. :spaceReg. :fh. retryLabel |
+              fh assertBlock:    blockReg.
+              fh assertInteger:  oidReg.
+
+              retryLabel: a defineLabel.
+              layouts block
+                    generateCloneBlock: blockReg
+                             HomeFrame: homeFPReg
+                                   OID: oidReg
+                                 Space: spaceReg
+                                  Into: dstReg
+                     IfOutOfMemoryThen: [| nlr |
+                                         a breakpoint: 'ran out of memory while cloning a block; about to try a GC'.
+                                         loadReflecteeOf: vmKit garbageCollector asMirror IntoLocation: allocator locationForOutgoingReceiver.
+                                         nlr: genNormalCallSelector: 'scavenge' LiveOopTracker: liveOopTracker copyForNode: node.
+                                         compiler nlrPoints add: nlr.
+                                         a breakpoint: 'GC finished; time to retry cloning the block'.
+                                         a branchToLabel: retryLabel]
+                                  With: self.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitive_In_WhichIsOfType_Get_IfFail_: node = ( |
@@ -1894,7 +1920,7 @@ Returns an address into a bytes part masquerading as a small integer.
 
             comment: 'call orig block'.
             moveLocation: node rcvrLoc ToLocation: outRcv.
-            nlrLabel: genNormalCallSelector: 'value' LiveOopTracker: liveOopTrackerForSendNode: node.
+            nlrLabel: genNormalCallSelector: 'value' LiveOopTracker: liveOopTracker copyForNode: node.
 
             comment: 'no NLR happened, so return the result of running the block'.
             moveLocation: inRes ToLocation: node resultLoc.
@@ -1911,7 +1937,7 @@ Returns an address into a bytes part masquerading as a small integer.
             moveLocation: inRes        ToLocation: protectBlockArg.
             moveLocation: node arg1Loc ToLocation: outRcv.
 
-            nlrLabelForProtectBlock: genNormalCallSelector: 'value:' LiveOopTracker: liveOopTrackerForSendNode: node.
+            nlrLabelForProtectBlock: genNormalCallSelector: 'value:' LiveOopTracker: liveOopTracker copyForNode: node.
 
             bindLabel: nlrLabelForProtectBlock. "ignore protect block NLR"
 
@@ -2316,15 +2342,10 @@ Returns an address into a bytes part masquerading as a small integer.
          'Category: zapping\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          zapDeadLocations = ( |
-             firstTime <- bootstrap stub -> 'globals' -> 'true' -> ().
             | 
-            locationsThatShouldBeZapped do: [|:loc|
-              firstTime ifTrue: [
-                node codeGenerator comment: 'zap-a-lot!'.
-                firstTime: false.
-              ].
-              zapLocation: loc
-            ].
+            locationsThatShouldBeZapped isEmpty ifTrue: [^ self].
+            node codeGenerator comment: 'zap-a-lot!'.
+            locationsThatShouldBeZapped do: [|:loc| zapLocation: loc].
             self).
         } | ) 
 
@@ -2336,14 +2357,6 @@ Returns an address into a bytes part masquerading as a small integer.
             loc canBeZapped ifFalse: [^ self].
             node codeGenerator moveWord: badOop ToLocation: loc.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         liveOopTrackerForSendNode: n = ( |
-            | 
-            liveOopTracker copyForNode: n).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2967,7 +2980,7 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinC1_Gens InitialCon
               loadReflecteeOf: message canonicalize asMirror IntoLocation: allocator locationForOutgoingRcvrOrArgAt: 1.
               loadReflecteeOf:    name canonicalize asMirror IntoLocation: allocator locationForOutgoingRcvrOrArgAt: 2.
 
-              nlr: genNormalCallSelector: node selectorToSendOnFailure LiveOopTracker: liveOopTrackerForSendNode: node.
+              nlr: genNormalCallSelector: node selectorToSendOnFailure LiveOopTracker: liveOopTracker copyForNode: node.
               compiler nlrPoints add: nlr.
 
               moveLocation: allocator locationForIncomingResult
@@ -3469,7 +3482,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedMethodStartInstruction <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         cachedMethodStartInstruction.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -3585,9 +3598,10 @@ SlotsToOmit: parent.
                   ToLocation: allocator locationForOutgoingRcvrOrArgAt: 1.
 
                 [cloneBlockHomeFrame_stub: fp].
-                branchToStubName: 'cloneBlockHomeFrame_stub:'
-                     UsingCTRAnd: r0
-                         SetLink: true.
+                sendDesc generateCallStubName: 'cloneBlockHomeFrame_stub:'
+                                    LookupKey: nil
+                               LiveOopTracker: (liveOopTracker copyForNode: node)
+                                         With: self.
 
                 moveLocation: allocator locationForIncomingResult
                   ToRegister: dstReg.
@@ -3626,16 +3640,17 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         generateCloneLocation: srcLoc IntoLocation: dstLoc = ( |
+         generateCloneLocation: srcLoc IntoLocation: dstLoc LiveOopTracker: aLiveOopTracker = ( |
             | 
             [todo gc]. "need red zone, to clone block for clone prim failure -- dmu"
             moveLocation: srcLoc
               ToLocation: allocator locationForOutgoingReceiver.
 
             [clone_stub].
-            branchToStubName: 'clone_stub'
-                 UsingCTRAnd: r0
-                     SetLink: true.
+            sendDesc generateCallStubName: 'clone_stub'
+                                LookupKey: nil
+                           LiveOopTracker: aLiveOopTracker
+                                     With: self.
 
             moveLocation: allocator locationForIncomingResult
               ToLocation: dstLoc.
@@ -3884,7 +3899,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generateInt32PrimitiveInto: dstReg Rcvr: rcvrReg Arg1: i1Reg Arg2: i2Reg IfFail: fh Do: aBlock = ( |
             | 
-            fh assertByteVector: rcvrReg.
             fh assertInt32: i1Reg.
             fh assertInt32: i2Reg.
 
@@ -3894,7 +3908,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
               aBlock value: dstReg With: dstReg With: tempReg.
             ].
 
-            moveValueInRegister: dstReg ToSMIOrInt32: rcvrReg AndPutResultInto: dstReg.
+            moveValueInRegister: dstReg ToSMIOrInt32: rcvrReg AndPutResultInto: dstReg IfFail: fh.
             self).
         } | ) 
 
@@ -4486,7 +4500,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generatePrimitiveInto: dstReg Receiver: rcvrReg SetInt32FromStackPointerIfFail: fh = ( |
             | 
-            moveValueInRegister: sp ToSMIOrInt32: rcvrReg AndPutResultInto: dstReg.
+            moveValueInRegister: sp ToSMIOrInt32: rcvrReg AndPutResultInto: dstReg IfFail: fh.
             self).
         } | ) 
 
@@ -4613,14 +4627,13 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generatePrimitiveInto: dstReg Receiver: int32Reg UnsafeWordAtAddress: addrReg IfFail: fh = ( |
             | 
-            fh assertByteVector: int32Reg.
             fh assertInt32: addrReg.
             withTemporaryRegisterDo: [|:tempReg|
               moveValueOfInt32: addrReg ToRegister: tempReg IfFail: fh.
                  load32BitsAtOffset: 0
               FromAddressInRegister: tempReg
                          ToRegister: tempReg.
-              moveValueInRegister: tempReg ToSMIOrInt32: int32Reg AndPutResultInto: dstReg.
+              moveValueInRegister: tempReg ToSMIOrInt32: int32Reg AndPutResultInto: dstReg IfFail: fh.
             ].
             self).
         } | ) 
@@ -4651,7 +4664,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             [_Clone          ]. "browsing"
             [_CloneIfFail: fb]. "browsing"
             generateCloneLocation: node rcvrLoc
-                     IntoLocation: node resultLoc).
+                     IntoLocation: node resultLoc
+                   LiveOopTracker: liveOopTracker copyForNode: node).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -5020,12 +5034,13 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: int32\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         moveValueInRegister: srcReg ToSMIOrInt32: int32Reg AndPutResultInto: dstReg = ( |
+         moveValueInRegister: srcReg ToSMIOrInt32: int32Reg AndPutResultInto: dstReg IfFail: fh = ( |
             | 
             layouts smi
                 generateEncode: srcReg
                           Into: dstReg
-                  IfDoesNotFit: [dstReg = srcReg ifTrue: [
+                  IfDoesNotFit: [fh assertByteVector: int32Reg.
+                                 dstReg = srcReg ifTrue: [
                                    withTemporaryRegisterDo: [|:tempReg|
                                      moveValueInRegister: srcReg ToInt32: int32Reg Temp: tempReg.
                                    ].

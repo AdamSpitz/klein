@@ -89,17 +89,8 @@ SlotsToOmit: parent.
          'Category: mapping oids to addresses\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
         
          addressForElement: shiftedAddress IfNotReallyAnAddress: fb = ( |
-             r.
             | 
-            "Avoid cloning so that this can be used when recycling OIDs."
-            __BranchIfTrue: (isEntryInvalid: shiftedAddress) To: 'notReallyAnAddress'.
-            r: shiftedAddress _IntLogicalShiftLeft: vmKit tag size.
-            [aaa wrong. should be: r: vmKit layouts smi encode: shiftedAddress.].
-            __BranchTo: 'done'.
-            __DefineLabel: 'notReallyAnAddress'.
-            r: fb value: 'unallocated'.
-            __DefineLabel: 'done'.
-            r).
+            shiftedAddress asAddressForObjectLocator: self IfInvalid: fb).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
@@ -129,7 +120,24 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
          'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
+         addressOfLocalMem: mem IfFail: fb = ( |
+            | 
+            "Should never fail."
+            addressOfLocalMem: mem).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
          addressOfRemoteMem: memOop = ( |
+            | 
+            addressOfRemoteMem: memOop IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addressOfRemoteMem: memOop IfFail: fb = ( |
             | childMustImplement).
         } | ) 
 
@@ -220,6 +228,16 @@ SlotsToOmit: parent.
                        for: objectLocatorOop
                IndexableAt: oid
                        Put: vmKit layouts smi oopForValue: elementForAddress: newAddr.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
+        
+         incrementTimestamp = ( |
+            | 
+            "Use primitive to avoid cloning."
+            timestamp: timestamp _IntAdd: 1.
             self).
         } | ) 
 
@@ -316,14 +334,6 @@ SlotsToOmit: parent.
             ts = timestamp ifTrue: [^ self].
             reloadFromDebuggee.
             timestamp: ts).
-        } | ) 
-
- bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
-         'Category: mapping oids to addresses\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isEntryInvalid: entry = ( |
-            | 
-            entry isInvalidObjectLocatorEntry).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
@@ -502,10 +512,7 @@ SlotsToOmit: parent.
             | 
             invalidateMyObsoleteCachedItems.
             r: at: oid IfAbsent: [^ ab value: 'absent'].
-            addressForElement: r IfNotReallyAnAddress: [
-              reloadFromDebuggee.
-              addressForElement: (at: oid) IfNotReallyAnAddress: ab
-            ]).
+            addressForElement: r IfNotReallyAnAddress: ab).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> 'parent' -> () From: ( | {
@@ -553,6 +560,7 @@ SlotsToOmit: parent.
             _Breakpoint: 'This is not a good time to allocate an OID. Perhaps the GC is in the middle of recycling one?'.
             __DefineLabel: 'ok'.
             e: _At: oid.
+            incrementTimestamp.
             lastInvalidEntry: e.
             oid).
         } | ) 
@@ -564,6 +572,7 @@ SlotsToOmit: parent.
             | 
             "Duplication with" [recordAddress: addr ForOID: oid].
             "Duplication with" [elementForAddress: addr].
+            incrementTimestamp.
             _At: oid Put: addr _IntArithmeticShiftRight: vmKit tag size).
         } | ) 
 
@@ -617,7 +626,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'directPointerObjectLocator') -> 'parent' -> () From: ( | {
          'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
-         addressOfRemoteMem: memOop = ( |
+         addressOfRemoteMem: memOop IfFail: fb = ( |
             | 
             decodeAddressOrOIDFromMemOop: memOop).
         } | ) 
@@ -808,9 +817,10 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
          'Category: encoding & decoding oops\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
-         addressOfRemoteMem: memOop = ( |
+         addressOfRemoteMem: memOop IfFail: fb = ( |
             | 
-            addressForOID: decodeAddressOrOIDFromMemOop: memOop).
+            addressForOID: (decodeAddressOrOIDFromMemOop: memOop)
+                 IfAbsent: fb).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
@@ -881,8 +891,7 @@ SlotsToOmit: parent.
         
          localMemForOID: oid = ( |
             | 
-            _CreateObjectReferenceWithTag: vmKit tag mem
-                                 AndValue: oid).
+            _CreateMemoryObjectReferenceWithValue: oid).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'indirectPointerObjectLocator') -> 'parent' -> () From: ( | {
@@ -1165,13 +1174,18 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'float' -> () From: ( | {
          'Category: Klein\x7fCategory: object locator\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
-         isInvalidObjectLocatorEntry = bootstrap stub -> 'globals' -> 'true' -> ().
+         asAddressForObjectLocator: objectLocator IfInvalid: fb = ( |
+            | 
+            fb value: 'unallocated').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'smallInt' -> () From: ( | {
          'Category: Klein\x7fCategory: object locator\x7fModuleInfo: Module: vmKitObjectLocator InitialContents: FollowSlot\x7fVisibility: public'
         
-         isInvalidObjectLocatorEntry = bootstrap stub -> 'globals' -> 'false' -> ().
+         asAddressForObjectLocator: objectLocator IfInvalid: fb = ( |
+            | 
+            "Avoid cloning so that this can be used when recycling OIDs."
+            _IntLogicalShiftLeft: objectLocator vmKit tag size).
         } | ) 
 
 

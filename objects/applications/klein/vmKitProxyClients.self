@@ -1,6 +1,7 @@
  '$Revision: 30.10 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -1975,10 +1976,10 @@ are serialized. -- dmu 7/03\x7fModuleInfo: Module: vmKitProxyClients InitialCont
          'Category: accessing the debuggee\x7fCategory: getting objectLocator timestamp\x7fModuleInfo: Module: vmKitProxyClients InitialContents: FollowSlot\x7fVisibility: public'
         
          objectLocatorTimestampIfFail: fb = ( |
+             addr.
             | 
-            objectLocatorTimestampAt:
-             (getObjectLocatorTimestampAddressIfFail: [|:e| ^ fb value: e])
-            IfFail: fb).
+            addr: getObjectLocatorTimestampAddressIfFail: [|:e| ^ fb value: e].
+            objectLocatorTimestampAt: addr IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'debuggingProxyClients' -> 'noncaching' -> 'abstract' -> 'parent' -> 'shortcuts' -> () From: ( | {

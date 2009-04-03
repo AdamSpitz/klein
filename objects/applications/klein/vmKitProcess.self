@@ -550,7 +550,18 @@ So need this slot.\x7fModuleInfo: Module: vmKitProcess InitialContents: FollowSl
         
          readLocalMemoryWordAt: addr IfFail: fb = ( |
             | 
-            intNN copy _UnsafeWordAtAddress: addr IfFail: fb).
+            "Optimization: try it first without cloning an intNN
+             to stick the value into, in case the address will
+             fit into a smi. Only create an intNN if that fails.
+             (In the long run, make the primitive do this
+             automatically. But that'll be easier with a
+             compiler that's a bit smarter about allocating
+             registers, because right now it's inconvenient to
+             use more than two temp registers. -- Adam, Mar. 2009"
+
+            0 _UnsafeWordAtAddress: addr IfFail: [
+              intNN copy _UnsafeWordAtAddress: addr IfFail: fb
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcess' -> 'parent' -> () From: ( | {

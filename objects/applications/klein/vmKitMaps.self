@@ -1,6 +1,7 @@
  '$Revision: 30.14 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -1012,6 +1013,17 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
          objectSlotsDo: blk = ( |
             | 
             slotsSatisfying: [|:i| isObjectSlotAt: i] Do: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: slotDescs and basic info\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         offsetOfObjectSlotNamed: n IfAbsent: blk = ( |
+             i.
+            | 
+            i: indexOfSlotNamed: n IfAbsent: [|:e| ^ blk value: e].
+            (vmKit slotType isObjectSlot: typeAt: i) ifFalse: [^ blk value: 'not an object slot'].
+            dataAt: i).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
