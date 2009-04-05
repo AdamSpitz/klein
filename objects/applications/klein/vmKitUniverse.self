@@ -48,9 +48,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
-         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (kleinAndYoda newGeneration copy)'
+         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (kleinAndYoda newGeneration)'
         
-         newGeneration <- kleinAndYoda newGeneration copy.
+         newGeneration <- bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'newGeneration' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
@@ -60,9 +60,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
-         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (kleinAndYoda oldGeneration copy)'
+         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (kleinAndYoda oldGeneration)'
         
-         oldGeneration <- kleinAndYoda oldGeneration copy.
+         oldGeneration <- bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'oldGeneration' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
@@ -83,14 +83,6 @@ SlotsToOmit: parent.
             v: list copyRemoveAll.
             spacesDo: [|:s| v addAll: s allAllocatedRegions].
             v).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
-         'Category: allocating\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateBytes: nBytes = ( |
-            | 
-            allocationSpace allocateBytes: nBytes).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
@@ -197,6 +189,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForVM: aVM = ( |
+            | 
+            copy initializeForVM: aVM).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
          'Category: memory interface\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
         
          createBufferMemoryInterface = ( |
@@ -273,6 +273,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initializeForVM: aVM = ( |
+            | 
+            generationsDo: [|:g| g initializeForVM: aVM].
+            scavengeGarbageSpace: edenSpace copy name: 'scavengeGarbage'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
         
          isScavenging = ( |
@@ -303,9 +313,9 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
          'Category: heap\x7fComment: invoke blk with contents and addr of each oop matching the desiredOop\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopsMatching: desiredOop Do: blk = ( |
+         oopsMatchingMemOop: desiredOop Do: blk = ( |
             | 
-            spacesDo: [|:s| s oopsMatching: desiredOop Do: blk].
+            spacesDo: [|:s| s oopsMatchingMemOop: desiredOop Do: blk].
             self).
         } | ) 
 
@@ -369,9 +379,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
-         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (kleinAndYoda edenSpace copy name: \'scavengeGarbage\')'
+         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (nil)'
         
-         scavengeGarbageSpace <- kleinAndYoda edenSpace copy name: 'scavengeGarbage'.
+         scavengeGarbageSpace.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {

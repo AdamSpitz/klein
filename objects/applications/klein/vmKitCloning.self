@@ -80,8 +80,6 @@ See the LICENSE file for license information.
             __BranchIfFalse: (maxWordSize _IntLE: nextWordIndex)
                          To: 'enoughMemoryForHeader'.
 
-            [todo gc]. "Not implemented: do a GC and try again."
-            _Breakpoint: 'ran out of memory'.
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
@@ -89,7 +87,7 @@ See the LICENSE file for license information.
 
             theClone: copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
 
-            nextWordIndex:  copyContentsOfLocalObject: theOriginal Into: theClone StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
+            nextWordIndex:  copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex IfFail: failBlock.
 
             theClone).
@@ -152,8 +150,6 @@ See the LICENSE file for license information.
             [todo optimize cloning]. "Can also check to see if there's enough memory for
                                       the whole object, since we know the size."
 
-            [todo gc]. "Not implemented: do a GC and try again."
-            _Breakpoint: 'ran out of memory'.
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
@@ -161,7 +157,7 @@ See the LICENSE file for license information.
 
             theClone: copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
 
-            nextWordIndex:  copyContentsOfLocalObject: theOriginal Into: theClone StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
+            nextWordIndex:  copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
             nextWordIndex:  fillNewLocalObject: theClone With: filler Size: size  StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
 
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex IfFail: failBlock.
@@ -180,10 +176,15 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
-         copyContentsOfLocalObject: theOriginal Into: theClone StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
+         copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
+             mm.
              nextWordIndex.
              oop.
+             theOriginalAddress.
             | 
+
+            mm: machineMemory.
+            theOriginalAddress: addressOfLocalMem: theOriginal.
 
             "Remember that this method is overridden (for unsegregated byteVectors). -- Adam, 4/06"
 
@@ -193,19 +194,17 @@ See the LICENSE file for license information.
 
             __DefineLabel: 'copyContentsLoop'.
 
-              __BranchIfTrue: (for: theOriginal IsMarkAt: nextWordIndex IfFail: true)
+              __BranchIfTrue: (mm isMarkAtOffset: nextWordIndex From: theOriginalAddress IfFail: true)
                           To: 'copyContentsDone'.
 
-              oop:  for: theOriginal At: nextWordIndex          IfFail: failBlock.
-                    for: theClone    At: nextWordIndex Put: oop IfFail: failBlock.
+              oop:  mm oopAtOffset: nextWordIndex From: theOriginalAddress             IfFail: failBlock.
+                    mm    atOffset: nextWordIndex From:    theCloneAddress PutOop: oop IfFail: failBlock.
 
               nextWordIndex: nextWordIndex _IntAdd: 1.
 
               __BranchIfFalse: (maxWordSize _IntLE: nextWordIndex)
                            To: 'copyContentsLoop'.
 
-            [todo gc]. "Not implemented: do a GC and try again."
-            _Breakpoint: 'ran out of memory while copying contents during cloning'.
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
@@ -371,7 +370,7 @@ See the LICENSE file for license information.
             theClone: copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
 
             nextWordIndex:  copyContentsOfLocalObject: theOriginal
-                                                 Into: theClone
+                                IntoObjectWithAddress: theCloneAddress
                                          StartingFrom: nextWordIndex
                                          NotExceeding: maxWordSize
                                  AndLeaveRoomForBytes: byteSize
@@ -379,6 +378,14 @@ See the LICENSE file for license information.
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex IfFail: failBlock.
 
             theClone).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
+         'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
+        
+         copyBytesFrom: o IntoObjectWithAddress: targetObjAddress IfFail: fb = ( |
+            | 
+            _Breakpoint: 'not implemented yet').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
@@ -442,12 +449,18 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
          'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
-         copyContentsOfLocalObject: theOriginal Into: theClone StartingFrom: startingWordIndex NotExceeding: maxWordSize AndLeaveRoomForBytes: nBytes IfFail: failBlock = ( |
+         copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: startingWordIndex NotExceeding: maxWordSize AndLeaveRoomForBytes: nBytes IfFail: failBlock = ( |
              endWordIndex.
+             mm.
              nextWordIndex.
              oop.
              origin.
+             theOriginalAddress.
             | 
+
+            mm: machineMemory.
+            theOriginalAddress: addressOfLocalMem: theOriginal.
+
             nextWordIndex: startingWordIndex.
 
             "Can't copy contents until we reach the next mark word, because a sequence
@@ -461,8 +474,6 @@ See the LICENSE file for license information.
             __BranchIfFalse: (maxWordSize _IntLE: endWordIndex)
                          To: 'copyNonIndexableContentsLoop'.
 
-            [todo gc]. "Not implemented: do a GC and try again."
-            _Breakpoint: 'ran out of memory'.
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
@@ -471,8 +482,8 @@ See the LICENSE file for license information.
               __BranchIfTrue: (nextWordIndex _IntEQ: origin)
                           To: 'copyNonIndexableContentsDone'.
 
-              oop:  for: theOriginal At: nextWordIndex          IfFail: failBlock.
-                    for: theClone    At: nextWordIndex Put: oop IfFail: failBlock.
+              oop:  mm oopAtOffset: nextWordIndex From: theOriginalAddress             IfFail: failBlock.
+                    mm    atOffset: nextWordIndex From:    theCloneAddress PutOop: oop IfFail: failBlock.
 
               nextWordIndex: nextWordIndex _IntAdd: 1.
 
@@ -482,7 +493,7 @@ See the LICENSE file for license information.
 
             __DefineLabel: 'copyNonIndexableContentsDone'.
 
-            for: theClone At: indexableSizeField fixedIndex Put: nBytes IfFail: failBlock.
+            mm atOffset: indexableSizeField fixedIndex From: theCloneAddress PutOop: nBytes IfFail: failBlock.
 
             endWordIndex).
         } | ) 
@@ -490,13 +501,13 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
          'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
-         copyContentsOfLocalObject: theOriginal Into: theClone StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
+         copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
              nBytes.
             | 
             nBytes: for: theOriginal At: indexableSizeField fixedIndex IfFail: failBlock.
 
             copyContentsOfLocalObject: theOriginal
-                                 Into: theClone
+                IntoObjectWithAddress: theCloneAddress
                          StartingFrom: startingWordIndex
                          NotExceeding: maxWordSize
                  AndLeaveRoomForBytes: nBytes

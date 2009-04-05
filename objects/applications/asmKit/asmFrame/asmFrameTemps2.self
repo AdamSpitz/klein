@@ -294,7 +294,7 @@ one of these more-abstract ones. -- Adam, Mar. 2009\x7fModuleInfo: Module: asmFr
             operandFields do: [|:of|
               r: r & intNNString & ' or: (' & of sourceForAssemblyMethod & ') With:\n'.
             ].
-            [intNN or: a With: b]. "browsing"
+            [intNN or: 0 With: 0]. "browsing"
             r: r & 'instTemplate opcode.\n'.
             r: r & 'data32: r.\n'.
             r: r & 'r)'.

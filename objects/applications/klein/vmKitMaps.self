@@ -2762,7 +2762,7 @@ SlotsToOmit: parent.
         
          myLayout = ( |
             | 
-            layouts byteVector).
+            theVM byteVectorLayout).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'byteVectorMap') -> 'parent' -> () From: ( | {
@@ -3159,14 +3159,6 @@ SlotsToOmit: parent.
          'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
          isNMethod = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'nmethodMap') -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
-        
-         myLayout = ( |
-            | 
-            layouts byteVector).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'nmethodMap') -> 'parent' -> () From: ( | {

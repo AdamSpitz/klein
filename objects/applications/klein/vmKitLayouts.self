@@ -1223,14 +1223,6 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> () From: ( | {
-         'Category: objects\x7fCategory: memory objects\x7fCategory: vectors\x7fCategory: byte vectors\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
-        
-         byteVector = ( |
-            | 
-            unsegregatedByteVector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> () From: ( | {
          'Category: bytes part\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          bytesPart = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( |
@@ -1283,11 +1275,11 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( | {
          'Category: creating\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
-         allocateBytesPartWithIndexableSize: nBytes = ( |
+         allocateBytesPartWithIndexableSize: nBytes InSpace: aSpace IfFail: fb = ( |
              bpRef.
             | 
-            bpRef:  bytesPartRefForAddress:  theVM universe allocateBytes: nBytes + bytesHeaderSize.
-            forBytesPart: bpRef SetIndexableSize: nBytes.
+            bpRef:  bytesPartRefForAddress:  aSpace allocateBytes: nBytes + bytesHeaderSize IfFail: [|:e| ^ fb value: e].
+            forBytesPart: bpRef SetIndexableSize: nBytes IfFail: [|:e| ^ fb value: e].
             bpRef).
         } | ) 
 
@@ -1352,6 +1344,54 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
          bytesPartRefForAddress: address = ( |
             | 
             lens bytesPartRefForAddress: address).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( | {
+         'Category: creating\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         cloneBytesPart: theOriginalBPRef InSpace: aSpace IfFail: fb = ( |
+             failBlock.
+             newBPRef.
+             s.
+            | 
+            failBlock: [|:e| ^ fb value: e].
+
+            s: indexableSizeOfBytesPart: theOriginalBPRef IfFail: failBlock.
+
+            newBPRef: allocateBytesPartWithIndexableSize: s InSpace: aSpace IfFail: failBlock.
+
+            copyBytesFrom: theOriginalBPRef
+             WhichHasSize: s
+                       To: newBPRef
+             WhichHasSize: s
+              FillingWith: 0
+                   IfFail: failBlock.
+
+            newBPRef).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( | {
+         'Category: creating\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyBytesFrom: theOriginalBPRef ToNewBytesPartInSpace: aSpace WhichShouldHaveSize: newSize FillingWith: filler IfFail: fb = ( |
+             failBlock.
+             newBPRef.
+             theOriginalSize.
+            | 
+            failBlock: [|:e| ^ fb value: e].
+
+            theOriginalSize:  indexableSizeOfBytesPart: theOriginalBPRef IfFail: failBlock.
+
+            newBPRef: allocateBytesPartWithIndexableSize: newSize InSpace: aSpace IfFail: failBlock.
+
+            copyBytesFrom: theOriginalBPRef
+             WhichHasSize: theOriginalSize
+                       To: newBPRef
+             WhichHasSize: newSize
+              FillingWith: filler
+                   IfFail: failBlock.
+
+            newBPRef).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( | {
@@ -1477,13 +1517,6 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
          forBytesPart: bpRef SetBytes: bv IfFail: fb = ( |
             | 
             lens forBytesPart: bpRef SetBytes: bv IfFail: fb).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( | {
-         'Category: accessing indexable size field\x7fCategory: writing\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
-        
-         forBytesPart: bpRef SetIndexableSize: s = ( |
-            | forBytesPart: bpRef SetIndexableSize: s IfFail: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'bytesPart' -> () From: ( | {
@@ -2065,7 +2098,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
             error: 'should not use this bit field until we\'re ready to turn',
                    'the encoding-stuff-in-the-mark space optimization back on'.
 
-            used to be a constant slot pointing to
+            "used to be a constant slot pointing to"
             vmKit layouts mark isByteVectorField).
         } | ) 
 
@@ -2469,7 +2502,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
             error: 'should not use this bit field until we\'re ready to turn',
                    'the encoding-stuff-in-the-mark space optimization back on'.
 
-            used to be a constant slot pointing to
+            "used to be a constant slot pointing to"
             vmKit layouts mark compactMapIndexField).
         } | ) 
 
@@ -2502,7 +2535,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
             error: 'should not use this bit field until we\'re ready to turn',
                    'the encoding-stuff-in-the-mark space optimization back on'.
 
-            used to be a constant slot pointing to
+            "used to be a constant slot pointing to"
             vmKit layouts mark objVectorIndexableOriginField).
         } | ) 
 
@@ -2788,9 +2821,10 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
         
          setValueForObjectWithAddress: addr To: v Layout: aLayout IfFail: fb = ( |
             | 
-            aLayout machineMemory at: addr + (fixedIndex * aLayout oopSize)
-                              PutOop: (oopForValue: v)
-                              IfFail: fb).
+            aLayout machineMemory atOffset: fixedIndex
+                                      From: addr
+                                    PutOop: (oopForValue: v)
+                                    IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
@@ -3171,6 +3205,14 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: accessing mark\x7fCategory: writing\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forObjectWithAddress: addr SetMarkValue: markValue IfFail: fb = ( |
+            | 
+            markField setValueForObjectWithAddress: addr To: markValue Layout: self IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
          'Category: accessing all words of object including header\x7fCategory: reading\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          forRemoteObject: o At: i IfFail: fb = ( |
@@ -3184,10 +3226,10 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         
          forRemoteObject: o At: i Put: x IfFail: fb = ( |
             | 
-            machineMemory at: (for: o AddressAt: i IfFail: [|:e| ^ fb value: e])
-                      PutOop: x
-                      IfFail: [|:e| ^ fb value: e].
-            self).
+            machineMemory atOffset: i
+                              From: (addressOfMem: o IfFail: [|:e| ^ fb value: e])
+                            PutOop: x
+                            IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -3368,6 +3410,19 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'markField' -> () From: ( | {
+         'Category: accessing value\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         setValueForObjectWithAddress: addr To: v Layout: aLayout IfFail: fb = ( |
+            | 
+            [todo cleanup aaa]. "Should give this guy the other accessing methods too."
+
+            aLayout machineMemory atOffset: fixedIndex
+                                      From: addr
+                          PutMarkWithValue: v
+                                    IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'markField' -> () From: ( | {
          'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
          valueMixin* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'markField' -> 'valueMixin' -> () From: ( |
@@ -3460,14 +3515,6 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
          memIsByteVector: o = ( |
             | 
             layouts mark isMarkValueForByteVector: markValueOf: o).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
-         'Category: secondary (i.e. what kind of mem) tests\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
-        
-         memIsYoung: o = ( |
-            | 
-            theVM universe edenSpace includesAddress: addressOfMem: o).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -3831,7 +3878,7 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         
          isYoung: o = ( |
             | 
-            (isMem: o) && [layouts memoryObject memIsYoung: o]).
+            (isMem: o) && [theVM universe edenSpace includesAddress: layouts memoryObject addressOfMem: o]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
@@ -3932,6 +3979,14 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         bytesNeededToHoldBytes: nBytes = ( |
+            | 
+            (oopsNeededToHoldBytes: nBytes) _IntMul: oopSize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
          'Category: accessing bytes part reference field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
          bytesPartRefField = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> 'bytesPartRefField' -> () From: ( |
@@ -3960,6 +4015,14 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
          'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
          cClassName = 'BytesPartRefValueHeaderField'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> 'bytesPartRefField' -> () From: ( | {
+         'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         oopForValue: v = ( |
+            | 
+            v).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> 'bytesPartRefField' -> () From: ( | {
@@ -3999,51 +4062,71 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
+         'Category: cloning\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         cloneLocalObject: theOriginal IndexableSize: byteSize IfFail: fb = ( |
+            | 
+            cloneLocalObject: theOriginal IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
+         'Category: cloning\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         copyBytesFrom: o IntoObjectWithAddress: targetObjAddr InSpace: aSpace IfFail: fb = ( |
+             failBlock.
+             newBPRef.
+             theOriginalBPRef.
+            | 
+            failBlock: [|:e| ^ fb value: e].
+
+            theOriginalBPRef:  bytesPartRefFor: o IfFail: failBlock.
+
+            newBPRef: layouts bytesPart cloneBytesPart: theOriginalBPRef
+                                               InSpace: aSpace
+                                                IfFail: failBlock.
+
+            forObjectWithAddress: targetObjAddr SetBytesPartRef: newBPRef IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
          'Category: cloning\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          copyBytesFrom: o To: c IfFail: fb = ( |
+             failBlock.
              newBPRef.
-             newSize.
              theOriginalBPRef.
-             theOriginalSize.
             | 
-            theOriginalBPRef:  bytesPartRefFor: o IfFail: [|:e| ^ fb value: e].
-            theOriginalSize:   indexableSizeOf: o IfFail: [|:e| ^ fb value: e].
+            failBlock: [|:e| ^ fb value: e].
 
-            newSize:   theOriginalSize.
-            newBPRef: layouts bytesPart allocateBytesPartWithIndexableSize: newSize.
-            for: c SetBytesPartRef: newBPRef IfFail: [|:e| ^ fb value: e].
+            theOriginalBPRef:  bytesPartRefFor: o IfFail: failBlock.
 
-            layouts bytesPart
-                  copyBytesFrom: theOriginalBPRef
-                   WhichHasSize: theOriginalSize
-                             To: newBPRef
-                   WhichHasSize: newSize
-                    FillingWith: 0
-                         IfFail: fb).
+            newBPRef: layouts bytesPart cloneBytesPart: theOriginalBPRef
+                                               InSpace: theVM universe allocationSpace
+                                                IfFail: failBlock.
+
+            for: c SetBytesPartRef: newBPRef IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
          'Category: cloning\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
          copyBytesFrom: o To: c IndexableSize: newSize FillingWith: filler IfFail: fb = ( |
+             failBlock.
              newBPRef.
              theOriginalBPRef.
              theOriginalSize.
             | 
-            theOriginalBPRef:  bytesPartRefFor: o IfFail: [|:e| ^ fb value: e].
-            theOriginalSize:   indexableSizeOf: o IfFail: [|:e| ^ fb value: e].
+            failBlock: [|:e| ^ fb value: e].
 
-            newBPRef: layouts bytesPart allocateBytesPartWithIndexableSize: newSize.
-            for: c SetBytesPartRef: newBPRef IfFail: [|:e| ^ fb value: e].
+            theOriginalBPRef:  bytesPartRefFor: o IfFail: failBlock.
 
-            layouts bytesPart
-                  copyBytesFrom: theOriginalBPRef
-                   WhichHasSize: theOriginalSize
-                             To: newBPRef
-                   WhichHasSize: newSize
-                    FillingWith: 0
-                         IfFail: fb).
+            newBPRef: layouts bytesPart copyBytesFrom: theOriginalBPRef 
+                                ToNewBytesPartInSpace: theVM universe allocationSpace
+                                  WhichShouldHaveSize: newSize
+                                          FillingWith: filler
+                                               IfFail: failBlock.
+
+            for: c SetBytesPartRef: newBPRef IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
@@ -4156,9 +4239,7 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         
          forObjectWithAddress: addr SetBytesPartRef: bpRef IfFail: fb = ( |
             | 
-            machineMemory at: addr + (bytesPartRefField fixedIndex * oopSize)
-                     PutWord: bpRef
-                      IfFail: fb).
+            bytesPartRefField setValueForObjectWithAddress: addr To: bpRef Layout: self IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
@@ -4194,9 +4275,23 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSegregated = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
          'Category: layout constants\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
          lastField = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> 'bytesPartRefField' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
+         'Category: getting size of whole object\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopsNeededToHoldBytes: nBytes = ( |
+            | 
+            (nBytes _IntAdd:  oopSize _IntSub: 1) _IntDiv: oopSize).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {
@@ -4354,6 +4449,12 @@ end of the oops part of the byteVector is reached.  -- Adam, 4/06\x7fModuleInfo:
             ByteAt: (origin * oopSize) + i
                Put: x
             IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSegregated = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {

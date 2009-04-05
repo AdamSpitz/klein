@@ -43,6 +43,22 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
+         atOffset: wordOffset From: baseAddr PutMarkWithValue: mv IfFail: fb = ( |
+            | 
+            mv _UnsafePutMarkValueAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: single oops\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         atOffset: wordOffset From: baseAddr PutOop: oop IfFail: fb = ( |
+            | 
+            oop _UnsafePutOopAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: marks\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
+        
          isMarkAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
             | 
             _UnsafeIsMarkAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).

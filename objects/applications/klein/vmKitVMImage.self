@@ -978,7 +978,7 @@ It\'d be neat if someday this turned into a more general-purpose
                   IsSmi: nil
                   IsMark: [
                     (vmKit layouts mark isMarkForByteVector: oop)  ifTrue: [
-                       vmKit layouts byteVector
+                       myVM byteVectorLayout
                          relocateBytesPartRefAt: addr By: delta
                     ]
                   ]

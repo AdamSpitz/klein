@@ -659,7 +659,7 @@ SlotsToOmit: parent.
             | 
             description ifNotNil: [|:d| aCodeGenerator comment: ['setting ', d]].
             aCodeGenerator materializeSource: baseLoc AndDo: [|:baseReg|
-              aCodeGenerator storeRegister: r ToOffset: offset FromAddressInRegister: baseReg.
+              aCodeGenerator storeWordInRegister: r ToOffset: offset FromAddressInRegister: baseReg.
             ].
             self).
         } | ) 

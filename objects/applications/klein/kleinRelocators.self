@@ -1,6 +1,7 @@
  '$Revision: 30.38 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -515,7 +516,7 @@ SlotsToOmit: parent.
          assemblePlaceholderInstructionsWith: cg = ( |
             | 
             assembleWith: cg
-                Location: cg locations offsetFromOtherLocation copyForOffset: initialOffset FromRegister: baseReg.
+                Location: slotLocationForOffset: initialOffset With: cg.
             self).
         } | ) 
 
@@ -592,7 +593,7 @@ SlotsToOmit: parent.
             | 
             memoryOffset: slotOffset * vmKit base oopSize.
             assembleWith: cg
-                Location: cg locations offsetFromOtherLocation copyForOffset: memoryOffset FromRegister: baseReg.
+                Location: slotLocationForOffset: memoryOffset With: cg.
             self).
         } | ) 
 
@@ -616,6 +617,14 @@ SlotsToOmit: parent.
          relocateOopInNMethod: nm By: delta With: cg = ( |
             | 
             self "offsets do not changes when objects move").
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> 'parent' -> () From: ( | {
+         'Category: assembling\x7fModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: private'
+        
+         slotLocationForOffset: o With: cg = ( |
+            | 
+            cg locations offsetFromOtherLocation copyForOffset: o FromRegister: baseReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> 'parent' -> () From: ( | {

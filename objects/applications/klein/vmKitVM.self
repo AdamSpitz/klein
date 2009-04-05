@@ -217,6 +217,14 @@ is always globally scoped.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
+         'Category: mapped\x7fCategory: accessing platform information\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         byteVectorLayout = ( |
+            | 
+            layouts segregatedByteVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
          'Category: mapped\x7fCategory: compiling\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
         
          compilerPrototype = ( |
@@ -369,7 +377,7 @@ to just keep upping it by hand.
             | 
             lens: vmKit localObjectLens.
             machineMemory: nil. "unused localMemoryInterface"
-            universe: vmKit universe copy.
+            universe: vmKit universe copyForVM: self.
             architecture: archName canonicalize.
             exportPolicy invalidateCachedModuleNameLists.
             objectLocator: objectLocatorProto copy.

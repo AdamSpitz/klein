@@ -476,7 +476,7 @@ SlotsToOmit: parent.
          recordAddress: addr ForOID: oid = ( |
             | 
             "Duplication with" [withoutCloningAnythingRecordAddress: addr ForOID: oid].
-
+            [aaa]. addr = 0 ifTrue: [halt].
             at: oid Put: elementForAddress: addr).
         } | ) 
 
@@ -763,7 +763,7 @@ SlotsToOmit: parent.
 
             mm: theVM machineMemory.
             newOop: encodeMemOopFromAddress: newAddr.
-            theVM universe oopsMatching: oldOop Do: [|:oop. :addr|
+            theVM universe oopsMatchingMemOop: oldOop Do: [|:oop. :addr|
               mm at: addr PutOop: newOop.
             ].
 

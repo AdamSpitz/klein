@@ -27,39 +27,9 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
          'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         allocateOops: nOops = ( |
-            | 
-            allocateOops: nOops IfFail: raiseError).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
-         'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
-        
          allocateOops: nOops IfFail: fb = ( |
-             oldObjsTop.
             | 
-            [_NoGCAllowed].
-
-            "Using primitives to avoid cloning any blocks, so that
-             this code can be used inside Klein. -- Adam, 7/06"
-
-            oldObjsTop: objsTop.
-            [todo untaggedAddresses optimization]. "Convert to using untagged addresses, for efficiency."
-            [todo cleanup allocating oopSize]. "Fix the hardcoded 4. Problem is that the layout code isn't included in the miniVM."
-            objsTop:  oldObjsTop _IntAdd:  nOops _IntMul: 4.
-
-            "Check for out of memory: using _IntLE: instead of _IntLT:
-             to reserve space for the mark following last object in
-             the space -- jb 6/03"
-            __BranchIfFalse: (objsLimit _IntLE: objsTop) To: 'ok'.
-            objsTop: oldObjsTop.
-            fb value: 'space full' With: 'allocateOops:'.
-
-            __DefineLabel: 'ok'.
-
-            setTrailingMark.
-
-            oldObjsTop).
+            bumpPointerToAllocateOops: nOops IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
@@ -69,14 +39,6 @@ See the LICENSE file for license information.
             | 
             spaceBoundarySlotsToFixUpIn: spaceMir Do: blk.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
-        
-         getReadyToStartAllocating = ( |
-            | 
-            initializeAllocationPointers).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
@@ -98,7 +60,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateByBumpingAPointerMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         segregatedOopsMatching: desiredOop Do: blk = ( |
+         segregatedOopsMatchingMemOop: desiredOop Do: blk = ( |
             | 
             "Optimization - we can just iterate straight from
              objsBottom to objsTop. -- Adam, 5/06"
@@ -130,23 +92,10 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         allocateOops: nOops = ( |
+         allocateOops: nOops IfFail: fb = ( |
             | 
-            [_NoGCAllowed].
-            searchFreeOopsListsForSpaceForAnObjectOfSize: nOops AndDo: [|:addr. :previousAddr. :i. :size. nextEntry. extraOops|
-              "Remove the entry from the list."
-              nextEntry: vmKit layouts freeOopsListEntry nextEntryForEntryAtAddress: addr.
-              previousAddr ifNil: [setFirstEntryInListAt: i To: nextEntry]
-                        IfNotNil: [vmKit layouts freeOopsListEntry forEntryAtAddress: previousAddr SetNextEntry: nextEntry].
-
-              "If we used a chunk that was too big, put the extra oops back on the appropriate list."
-              extraOops: size - nOops.
-              extraOops = 0 ifFalse: [| extraOopsAddr |
-                extraOopsAddr: addr + (nOops * oopSize).
-                record: extraOops FreeOopsAtAddress: extraOopsAddr.
-                setTrailingMarkAt: extraOopsAddr.
-              ].
-              addr
+            search: freeOopsLists ToAllocateOops: nOops IfFail: [
+              bumpPointerToAllocateOops: nOops IfFail: fb
             ]).
         } | ) 
 
@@ -163,12 +112,12 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         firstEntryInListAt: i = ( |
+         firstEntryInListAt: i In: freeLists = ( |
             | 
             "the entry is a smi containing the address / 4."
             [vmKit tag smi  = 0] assert.
             [vmKit tag size = 2] assert.
-            freeOopsLists at: i).
+            freeLists at: i).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
@@ -184,14 +133,6 @@ See the LICENSE file for license information.
               ].
             ].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
-        
-         getReadyToStartAllocating = ( |
-            | 
-            initializeFreeLists).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
@@ -221,17 +162,9 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         indexForListContainingEntriesOfSize: nOops = ( |
+         indexForListIn: freeLists ContainingEntriesOfSize: nOops = ( |
             | 
-            nOops min: lastFreeOopsListIndex).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
-        
-         lastFreeOopsListIndex = ( |
-            | 
-            freeOopsLists lastKey).
+            nOops min: freeLists lastKey).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
@@ -239,27 +172,27 @@ See the LICENSE file for license information.
         
          nextAddressToAllocateForObjectOfSize: nOops = ( |
             | 
-            searchFreeOopsListsForSpaceForAnObjectOfSize: nOops AndDo: [|:addr| addr]).
+            search: freeOopsLists ForSpaceForAnObjectOfSize: nOops AndDo: [|:addr| addr] IfNone: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         record: nOops FreeOopsAtAddress: addr = ( |
+         record: nOops FreeOopsAtAddress: addr In: freeLists = ( |
              i.
             | 
             [nOops >= vmKit layouts freeOopsListEntry numberOfFields] assert.
-            i: indexForListContainingEntriesOfSize: nOops.
-            vmKit layouts freeOopsListEntry forEntryAtAddress: addr SetNextEntry: firstEntryInListAt: i.
+            i: indexForListIn: freeLists ContainingEntriesOfSize: nOops.
+            vmKit layouts freeOopsListEntry forEntryAtAddress: addr SetNextEntry: firstEntryInListAt: i In: freeLists.
             vmKit layouts freeOopsListEntry forEntryAtAddress: addr SetSize: nOops.
-            setFirstEntryInListAt: i To: vmKit layouts smi decode: addr.
+            setFirstEntryInListAt: i In: freeLists To: vmKit layouts smi decode: addr.
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         searchFreeOopsListsForSpaceForAnObjectOfSize: nOops AndDo: blk = ( |
+         search: freeLists ForSpaceForAnObjectOfSize: nOops AndDo: blk IfNone: noneBlk = ( |
              addr.
              i.
              previousAddr.
@@ -267,36 +200,67 @@ See the LICENSE file for license information.
             | 
             i: nOops.
 
-            [i: indexForListContainingEntriesOfSize: i.
-             addr: vmKit layouts smi encode: firstEntryInListAt: i.
+            [i: indexForListIn: freeLists ContainingEntriesOfSize: i.
+             addr: vmKit layouts smi encode: firstEntryInListAt: i In: freeLists.
              addr = 0] whileTrue: [
 
-              i = lastFreeOopsListIndex ifTrue: [^ 0].
+              i = freeLists lastKey ifTrue: [^ noneBlk value].
               i: i + (i = nOops
                          ifFalse: 1
                             True: [vmKit layouts freeOopsListEntry numberOfFields]). "don't leave holes too small for an entry"
             ].
             s: vmKit layouts freeOopsListEntry sizeForEntryAtAddress: addr.
-            i = lastFreeOopsListIndex ifTrue: [
+            i = freeLists lastKey ifTrue: [
               [vmKit layouts freeOopsListEntry isAnEntryOfSize: s AcceptableForHoldingAnObjectOfSize: nOops] whileFalse: [
                  previousAddr: addr.
                  addr: vmKit layouts smi encode: vmKit layouts freeOopsListEntry nextEntryForEntryAtAddress: addr.
-                 addr = 0 ifTrue: [^ 0].
+                 addr = 0 ifTrue: [^ noneBlk value].
                  s: vmKit layouts freeOopsListEntry sizeForEntryAtAddress: addr.
               ].
             ].
 
-            [addr < objsTop] assert.
+            [(addr != 0) && [addr < objsTop]] assert.
 
             blk value: addr With: previousAddr With: i With: s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
+        
+         search: freeLists ToAllocateOops: nOops IfFail: fb = ( |
+            | 
+            [_NoGCAllowed].
+            search: freeLists ForSpaceForAnObjectOfSize: nOops AndDo: [|:addr. :previousAddr. :i. :size. nextEntry. extraOops|
+              "Remove the entry from the list."
+              nextEntry: vmKit layouts freeOopsListEntry nextEntryForEntryAtAddress: addr.
+              previousAddr ifNil: [setFirstEntryInListAt: i In: freeLists To: nextEntry]
+                        IfNotNil: [vmKit layouts freeOopsListEntry forEntryAtAddress: previousAddr SetNextEntry: nextEntry].
+
+              "If we used a chunk that was too big, put the extra oops back on the appropriate list."
+              extraOops: size - nOops.
+              extraOops = 0 ifFalse: [| extraOopsAddr |
+                extraOopsAddr: addr + (nOops * oopSize).
+                record: extraOops FreeOopsAtAddress: extraOopsAddr In: freeLists.
+              ].
+              addr
+            ] IfNone: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         segregatedOopsMatching: desiredOop Do: blk = ( |
+         segregatedOopsMatchingMemOop: desiredOop Do: blk = ( |
              a.
             | 
+            [aaa]. halt. "Um, no. Just iterate over every oop. Freelist
+                          entries are made up of a mark and a smi, so they
+                          won't match a mem. That's the whole point of
+                          segregating. Only problem is that we can't manipulate
+                          marks inside the running VM, so we've gotta be a bit
+                          careful - maybe make a primitive, _OopAtAddress:Equals:?
+                          But we'll have to dispatch that through the lens.
+                          -- Adam, Mar. 2009"
+
             a: objsBottom.
             [a < objsTop] whileTrue: [
               ifOopAt: a
@@ -305,7 +269,7 @@ See the LICENSE file for license information.
                 a: a + (s * oopSize).
               ]
               Else: [|:oop|
-                (oop _Eq: desiredOop) ifTrue: [blk value: oop With: a].
+                (oop _Eq: desiredOop) ifTrue: [blk value: desiredOop With: a].
                 a: a + oopSize.
               ].
             ].
@@ -315,21 +279,13 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'allocateUsingFreeListsMixin' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
-         setFirstEntryInListAt: i To: shiftedAddr = ( |
+         setFirstEntryInListAt: i In: freeLists To: shiftedAddr = ( |
             | 
             "shiftedAddr is a smi containing the address >> 2."
             [vmKit tag smi  = 0] assert.
             [vmKit tag size = 2] assert.
-            freeOopsLists at: i Put: shiftedAddr.
+            freeLists at: i Put: shiftedAddr.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
-         'Category: object heap\x7fCategory: spaces\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
-        
-         edenSpace = ( |
-            | 
-            unsegregatedEdenSpace).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
@@ -439,6 +395,33 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
+        
+         aaaaaaa_allocateBytes: nBytes IfFail: fb = ( |
+             newBytesBottom.
+             r.
+            | 
+            [_NoGCAllowed].
+
+            "Using primitives to avoid cloning any blocks, so that
+             this code can be used inside Klein. -- Adam, 7/06"
+
+            newBytesBottom: bytesBottom _IntSub: (byteVectorLayout bytesNeededToHoldBytes: nBytes).
+
+            "Check for out of memory: using _IntLE: instead of _IntLT:
+             to reserve space for the mark following the last object in
+             the space -- jb 6/03"
+            __BranchIfFalse: (newBytesBottom _IntLE: bytesLimit) To: 'ok'.
+            r: fb value: 'space full' With: 'allocateBytes:'.
+            __BranchTo: 'done'.
+            __DefineLabel: 'ok'.
+            bytesBottom: newBytesBottom.
+            r: bytesBottom.
+            __DefineLabel: 'done'.
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
          allAllocatedRegions = ( |
@@ -453,18 +436,21 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         allocateBytes: nBytes = ( |
+         allocateBytes: nBytes IfFail: fb = ( |
              newBytesBottom.
             | 
             [_NoGCAllowed].
-            newBytesBottom: bytesBottom - (nBytes roundUpTo: oopSize).
 
-            "Check for out of memory: using '<=' to reserve space for the mark
-             following the last object in the space -- jb 6/03"
+            "GAH! Why does the version with the branches not work? -- Adam, Mar. 2009"
+            [aaaaaaa_allocateBytes: nBytes IfFail: fb].
 
-            newBytesBottom <= bytesLimit ifTrue: [
-              [todo gc].
-              error: 'space full'.
+            newBytesBottom: bytesBottom _IntSub: (byteVectorLayout bytesNeededToHoldBytes: nBytes).
+
+            "Check for out of memory: using _IntLE: instead of _IntLT:
+             to reserve space for the mark following the last object in
+             the space -- jb 6/03"
+            (newBytesBottom _IntLE: bytesLimit) ifTrue: [
+              ^ fb value: 'space full' With: 'allocateBytes:'.
             ].
 
             bytesBottom: newBytesBottom.
@@ -479,9 +465,17 @@ See the LICENSE file for license information.
              bpRef.
             | 
             addr: allocateOops: nOops.
-            bpRef: theVM vmKit layouts bytesPart allocateBytesPartWithIndexableSize: nBytes.
-            theVM vmKit layouts byteVector forObjectWithAddress: addr SetBytesPartRef: bpRef IfFail: raiseError.
+            bpRef: theVM vmKit layouts bytesPart allocateBytesPartWithIndexableSize: nBytes InSpace: self IfFail: raiseError.
+            byteVectorLayout forObjectWithAddress: addr SetBytesPartRef: bpRef IfFail: raiseError.
             addr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
+        
+         byteVectorLayout = ( |
+            | 
+            layouts segregatedByteVector).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
@@ -535,16 +529,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
-         'Category: initialization\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initializeFreeLists = ( |
-            | 
-            "We don't really want to divide up the segregated space, do we?
-             I'm not sure what to do. -- Adam, 5/06"
-            error: 'not implemented yet: mark/sweep for segregated spaces').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
          isEmpty = ( |
@@ -557,24 +541,33 @@ See the LICENSE file for license information.
         
          objectAddressesDo: blk = ( |
              a.
+             oopSize.
              ot.
             | 
+
+            "Code contorted so as to avoid cloning anything during the loop,
+             so that this code can be used when recycling OIDs. -- Adam, Mar. 2009"
+
             a: objsBottom.
             ot: objsTop.
-            [a < ot] whileTrue: [
+            oopSize: self oopSize.
+
+            __DefineLabel: 'startLoop'.
+            __BranchIfFalse: (a _IntLT: ot) To: 'done'.
               ifOopAt: a
               MarksStartOfObject: [
                 blk value: a.
-                a: a + oopSize.
+                a: a _IntAdd: oopSize.
               ]
               MarksStartOfFreeOops: [|:s|
                 "Skip over the free oops."
-                a: a + (s * oopSize).
+                a: a _IntAdd: (s _IntMul: oopSize).
               ]
               Else: [
-                a: a + oopSize.
+                a: a _IntAdd: oopSize.
               ].
-            ].
+            __BranchTo: 'startLoop'.
+            __DefineLabel: 'done'.
             self).
         } | ) 
 
@@ -597,9 +590,9 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopsMatching: desiredOop Do: blk = ( |
+         oopsMatchingMemOop: desiredOop Do: blk = ( |
             | 
-            segregatedOopsMatching: desiredOop Do: blk).
+            segregatedOopsMatchingMemOop: desiredOop Do: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
@@ -756,11 +749,49 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
+        
+         allocateOops: nOops = ( |
+            | 
+            allocateOops: nOops IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
          bottom = ( |
             | 
             objsBottom).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
+        
+         bumpPointerToAllocateOops: nOops IfFail: fb = ( |
+             oldObjsTop.
+             r.
+            | 
+            [_NoGCAllowed].
+
+            "Using primitives to avoid cloning any blocks, so that
+             this code can be used inside Klein. -- Adam, 7/06"
+
+            oldObjsTop: objsTop.
+            [todo untaggedAddresses optimization]. "Convert to using untagged addresses, for efficiency."
+            objsTop:  oldObjsTop _IntAdd:  nOops _IntMul: oopSize.
+
+            "Check for out of memory: using _IntLE: instead of _IntLT:
+             to reserve space for the mark following the last object in
+             the space -- jb 6/03"
+            __BranchIfFalse: (objsLimit _IntLE: objsTop) To: 'ok'.
+            objsTop: oldObjsTop.
+            r: fb value: 'space full' With: 'allocateOops:'.
+            __BranchTo: 'done'.
+            __DefineLabel: 'ok'.
+            setTrailingMark.
+            r: oldObjsTop.
+            __DefineLabel: 'done'.
+            r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
@@ -779,6 +810,22 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         
          copyNamed: n = ( |
             | copy initSpaceNamed: n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
+         'Category: memory interface\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
+        
+         createBufferMemoryInterfaceUsingPrototype: miProto = ( |
+            | 
+            miProto copyForSpace: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
+         'Category: initialization\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
+        
+         getReadyToStartAllocating = ( |
+            | 
+            initializeAllocationPointers).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'spaceMixin' -> () From: ( | {
@@ -882,14 +929,6 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
-         'Category: object heap\x7fCategory: spaces\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
-        
-         tenuredSpace = ( |
-            | 
-            unsegregatedTenuredSpace).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
          'Category: object heap\x7fCategory: spaces\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
          unsegregatedEdenSpace = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedEdenSpace' -> () From: ( |
@@ -983,9 +1022,17 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
              addr.
             | 
             [_NoGCAllowed].
-            addr: allocateOops: nOops + (nBytes /+ oopSize).
-            theVM vmKit layouts byteVector forObjectWithAddress: addr SetIndexableSize: nBytes IfFail: raiseError.
+            addr: allocateOops: nOops + (byteVectorLayout oopsNeededToHoldBytes: nBytes).
+            byteVectorLayout forObjectWithAddress: addr SetIndexableSize: nBytes IfFail: raiseError.
             addr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
+        
+         byteVectorLayout = ( |
+            | 
+            layouts unsegregatedByteVector).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
@@ -998,22 +1045,14 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
-         'Category: memory interface\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
-        
-         createBufferMemoryInterfaceUsingPrototype: miProto = ( |
-            | 
-            miProto copyForSpace: self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
         
          ifOopAt: a MarksStartOfBV: bvBlk MarksStartOfNonBV: nonBVBlk MarksStartOfFreeOops: freeBlk Else: elseBlk = ( |
             | 
                          ifOopAt: a
               MarksStartOfObject: [|:mv| (layouts mark isMarkValueForByteVector: mv)
-                                            ifTrue: [bvBlk value: (layouts byteVector indexableOriginOfObjectWithAddress: a)
-                                                            With:  layouts byteVector indexableSizeOfObjectWithAddress:   a ]
+                                            ifTrue: [bvBlk value: (byteVectorLayout indexableOriginOfObjectWithAddress: a)
+                                                            With:  byteVectorLayout indexableSizeOfObjectWithAddress:   a ]
                                              False: [nonBVBlk value: mv]]
             MarksStartOfFreeOops: freeBlk
                             Else: elseBlk).
@@ -1041,20 +1080,6 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
-         'Category: initialization\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initializeFreeLists = ( |
-             nOops.
-            | 
-            objsTop: top - oopSize. "leave room for the trailing mark"
-            setTrailingMark.
-
-            nOops: (objsTop - objsBottom) / oopSize.
-            record: nOops FreeOopsAtAddress: bottom.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
          isEmpty = ( |
@@ -1067,9 +1092,6 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
         
          objectAddressesDo: blk = ( |
              a.
-             elseBlk.
-             freeBlk.
-             objBlk.
              oopSize.
              ot.
             | 
@@ -1081,35 +1103,32 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
             ot: objsTop.
             oopSize: self oopSize.
 
-            objBlk: [|:mv. io. s. newA|
-                __BranchIfFalse: (layouts mark isMarkValueForByteVector: mv) To: 'notBV'.
-                io:  layouts byteVector indexableOriginOfObjectWithAddress: a.
-                 s:  layouts byteVector indexableSizeOfObjectWithAddress:   a.
-                blk value: a.
-                newA: a _IntAdd: (io _IntMul: oopSize) _IntAdd: (layouts byteVector bytesNeededToHoldBytes: s).
-                __BranchTo: 'doneObject'.
-                __DefineLabel: 'notBV'.
-                blk value: a.
-                newA: a _IntAdd: oopSize.
-                __DefineLabel: 'doneObject'.
-                newA
-            ].
+            __DefineLabel: 'startLoop'.
+            __BranchIfFalse: (a _IntLT: ot) To: 'done'.
+            a: ifOopAt: a
+               MarksStartOfObject: [|:mv. io. s. newA|
+                 __BranchIfFalse: (layouts mark isMarkValueForByteVector: mv) To: 'notBV'.
+                 io:  byteVectorLayout indexableOriginOfObjectWithAddress: a.
+                  s:  byteVectorLayout indexableSizeOfObjectWithAddress:   a.
+                 blk value: a.
+                 newA: a _IntAdd: (io _IntMul: oopSize) _IntAdd: (byteVectorLayout bytesNeededToHoldBytes: s).
+                 __BranchTo: 'doneObject'.
+                 __DefineLabel: 'notBV'.
+                 blk value: a.
+                 newA: a _IntAdd: oopSize.
+                 __DefineLabel: 'doneObject'.
+                 newA
+               ]
+               MarksStartOfFreeOops: [|:s|
+                 "Skip over the free oops."
+                 a _IntAdd:  s _IntMul: oopSize
+               ]
+               Else: [
+                 a _IntAdd: oopSize
+               ].
+            __BranchTo: 'startLoop'.
+            __DefineLabel: 'done'.
 
-            freeBlk: [|:s|
-                "Skip over the free oops."
-                a _IntAdd:  s _IntMul: oopSize
-            ].
-
-            elseBlk: [
-                a _IntAdd: oopSize
-            ].
-
-            [a _IntLT: ot] whileTrue: [
-              a: ifOopAt: a
-                 MarksStartOfObject: objBlk
-                 MarksStartOfFreeOops: freeBlk
-                 Else: elseBlk.
-            ].
             self).
         } | ) 
 
@@ -1175,7 +1194,7 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitSpace Initia
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'unsegregatedSpaceMixin' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitSpace InitialContents: FollowSlot\x7fVisibility: public'
         
-         oopsMatching: desiredOop Do: blk = ( |
+         oopsMatchingMemOop: desiredOop Do: blk = ( |
             | 
                   oopsDo: [|:oop. :addr| (desiredOop _Eq: oop) ifTrue: [blk value: oop With: addr]]
                  MarksDo: []

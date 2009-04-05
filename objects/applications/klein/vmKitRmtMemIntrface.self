@@ -557,7 +557,7 @@ No clever synchronization.\x7fModuleInfo: Creator: globals kleinAndYoda buffered
             | 
             ensureRegionIsBufferedAt: i Size: oopSize IfFail: [|:e| ^ fb value: e].
             theVM myAssemblerSystem
-                          store: a
+                          store: w
                AsByteVectorInto: buffer
                              At: (indexFor: i)
                          IfFail: [|:e| ^ fb value: e].

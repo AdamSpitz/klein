@@ -1,6 +1,7 @@
  '$Revision: 30.5 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -211,7 +212,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
                 cg withTemporaryRegisterDo: [|:tempReg|
                   generateIfBitField: f IsEncodedInMarkOf: memObjReg ThenPutValueInReg: tempReg ElseBranchTo: notEncodedFork With: cg.
                   encodedBlk value: tempReg.
-                  cg a branchToLabel: endFork.
+                  cg branchToLabel: endFork.
                 ].
               ].
               notEncodedBlk value.

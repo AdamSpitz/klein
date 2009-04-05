@@ -141,7 +141,7 @@ See the LICENSE file for license information.
         
          generateBackpatchAndFlushMachineCaches: sendDescReg TargetTo: targReg Map: mapReg Temp1: t1 Temp2: t2 With: cg = ( |
             | 
-            cg a  stwFrom: mapReg Disp: previousMapIndex * cg oopSize Base: sendDescReg.
+            cg storeWordInRegister: mapReg ToOffset: previousMapIndex * cg oopSize FromAddressInRegister: sendDescReg.
 
             cg generateBackpatch:                           sendDescReg      Offset: retryIndex NewAddress: targReg        Temp1: t1 Temp2: t2.
             cg generateFlushMachineCachesAfterBackpatching: sendDescReg  FromOffset: retryIndex ToOffset: previousMapIndex Temp1: t1 Temp2: t2).
@@ -186,7 +186,7 @@ See the LICENSE file for license information.
                                                                             a data32: 0. [todo nmln].
               a locationCounter: start + (cg oopSize *     selectorIndex).  cg assembleObject: key selector.
               a locationCounter: start + (cg oopSize *   lookupTypeIndex).  cg assembleObject: key lookupType.
-              a locationCounter: start + (cg oopSize *    nlrReturnIndex).  nlr: a newLabel. a bDisp: nlr.
+              a locationCounter: start + (cg oopSize *    nlrReturnIndex).  nlr: cg newLabel. a bDisp: nlr.
               a locationCounter: start + (cg oopSize *    delegateeIndex).  cg assembleObject: key delegatee.
             ].
 

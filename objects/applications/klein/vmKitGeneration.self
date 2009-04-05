@@ -1,6 +1,7 @@
  '$Revision: 30.6 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -81,6 +82,20 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'generation' -> 'parent' -> () From: ( | {
+         'Category: initializing\x7fModuleInfo: Module: vmKitGeneration InitialContents: FollowSlot\x7fVisibility: public'
+        
+         initializeForVM: aVM = ( |
+             prefix.
+            | 
+            prefix: aVM byteVectorLayout isSegregated ifTrue: 'segregated' False: 'unsegregated'.
+            spacesDo: [|:s. :sName. proto|
+              proto: prefix, sName capitalize, 'Space' sendTo: aVM vmKit.
+               sName, 'Space:' sendTo: self With: proto copy.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'generation' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitGeneration InitialContents: FollowSlot\x7fVisibility: public'
         
          oopsIncludesAddress: addr = ( |
@@ -114,9 +129,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'newGeneration' -> () From: ( | {
-         'ModuleInfo: Module: vmKitGeneration InitialContents: InitializeToExpression: (kleinAndYoda edenSpace copy)'
+         'ModuleInfo: Module: vmKitGeneration InitialContents: InitializeToExpression: (nil)'
         
-         edenSpace <- kleinAndYoda edenSpace copy.
+         edenSpace.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'newGeneration' -> () From: ( | {
@@ -242,9 +257,9 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitGeneration I
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'oldGeneration' -> () From: ( | {
-         'ModuleInfo: Module: vmKitGeneration InitialContents: InitializeToExpression: (kleinAndYoda unsegregatedTenuredSpace copy)'
+         'ModuleInfo: Module: vmKitGeneration InitialContents: InitializeToExpression: (nil)'
         
-         tenuredSpace <- kleinAndYoda unsegregatedTenuredSpace copy.
+         tenuredSpace.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

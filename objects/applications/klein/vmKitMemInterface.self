@@ -105,6 +105,22 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         atOffset: wordOffset From: baseAddr PutMarkWithValue: mv IfFail: fb = ( |
+            | 
+            atOffset: wordOffset From: baseAddr PutOop: (layouts mark encode: mv) IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         atOffset: wordOffset From: baseAddr PutOop: oop IfFail: fb = ( |
+            | 
+            at: baseAddr + (wordOffset * oopSize) PutOop: oop IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: private'
         
          base* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'base' -> 'parent' -> ().
@@ -166,6 +182,22 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
          bytesBypassingCacheAt: i Size: n IfFail: fb = ( |
             | 
             bytesAt: i Size: n IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+         'Category: single words\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyWordAtOffset: wordOffset From: srcBaseAddr ToSameOffsetFrom: dstBaseAddr IfFail: fb = ( |
+             byteOffset.
+             failBlock.
+             w.
+            | 
+            [todo optimization gc]. "Create a localMemoryInterface version of this."
+            failBlock: [|:e| ^ fb value: e].
+            byteOffset: wordOffset * oopSize.
+            w: wordAt: srcBaseAddr + byteOffset IfFail: failBlock.
+            at: dstBaseAddr + byteOffset PutWord: w IfFail: failBlock.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {

@@ -1,6 +1,7 @@
  '$Revision: 30.85 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -167,7 +168,7 @@ I was created to integrate and optimized the functionality.
               s: s - sentinel size
             ] loopExit.
             myVM setTheVMAndDo: [
-              indexableSize: myActivation readMemoryWordAt: s - (klein layouts byteVector byteOffsetFromIndexableSizeToFirstByte: s IfFail: -1)
+              indexableSize: myActivation readMemoryWordAt: s - (myVM byteVectorLayout byteOffsetFromIndexableSizeToFirstByte: s IfFail: -1)
                                                     IfFail: maxSmallInt.
             ].
             s @ (range y min: s + indexableSize)).

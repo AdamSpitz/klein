@@ -1,6 +1,7 @@
  '$Revision: 30.11 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -137,7 +138,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
                 readAndCheckLayoutConstant: [ yoda virtualMachines smallImage exportPolicy expectedObjectLocatorOffsetForLastInvalidEntry ]  IfFail: exit.
 
-                readAndCheckLayoutConstant: [ vmKit tenuredSpace lastFreeOopsListIndex ]  IfFail: exit.
+                readAndCheckLayoutConstant: [ vmKit tenuredSpace freeOopsLists lastKey ]  IfFail: exit.
 
                 readAndCheckIDsIfFail: fb.
 
