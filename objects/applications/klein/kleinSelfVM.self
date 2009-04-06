@@ -68,7 +68,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules.
+         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -141,6 +141,7 @@ to just keep upping it by hand.
 	& ('setAndDictionary')
 	& ('smallInt')
 	& ('vmKitBase')
+	& ('vmKitCardTable')
 	& ('vmKitGC')
 	& ('vmKitMemory')
 	& ('vmKitObjects')
@@ -174,20 +175,20 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda)
-	& (reflect: klein stackFrames)
-	& (reflect: klein mirrors)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda layouts)
+	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
+	& (reflect: klein sendDescs)
+	& (reflect: traits block)
 	& (reflect: slots)
 	& (reflect: lobby)
-	& (reflect: traits block)
 	& (reflect: traits abstractSet values)
 	& (reflect: kleinAndYoda maps)
 	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
 	& (reflect: klein)
-	& (reflect: klein sendDescs)
-	& (reflect: kleinAndYoda layouts)
-	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
+	& (reflect: klein stackFrames)
+	& (reflect: kleinAndYoda)
 	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+	& (reflect: klein mirrors)
 	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
 	& (reflect: scheduler)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
@@ -4524,6 +4525,7 @@ to just keep upping it by hand.
 	& ('setAndDictionary')
 	& ('smallInt')
 	& ('vmKitBase')
+	& ('vmKitCardTable')
 	& ('vmKitGC')
 	& ('vmKitMemInterface')
 	& ('vmKitMemory')
@@ -4568,57 +4570,57 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein sendDescs)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein compiler1s abstract prototypes allocators)
 	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
-	& (reflect: klein compiler1s abstract prototypes allocators)
+	& (reflect: assemblerSystems ppc fields)
 	& (reflect: traits)
-	& (reflect: assemblerSystems framework generators)
-	& (reflect: assemblerSystems ppc)
-	& (reflect: klein compiler1s abstract prototypes irNodes)
+	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
+	& (reflect: klein compiler1s abstract prototypes dataValues)
+	& (reflect: assemblerSystems ppc operands)
 	& (reflect: assemblerSystems ppc crFields)
 	& (reflect: abstractBytecodeInterpreter bytecodes)
-	& (reflect: assemblerSystems ppc operands)
-	& (reflect: klein compiler1s abstract prototypes dataValues)
-	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
-	& (reflect: lobby)
 	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
+	& (reflect: lobby)
+	& (reflect: klein compiler1s abstract prototypes irNodes)
+	& (reflect: assemblerSystems ppc)
 	& (reflect: bytecodeFormat instructionSets)
-	& (reflect: klein relocators)
-	& (reflect: assemblerSystems)
-	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
-	& (reflect: kleinAndYoda layouts)
-	& (reflect: klein virtualMachines)
-	& (reflect: klein compiler1s abstract)
-	& (reflect: assemblerSystems ppc toMasks)
-	& (reflect: klein compiler1s abstract prototypes)
-	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
+	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
 	& (reflect: assemblerSystems ppc fprs)
-	& (reflect: assemblerSystems ppc generators)
-	& (reflect: klein stackFrames)
+	& (reflect: klein virtualMachines)
 	& (reflect: assemblerSystems ppc gprs)
 	& (reflect: assemblerSystems ppc instructionTemplates)
-	& (reflect: globals)
+	& (reflect: klein relocators)
 	& (reflect: assemblerSystems ppc sprs)
+	& (reflect: kleinAndYoda layouts)
+	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
+	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
+	& (reflect: assemblerSystems ppc generators)
+	& (reflect: klein mirrors)
+	& (reflect: klein compiler1s abstract prototypes)
+	& (reflect: assemblerSystems)
+	& (reflect: klein stackFrames)
+	& (reflect: globals)
+	& (reflect: klein compiler1s abstract)
 	& (reflect: traits block)
 	& (reflect: slots)
-	& (reflect: klein compiler1s abstract prototypes codeGenerators)
-	& (reflect: kleinAndYoda lookupType)
 	& (reflect: traits collection ascendingOrder)
-	& (reflect: assemblerSystems framework)
-	& (reflect: klein locations)
-	& (reflect: klein compiler1s)
-	& (reflect: traits slots)
-	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
-	& (reflect: traits abstractSet values)
 	& (reflect: kleinAndYoda maps)
-	& (reflect: klein mirrors)
-	& (reflect: transporter moduleInfo)
-	& (reflect: assemblerSystems ppc crBits)
-	& (reflect: klein)
-	& (reflect: assemblerSystems ppc fields)
-	& (reflect: scheduler)
+	& (reflect: assemblerSystems framework)
+	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
+	& (reflect: kleinAndYoda lookupType)
+	& (reflect: traits slots)
+	& (reflect: klein compiler1s abstract prototypes codeGenerators)
+	& (reflect: traits abstractSet values)
+	& (reflect: klein compiler1s)
+	& (reflect: klein locations)
+	& (reflect: assemblerSystems ppc toMasks)
 	& (reflect: kleinAndYoda)
-	& (reflect: assemblerSystems ppc instructionAssemblyMethods)) asVmKitExportList) From: ( |
+	& (reflect: transporter moduleInfo)
+	& (reflect: assemblerSystems framework generators)
+	& (reflect: klein sendDescs)
+	& (reflect: klein)
+	& (reflect: assemblerSystems ppc crBits)
+	& (reflect: scheduler)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -4641,6 +4643,16 @@ SlotsToOmit: parent prototype safety.
          start = ( |
             | 
             "_Breakpoint:  'Entered start method'."
+
+            "Hack: pre-create this allRegisterLocations object, because otherwise it
+             gets created during the GC. In the long run, I'd like the GC to be smart
+             enough to recover from things like that (could just run another GC if we
+             notice that the card table has been marked during the GC - then we'd just
+             need to maintain the invariant that the card-table-checker can't create
+             any long-lived objects), but for now that doesn't seem like our most
+             pressing problem, so for the time being let's just declare the invariant
+             that the GC isn't allowed to create any long-lived objects. -- Adam, Mar. 2009"
+            vmKit foreignProcess copyLocal myAssemblerSystem allRegisterLocations.
 
             tests runAllTestsForVM: self.
 

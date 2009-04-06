@@ -533,6 +533,14 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
          'Category: accessing indexable size field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
         
+         forObjectWithAddress: addr SetIndexableSize: s = ( |
+            | 
+            forObjectWithAddress: addr SetIndexableSize: s IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
+         'Category: accessing indexable size field\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: public'
+        
          forObjectWithAddress: addr SetIndexableSize: s IfFail: fb = ( |
             | 
             indexableSizeField setValueForObjectWithAddress: addr To: s Layout: self IfFail: fb).
@@ -1171,6 +1179,12 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
              {} = 'ModuleInfo: Creator: globals kleinAndYoda layouts block homeFramePointerField.
 \x7fIsComplete: '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'block' -> 'homeFramePointerField' -> () From: ( | {
+         'ModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canBypassWriteBarrier = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'block' -> 'homeFramePointerField' -> () From: ( | {
@@ -2653,6 +2667,12 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
                    for: o
                     At: i
                 IfFail: [|:e| ^ fb value: e]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canBypassWriteBarrier = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {

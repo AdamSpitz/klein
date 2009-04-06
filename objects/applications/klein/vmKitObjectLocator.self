@@ -300,11 +300,16 @@ SlotsToOmit: parent.
          invalidateEntryForLocalOID: oid = ( |
              e.
             | 
+
             "Gotta make sure to avoid allocating any new
              OIDs while recycling one - otherwise there's
              no point. :) -- Adam, Mar. 2009"
-            e: invalidEntryForLocalOID: oid.
-            _At: oid Put: lastInvalidEntry.
+
+            "Also gotta make sure these don't mark the card
+             table, so use _At:PutImmediate:."
+
+            e: invalidEntryForOID: oid.
+            _At: oid PutImmediate: lastInvalidEntry.
             lastInvalidEntry: e.
             self).
         } | ) 
@@ -315,6 +320,9 @@ SlotsToOmit: parent.
          invalidateEntryForOID: oid = ( |
              e.
             | 
+            "Gotta make sure to avoid allocating any new
+             OIDs while recycling one - otherwise there's
+             no point. :) -- Adam, Mar. 2009"
             e: invalidEntryForOID: oid.
             at: oid Put: lastInvalidEntry.
             lastInvalidEntry: e.
@@ -573,7 +581,7 @@ SlotsToOmit: parent.
             "Duplication with" [recordAddress: addr ForOID: oid].
             "Duplication with" [elementForAddress: addr].
             incrementTimestamp.
-            _At: oid Put: addr _IntArithmeticShiftRight: vmKit tag size).
+            _At: oid PutImmediate: addr _IntArithmeticShiftRight: vmKit tag size).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda') \/-> 'abstractObjectLocator') -> () From: ( | {

@@ -1,6 +1,7 @@
  '$Revision: 30.6 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -149,6 +150,7 @@ yoda
 kleinSmallInterp
 vmKitInterpreter
 vmKitGC
+vmKitCardTable
 '.
         } | ) 
 
@@ -170,6 +172,7 @@ vmKitGC
  bootstrap read: 'kleinSmallInterp' From: 'applications/klein'
  bootstrap read: 'vmKitInterpreter' From: 'applications/klein'
  bootstrap read: 'vmKitGC' From: 'applications/klein'
+ bootstrap read: 'vmKitCardTable' From: 'applications/klein'
 
 
 

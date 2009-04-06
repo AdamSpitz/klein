@@ -1476,14 +1476,11 @@ SlotsToOmit: parent.
          'Category: cloning\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
          clone: o UncheckedIndexableSize: size FillingWith: filler IfFail: fb = ( |
-             c.
              origin.
             | 
             origin: myLayout indexableOriginOf: o IfFail: [|:e| ^ fb value: e].
 
-            c: clone: o Size: origin + size FillingWith: filler IfFail: [|:e| ^ fb value: e].
-            myLayout for: c SetIndexableSize: size IfFail: [|:e| ^ fb value: e].
-            c).
+            clone: o Size: origin + size FillingWith: filler IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'objVectorMap') -> 'parent' -> () From: ( | {

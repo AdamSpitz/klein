@@ -39,6 +39,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
+         'Category: setting up global registers\x7fModuleInfo: Module: kleinProcess InitialContents: FollowSlot\x7fVisibility: private'
+        
+         byteMapBaseRegister = ( |
+            | 
+            protoAllocatorForMyPlatform byteMapBaseRegister).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
          'Category: inspecting\x7fModuleInfo: Module: kleinProcess InitialContents: FollowSlot\x7fVisibility: public'
         
          contentsOfRegister: regName = ( |
@@ -316,6 +324,23 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
+         'Category: setting up global registers\x7fModuleInfo: Module: kleinProcess InitialContents: FollowSlot\x7fVisibility: private'
+        
+         setByteMapBaseRegister = ( |
+             addr.
+             ctMir.
+             ctOop.
+            | 
+            myVM setTheVMAndDo: [
+              ctMir: myVM image mirrorOnTheCardTableIfFail: raiseError.
+              ctOop: ctMir reflectionPrimitives reflecteeOop.
+              addr:  myVM byteVectorLayout for: ctOop AddressOfIndexableAt: 0.
+            ].
+            setContentsOfRegister: byteMapBaseRegister name
+                               To: addr).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
          'Category: inspecting\x7fModuleInfo: Module: kleinProcess InitialContents: FollowSlot\x7fVisibility: public'
         
          setContentsOfRegister: regName To: aNumber = ( |
@@ -342,6 +367,7 @@ SlotsToOmit: parent.
         
          setGlobalRegisters = ( |
             | 
+            setByteMapBaseRegister.
             setSPLimitRegister.
             setObjectAddressesBaseRegister.
             self).

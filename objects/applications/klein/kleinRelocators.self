@@ -589,11 +589,9 @@ SlotsToOmit: parent.
          'Category: assembling\x7fModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: public'
         
          reassembleWith: cg NewOop: newOop = ( |
-             memoryOffset.
             | 
-            memoryOffset: slotOffset * vmKit base oopSize.
             assembleWith: cg
-                Location: slotLocationForOffset: memoryOffset With: cg.
+                Location: slotLocationForOffset: slotByteOffset With: cg.
             self).
         } | ) 
 
@@ -617,6 +615,14 @@ SlotsToOmit: parent.
          relocateOopInNMethod: nm By: delta With: cg = ( |
             | 
             self "offsets do not changes when objects move").
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: private'
+        
+         slotByteOffset = ( |
+            | 
+            slotOffset * vmKit base oopSize).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> 'parent' -> () From: ( | {

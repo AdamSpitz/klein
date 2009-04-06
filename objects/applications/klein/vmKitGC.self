@@ -7,6 +7,76 @@ See the LICENSE file for license information.
 
  '-- Module body'
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> 'parent' -> () From: ( | {
+         'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         addressOfCardAt: i = ( |
+            | 
+            i << shift).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> 'parent' -> () From: ( | {
+         'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         cardNumbersForSpace: s Do: blk = ( |
+             b.
+             t.
+            | 
+            b: numberOfCardContainingAddress: s objsBottom.
+            t: numberOfCardContainingAddress: s objsTop - oopSize.
+            b upTo: t By: 1 WithoutCloningDo: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> 'parent' -> () From: ( | {
+         'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         markAsUnchangedCardAt: i = ( |
+            | 
+            _ByteAt: i Put: valueForUnchangedCard.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> 'parent' -> () From: ( | {
+         'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         oopsInCardAt: i Do: blk = ( |
+             mm.
+             startAddr.
+            | 
+            mm: theVM machineMemory.
+            startAddr: addressOfCardAt: i.
+            startAddr upTo: startAddr + cardSize By: oopSize WithoutCloningDo: [|:a|
+              mm ifOopAt: a IsObject: blk IsMark: nil.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> 'parent' -> () From: ( | {
+         'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: public'
+        
+         possiblyChangedOopsInOldGenerationDo: blk = ( |
+            | 
+            [theVM byteVectorLayout isSegregated] assert. "This'll be harder if it's unsegregated."
+            theVM universe oldGeneration spacesDo: [|:s|
+              cardNumbersForSpace: s Do: [|:i|
+                (thereHaveBeenChangesToCardAt: i) ifTrue: [
+                  [aaa]. ('found changed card at ', i printString) printLine.
+                  oopsInCardAt: i Do: blk.
+                ].
+                markAsUnchangedCardAt: i.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> 'parent' -> () From: ( | {
+         'Category: scavenging\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: private'
+        
+         thereHaveBeenChangesToCardAt: i = ( |
+            | 
+            valueForChangedCard _IntEQ: _ByteAt: i).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
          'Category: garbage collection\x7fModuleInfo: Module: vmKitGC InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -318,21 +388,23 @@ See the LICENSE file for license information.
          scavenge = ( |
              garbageSpace.
              previousSpace.
+             u.
             | 
 
-            garbageSpace: _TheVM universe scavengeGarbageSpace.
-            previousSpace: _TheVM universe switchAllocationSpaceTo: garbageSpace.
+            u: _TheVM universe.
+            garbageSpace: u scavengeGarbageSpace.
+            previousSpace: u switchAllocationSpaceTo: garbageSpace.
 
             'Invoking scavenger...\n' _StringPrint.
 
-            rememberedSet removeAllAndDo: [|:o| recursiveScavengeYoungObjectsIn: o].
-            possiblyLiveOopsDo:           [|:o| recursiveScavenge: o].
+            u cardTable possiblyChangedOopsInOldGenerationDo: [|:o| recursiveScavenge: o].
+            possiblyLiveOopsDo:                               [|:o| recursiveScavenge: o].
 
             'Done copying the live objects to tenuredSpace, just gotta recycle oops now. But that can take a while.\n' _StringPrint.
             movedSomeObjects.
 
             recycleOopsOfObjectsIn: previousSpace.
-            _TheVM universe switchAllocationSpaceTo: previousSpace.
+            u switchAllocationSpaceTo: previousSpace.
             recycleOopsOfObjectsIn: garbageSpace.
             'Done scavenging\n' _StringPrint.
 

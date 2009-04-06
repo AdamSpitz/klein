@@ -539,9 +539,20 @@ entry point of the start method with parameters. -- jb 5/03\x7fModuleInfo: Modul
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
         
+         mirrorOnTheCardTableIfFail: fb = ( |
+            | 
+            [myVM universe cardTable]. "browsing"
+            ((mirrorOnTheVMIfFail:                          [|:e| ^ fb value: e])
+                primitiveContentsAt: 'universe'     IfFail: [|:e| ^ fb value: e])
+                primitiveContentsAt: 'cardTable'    IfFail: [|:e| ^ fb value: e]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
          mirrorOnTheObjectLocatorIfFail: fb = ( |
             | 
-            [objectLocator]. "browsing"
+            [myVM objectLocator]. "browsing"
             (mirrorOnTheVMIfFail:                               [|:e| ^ fb value: e])
                primitiveContentsAt: 'objectLocator'     IfFail: [|:e| ^ fb value: e]).
         } | ) 

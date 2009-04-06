@@ -1,10 +1,10 @@
 Current goal:
 
-  - Get the GC more solid. Then I can work on making it fast.
+  - Maybe some simple compiler optimizations.
 
 Bugs to fix:
 
-  - The debugger thing, where it can't find an object (maybe newly-created objects?) and so the UI crashes.
+  - Why does the UI crash after the "get a mirror on self" thing?
 
 What compiler optimizations could I try first?
 
@@ -27,32 +27,7 @@ Cleanups to do:
 
 ----
 
-Maybe I could do the assembler thing. How often is the assembler called, anyway? Are the calls all from the codeGenerator? (If not, maybe they should be.) If I'm never calling any particular assembly method more than once, maybe it really is worth it to just make the methods take an extra parameter (the assembler), so we can just call the method on the IT and not have to generate all those hundreds of instruction assembly methods.
-
-Actually, maybe using messageNotUnderstood would work nicely? Now that I think about it, it's not such a complicated solution. Just gotta get the IT name out of the selector - which I believe is all lowercase, isn't it?
-
-Problem is, we can't search for implementors anymore...
-
-UNLESS we generate them, but ALSO make the messageNotUnderstood thing as a backup mechanism!
-
-----
-
-Now I've gotta put in a write barrier, make sure to keep track of old->new references in the rememberedSet. (This is coming up with cachedAllRegisterLocations.)
-
-So I need:
-  - A byteVector, and I need the address of the start of its indexables to be stored in a register somewhere, just like for the objectLocator. That doesn't sound too hard.
-  - The compiler to emit code on every store to mark the correct byte in that byteVector. That doesn't sound too hard either, as long as the compiler is factored right.
-  - The GC to know how to check all the objects on that card. Might be trickier. How does that work, again? Oh. If we had segregated byteVectors, then we might be OK because we could just follow every non-mark oop in that card. But because there might be bytes in there, we'll have to be more clever. Crap.
-
-Or I just do a remembered-set thing, for which I need:
-
-  - An objVector (which we've got - klein garbageCollector rememberedSet objects).
-  - The compiler to emit code on every store to... what? Send 'add:' to the rememberedSet? A send takes a lot of room. Could I do a writeBarrier_stub instead? Oh, but a call to a stub takes some room, too - though I guess GC will never be invoked while we're in the stub, so maybe we don't need the GC mask.
-  - blah blah
-
-----
-
-Oops, fix:
-markField setValueForObjectWithAddress: o To: markValue Layout: self IfFail: fb
-(should say addr instead of o)
-
+For inlining, I think I need to:
+  - Find the place where the compiler generates IR nodes for a send, and make sure the compiler knows when it knows the type of the receiver.
+  - Think of a simple heuristic for deciding when to inline. Maybe "if it's a data slot or if the method is small", for now.
+  - Find the places where the compiler creates IR nodes referring to the receiver or arguments or locals. Make sure they don't just do it by name, and then indirect them through a currentScope thing or something.

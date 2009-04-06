@@ -42,6 +42,12 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
+         'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (kleinAndYoda cardTable)'
+        
+         cardTable <- bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'cardTable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> () From: ( | {
          'Category: universe state\x7fModuleInfo: Module: vmKitUniverse InitialContents: InitializeToExpression: (nil)'
         
          floatMap.
@@ -103,6 +109,9 @@ SlotsToOmit: parent.
             oldGeneration        allocateHeapAt: base + newGenSize + scavSpaceSize Size: oldGenSize.
 
             allocationSpace: edenSpace.
+
+            cardTable: cardTable copyForMaxAddress: base + s.
+
             self).
         } | ) 
 
