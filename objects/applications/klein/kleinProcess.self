@@ -223,7 +223,7 @@ SlotsToOmit: parent.
          protoAllocatorForMyPlatform = ( |
             | 
             [ppc. sparc]. "browsing"
-            architecture sendTo: myVMKit compiler1s abstract prototypes allocators).
+            architecture sendTo: myVMKit compiler1 prototypes allocators).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {

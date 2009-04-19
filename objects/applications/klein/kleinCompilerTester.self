@@ -1,6 +1,7 @@
  '$Revision: 30.60 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -199,17 +200,16 @@ When a test fails, you can look here.\x7fModuleInfo: Module: kleinCompilerTester
          'Category: compiling\x7fModuleInfo: Module: kleinCompilerTester InitialContents: FollowSlot\x7fVisibility: private'
         
          compile: aSlot For: arch OuterNMethods: onms = ( |
+             c.
             | 
-            compilerPrototype
-                     compileSlot: aSlot
-                            Self: asMirror
-                        Receiver: aSlot holder
-                      LookupType: klein lookupType normal
-            ObjectDoingTheResend: nil
-                   OuterNMethods: onms
-                    Architecture: arch
-                          Oracle: compilerPrototype oracleThatCannotDoEagerRelocation
-                           Debug: true).
+            c: compilerPrototype
+                        copyForSlot: aSlot
+                               Self: asMirror
+                      OuterNMethods: onms
+                       Architecture: arch
+                             Oracle: compilerPrototype oracleThatCannotDoEagerRelocation
+                              Debug: true.
+            c compileForcingNonLeafIfNecessary).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> 'parent' -> () From: ( | {

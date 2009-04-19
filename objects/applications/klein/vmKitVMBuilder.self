@@ -134,8 +134,8 @@ Maps objects and compiles essential nmethods.\x7fModuleInfo: Module: vmKitVMBuil
 
                 aVMImage:
                   isProfilingEnabled
-                    ifTrue: [[mapObjects: bal] profileSlice]
-                     False: [ mapObjects: bal              ].
+                    ifTrue: [[mapObjects: bal] profile: 0.02]
+                     False: [ mapObjects: bal               ].
 
                 statusReporter show: 'ready'.
                 aVMImage allowDefinesToPropagateToMe.

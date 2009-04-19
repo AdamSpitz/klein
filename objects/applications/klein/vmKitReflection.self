@@ -1,6 +1,7 @@
  '$Revision: 30.13 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -1002,11 +1003,6 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
 
             c: myVM compilerPrototype
                         copyForSlot: s
-                               Self: s holder
-                           Receiver: s holder
-                         LookupType: myVM vmKit lookupType normal
-               ObjectDoingTheResend: nil
-                      OuterNMethods: list copyRemoveAll
                        Architecture: myVM architecture
                              Oracle: myVM image
                               Debug: true.

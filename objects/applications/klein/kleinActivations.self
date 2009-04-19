@@ -856,6 +856,7 @@ SlotsToOmit: parent.
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register masks\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          possiblyLiveLocationsDo: blk = ( |
+             frame.
              gcMask.
              gcMaskLayout.
              intNN.
@@ -865,13 +866,13 @@ SlotsToOmit: parent.
             | 
 
             [todo cleanup stackRoots].
-            "This is only accidentally correct, because it happens to be true right now that the gcMask
-             represents all the registers. If we ever change it so that it doesn't represent the sp, or
-             maybe the rtoc?, or the non-vol regs that aren't being used by the nmethod, this'll break
-             because we shouldn't try to follow those registers. -- Adam"
+            "I think this could be a lot simpler. Why shouldn't the GC mask just represent the first
+             32 saved non-vol words in the stack frame, and just iterate straight through those in
+             memory? -- Adam, Apr. 2009"
 
-            registerLocs: myAssemblerSystem allRegisterLocations.
-            memoryLocs: (stackFrameIfAbsent: raiseError) locationsForNonVolLocals.
+            frame: stackFrameIfAbsent: raiseError.
+            registerLocs: frame locationsForSavedNonVolRegisters.
+              memoryLocs: frame locationsForNonVolLocals.
 
             gcMaskLayout: myProcess sendDescForMyPlatform gcMaskLayout.
             gcMask: gcMaskIfFail: raiseError.

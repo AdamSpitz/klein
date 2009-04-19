@@ -45,7 +45,7 @@ See the LICENSE file for license information.
          allRegisters = ( |
             | 
             cachedAllRegisters ifNil: [
-              cachedAllRegisters: registerNameSpaces gather: [|:ns| registersForNameSpace: ns].
+              cachedAllRegisters: (registerNameSpaces gather: [|:ns| registersForNameSpace: ns]) asVector.
               cachedAllRegisters
             ]).
         } | ) 

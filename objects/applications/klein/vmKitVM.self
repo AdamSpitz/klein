@@ -229,7 +229,7 @@ is always globally scoped.
         
          compilerPrototype = ( |
             | 
-            vmKit compiler1s abstract).
+            vmKit compiler1).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {

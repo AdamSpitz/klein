@@ -1,6 +1,7 @@
  '$Revision: 30.14 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -328,6 +329,18 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
             | 
             (vector copySize: nonVolLocalWordCount) mapBy: [|:x. :i|
               locations nonVolMemoryLocal copyIndex: i
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: saved non-volatile registers\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationsForSavedNonVolRegisters = ( |
+             allRegLocs.
+            | 
+            allRegLocs: theVM myAssemblerSystem allRegisterLocations.
+            (vector copySize: nonVolRegSaveAreaWordCount) mapBy: [|:x. :i|
+              allRegLocs _At: 31 _IntSub: i.
             ]).
         } | ) 
 

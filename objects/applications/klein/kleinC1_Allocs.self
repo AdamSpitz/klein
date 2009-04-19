@@ -1,160 +1,144 @@
  '$Revision: 30.32 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
  '-- Module body'
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
-         allocators = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1s abstract parent prototypes allocators.
+         allocators = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes allocators.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot'
         
-         abstract = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1s abstract parent prototypes allocators abstract.
+         abstract = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes allocators abstract.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         allValues <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          cachedAssignableLocalSlots.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
-         'Category: leaf method allocation policy\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: receiver, arguments, and locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedIsLeafMethod.
+         cachedValueForIncomingResult.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: receiver, arguments, and locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         cachedValueForOutgoingResult.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: self\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         cachedValueForSelf.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          compiler.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: scope-dependent state\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
          frame.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
-         'Category: scope-dependent state\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: leaf method allocation policy\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         lexicalLevel <- 0.
+         isLeafMethod.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: scope-dependent state\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          lexicalParentAllocator.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
-         'Category: receiver, arguments, and locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
-        
-         locationForIncomingReceiver.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
-         'Category: self\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
-        
-         locationForSelf.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (dictionary)\x7fVisibility: private'
         
-         memoizedBlockLocations <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
+         memoizedBlockValues <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: scope-dependent state\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          method.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: receiver, arguments, and locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (dictionary)\x7fVisibility: private'
         
-         namedLocations <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
+         namedValues <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: scope-dependent state\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          nonVolLocalRegCount <- 0.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: receiver, arguments, and locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (vector)\x7fVisibility: private'
+        
+         outgoingRcvrAndArgValues <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1s abstract parent prototypes allocators abstract parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes allocators abstract parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         allocateAnotherStackLocation = ( |
-             r.
-            | 
-            r: makeAnotherStackLocation.
-            stackLocations addLast: r.
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          allocateIncomingAndPreallocatedLocations = ( |
             | 
-            "must do parents first"
-            lexicalParentAllocator ifNotNil: [
-              lexicalParentAllocator allocateIncomingAndPreallocatedLocations.
-            ].
-
             setUplevelLocations.
             setNonVolatileRegSaveArea.
             setIncomingRcvrAndArgLocations.
             setLocalSlotLocations.
-            setOnNonLocalReturnLocations.
             setLocationForSelf.
             setVolatileTemps).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          allocateIncomingRcvrAndArgLocations = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateLocationForMemoizedBlock: blockProto = ( |
-            | 
-            memoizedBlockLocations if: (reflect: blockProto)
-                          IsPresentDo: []
-                          IfAbsentPut: [makeAnotherMemoizedBlockLocation]
-                                AndDo: [].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          allocateOutgoingRcvrAndArgLocations: howMany = ( |
@@ -162,26 +146,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateStackLocationFor: v = ( |
-             r.
-            | 
-            [v hasLocation not] assert.
-            v preferredScratchLocationIfPresent: [|:loc| (v isOKToAllocateTo: loc) ifTrue: [^ loc]]
-                                       IfAbsent: [].
-            stackLocations findFirst: [|:loc| v isOKToAllocateTo: loc ]
-                           IfPresent: [|:loc| ^ loc].
-
-            "Leaf with NLR will try to use r4, but that would interfere, so
-             must loop below -- dmu 11/03.
-             Is there a faster way?"
-            [r: allocateAnotherStackLocation] untilTrue: [v isOKToAllocateTo: r].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          allocateTemporaryRegister = ( |
@@ -189,7 +154,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             temps removeFirstIfAbsent: [error: 'ran out of temporary registers']).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          allocatorAtLexicalLevel: ll = ( |
@@ -198,14 +163,14 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             lexicalParentAllocator allocatorAtLexicalLevel: ll pred).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          architecture = ( |
             | compiler architecture).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          argumentCount = ( |
@@ -213,7 +178,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             argumentSlots size).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          argumentSlots = ( |
@@ -221,7 +186,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             compiler argumentSlotsForAllocator: self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          argumentSlotsOfMethod = ( |
@@ -229,7 +194,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             method argumentSlots).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          assignableLocalCount = ( |
@@ -237,7 +202,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             localSlots countHowMany: [|:slot| slot isAssignable]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          assignableLocalSlots = ( |
@@ -245,7 +210,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             compiler assignableLocalSlotsForAllocator: self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          assignableLocalSlotsOfMethod = ( |
@@ -256,36 +221,37 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          backoutBlock = ( |
             | compiler backoutBlock).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          copy = ( |
             | 
-            (((((
+            ((((((
             resend.copy
             temps:                       temps                       copyRemoveAll)
-            stackLocations:              stackLocations              copyRemoveAll)
-            memoizedBlockLocations:      memoizedBlockLocations      copyRemoveAll)
-            namedLocations:              namedLocations              copyRemoveAll)
-            locationForSelf:             nil)).
+            allValues:                   allValues                   copyRemoveAll)
+            stackValues:                 stackValues                 copyRemoveAll)
+            memoizedBlockValues:         memoizedBlockValues         copyRemoveAll)
+            namedValues:                 namedValues                 copyRemoveAll)
+            cachedValueForSelf:          nil)).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyForCompiler: c Method: m NMethod: nm ForceNonLeaf: fnl LexicalChildAllocator: lca = ( |
+         copyForCompiler: c Method: m ForceNonLeaf: fnl = ( |
             | 
-            copy initializeForCompiler: c Method: m NMethod: nm ForceNonLeaf: fnl LexicalChildAllocator: lca).
+            copy initializeForCompiler: c Method: m ForceNonLeaf: fnl).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          freeTemporaryRegister: r = ( |
@@ -297,26 +263,19 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: initializing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
-         initializeForCompiler: c Method: m NMethod: nm ForceNonLeaf: fnl LexicalChildAllocator: lca = ( |
+         initializeForCompiler: c Method: m ForceNonLeaf: fnl = ( |
             | 
             compiler: c.
             method: m.
-            cachedIsLeafMethod: fnl ifTrue: false False: nil.
             frame: protoFrameForMyPlatform copy.
-            lca ifNotNil: [
-              lca lexicalParentAllocator: self.
-              lexicalLevel: lca lexicalLevel succ.
-            ].
-            nm ifNotNil: [
-              initializeFromNMethod: nm.
-            ].
+            isLeafMethod: fnl not.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: initializing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          initializeFromNMethod: nm = ( |
@@ -330,43 +289,22 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: leaf method allocation policy\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isCandidateLeafMethod = ( |
-            | 
-            "Child should override to apply additional constraints."
-            compiler isCandidateLeafMethod).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: leaf method allocation policy\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isLeafMethod = ( |
-            | 
-            cachedIsLeafMethod ifNil: [
-              cachedIsLeafMethod: isCandidateLeafMethod.
-              cachedIsLeafMethod
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          isRegisterVolatile: r = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          lexicalParentCount = ( |
             | 
-            lexicalParentAllocator ifNil: [^ 0].
-            lexicalParentAllocator lexicalParentCount succ).
+            lexicalParentAllocator ifNil: 0 IfNotNil: [|:lpa| lpa lexicalParentCount succ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          localSlots = ( |
@@ -374,7 +312,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             compiler localSlotsForAllocator: self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          localSlotsOfMethod = ( |
@@ -382,30 +320,22 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             method localSlots).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         locationAt: name = ( |
-            | 
-            namedLocations at: name).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: constants\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForConstant: oop = ( |
             | 
             locations constant copyForOop: oop).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingNLRHomeScope = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingRcvrOrArgAt: index = ( |
@@ -413,7 +343,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             locationForIncomingRcvrOrArgAt: index LexicalLevel: 0).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForIncomingRcvrOrArgAt: index LexicalLevel: ll = ( |
@@ -421,39 +351,29 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForIncomingReceiver = ( |
+            | 
+            valueForIncomingReceiver location).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingResult = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         locationForLocalBC: bc = ( |
-            | 
-            "set slot instead of bc selector
-             so that bc for x: gets x not x:"
-            locationForSlot: bc slot).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         locationForMemoizedBlock: blockProto = ( |
-            | 
-            memoizedBlockLocations at:  reflect: blockProto).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingNLRHomeScope = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingRcvrOrArgAt: index = ( |
@@ -461,29 +381,37 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingReceiver = ( |
             | locationForOutgoingRcvrOrArgAt: 0).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingResult = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: self\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForSelf = ( |
+            | 
+            valueForSelf location).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForSlot: slot = ( |
             | 
-            locationAt: slot key).
+            (valueForSlot: slot) location).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForUnusedValue = ( |
@@ -491,14 +419,14 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             locations unusedValue copy).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: uplevel access to self, argument slots, and local slots\x7fComment: Sent to parent allocator.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForUplevelAccessTo: loc = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: uplevel access to self, argument slots, and local slots\x7fComment: Sent to parent allocator.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForUplevelAccessToSelf = ( |
@@ -506,7 +434,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             locationForUplevelAccessTo: locationForSelf).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prototypes\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locations = ( |
@@ -514,7 +442,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             compiler locations).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationsForNonVolLocalMems = ( |
@@ -522,7 +450,7 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             frame locationsForNonVolLocals).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationsForOutgoingRcvrAndArgsUpTo: n = ( |
@@ -530,17 +458,16 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             (vector copySize: n) mapBy: [|:x. :i| locationForOutgoingRcvrOrArgAt: i]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationsThatCouldBeDead = ( |
             | 
-            volatileRegisterLocationsThatCouldContainOops,
             locationsForNonVolLocalRegs,
             locationsForNonVolLocalMems).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationsThatNeedToBePreservedAcrossAnySend = ( |
@@ -549,56 +476,82 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             s: set copyRemoveAll.
             s add: locationForIncomingReceiver.
             s addAll: memoizedBlockLocations.
-            locationFor_OnNLR_homeScope ifNotNil: [|:loc| s add: loc].
+            valueFor_OnNLR_homeScope ifNotNil: [|:v| s add: v location].
             s).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          makeAnotherAssignableLocalLocation = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
-         makeAnotherMemoizedBlockLocation = ( |
+         memoizedBlockLocations = ( |
             | 
-            childMustImplement).
+            memoizedBlockValues copyMappedBy: [|:v| v location]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherStackLocation = ( |
-            | childMustImplement).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          memoizedBlockLocationsDo: blk = ( |
             | memoizedBlockLocations do: blk).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
-         memoryStackLocations = ( |
+         memoryStackValues = ( |
             | 
-            stackLocations copyFilteredBy: [|:loc|
-              loc isRegister not
+            stackValues copyFilteredBy: [|:v|
+              v location isRegister not
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         newStackValue = ( |
+             v.
+            | 
+            v: newValue.
+            stackValues add: v.
+            v).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         newValue = ( |
+             v.
+            | 
+            v: compiler prototypes dataValue copyCompiler: compiler.
+            allValues add: v.
+            v).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         newValueWithLocation: loc = ( |
+             v.
+            | 
+            v: newValue.
+            v location: loc.
+            v).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prototypes\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          protoFrameForMyPlatform = ( |
@@ -606,51 +559,53 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             klein stackFrames protoForArchitecture: architecture).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fComment: just a guess\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          requiredTempCount = 4.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          setIncomingRcvrAndArgLocations = ( |
             | 
             allocateIncomingRcvrAndArgLocations.
-            locationForIncomingReceiver: locationForIncomingRcvrOrArgAt: 0.
+            valueForIncomingReceiver: newValueWithLocation: locationForIncomingRcvrOrArgAt: 0.
             argumentSlots asVector do: [|:slot. :i. newLoc|
               newLoc: locationForIncomingRcvrOrArgAt: i + 1 "+ 1 is for the rcvr".
-              namedLocations at: slot key Put: newLoc.
+              (valueForSlot: slot) myLocation: newLoc. "Override the existing location (from a lexical parent), if any."
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          setLocalSlotLocations = ( |
             | 
-            localSlots do: [|:slot. loc|
-              loc: slot isAssignable
-                     ifTrue: [makeAnotherAssignableLocalLocation]
-                      False: [locationForConstant: slot contents reflectee].
-              namedLocations at: slot key Put: loc
+            localSlots do: [|:slot. loc. v|
+              v: valueForSlot: slot.
+              slot isAssignable ifTrue: [
+                ifNecessaryPreallocateLocationForAssignableLocalValue: v.
+              ] False: [
+                v location: locationForConstant: slot contents reflectee.
+              ].
             ].
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: self\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          setLocationForSelf = ( |
             | 
-            locationForSelf: 
+            valueForSelf location: 
              lexicalParentAllocator  
-              ifNil:    [ locationForIncomingReceiver ] 
+              ifNil:    [ locationForIncomingReceiver ]
               IfNotNil: [ lexicalParentAllocator locationForUplevelAccessToSelf ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: non-volatile registers\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          setNonVolatileRegSaveArea = ( |
@@ -661,31 +616,20 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         setOnNonLocalReturnLocations = ( |
-            | 
-            compiler hasOnNonLocalReturn ifFalse: [^ self].
-            locationFor_OnNLR_homeScope:     makeAnotherNonVolLocalRegOrMemLocation.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: uplevel access to self, argument slots, and local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          setUplevelLocations = ( |
             | 
             lexicalParentAllocator ifNil: [ ^ self ].
 
-            lexicalParentAllocator namedLocations do: [|:loc. :name|
-                namedLocations  at:  name
-                               Put:  lexicalParentAllocator locationForUplevelAccessTo: loc.
+            lexicalParentAllocator namedValues do: [|:v. :name|
+              (namedValues at: name IfAbsentPut: [newValue]) location: lexicalParentAllocator locationForUplevelAccessTo: v location.
             ].
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          setVolatileTemps = ( |
@@ -694,14 +638,119 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          tempRegisterAt: i = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: constants\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForConstant: oop = ( |
+            | 
+            newValueWithLocation: locationForConstant: oop).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForIncomingRcvrOrArgAt: i = ( |
+            | 
+            newValueWithLocation: locationForIncomingRcvrOrArgAt: i).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForIncomingResult = ( |
+            | 
+            cachedValueForIncomingResult ifNil: [
+              cachedValueForIncomingResult: newValueWithLocation: locationForIncomingResult.
+              cachedValueForIncomingResult
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForLocalBC: bc = ( |
+            | 
+            "set slot instead of bc selector
+             so that bc for x: gets x not x:"
+            valueForSlot: bc slot).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForMemoizedBlockMirror: blockProtoMir = ( |
+            | 
+            memoizedBlockValues if: blockProtoMir
+                       IsPresentDo: [|:v| v]
+                       IfAbsentPut: [newValue]
+                             AndDo: [|:v| v]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForOutgoingRcvrAndArgAt: index = ( |
+            | 
+            outgoingRcvrAndArgValues size <= index ifTrue: [
+              outgoingRcvrAndArgValues: outgoingRcvrAndArgValues copySize: index succ.
+            ].
+            (outgoingRcvrAndArgValues at: index) ifNil: [| v |
+              v: newValueWithLocation: locationForOutgoingRcvrOrArgAt: index.
+              outgoingRcvrAndArgValues at: index Put: v.
+              v
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForOutgoingReceiver = ( |
+            | 
+            valueForOutgoingRcvrAndArgAt: 0).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForOutgoingResult = ( |
+            | 
+            cachedValueForOutgoingResult ifNil: [
+              cachedValueForOutgoingResult: newValueWithLocation: locationForOutgoingResult.
+              cachedValueForOutgoingResult
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: self\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForSelf = ( |
+            | 
+            cachedValueForSelf ifNil: [
+              cachedValueForSelf: newValue.
+              cachedValueForSelf
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForSlot: slot = ( |
+            | 
+            namedValues at: slot key IfAbsentPut: [| v |
+              v: newValue.
+              v slot: slot.
+              v
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: assertions\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          verifyIndex: index IsWithinAllocatedLimit: limit = ( |
@@ -711,15 +760,15 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          volatileRegisterLocationsThatCouldContainOops = ( |
             | 
-            volatileRegisterLocations asSet copyFilteredBy: [|:loc| loc register != sp]).
+            volatileRegisterLocationsUsableForAssignableLocalsInLeafMethod).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          withTemporaryRegisterDo: blk = ( |
@@ -731,54 +780,54 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             ] onReturn: [ freeTemporaryRegister: r]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
         
-         stackLocations <- list copyRemoveAll.
+         stackValues <- list copyRemoveAll.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
          'Category: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
         
          temps <- set copyRemoveAll.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> () From: ( | {
+         'Category: receiver, arguments, and locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         valueForIncomingReceiver.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot'
         
-         ppc = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () ToBe: bootstrap addSlotsTo: (
+         ppc = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () ToBe: bootstrap addSlotsTo: (
              bootstrap remove: 'parent' From:
-             globals klein compiler1s abstract parent prototypes allocators abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1s abstract parent prototypes allocators ppc.
+             globals klein compiler1 parent prototypes allocators abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes allocators ppc.
 
 CopyDowns:
-globals klein compiler1s abstract parent prototypes allocators abstract. copy 
+globals klein compiler1 parent prototypes allocators abstract. copy 
 SlotsToOmit: parent.
 
 \x7fIsComplete: '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( | {
-         'Category: _OnNonLocalReturn\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)'
-        
-         locationFor_OnNLR_homeScope.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( |
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( |
              {} = 'Comment: Note about nomenclature
 - makeAnotherXXX: allocate something new
                   (always returns a new location)
 - locationForXXX: return the uniquely determined location for something
-                  (always returns an equivalent location)\x7fModuleInfo: Creator: globals klein compiler1s abstract parent prototypes allocators ppc parent.
+                  (always returns an equivalent location)\x7fModuleInfo: Creator: globals klein compiler1 parent prototypes allocators ppc parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          allocateIncomingRcvrAndArgLocations = ( |
@@ -788,7 +837,7 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          allocateOutgoingRcvrAndArgLocations: howMany = ( |
@@ -798,7 +847,32 @@ SlotsToOmit: parent.
             reserveSpaceForOutgoingRcvrAndArgs: howMany).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: new register allocation algorithm\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         availableNonVolatileRegisterLocations = ( |
+             highestAvailableRegNumber.
+            | 
+            highestAvailableRegNumber: highestNonVolRegister number - nonVolLocalRegCount.
+            (vector copySize: highestAvailableRegNumber succ - lowestLocalNonVolRegister number) mapBy: [|:x. :i|
+              "Start from the highest rather than the lowest, so that the used registers will be contiguous."
+              locationForRegister: gprFor: highestAvailableRegNumber - i
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: new register allocation algorithm\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         availableRegisterLocations = ( |
+            | 
+            isLeafMethod ifTrue: [
+              volatileRegisterLocationsUsableForAssignableLocalsInLeafMethod
+            ] False: [
+              availableNonVolatileRegisterLocations
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: globals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          byteMapBaseRegister = ( |
@@ -806,7 +880,7 @@ SlotsToOmit: parent.
             lowestGlobalRegister).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          firstTempRegister = ( |
@@ -814,7 +888,7 @@ SlotsToOmit: parent.
             r11).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: globals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          highestGlobalRegister = ( |
@@ -822,26 +896,34 @@ SlotsToOmit: parent.
             objectAddressesBaseRegister).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: nonvolatiles\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          highestNonVolRegister = ( |
-            | r31).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: register usage\x7fCategory: stack\x7fComment: We don\'t actually apply this constraint at the moment.
-Due to the order of allocation, stack registers will always follow
-the saved incoming argument registers, and the assignable local
-registers, but may be intermingled with memoized block registers.
--- jb 8/03\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         highestStackRegister = ( |
             | 
-            gprFor: lastIncomingArgumentRegister number pred).
+            r31).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         ifNecessaryPreallocateLocationForAssignableLocalValue: v = ( |
+            | 
+            method hasBlocks ifTrue: [
+              "If the method has blocks, some locals might be uplevel accessed
+               and so must not be stored in registers.  At present we do not
+               try to determine the precise set of such locals so we allocate
+               all of them in non-volatile memory.  -- jb 8/03"
+
+              v location: makeAnotherNonVolLocalMemLocation.
+
+            ] False: [
+              "Otherwise, we are free to allocate the local slot into
+               a register for best performance in the typical case. -- jb 8/03"
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: incoming receiver and arguments\x7fComment: The number of incoming arguments that have been passed
   in volatile registers.
 For _VariableArguments, we return maxArgumentRegisters
@@ -855,7 +937,7 @@ For _VariableArguments, we return maxArgumentRegisters
                False: [ maxArgumentRegisters min: argumentCount ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: incoming receiver and arguments\x7fComment: The number of incoming receiver and arguments in total.
 For _VariableArguments, we return maxSmallInt because 
   there is no way to determine how many arguments were
@@ -868,7 +950,7 @@ For _VariableArguments, we return maxSmallInt because
                False: [ argumentCount + 1 "for receiver" ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: incoming receiver and arguments\x7fComment: The number of incoming receiver and arguments to be copied
   to non-volatile registers.
 For leaf methods, we never copy the arguments to
@@ -882,7 +964,7 @@ For leaf methods, we never copy the arguments to
                False: [ incomingRcvrAndArgVolatileRegisterCount ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: incoming receiver and arguments\x7fComment: The number of incoming receiver and argument registers
   to be saved to the stack for uplevel access from blocks.
 For methods with blocks, we save the receiver and all
@@ -898,27 +980,27 @@ For leaf methods, we do likewise because they cannot
          incomingRcvrAndArgSavedRegisterCount = ( |
             | 
             isLeafMethod        ifTrue:  [^ 0].
-            method hasBlocks    ifFalse: [^ 0].
+            method hasBlocks    ifFalse: [^ 0]. [aaa]. "Is this still right?"
             argumentCount + 1 "for receiver").
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fCategory: incoming receiver and arguments\x7fComment: Includes the receiver.
-See incomingArgVolatileRegisterCount.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          incomingRcvrAndArgVolatileRegisterCount = ( |
             | 
             incomingArgVolatileRegisterCount + 1 "for receiver").
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: incoming\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          incomingRcvrOrArgRegisterAt: i = ( |
-            | gprFor: incomingReceiverRegister number - i).
+            | 
+            gprFor: incomingReceiverRegister number - i).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: incoming\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          incomingReceiverRegister = ( |
@@ -926,7 +1008,7 @@ See incomingArgVolatileRegisterCount.\x7fModuleInfo: Module: kleinC1_Allocs Init
             r31).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          incomingVolatileRegRcvrAndArgLocationsDo: blk = ( |
@@ -938,103 +1020,7 @@ See incomingArgVolatileRegisterCount.\x7fModuleInfo: Module: kleinC1_Allocs Init
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: leaf method allocation policy\x7fComment: ALLOCATING LOCALS AND STACK EXPRESSION LOCATIONS FOR LEAF METHODS
-=================================================================
-(revised transcript from an eMail conversation)
-
-Leaf methods are part of an optimization to avoid creating a new stack
-frame for very simple methods.  So instead of creating their own, they
-share their caller\'s stack frame.
-
-Constraints:
-
-- Leaf methods receive arguments in r3-r10, and in the outgoing memory
-  argument words in the current frame.
-- Leaf methods cannot (in general) send messages or invoke primitives
-  because that would require putting values into r3-r10, obliterating
-  the incoming receiver and arguments.
-- Leaf methods cannot (in general) store values into the non-volatile
-  registers r14-r31 because they are not saved/restored to/from the
-  stack in the method prologue/epilogue.
-- Leaf methods cannot contain any blocks.
-- Leaf methods may have assignable local slots.  (or should they?)
-  ==> where do we allocate them?
-- Leaf methods may have an expression stack. (or should they?)
-  ==> where do we allocate it?
-
-The older allocator permitted the last two cases but could produce
-inappropriate allocations.  For example:
-
-r3 - incoming receiver register
-r4 - incoming arg #1
-r5 - a local assignable slot
-r6 - a local constant slot (reserved but unused, new allocator is smarter)
-r7 - a local assignable slot
-r29 - stack register #2
-r30 - stack register #1
-r31 - stack register #0
-
-Observations:
-
-1. Allocation of locals to the r3-r10 block of volatile registers
-   following the incoming receiver and arguments appears to be an
-   accidental side-effect of the original code.  It neither detects
-   nor handles the overflow case, and will destroy the caller\'s stack
-   frame when supplied a sufficient number of locals.
-
-   We need a solution to this problem.
-
-2. Allocation of stack locations to the r13-r31 block of non-volatile
-   registers is incorrect as it will destroy the non-volatile portion
-   of the caller\'s stack frame.  We can allocate a limited number
-   of stack locations to the volatile registers.  However, it is 
-   difficult to determine how many we will require ahead of time.
-
-   We need a solution to this problem.
-
-
-Solutions for allocating assignable local slots:
-
-1. Add a rule to prevent leaf methods from having ANY assignable
-   local slots.
-   Note: Constant slots are not a problem because they do not
-         require an allocation.
-
-2. Allocate local and expression stack locations into the
-   r3-10 block of volatile registers following the incoming receiver
-   and arguments, somewhat like the old allocator did.
-   Handling overflow:
-   
-   a. Detect it ahead of time and do not use the leaf method optimization.
-   b. Detect it just in time and spill allocations into unallocated
-      stack space at a negative offset from the current frame pointer.
-      I believe the PPC ABI allows using a limited amount of this space.
-   c. Prevent leaf methods from having more local assignable slots
-      than will fit into the available volatile registers.
-        eg. #incoming args + #assignable locals <= maxArgumentRegisters
-            (verify this ahead of time)
-      Furthermore, detect just in time when the allocator attempts to
-      create more stack location than will fit.  Then back out of
-      the optimization (very uncommon case).
-        eg. #incoming args + #assignable locals + #stack regs <= ...
-            (verify this just in time, and back out if necessary)
-
-Proposal: Go with 2c because it is safe, powerful, and easy to implement.
-          -- jb 8/03
-
-Response: I agree--2c is the way to go.
-          2b invites bugs.
-          -- dmu 8/03\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isCandidateLeafMethod = ( |
-            | 
-            "Necessary, but not sufficient condition for leaf methods..."
-                 resend.isCandidateLeafMethod
-            && [ (incomingArgVolatileRegisterCount + assignableLocalCount)  <=  maxArgumentRegisters ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          isRegisterVolatile: r = ( |
@@ -1042,39 +1028,39 @@ Response: I agree--2c is the way to go.
             r number < lowestNonVolRegister number).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: register usage\x7fCategory: assignable local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: new register allocation algorithm\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
-         lastAssignableLocalRegister = ( |
+         lastAvailableRegisterThatWasActuallyAssigned: r = ( |
             | 
-            lastIncomingArgumentRegister).
+            isLeafMethod ifTrue: [
+              lastVolatileRegisterThatWasActuallyAssigned: r.
+            ] False: [
+              lastNonVolatileRegisterThatWasActuallyAssigned: r.
+            ].
+            self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: register usage\x7fCategory: incoming\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
-         lastIncomingArgumentRegister = ( |
+         lastNonVolatileRegisterThatWasActuallyAssigned: r = ( |
             | 
-            gprFor: incomingReceiverRegister number - maxArgumentRegisters).
+            [isLeafMethod not] assert: 'leaf methods cannot allocate non-volatile storage (no stack frame)'.
+            [(isRegisterVolatile: r) not] assert.
+            reserveSpaceForNonVolLocalRegs: (highestNonVolRegister number - r number) succ.
+            self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: register usage\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         lastMemoizedBlockRegister = ( |
-            | 
-            lastAssignableLocalRegister).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: outgoing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          lastOutgoingArgumentRegister = ( |
             | 
-            gprFor: outgoingReceiverRegister number + maxArgumentRegisters).
+            outgoingRcvrOrArgRegisterAt: maxArgumentRegisters).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          lastTempRegister = ( |
@@ -1082,7 +1068,26 @@ Response: I agree--2c is the way to go.
             r12).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: allocating volatile registers\x7fComment: If the method is a leaf, we allow a certain number of
+locals and stack locations to be allocated to volatile
+registers.  If it turns out that we don\'t have enough
+registers, then we back out of the leaf method
+optimization and try again without it.  -- jb 8/03\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         lastVolatileRegisterThatWasActuallyAssigned: r = ( |
+             n.
+            | 
+            [isLeafMethod] assert.
+            n: (r number - outgoingReceiverRegister number) succ.
+            n > maxArgumentRegisters succ ifTrue: [
+              backoutBlock value: 'used too many volatile registers'
+            ].
+            volatileRegisterCount: n.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fComment: Used by compiler to copy incoming arguments to the stack.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingMemRcvrOrArgAt: index = ( |
@@ -1091,7 +1096,7 @@ Response: I agree--2c is the way to go.
             locationForIncomingMemRcvrOrArgAt: index LexicalLevel: 0).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fComment: Return location for accessing index\'th rcvr or arg
 in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -1102,7 +1107,7 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             locations incomingMemoryArgument copyRcvrAndArgNo: index LexicalLevel: ll).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingNLRHomeScope = ( |
@@ -1110,7 +1115,7 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             locationForOutgoingNLRHomeScope).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForIncomingRcvrOrArgAt: index LexicalLevel: ll = ( |
@@ -1131,7 +1136,7 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
               Else: [locationForIncomingMemRcvrOrArgAt: index LexicalLevel: ll]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fComment: Used by compiler to copy incoming arguments to non-volatile registers.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingRegRcvrOrArgAt: index = ( |
@@ -1142,14 +1147,14 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             locationForNonVolLocalRegAt: index).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingResult = ( |
             | locationForOutgoingResult).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: incoming receiver and arguments\x7fComment: Used by compiler to copy incoming arguments to non-volatile registers.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForIncomingVolatileRegRcvrOrArgAt: index = ( |
@@ -1160,7 +1165,7 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             locationForVolatileRegRcvrOrArgAt: index IfNoSuchIndex: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForNonVolLocalMemAt: index = ( |
@@ -1171,7 +1176,7 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             locations nonVolMemoryLocal copyIndex: index).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForNonVolLocalRegAt: index = ( |
@@ -1179,13 +1184,14 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             | 
             [isLeafMethod not] assert: 'leaf methods cannot allocate non-volatile storage (no stack frame)'.
             regNumber: highestNonVolRegister number - index.
-            [regNumber >= lowestNonVolRegister number] assert.
 
-            reserveSpaceForNonVolLocalRegs: index succ.
-            locations register copyForRegister: gprFor: regNumber).
+            [regNumber >= lowestNonVolRegister number] assert.
+            verifyIndex: index IsWithinAllocatedLimit: nonVolLocalRegCount.
+
+            locationForRegister: gprFor: regNumber).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingNLRHomeScope = ( |
@@ -1193,24 +1199,39 @@ in me from a frame that is ll levels down.\x7fModuleInfo: Module: kleinC1_Allocs
             locationForVolatileRcvrOrArgAt: 1).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingRcvrOrArgAt: index = ( |
             | 
-            verifyIndex: index IsWithinAllocatedLimit: outgoingRcvrAndArgCount.
+            [aaa verifyIndex: index IsWithinAllocatedLimit: outgoingRcvrAndArgCount.].
 
             locationForVolatileRcvrOrArgAt: index).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForOutgoingResult = ( |
-            | locations register copyForRegister: outgoingResultRegister).
+            | 
+            locationForRegister: outgoingResultRegister).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: register usage\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForRegister: r = ( |
+            | 
+            r isGPR ifTrue: [
+              "Might as well use the cached one."
+              compiler codeGenerator myAssemblerSystem allRegisterLocations at: r number
+            ] False: [
+              "We should probably cache these too."
+              locations register copyForRegister: r
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: uplevel access to self, argument slots, and local slots\x7fComment: Sent to parent allocator to create location
 for lexical child scope to use to access loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -1227,13 +1248,12 @@ for lexical child scope to use to access loc.\x7fModuleInfo: Module: kleinC1_All
              if loc isRegister it must be receiver or argument."
 
             index: highestNonVolRegister number - loc register number.
-            verifyIndex:              index
-              IsWithinAllocatedLimit: incomingRcvrAndArgSavedRegisterCount.
+            verifyIndex: index IsWithinAllocatedLimit: incomingRcvrAndArgSavedRegisterCount.
 
             locationForIncomingRcvrOrArgAt: index LexicalLevel: 1).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: volatile incoming, leaf method incoming, and outgoing receiver and arguments (use when parts of stack frame look like caller\'s)\x7fComment: Makes a location for a memory argument used to
 pass arguments out of caller frame or into leaf
 method frame. \x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
@@ -1245,30 +1265,29 @@ method frame. \x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: volatile incoming, leaf method incoming, and outgoing receiver and arguments (use when parts of stack frame look like caller\'s)\x7fComment: Makes a location for a volatile register used to
 pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationForVolatileRegRcvrOrArgAt: index IfNoSuchIndex: fb = ( |
             | 
             index <= maxArgumentRegisters  ifTrue: [
-              locations register copyForRegister:
-                gprFor: outgoingReceiverRegister number + index
+              locationForRegister: outgoingRcvrOrArgRegisterAt: index
             ]
             False: [fb value: 'no such index']).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          locationsForNonVolLocalRegs = ( |
             | 
             (vector copySize: nonVolLocalRegCount) copyMappedBy: [|:x. :i|
-              locations register copyForRegister: gprFor: highestNonVolRegister number - i
+              locationForRegister: gprFor: highestNonVolRegister number - i
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: globals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          lowestGlobalRegister = ( |
@@ -1276,7 +1295,7 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
             lowestNonVolRegister).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: nonvolatiles\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          lowestLocalNonVolRegister = ( |
@@ -1284,7 +1303,7 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
             gprFor: highestGlobalRegister number succ).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: nonvolatiles\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          lowestNonVolRegister = ( |
@@ -1292,60 +1311,7 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
             gprFor: lastTempRegister number succ).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: register usage\x7fCategory: stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         lowestStackRegister = ( |
-            | 
-            gprFor: highestGlobalRegister number succ).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherAssignableLocalLocation = ( |
-            | 
-            case
-            if: [ isLeafMethod ]  Then: [
-              "If the method is a leaf, we always allocate its locals in
-               volatile registers because there is no stack frame.  -- jb 8/03"
-
-              makeAnotherVolatileRegisterLocation
-            ]
-            If: [ method hasBlocks ]  Then: [
-              "If the method has blocks, some locals might be uplevel accessed
-               and so must not be stored in registers.  At present we do not
-               try to determine the precise set of such locals so we allocate
-               all of them in non-volatile memory.  -- jb 8/03"
-
-              makeAnotherNonVolLocalMemLocation
-            ]
-            Else: [
-              "Otherwise, we are free to allocate the local slot into
-               a register for best performance in the typical case. -- jb 8/03"
-
-              makeAnotherNonVolLocalRegOrMemLocation
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: memoized blocks\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherMemoizedBlockLocation = ( |
-            | makeAnotherNonVolLocalLocationLimitReg: lastMemoizedBlockRegister).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherNonVolLocalLocationLimitReg: reg = ( |
-            | 
-            makeAnotherNonVolLocalRegLocationLimitReg: reg IfFail: [
-              makeAnotherNonVolLocalMemLocation
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          makeAnotherNonVolLocalMemLocation = ( |
@@ -1353,66 +1319,21 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
             locationForNonVolLocalMemAt: nonVolLocalMemWordCount).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: allocating non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherNonVolLocalRegLocationLimitReg: limit IfFail: fb = ( |
-            | 
-            nonVolLocalRegCount <= (highestNonVolRegister number - limit number)  ifTrue: [
-              locationForNonVolLocalRegAt: nonVolLocalRegCount
-            ] False: fb).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: local slots\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherNonVolLocalRegOrMemLocation = ( |
-            | 
-            makeAnotherNonVolLocalLocationLimitReg: lastAssignableLocalRegister).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: expression stack\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherStackLocation = ( |
-            | 
-            isLeafMethod
-              ifTrue: [ makeAnotherVolatileRegisterLocation ]
-               False: [ makeAnotherNonVolLocalLocationLimitReg: lowestStackRegister ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: allocating volatile registers\x7fComment: If the method is a leaf, we allow a certain number of
-locals and stack locations to be allocated to volatile
-registers.  If it turns out that we don\'t have enough
-registers, then we back out of the leaf method
-optimization and try again without it.  -- jb 8/03\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         makeAnotherVolatileRegisterLocation = ( |
-             index.
-            | 
-            [isLeafMethod] assert.
-            index: volatileRegisterCount.
-            volatileRegisterCount: volatileRegisterCount succ.
-            locationForVolatileRegRcvrOrArgAt: index
-                                IfNoSuchIndex: [ backoutBlock value: 'no more volatile registers' ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fComment: w/o receiver
 both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          maxArgumentRegisters = 7.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          nonVolLocalMemWordCount = ( |
             | frame nonVolLocalWordCount).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: nonvolatiles\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          nonVolRegisterCount = ( |
@@ -1420,7 +1341,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             (highestNonVolRegister number - lowestNonVolRegister number) succ).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: globals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          objectAddressesBaseRegister = ( |
@@ -1428,14 +1349,14 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             gprFor: spLimitRegister number succ).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          outgoingRcvrAndArgCount = ( |
             | frame outgoingRcvrAndArgWordCount).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: outgoing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          outgoingRcvrOrArgRegisterAt: i = ( |
@@ -1443,7 +1364,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             gprFor: outgoingReceiverRegister number + i).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: outgoing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          outgoingReceiverRegister = ( |
@@ -1451,7 +1372,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             r3).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: outgoing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          outgoingResultRegister = ( |
@@ -1459,19 +1380,19 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             outgoingReceiverRegister).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> ().
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'abstract' -> 'parent' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          registers* = bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> 'operands' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          requiredTempCount = ( |
@@ -1479,7 +1400,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             lastTempRegister number succ - firstTempRegister number).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          reserveSpaceForNonVolLocalMemWords: howMany = ( |
@@ -1487,7 +1408,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             frame reserveSpaceForNonVolLocals: howMany).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: non-volatile locals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          reserveSpaceForNonVolLocalRegs: howMany = ( |
@@ -1497,14 +1418,18 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: outgoing receiver and arguments\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          reserveSpaceForOutgoingRcvrAndArgs: howMany = ( |
-            | frame reserveSpaceForOutgoingRcvrAndArgs: howMany).
+            | 
+            outgoingRcvrAndArgValues size < howMany ifTrue: [
+              outgoingRcvrAndArgValues: outgoingRcvrAndArgValues copySize: howMany.
+            ].
+            frame reserveSpaceForOutgoingRcvrAndArgs: howMany).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: register usage\x7fCategory: globals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          spLimitRegister = ( |
@@ -1512,23 +1437,32 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             gprFor: byteMapBaseRegister number succ).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: register usage\x7fCategory: temporaries\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          tempRegisterAt: i = ( |
             | 
             gprFor: firstTempRegister number + i).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: register usage\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: allocating volatile registers\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
-         volatileRegisterLocations = ( |
+         volatileRegisterLocationsUsableForAssignableLocalsInLeafMethod = ( |
             | 
-            (vector copySize: lowestNonVolRegister number) copyMappedBy: [|:x. :i| locations register copyForRegister: gprFor: i]).
+            [isLeafMethod] assert.
+            (vector copySize: maxArgumentRegisters succ - incomingRcvrAndArgVolatileRegisterCount) mapBy: [|:x. :i|
+              locationForVolatileRegRcvrOrArgAt: incomingRcvrAndArgVolatileRegisterCount + i IfNoSuchIndex: raiseError.
+            ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1s' -> 'abstract' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( | {
+         'Category: _OnNonLocalReturn\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)'
+        
+         valueFor_OnNLR_homeScope.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'allocators' -> 'ppc' -> () From: ( | {
          'Category: volatile registers\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          volatileRegisterCount <- 0.

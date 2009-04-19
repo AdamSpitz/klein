@@ -1,6 +1,7 @@
  '$Revision: 30.51 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -420,6 +421,12 @@ SlotsToOmit: parent.
         
          prototype = ( |
             | klein nmethod).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
+         'Category: unmapped\x7fCategory: reusability\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         reusabilityConditions.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {

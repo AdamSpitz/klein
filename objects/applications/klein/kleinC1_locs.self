@@ -103,6 +103,12 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
+         isStackPointer = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
          isUnusedValue = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
@@ -856,6 +862,89 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinC1_locs InitialContents: InitializeToExpression: (nil)'
         
          register.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         stackPointer = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals klein locations abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein locations stackPointer.
+
+CopyDowns:
+globals klein locations abstract. copy 
+SlotsToOmit: parent.
+
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_locs InitialContents: InitializeToExpression: (0)'
+        
+         lexicalLevel <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein locations stackPointer parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         = x = ( |
+            | 
+            x isStackPointer && [lexicalLevel = x lexicalLevel]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyLexicalLevel: ll = ( |
+            | copy lexicalLevel: ll).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hash = ( |
+            | 
+            'stackPointer' hash ^^ lexicalLevel hash).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isStackPointer = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isVolatile: aLocalsAllocator = ( |
+            | 
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         tell: aCodeGenerator ToLoadMeToRegister: r = ( |
+            | 
+            aCodeGenerator moveStackPointerForLexicalLevel: lexicalLevel
+                                                ToRegister: r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> () From: ( | {

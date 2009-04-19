@@ -207,16 +207,20 @@ See the LICENSE file for license information.
         
          primReceiver: dstByteVector CopyByteRangeDstPos: dstPos Src: srcByteVector SrcPos: srcPos Length: len IfFail: fb = ( |
              byteAtPutFailBlock.
+             failBlock.
             | 
             ['' _CopyByteRangeDstPos: 0 Src: '' SrcPos: 0 Length: 0           ]. "browsing"
             ['' _CopyByteRangeDstPos: 0 Src: '' SrcPos: 0 Length: 0 IfFail: fb]. "browsing"
 
-            dstByteVector _IsByteVector ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            srcByteVector _IsByteVector ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            (isSmi: srcPos)             ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            (isSmi: dstPos)             ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            (isSmi: len   )             ifFalse: [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
-            byteAtPutFailBlock:         [|:e. :p| ^ fail: 'badIndexError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+            failBlock:  [^ fail: 'badTypeError'  Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
+
+            dstByteVector _IsByteVector ifFalse: failBlock.
+            srcByteVector _IsByteVector ifFalse: failBlock.
+            (isSmi: srcPos)             ifFalse: failBlock.
+            (isSmi: dstPos)             ifFalse: failBlock.
+            (isSmi: len   )             ifFalse: failBlock.
+
+            byteAtPutFailBlock:  [|:e. :p| ^ fail: 'badIndexError' Name: '_CopyByteRangeDstPos:Src:SrcPos:Length:' Receiver: dstByteVector FailBlock: fb].
 
             0 upTo: len By: 1 WithoutCloningDo: [|:i|
               dstByteVector _ByteAt: (                       dstPos _IntAdd: i)
@@ -286,7 +290,6 @@ See the LICENSE file for license information.
         
          primReceiver: rcvr IdentityHashIfFail: fb = ( |
              markValue.
-             newMarkValue.
             | 
             [ _IdentityHash           ]. "browsing"
             [ _IdentityHashIfFail: fb ]. "browsing"
@@ -602,7 +605,6 @@ See the LICENSE file for license information.
          'Category: fake primitives (primitives that are just normal methods)\x7fCategory: strings\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          primReceiver: str StringPrintIfFail: fb = ( |
-             numberOfWriteSysCall = 4.
              stdoutFD = 1.
             | 
             _NoGCAllowed.
@@ -610,7 +612,7 @@ See the LICENSE file for license information.
             [ _StringPrint           ]. "browsing"
             [ _StringPrintIfFail: fb ]. "browsing"
 
-            (_SystemCall: numberOfWriteSysCall With: (stdoutFD _IntForC)  With: (str  _ByteVectorForC) With: (str _ByteSize _IntForC)) _IntFromC).
+            (_SystemCall: 4 With: (stdoutFD _IntForC)  With: (str  _ByteVectorForC) With: (str _ByteSize _IntForC)) _IntFromC).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {

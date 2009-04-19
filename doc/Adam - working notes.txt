@@ -27,7 +27,70 @@ Cleanups to do:
 
 ----
 
+Dave's comments:
+
+  - The most important optimization is inlining. It's a big one (and don't forget that it affects the debugger), but after that the regular optimization stuff is less important. (It can be addictive, though, so be careful not get sucked into doing just one more optimization.)
+  - If I'm looking to port something to the iPhone, I might want to try the real Self VM, scary as it is.
+
+
+----
+
 For inlining, I think I need to:
   - Find the place where the compiler generates IR nodes for a send, and make sure the compiler knows when it knows the type of the receiver.
   - Think of a simple heuristic for deciding when to inline. Maybe "if it's a data slot or if the method is small", for now.
   - Find the places where the compiler creates IR nodes referring to the receiver or arguments or locals. Make sure they don't just do it by name, and then indirect them through a currentScope thing or something.
+
+----
+
+There's gotta be a way to avoid having to pull in the whole object table every time anything changes in it. Why not just pull in the parts we're accessing?
+
+----
+
+Remember to clean up the aaaaa things.
+
+----
+
+I guess I've gotta actually do some inlining now, huh? Except I'm worried about reusability. So I've gotta make it smarter - instead of "Is this nmethod reusable for all receiver maps?", I've got to ask, "Is this nmethod reusable for *this* receiver map?"
+
+For now, I care most about inlining constant slot accesses. So I just need a reusabilityCondition that checks to make sure that the slot is a constant and contains the same object.
+
+----
+
+Stuff I want to do:
+
+  - In the allocator, maybe initialize it right away with a vector of all 32 precolored register values. Then use those in the locationAssigner. (I think that's what the textbook wants me to do; maybe it makes a difference?)
+  - Turn the miniVM into a really good test of the basic VM's capabilities. And unify that stuff with the midiVM/selfVM tests AND with the Self "tests" object.
+  - Fix the compilerTester. Right, right - I broke it, made it require the compilationRequester.
+
+----
+
+Oh, that's a good point about non-LIFO blocks - maybe I could convert them on-the-fly, since most blocks don't actually outlive their stack frame. So instead of zapping the home-frame pointer, convert it to a pointer to the heap-allocated thing.
+
+----
+
+OK, it frickin' works! Except for the test case that tries to compile a method, because I broke the stuff when I made compilers require a compilationRequester. So I've just gotta fix that and then my new compiler can be declared officially working!
+
+----
+
+http://selflanguage.org/_static/published/dynamic-deoptimization.pdf
+
+So it looks like the deal is:
+
+  - The compiler has to create scopeDesc information describing how the virtual stack frames are laid out within the physical stack frame.
+  - Just to display the stack, no deoptimization is necessary - the debugger just has to pretend that the source-level stack frames are there (which it can do because of the scopeDesc info).
+  - To deoptimize the topmost activation, just save a copy of the physical frame, pop it off, and then use the scopeDesc info to recreate source-level ones.
+  - To deoptimize an activation in the middle of the stack, just wait for the stack to unwind back to that point and then deoptimize it. (Do that by making the return PC actually be to a procedure that'll deoptimize the thing.)
+  - Need to have unoptimized nmethods either created on-the-fly or lying around, so that we can switch the PC into the right place in the unoptimized one and continue execution.
+  - Use interrupt points (sends and backward branches) to interrupt a process. (They happen frequently, so there shouldn't be any major delay when you open up a debugger on a running process.) That way we can do source-level single-stepping by deoptimizing and then just setting the interrupt register. In between interrupt points, you can do any optimizations that won't wreck the ability to reconstruct the stack info at the next interrupt point.
+
+That doesn't look so scary. And since we don't have source-level single-stepping or runtime changes yet anyway, I won't be breaking anything if I just implement inlining and make sure that the debugger can display stuff right. Cool!
+
+First step is just to create the scopeDesc info.
+
+----
+
+But I'd better finish cleaning up what I've done so far first:
+  - Fix the runtime compiler (the compilationRequester thing).
+  - Decide what to do about the aaaaa places.
+  - Maybe convert some primitives to IR nodes? I've got that stuff paged into my brain anyway, might as well take a look at it.
+  - Maybe go through the compiler and just clean it up a bit, make sure everything's really really clear.
