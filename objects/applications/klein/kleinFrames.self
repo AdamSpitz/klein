@@ -74,6 +74,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> () From: ( | {
          'Category: size of pieces\x7fModuleInfo: Module: kleinFrames InitialContents: InitializeToExpression: (0)\x7fVisibility: public'
         
+         nonVolLocalRegCount <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> () From: ( | {
+         'Category: size of pieces\x7fModuleInfo: Module: kleinFrames InitialContents: InitializeToExpression: (0)\x7fVisibility: public'
+        
          nonVolLocalWordCount <- 0.
         } | ) 
 
@@ -338,7 +344,7 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
          locationsForSavedNonVolRegisters = ( |
              allRegLocs.
             | 
-            allRegLocs: theVM myAssemblerSystem allRegisterLocations.
+            allRegLocs: theVM myAssemblerSystem.
             (vector copySize: nonVolRegSaveAreaWordCount) mapBy: [|:x. :i|
               allRegLocs _At: 31 _IntSub: i.
             ]).
@@ -390,15 +396,6 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: offsets for saved arg part of stack (parent\'s frame)\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
         
-         receiverAndArgSPOffsetsDo: blk = ( |
-            | 
-            outgoingRcvrAndArgWordCount do: [|:i| blk value: receiverAndArgumentSPOffsetAt: i].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: offsets for saved arg part of stack (parent\'s frame)\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
-        
          receiverAndArgumentSPOffsetAt: i = ( |
             | 
             "0 = rcvr"
@@ -415,8 +412,33 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: sizing me & my parts\x7fCategory: reserving space during compilation\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
         
-         reserveSpaceForNonVolLocals: howMany = ( |
-            | nonVolLocalWordCount: nonVolLocalWordCount max: howMany).
+         reserveSpaceForAnotherNonVolLocalReg = ( |
+             i.
+            | 
+            i: nonVolLocalRegCount.
+            reserveSpaceForNonVolLocalRegs: i succ.
+            i).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: sizing me & my parts\x7fCategory: reserving space during compilation\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
+        
+         reserveSpaceForAnotherNonVolMemLocal = ( |
+             i.
+            | 
+            i: nonVolLocalWordCount.
+            nonVolLocalWordCount: i succ.
+            i).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: sizing me & my parts\x7fCategory: reserving space during compilation\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
+        
+         reserveSpaceForNonVolLocalRegs: howMany = ( |
+            | 
+            reserveSpaceToSaveNonVolRegs: howMany.
+            nonVolLocalRegCount: nonVolLocalRegCount max: howMany.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -430,7 +452,8 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
          'Category: sizing me & my parts\x7fCategory: reserving space during compilation\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
         
          reserveSpaceToSaveNonVolRegs: howMany = ( |
-            | nonVolRegSaveAreaWordCount: nonVolRegSaveAreaWordCount max: howMany).
+            | 
+            nonVolRegSaveAreaWordCount: nonVolRegSaveAreaWordCount max: howMany).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {

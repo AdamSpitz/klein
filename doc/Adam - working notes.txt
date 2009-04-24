@@ -50,25 +50,11 @@ Remember to clean up the aaaaa things.
 
 ----
 
-I guess I've gotta actually do some inlining now, huh? Except I'm worried about reusability. So I've gotta make it smarter - instead of "Is this nmethod reusable for all receiver maps?", I've got to ask, "Is this nmethod reusable for *this* receiver map?"
-
-For now, I care most about inlining constant slot accesses. So I just need a reusabilityCondition that checks to make sure that the slot is a constant and contains the same object.
-
-----
-
 Stuff I want to do:
 
   - In the allocator, maybe initialize it right away with a vector of all 32 precolored register values. Then use those in the locationAssigner. (I think that's what the textbook wants me to do; maybe it makes a difference?)
   - Turn the miniVM into a really good test of the basic VM's capabilities. And unify that stuff with the midiVM/selfVM tests AND with the Self "tests" object.
   - Fix the compilerTester. Right, right - I broke it, made it require the compilationRequester.
-
-----
-
-Oh, that's a good point about non-LIFO blocks - maybe I could convert them on-the-fly, since most blocks don't actually outlive their stack frame. So instead of zapping the home-frame pointer, convert it to a pointer to the heap-allocated thing.
-
-----
-
-OK, it frickin' works! Except for the test case that tries to compile a method, because I broke the stuff when I made compilers require a compilationRequester. So I've just gotta fix that and then my new compiler can be declared officially working!
 
 ----
 
@@ -89,8 +75,10 @@ First step is just to create the scopeDesc info.
 
 ----
 
-But I'd better finish cleaning up what I've done so far first:
-  - Fix the runtime compiler (the compilationRequester thing).
-  - Decide what to do about the aaaaa places.
-  - Maybe convert some primitives to IR nodes? I've got that stuff paged into my brain anyway, might as well take a look at it.
-  - Maybe go through the compiler and just clean it up a bit, make sure everything's really really clear.
+So now I've split up the machine-level and source-level allocators. Good! What next?
+
+OK, so when we inline a call to a method, what's different?
+
+  - Instead of moving stuff to the machine-level outgoing locations, we've gotta just move it to some new values that we create to hold the scope's incoming rcvr+args. (And those values have to be located in memory if the inlined scope has blocks.) And the scope has to have a valueForOutgoingResult too. Basically just the same as for primitives.
+  - The incoming args still need to be stored in memory for uplevel access, though, right?
+  - Just gotta call generateInitializationForLocals.

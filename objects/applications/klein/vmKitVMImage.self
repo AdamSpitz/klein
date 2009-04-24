@@ -94,30 +94,6 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
          'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
         
-         blockCloneCounts = ( |
-             r.
-            | 
-            r: dictionary copyRemoveAll.
-            myVM setTheVMAndDo: [
-              objectsOracle ensureAddressesByOIDIsUpdated.
-              objectsOracle oopsAndAddressesAndOIDsDo: [|:oop. :addr. :oid. mapOop. mt|
-                mapOop: vmKit layouts memoryObject mapOf: oop.
-                mt: vmKit maps map mapTypeOfRemoteMap: mapOop IfFail: raiseError.
-                mt = vmKit maps blockMap mapType ifTrue: [| blockMapMir. origBlockMir. n |
-                  blockMapMir:  myVM mirrorFor:  mapOop.
-                  origBlockMir: objectsOracle originalMirrorForOID: oid.
-                  [cloneCount]. "browsing"
-                  n: (blockMapMir at: 'cloneCount') contents importReflecteeAsInteger.
-                  r at: origBlockMir Put: n.
-                ].
-              ].
-            ].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
          breakDownNMethodsByHolder = ( |
              holders.
             | 
@@ -485,7 +461,7 @@ See the LICENSE file for license information.
               relsToReassemble isEmpty ifFalse: [|nmOop|
                 nmOop:  oopForOriginalObject: nm.
                 relsToReassemble do: [|:r|
-                  r insertOopInNMethod: nmOop Using: objectsOracle With: cg copyForCompiler: myVM compilerPrototype copy.
+                  r insertOopInNMethod: nmOop Using: objectsOracle With: cg copyForCompiler: myVM compilerPrototype copy architecture: myVM architecture.
                 ].
                 nm relocators: rels.
               ].

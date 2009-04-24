@@ -539,7 +539,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         cachedAllNamesOfIncludedModules.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -619,9 +619,9 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda layouts)
 	& (reflect: klein)
-	& (reflect: kleinAndYoda layouts)) asVmKitExportList) From: ( |
+	& (reflect: kleinAndYoda)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -649,7 +649,17 @@ SlotsToOmit: parent prototype safety.
              d = 'four'.
              y <- 'banana'.
             | 
-            a + b).
+            a _IntAdd: b).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         methodWithManyArguments: a And: b And: c And: d And: e And: f And: g And: h And: i And: j And: k = ( |
+             x.
+            | 
+            x: a _IntAdd: b _IntAdd: c _IntAdd: d _IntAdd: e _IntAdd: f _IntAdd: g _IntAdd: h _IntAdd: i _IntAdd: j _IntAdd: k.
+            x _IntAdd: [a _IntAdd: k] value).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1190,6 +1200,7 @@ SlotsToOmit: parent prototype safety.
             | 
             testReturnValueOfLocalAssignment.
             testLeafMethodWithBrowsingTag.
+            testMethodWithManyArguments.
             testPrimitiveFailure.
             testFixAndContinue: 10 With: 11 And: 6.
             [] vmTests run.
@@ -1287,6 +1298,17 @@ SlotsToOmit: parent prototype safety.
             mapNMCSize: mapNMC _Size.
             "Can't call apple because o is not complete. But that's OK. The bug here is
              that mapNMCSize is wrong. -- Adam, 6/05"
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testMethodWithManyArguments = ( |
+             r.
+            | 
+            r: methodWithManyArguments: 1 And: 2 And: 3 And: 4 And: 5 And: 6 And: 7 And: 8 And: 9 And: 10 And: 11.
+            assert: r Is: 78.
             self).
         } | ) 
 

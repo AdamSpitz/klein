@@ -108,21 +108,6 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         allocateLocations = ( |
-            | 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
-        
-         allocator = ( |
-            | compiler allocator).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
          areVolatilesVaporized = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
@@ -144,7 +129,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          codeGenerator = ( |
             | compiler codeGenerator).
@@ -315,12 +300,6 @@ node is done before at least one of its preds is.\x7fModuleInfo: Module: kleinC1
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         isOKInLeafMethod = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
          isPrimitive = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
@@ -334,28 +313,30 @@ node is done before at least one of its preds is.\x7fModuleInfo: Module: kleinC1
          'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          locationsThatNeedToBePreserved = ( |
-             assignableLocalNames.
              s.
             | 
             s: set copyRemoveAll.
 
             outgoingLiveValues do: [|:v| s add: v location].
 
-            "The rest of this is left over from the old algorithm. Hopefully it's
-             now redundant. Check, then delete it. -- Adam, Apr. 2009"
-
-            s add:    allocator locationForIncomingReceiver.
-            s addAll: allocator memoizedBlockLocations.
-            allocator valueFor_OnNLR_homeScope ifNotNil: [|:v| s add: v location].
-
-            assignableLocalNames: (allocator assignableLocalSlots copyMappedBy: [|:slot| slot name]) asSet.
-            allocator namedValues do: [|:v. :n| s add: v location].
+            "These need to stay live no matter what, I think, because
+             the debugger might need to see them. -- Adam, Apr. 2009"
+            s add: sourceLevelAllocator locationForIncomingReceiver.
+            sourceLevelAllocator namedValues do: [|:v. :n| s add: v location].
 
             s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         machineLevelAllocator = ( |
+            | 
+            compiler machineLevelAllocator).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          method = ( |
             | compiler method).
@@ -418,6 +399,14 @@ node is done before at least one of its preds is.\x7fModuleInfo: Module: kleinC1
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         requiredNumberOfOutgoingRcvrAndArgLocations = ( |
+            | 
+            0).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: source-ordering\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          reverseSourceNodesDo: blk = ( |
@@ -435,6 +424,14 @@ node is done before at least one of its preds is.\x7fModuleInfo: Module: kleinC1
         
          setSpecialMode = ( |
             | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sourceLevelAllocator = ( |
+            | 
+            compiler sourceLevelAllocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -586,16 +583,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
-         'Category: allocating\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateLocations = ( |
-            | 
-            resend.allocateLocations.
-            allocator allocateOutgoingRcvrAndArgLocations: rcvrAndArgCountForGeneratedSend.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          areVolatilesVaporized = bootstrap stub -> 'globals' -> 'true' -> ().
@@ -673,7 +660,7 @@ SlotsToOmit: parent.
               vmKit lookupType
                       if:                 lt
                       IsNormalSend:       [vmKit lookupKey delegateeOrMethodHolderForNormalSend]
-                      IsUndirectedResend: [compiler outermostMethodHolder]
+                      IsUndirectedResend: [compiler outermostMethodHolder reflectee]
                       IsDirectedResend:   [delegateeObject]
                       IsDelegatedPerform: [delegateeObject].
 
@@ -754,7 +741,15 @@ SlotsToOmit: parent.
         
          rcvrOrArgValueAt: i = ( |
             | 
-            allocator valueForOutgoingRcvrAndArgAt: i).
+            machineLevelAllocator valueForOutgoingRcvrAndArgAt: i).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         requiredNumberOfOutgoingRcvrAndArgLocations = ( |
+            | 
+            rcvrAndArgCountForGeneratedSend).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
@@ -794,7 +789,7 @@ SlotsToOmit: parent.
         
          valueToGetResultFrom = ( |
             | 
-            allocator valueForIncomingResult).
+            machineLevelAllocator valueForIncomingResult).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -853,15 +848,6 @@ allocation and can reduce register pressure, yielding better code.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractPrimitive' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         isOKInLeafMethod = ( |
-            | 
-            [todo optimization]. "might be true for very simple prims"
-            false).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractPrimitive' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
          isPrimitive = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
@@ -909,11 +895,11 @@ allocation and can reduce register pressure, yielding better code.
             [_NoMapTest. _VariableArguments. _SaveAllNonVolatileRegisters. _NoGCAllowed. _NoSendsAllowed]. "browsing"
             s: selector.
             isSpecialCompilationMode: true.
-            case if: [s = '_NoMapTest'                  ]  Then: [compiler noMapTest:             true]
-                 If: [s = '_VariableArguments'          ]  Then: [compiler setVariableArguments       ]
-                 If: [s = '_SaveAllNonVolatileRegisters']  Then: [compiler saveAllNonVolatileRegisters]
-                 If: [s = '_NoGCAllowed'                ]  Then: [compiler noGCAllowed:           true]
-                 If: [s = '_NoSendsAllowed'             ]  Then: [compiler noSendsAllowed:        true]
+            case if: [s = '_NoMapTest'                  ]  Then: [compiler noMapTest:                         true]
+                 If: [s = '_VariableArguments'          ]  Then: [compiler variableArguments:                 true]
+                 If: [s = '_SaveAllNonVolatileRegisters']  Then: [compiler shouldSaveAllNonVolatileRegisters: true]
+                 If: [s = '_NoGCAllowed'                ]  Then: [compiler noGCAllowed:                       true]
+                 If: [s = '_NoSendsAllowed'             ]  Then: [compiler noSendsAllowed:                    true]
                  Else: [
                         isSpecialCompilationMode: false.
                         case if: [s = '_OnNonLocalReturn:'       ]  Then: [compiler hasOnNonLocalReturn: true]
@@ -984,9 +970,9 @@ SlotsToOmit: parent.
          usedValuesDo: blk = ( |
             | 
             blk value: returnValue.
-            allocator namedValues do: blk. "Since the debugger needs to show them, plus they might be uplevel locals."
-            allocator memoizedBlockValues do: blk. "Since we have to zap them."
-            allocator valueFor_OnNLR_homeScope ifNotNil: blk.
+             sourceLevelAllocator namedValues do: blk. "Since the debugger needs to show them, plus they might be uplevel locals."
+             sourceLevelAllocator valueFor_OnNLR_homeScope ifNotNil: blk.
+            machineLevelAllocator memoizedBlockValues do: blk. "Since we have to zap them."
             self).
         } | ) 
 
@@ -1034,17 +1020,6 @@ SlotsToOmit: parent.
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodes blockLiteral parent.
 '.
             | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
-         'Category: allocating\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateLocations = ( |
-            | 
-            [cloneBlockHomeFrame_stub: fp]. "browsing"
-            resend.allocateLocations.
-            allocator allocateOutgoingRcvrAndArgLocations: 2. "rcvr + arg for cloneBlockHomeFrame_stub:"
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
@@ -1115,7 +1090,7 @@ SlotsToOmit: parent.
         
          initialize = ( |
             | 
-            aaa_tempValue: allocator newValue.
+            aaa_tempValue: sourceLevelAllocator newValue.
             self).
         } | ) 
 
@@ -1123,12 +1098,6 @@ SlotsToOmit: parent.
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          isBlockLiteral = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isOKInLeafMethod = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
@@ -1177,6 +1146,15 @@ SlotsToOmit: parent.
          rcvrAndArgCountForGeneratedSend = ( |
             | 
             "receiver and arg for the call to" [cloneBlockHomeFrame_stub: 0].
+            2).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
+         'Category: allocating\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         requiredNumberOfOutgoingRcvrAndArgLocations = ( |
+            | 
+            "rcvr + arg for" [cloneBlockHomeFrame_stub: fp]. "browsing"
             2).
         } | ) 
 
@@ -1387,7 +1365,7 @@ SlotsToOmit: holderValue parent.
          generateSpecificCode = ( |
             | 
             codeGenerator
-                moveLocation: (allocator locationForConstant: mySlot contents reflectee)
+                moveLocation: (sourceLevelAllocator locationForConstant: mySlot contents reflectee)
                   ToLocation: dataValue location.
             self).
         } | ) 
@@ -1528,6 +1506,62 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
+         'Category: interrupt points\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         interruptPoint = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals klein compiler1 parent prototypes irNodes abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodes interruptPoint.
+
+CopyDowns:
+globals klein compiler1 parent prototypes irNodes abstract. copy 
+SlotsToOmit: parent.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodes interruptPoint parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         definedValuesDo: blk = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateSpecificCode = ( |
+            | 
+            codeGenerator genStackCheck.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         usedValuesDo: blk = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
          'Category: branches\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          label = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'label' -> () ToBe: bootstrap addSlotsTo: (
@@ -1629,7 +1663,7 @@ SlotsToOmit: parent.
             | 
             needsEpilogue ifTrue: [
               codeGenerator moveLocation: returnValue location
-                              ToLocation: allocator locationForOutgoingResult.
+                              ToLocation: sourceLevelAllocator locationForOutgoingResult.
               codeGenerator generateEpilogue.
             ].
             self).
@@ -1853,22 +1887,11 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'primitive' -> 'parent' -> () From: ( | {
-         'Category: allocating data locations\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateLocations = ( |
-            | 
-            resend.allocateLocations.
-            allocator allocateOutgoingRcvrAndArgLocations: rcvrAndArgCountToBeMaterialized.
-            allocator allocateOutgoingRcvrAndArgLocations: numberOfLocationsNeededForTheFailBlockAndItsArguments.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'primitive' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          createRcvrAndArgValuesToMoveTo = ( |
             | 
-            (vector copySize: argumentCount + 1) mapBy: [allocator newValue]).
+            (vector copySize: argumentCount + 1) mapBy: [sourceLevelAllocator newValue]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'primitive' -> 'parent' -> () From: ( | {
@@ -1950,6 +1973,14 @@ name of the primitive.\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: F
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'primitive' -> 'parent' -> () From: ( | {
+         'Category: allocating data locations\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         requiredNumberOfOutgoingRcvrAndArgLocations = ( |
+            | 
+            numberOfLocationsNeededForTheFailBlockAndItsArguments).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'primitive' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          resultLoc = ( |
@@ -1963,7 +1994,7 @@ name of the primitive.\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: F
          resultValue = ( |
             | 
             resultValueForPrimitive ifNil: [
-              resultValueForPrimitive: allocator newValue.
+              resultValueForPrimitive: sourceLevelAllocator newValue.
               resultValueForPrimitive
             ]).
         } | ) 
@@ -2041,9 +2072,9 @@ SlotsToOmit: parent.
         
          initialize = ( |
             | 
-            homeScopeValue: allocator valueFor_OnNLR_homeScope ifNil: [| v |
-              v: allocator newValue.
-              allocator valueFor_OnNLR_homeScope: v.
+            homeScopeValue: sourceLevelAllocator valueFor_OnNLR_homeScope ifNil: [| v |
+              v: sourceLevelAllocator newValue.
+              sourceLevelAllocator valueFor_OnNLR_homeScope: v.
               [aaaaa]. "Hack; I think this won't be necessary after we make this
                         primitive translate to lower-level IR nodes. But for now,
                         gotta make sure the homeScopeValue isn't allocated to the
@@ -2180,13 +2211,13 @@ SlotsToOmit: parent.
                         Since this is not yet implemented, it won\'t work at runtime'
             ].
 
-            sendDescValue: allocator newValue.
-            selectorValue: allocator newValue.
+            sendDescValue: sourceLevelAllocator newValue.
+            selectorValue: sourceLevelAllocator newValue.
             delegateeValue:
               case
-               if: [isDirectedResend  ] Then: [allocator newValue]
-               If: [isUndirectedResend] Then: [allocator valueForConstant: compiler outermostMethodHolder]
-                                        Else: [allocator valueForConstant: 0].
+               if: [isDirectedResend  ] Then: [sourceLevelAllocator newValue]
+               If: [isUndirectedResend] Then: [sourceLevelAllocator valueForConstant: compiler outermostMethodHolder reflectee]
+                                        Else: [sourceLevelAllocator valueForConstant: 0].
 
             [aaaaa]. "This could probably be eliminated if we break down the perform node into multiple nodes."
             recordInterferenceBetweenDefinedValue: sendDescValue And: selectorValue.
@@ -2427,7 +2458,7 @@ SlotsToOmit: parent.
         
          delegateeObject = ( |
             | 
-            ((((reflect: compiler outermostMethodHolder) slotAt: delegatee) contents) lookupSoleSlotNamed: selector) holder reflectee).
+            (((compiler outermostMethodHolder slotAt: delegatee) contents) lookupSoleSlotNamed: selector) holder reflectee).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'send' -> 'parent' -> () From: ( | {
@@ -2437,12 +2468,6 @@ SlotsToOmit: parent.
             | 
             codeGenerator generateSendNode: self.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'send' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isOKInLeafMethod = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'send' -> 'parent' -> () From: ( | {
@@ -2496,12 +2521,13 @@ SlotsToOmit: parent.
          'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          addComment = ( |
-            | "don't add anything before method start sentinel"
+            | 
+            "don't add anything before method start sentinel"
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'start' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          bci = 0.
         } | ) 
@@ -2511,27 +2537,7 @@ SlotsToOmit: parent.
         
          definedValuesDo: blk = ( |
             | 
-            allocator assignableLocalSlots do: [|:s|
-              blk value: allocator valueForSlot: s.
-            ].
-
-            allocator memoizedBlockValues do: blk.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'start' -> 'parent' -> () From: ( | {
-         'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateInitializationForLocals = ( |
-             assignableLocalSlots.
-            | 
-
-            assignableLocalSlots: allocator assignableLocalSlots.
-
-            codeGenerator numberOfLocalsThatNeedToBeInitialized:      assignableLocalSlots size.
-            codeGenerator numberOfLocalsThatDoNotNeedToBeInitialized: 0. "maybe this'll change later"
-
-            codeGenerator generateInitializationForLocals: assignableLocalSlots.
+            machineLevelAllocator memoizedBlockValues do: blk.
             self).
         } | ) 
 
@@ -2540,12 +2546,7 @@ SlotsToOmit: parent.
         
          generateSpecificCode = ( |
             | 
-            codeGenerator generating: 'generatePrologue'                        During: [codeGenerator generatePrologue].
-            codeGenerator generating: 'generateInitializationForLocals'         During: [generateInitializationForLocals].
-            allocator isLeafMethod ifFalse: [
-              codeGenerator generating: 'genStackCheck'                         During: [codeGenerator genStackCheck]
-            ].
-            codeGenerator generating: 'generateInitializationForMemoizedBlocks' During: [codeGenerator generateInitializationForMemoizedBlocks].
+            codeGenerator generatePrologue.
             self).
         } | ) 
 

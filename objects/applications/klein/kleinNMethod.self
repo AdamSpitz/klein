@@ -227,12 +227,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Category: allocated locations\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (0)'
-        
-         nonVolLocalRegCount <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( |
@@ -300,8 +294,7 @@ SlotsToOmit: parent.
         
          frameIfNil: ab = ( |
             | 
-            frame ifNil: [ ^ ab value].
-            frame).
+            frame ifNil: ab).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
@@ -421,12 +414,6 @@ SlotsToOmit: parent.
         
          prototype = ( |
             | klein nmethod).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Category: unmapped\x7fCategory: reusability\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
-        
-         reusabilityConditions.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {

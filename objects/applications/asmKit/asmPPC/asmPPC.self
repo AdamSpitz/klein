@@ -275,12 +275,6 @@ Used for testing.\x7fModuleInfo: Module: asmPPC InitialContents: FollowSlot\x7fV
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> () From: ( | {
          'Category: caches\x7fModuleInfo: Module: asmPPC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllRegisterLocations <- bootstrap stub -> 'globals' -> 'nil' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> () From: ( | {
-         'Category: caches\x7fModuleInfo: Module: asmPPC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
          cachedAllRegisters <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 

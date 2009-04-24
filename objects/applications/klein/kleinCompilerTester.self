@@ -33,13 +33,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> () From: ( | {
-         'Comment: To help debug the compiler:
-When a test fails, you can look here.\x7fModuleInfo: Module: kleinCompilerTester InitialContents: InitializeToExpression: (nil)'
-        
-         lastCompiler.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinCompilerTester InitialContents: FollowSlot'
         
          parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> 'parent' -> () From: ( |
@@ -199,13 +192,13 @@ When a test fails, you can look here.\x7fModuleInfo: Module: kleinCompilerTester
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: kleinCompilerTester InitialContents: FollowSlot\x7fVisibility: private'
         
-         compile: aSlot For: arch OuterNMethods: onms = ( |
+         compile: aSlot For: arch LexicalParentCompiler: lpc = ( |
              c.
             | 
             c: compilerPrototype
                         copyForSlot: aSlot
                                Self: asMirror
-                      OuterNMethods: onms
+              LexicalParentCompiler: lpc
                        Architecture: arch
                              Oracle: compilerPrototype oracleThatCannotDoEagerRelocation
                               Debug: true.
@@ -254,15 +247,16 @@ When a test fails, you can look here.\x7fModuleInfo: Module: kleinCompilerTester
          'Category: compiling\x7fModuleInfo: Module: kleinCompilerTester InitialContents: FollowSlot\x7fVisibility: private'
         
          compileSlots: slots For: arch = ( |
+             lastCompiler.
              outerNMethods.
             | 
             outerNMethods: list copyRemoveAll.
 
             slots do: [|:slot. compiler|
               compiler: 
-                      compile: slot 
-                          For: arch 
-                OuterNMethods: outerNMethods asVector.
+                              compile: slot 
+                                  For: arch 
+                LexicalParentCompiler: lastCompiler.
 
               outerNMethods addLast: compiler buildNMethod.
               lastCompiler: compiler.
@@ -3145,7 +3139,7 @@ SlotsToOmit: parent prototype.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTesterMorph' -> 'parent' -> () From: ( | {
          'Category: menuing\x7fModuleInfo: Module: kleinCompilerTester InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         defaultButtonHolder.
+         defaultButtonHolder <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTesterMorph' -> 'parent' -> () From: ( | {

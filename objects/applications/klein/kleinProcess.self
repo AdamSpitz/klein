@@ -43,7 +43,7 @@ SlotsToOmit: parent.
         
          byteMapBaseRegister = ( |
             | 
-            protoAllocatorForMyPlatform byteMapBaseRegister).
+            protoAllocatorForMyPlatform registerUsage byteMapBaseRegister).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
@@ -176,7 +176,7 @@ SlotsToOmit: parent.
         
          objectAddressesBaseRegister = ( |
             | 
-            protoAllocatorForMyPlatform objectAddressesBaseRegister).
+            protoAllocatorForMyPlatform registerUsage objectAddressesBaseRegister).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
@@ -222,8 +222,7 @@ SlotsToOmit: parent.
         
          protoAllocatorForMyPlatform = ( |
             | 
-            [ppc. sparc]. "browsing"
-            architecture sendTo: myVMKit compiler1 prototypes allocators).
+            myVMKit compiler1 prototypes machineLevelAllocators prototypeForArchitecture: architecture).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {
@@ -241,7 +240,7 @@ SlotsToOmit: parent.
 
             protoAllocator: protoAllocatorForMyPlatform.
             (activationThatWasEdited receiverAndArgumentOopsIfFail: [|:e| ^ fb value: e]) do: [|:rcvrOrArgOop. :i|
-              regContentsByRegName at: (protoAllocator outgoingRcvrOrArgRegisterAt: i) name Put: rcvrOrArgOop.
+              regContentsByRegName at: (protoAllocator registerUsage outgoingRcvrOrArgRegisterAt: i) name Put: rcvrOrArgOop.
             ].
 
             regContentsByRegName).
@@ -423,7 +422,7 @@ SlotsToOmit: parent.
         
          setRcvrOrArg: i To: oop = ( |
             | 
-            setContentsOfRegister: (protoAllocatorForMyPlatform outgoingRcvrOrArgRegisterAt: i) name
+            setContentsOfRegister: (protoAllocatorForMyPlatform registerUsage outgoingRcvrOrArgRegisterAt: i) name
                                To: oop.
             self).
         } | ) 
@@ -480,7 +479,7 @@ SlotsToOmit: parent.
         
          spLimitRegister = ( |
             | 
-            protoAllocatorForMyPlatform spLimitRegister).
+            protoAllocatorForMyPlatform registerUsage spLimitRegister).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'foreignProcess' -> 'parent' -> () From: ( | {

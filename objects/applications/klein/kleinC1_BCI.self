@@ -72,12 +72,14 @@ SlotsToOmit: parent.
          'Category: interpreting particular codes, return bc by default\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot'
         
          accessLocal: bc = ( |
+             localValue.
             | 
+            localValue: sourceLevelAllocator valueForSlot: bc slot.
             bc isWrite ifTrue: [
-              move: popStackValue To: allocator valueForLocalBC: bc.
+              move: popStackValue To: localValue.
               pushSelf: bc.
             ] False: [
-              move: (allocator valueForLocalBC: bc) To: pushStackValue.
+              move: localValue To: pushStackValue.
             ].
             bc).
         } | ) 
@@ -87,9 +89,8 @@ SlotsToOmit: parent.
         
          addNode: n = ( |
             | 
-            allocator isLeafMethod && [n isOKInLeafMethod not] ifTrue: [
-              myCompiler backoutBlock value: 'this kind of node not allowed in leaf method'.
-            ].
+            [aaaaa]. "Duplicated. Bleh."
+            machineLevelAllocator allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations.
 
             lastNode ifNotNil: [
               n sourcePred: lastNode.
@@ -110,19 +111,13 @@ SlotsToOmit: parent.
             n setSpecialMode.
             n isSpecialCompilationMode ifTrue: [^ addNode: n].
 
+            machineLevelAllocator allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations.
+
             n rcvrAndArgValuesToMoveTo with: rcvrAndArgs Do: [|:dstV. :srcV| move: srcV To: dstV].
             addNode: n.
             move: n valueToGetResultFrom To: result.
 
             currentBC).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
-        
-         allocator = ( |
-            | 
-            myCompiler allocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -162,6 +157,15 @@ SlotsToOmit: parent.
          branchToLabel: lbl = ( |
             | 
             addNode: newBranchNodeForLabel: lbl).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: comments\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         comment: msg = ( |
+            | 
+            [aaaaa]. "Do this."
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -237,9 +241,9 @@ SlotsToOmit: parent.
             | 
             case
               if: [s isMethod    ] Then: raiseError
-              If: [s isAssignable] Then: [dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: (vector copyAddFirst: allocator valueForSelf)                                  Result: pushStackValue]
-              If: [s isAssignment] Then: [dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: (allocator valueForSelf & (allocator valueForIncomingRcvrOrArgAt: 1)) asVector Result: pushStackValue]
-                                   Else: [dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: (vector copyAddFirst: allocator valueForSelf)                                  Result: pushStackValue]).
+              If: [s isAssignable] Then: [dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: (vector copyAddFirst: sourceLevelAllocator valueForSelf)                                             Result: pushStackValue]
+              If: [s isAssignment] Then: [dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: (sourceLevelAllocator valueForSelf & (sourceLevelAllocator valueForIncomingRcvrOrArgAt: 1)) asVector Result: pushStackValue]
+                                   Else: [dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: (vector copyAddFirst: sourceLevelAllocator valueForSelf)                                             Result: pushStackValue]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -250,11 +254,11 @@ SlotsToOmit: parent.
             case
               if: [s isMethod    ] Then: raiseError
               If: [s isAssignable] Then: [| holderValue |
-                                          holderValue: allocator newValue.
+                                          holderValue: sourceLevelAllocator newValue.
                                           moveHolderOfDataSlot: s InReceiverOfType: rcvrMir Value: (rcvrAndArgs at: 0) Into: holderValue.
                                           addNode: irNodeProtos dataSlotAccess copyBC: currentBC Compiler: myCompiler Slot: s Data: result Holder: holderValue]
               If: [s isAssignment] Then: [| holderValue |
-                                          holderValue: allocator newValue.
+                                          holderValue: sourceLevelAllocator newValue.
                                           moveHolderOfDataSlot: s InReceiverOfType: rcvrMir Value: (rcvrAndArgs at: 0) Into: holderValue.
                                           addNode: irNodeProtos dataSlotAssignment copyBC: currentBC Compiler: myCompiler Slot: s Data: (rcvrAndArgs at: 1) Holder: holderValue.
                                           move: (rcvrAndArgs at: 0) To: result]
@@ -305,8 +309,33 @@ SlotsToOmit: parent.
          generateIf: v Is: oop ThenBranchToBCI: bci = ( |
             | 
             generateExit: [|:exitFork|
-              generateIf: v DoesNotEqual: (allocator valueForConstant: oop) ThenBranchTo: exitFork.
+              generateIf: v DoesNotEqual: (sourceLevelAllocator valueForConstant: oop) ThenBranchTo: exitFork.
               branchToBCI: bci.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: prologue and epilogue\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateInitializationForLocals = ( |
+             firstTime <- bootstrap stub -> 'globals' -> 'true' -> ().
+             nilMirror.
+             nilValue.
+            | 
+            sourceLevelAllocator assignableLocalSlots do: [|:s. localValue|
+              firstTime ifTrue: [comment: 'initializing locals'. nilMirror: nil asMirror. firstTime: false].
+              localValue: sourceLevelAllocator valueForSlot: s.
+              s contents = nilMirror ifFalse: [
+                moveConstantReflecteeOf: s contents To: localValue.
+              ]
+              True: [
+                nilValue ifNil: [
+                  nilValue: sourceLevelAllocator newValue.
+                  loadNilInto: nilValue.
+                ].
+                move: nilValue To: localValue.
+              ].
             ].
             self).
         } | ) 
@@ -362,8 +391,6 @@ SlotsToOmit: parent.
         
          justReachedBCI: bci = ( |
             | 
-            [aaaaa]. "It's stupid that I have two different mechanisms for resolving these."
-
             [(stackValuesByBCI at: bci) isNil] assert.
               stackValuesByBCI at: bci Put: currentStackValues asVector.
 
@@ -391,6 +418,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         loadNilInto: dstValue = ( |
+            | 
+            moveConstant: nil To: dstValue NameForComment: 'nil'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
          'Category: prologue and epilogue\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          localReturn = ( |
@@ -399,6 +435,14 @@ SlotsToOmit: parent.
             irNodesByBCI ifNotNil: [|:v| justReachedBCI: v lastKey].
             addNode: irNodeProtos localReturn copyBC: nil Compiler: myCompiler Value: popStackValue.
             nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         machineLevelAllocator = ( |
+            | 
+            myCompiler machineLevelAllocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -419,7 +463,24 @@ SlotsToOmit: parent.
         
          moveConstant: o To: dst = ( |
             | 
-            move: (allocator valueForConstant: o) To: dst).
+            move: (sourceLevelAllocator valueForConstant: o) To: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         moveConstant: o To: dst NameForComment: n = ( |
+            | 
+            [aaaaa]. "Make it remember the name for the comment."
+            moveConstant: o To: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         moveConstantReflecteeOf: m To: dst = ( |
+            | 
+            moveConstant: m reflectee To: dst).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -540,8 +601,8 @@ SlotsToOmit: parent.
              popped.
             | 
             popped: list copyRemoveAll.
-            bc popCount         do:   [popped addFirst: popStackValue         ].
-            bc isSelfImplicit ifTrue: [popped addFirst: allocator valueForSelf].
+            bc popCount         do:   [popped addFirst: popStackValue                    ].
+            bc isSelfImplicit ifTrue: [popped addFirst: sourceLevelAllocator valueForSelf].
             popped).
         } | ) 
 
@@ -560,6 +621,8 @@ SlotsToOmit: parent.
             | 
             addNode: irNodeProtos start copyBC: nil Compiler: myCompiler.
             irNodesByBCI ifNotNil: [justReachedBCI: 0].
+            generateInitializationForLocals.
+            machineLevelAllocator isLeafMethod ifFalse: [addNode: irNodeProtos interruptPoint copyBC: nil Compiler: myCompiler].
             nil).
         } | ) 
 
@@ -575,7 +638,7 @@ SlotsToOmit: parent.
               nextBC isPop ifTrue: [
                 "Don't bother generating any IR nodes for this BC, and skip the pop too.
                  Also, no need to compile an nmethod for the block."
-                myCompiler compilationRequester dontBotherCompilingBlockMirror: mir.
+                myCompiler willNotPushBlockMirror: mir.
                 pc: pc succ.
                 ^ bc
               ].
@@ -584,8 +647,8 @@ SlotsToOmit: parent.
             mir isReflecteeBlock ifFalse: [
               moveConstant: bc oopToPush To: pushStackValue.
             ] True: [| literalValue. memoValue |
-              literalValue: allocator valueForConstant: bc oopToPush.
-              memoValue: allocator valueForMemoizedBlockMirror: mir.
+              literalValue: sourceLevelAllocator valueForConstant: bc oopToPush.
+              memoValue: machineLevelAllocator valueForMemoizedBlockMirror: mir.
               addNode: irNodeProtos blockLiteral copyBC: bc
                                                Compiler: myCompiler
                                                  Source: literalValue
@@ -603,7 +666,7 @@ SlotsToOmit: parent.
         
          pushSelf: bc = ( |
             | 
-            move: allocator valueForSelf To: pushStackValue).
+            move: sourceLevelAllocator valueForSelf To: pushStackValue).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -612,7 +675,7 @@ SlotsToOmit: parent.
          pushStackValue = ( |
              v.
             | 
-            v: allocator newStackValue.
+            v: sourceLevelAllocator newStackValue.
             currentStackValues addLast: v.
             v).
         } | ) 
@@ -674,13 +737,23 @@ SlotsToOmit: parent.
          slotToInlineForSendBC: bc = ( |
              slot.
             | 
-            shouldDoInlining    ifFalse: [^ nil].
-            method isBlockMethod ifTrue: [^ nil]. "Inlining things in block methods would require customizing the block, which we don't do yet."
-            bc isSelfExplicit    ifTrue: [^ nil]. "Don't know how to inline non-self-sends yet."
-            slot: myCompiler compilationRequester lookupSoleSlotOnSelfForBC: bc.
-            slot                  ifNil: [^ nil].
-            slot isMethod        ifTrue: [^ nil]. "Don't know how to inline methods yet."
+            shouldDoInlining             ifFalse: [^ nil].
+            method isReflecteeBlockMethod ifTrue: [^ nil]. "Inlining things in block methods would require customizing the block, which we don't do yet."
+            bc isSelfExplicit             ifTrue: [^ nil]. "Don't know how to inline non-self-sends yet."
+
+            slot: bc asMessage lookupSoleSlotForCompiler: myCompiler.
+
+            slot                           ifNil: [^ nil].
+            slot isMethod                 ifTrue: [^ nil]. "Don't know how to inline methods yet."
             slot).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sourceLevelAllocator = ( |
+            | 
+            myCompiler sourceLevelAllocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {

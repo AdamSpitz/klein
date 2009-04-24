@@ -28,20 +28,6 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> () From: ( | {
          'Category: helpers\x7fCategory: iterating\x7fCategory: registers\x7fModuleInfo: Module: asmFrame InitialContents: FollowSlot\x7fVisibility: public'
         
-         allRegisterLocations = ( |
-            | 
-            cachedAllRegisterLocations ifNil: [| regLocProto |
-              [todo cleanup]. "I don't like that this says klein instead of vmKit or something.
-                               Maybe this cache should live elsewhere? -- Adam, Mar. 2009"
-              regLocProto: klein locations register.
-              cachedAllRegisterLocations: allRegisters copyMappedBy: [|:r| regLocProto copyForRegister: r].
-              cachedAllRegisterLocations
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> () From: ( | {
-         'Category: helpers\x7fCategory: iterating\x7fCategory: registers\x7fModuleInfo: Module: asmFrame InitialContents: FollowSlot\x7fVisibility: public'
-        
          allRegisters = ( |
             | 
             cachedAllRegisters ifNil: [

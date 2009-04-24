@@ -208,12 +208,6 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'sparc' -> () From: ( | {
          'Category: caches\x7fModuleInfo: Module: asmSPARC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllRegisterLocations.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'sparc' -> () From: ( | {
-         'Category: caches\x7fModuleInfo: Module: asmSPARC InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
          cachedAllRegisters.
         } | ) 
 

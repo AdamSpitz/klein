@@ -7,6 +7,76 @@ See the LICENSE file for license information.
 
  '-- Module body'
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isConstant = ( |
+            | 
+            [aaaaa]. "Maybe rename something so that this makes sense."
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isRegister = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationTypeName = 'register'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: accessing oop\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopInActivation: a Frame: f IfFail: fb = ( |
+            | 
+            a oopInRegister: self IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         register = ( |
+            | 
+            [aaaaa]. "For compatibility with the old register locations."
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         spOffsetForNMethod: aCodeGenerator = ( |
+            | 
+            number negate).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         tell: aCodeGenerator ToLoadMeToRegister: r = ( |
+            | 
+            aCodeGenerator loadRegisterLocation: self ToRegister: r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         tell: aCodeGenerator ToStoreMeFromRegister: r = ( |
+            | 
+            aCodeGenerator storeRegister: r ToRegisterLocation: self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'constants' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         vmKit = ( |
+            | 
+            klein).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> () From: ( | {
          'Category: locations\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -42,22 +112,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         canBeZapped = ( |
-            | 
-            isConstant not).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForUplevelAccess = ( |
-            | 
-            error: 'uplevel access to this type of location not supported').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          hash = ( |
@@ -73,50 +127,15 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isIncomingMemoryArgument = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isNonVolMemoryLocal = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isOffsetFromOtherLocation = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isOutgoingMemoryArgument = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
          isRegister = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isStackPointer = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isUnusedValue = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isVolatile: aLocalsAllocator = ( |
-            | childMustImplement).
+         locationForUplevelAccessIn: aSourceLevelAllocator = ( |
+            | 
+            error: 'uplevel access to this type of location not supported').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -188,23 +207,15 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractStackFrameMemoryWord' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyForUplevelAccess = ( |
-            | copyLexicalLevel: lexicalLevel succ).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractStackFrameMemoryWord' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
          copyLexicalLevel: ll = ( |
             | copy lexicalLevel: ll).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractStackFrameMemoryWord' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isVolatile: aLocalsAllocator = ( |
-            | 
-            false).
+         locationForUplevelAccessIn: aSourceLevelAllocator = ( |
+            | copyLexicalLevel: lexicalLevel succ).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractStackFrameMemoryWord' -> 'parent' -> () From: ( | {
@@ -239,6 +250,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractMemoryArgument' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         = x = ( |
+            | 
+            (locationTypeName = x locationTypeName)
+            && [(rcvrAndArgNo = x rcvrAndArgNo)
+            && [ lexicalLevel = x lexicalLevel ]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractMemoryArgument' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          copyRcvrAndArgNo: i = ( |
@@ -252,6 +273,16 @@ SlotsToOmit: parent.
          copyRcvrAndArgNo: i LexicalLevel: ll = ( |
             | 
             (copyLexicalLevel: ll) rcvrAndArgNo: i).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractMemoryArgument' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hash = ( |
+            | 
+            locationTypeName hash
+             ^^ rcvrAndArgNo hash
+             ^^ lexicalLevel hash).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstractMemoryArgument' -> 'parent' -> () From: ( | {
@@ -313,13 +344,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForUplevelAccess = ( |
-            | self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          hash = ( |
@@ -333,11 +357,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isVolatile: aLocalsAllocator = ( |
-            | 
-            false).
+         locationForUplevelAccessIn: aSourceLevelAllocator = ( |
+            | self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationTypeName = 'constant'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
@@ -396,29 +425,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'incomingMemoryArgument' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         = x = ( |
-            | 
-            x isIncomingMemoryArgument
-              && [(rcvrAndArgNo = x rcvrAndArgNo)
-              && [ lexicalLevel = x lexicalLevel ]]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'incomingMemoryArgument' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         hash = ( |
-            | 
-            'incomingMemoryArgument' hash
-              ^^ rcvrAndArgNo hash
-              ^^ lexicalLevel hash).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'incomingMemoryArgument' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isIncomingMemoryArgument = bootstrap stub -> 'globals' -> 'true' -> ().
+         locationTypeName = 'incomingMemoryArgument'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'incomingMemoryArgument' -> 'parent' -> () From: ( | {
@@ -487,9 +496,9 @@ SlotsToOmit: parent.
         
          = x = ( |
             | 
-            x isNonVolMemoryLocal
-              && [(index       = x index)
-              && [lexicalLevel = x lexicalLevel]]).
+            (locationTypeName = x locationTypeName)
+             && [(index       = x index)
+             && [lexicalLevel = x lexicalLevel]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'nonVolMemoryLocal' -> 'parent' -> () From: ( | {
@@ -512,7 +521,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'nonVolMemoryLocal' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isNonVolMemoryLocal = bootstrap stub -> 'globals' -> 'true' -> ().
+         locationTypeName = 'nonVolMemoryLocal'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'nonVolMemoryLocal' -> 'parent' -> () From: ( | {
@@ -603,9 +612,9 @@ SlotsToOmit: parent.
         
          = x = ( |
             | 
-            x isOffsetFromOtherLocation
-              && [(offset  = x offset)
-              && [ baseLoc = x baseLoc ]]).
+            (locationTypeName = x locationTypeName)
+                 && [(offset  = x offset)
+                 && [ baseLoc = x baseLoc ]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'offsetFromOtherLocation' -> 'parent' -> () From: ( | {
@@ -621,7 +630,7 @@ SlotsToOmit: parent.
         
          copyForOffset: o FromRegister: r = ( |
             | 
-            copyForOffset: o FromLocation:  vmKit locations register copyForRegister: r).
+            copyForOffset: o FromLocation: r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'offsetFromOtherLocation' -> 'parent' -> () From: ( | {
@@ -637,7 +646,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'offsetFromOtherLocation' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isOffsetFromOtherLocation = bootstrap stub -> 'globals' -> 'true' -> ().
+         locationTypeName = 'offsetFromOtherLocation'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'offsetFromOtherLocation' -> 'parent' -> () From: ( | {
@@ -696,29 +705,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'outgoingMemoryArgument' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         = x = ( |
-            | 
-            x isOutgoingMemoryArgument
-              && [(rcvrAndArgNo = x rcvrAndArgNo)
-              && [ lexicalLevel = x lexicalLevel ]]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'outgoingMemoryArgument' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         hash = ( |
-            | 
-            'outgoingMemoryArgument' hash
-              ^^ rcvrAndArgNo hash
-              ^^ lexicalLevel hash).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'outgoingMemoryArgument' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isOutgoingMemoryArgument = bootstrap stub -> 'globals' -> 'true' -> ().
+         locationTypeName = 'outgoingMemoryArgument'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'outgoingMemoryArgument' -> 'parent' -> () From: ( | {
@@ -749,119 +738,6 @@ SlotsToOmit: parent.
          tell: aCodeGenerator ToStoreMeFromRegister: r = ( |
             | 
             aCodeGenerator storeRegister: r ToOutgoingMemoryArgumentLocation: self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         register = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             globals klein locations abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein locations register.
-
-CopyDowns:
-globals klein locations abstract. copy 
-SlotsToOmit: parent.
-
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein locations register parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         = x = ( |
-            | x isRegister && [register = x register]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForRegister: aReg = ( |
-            | 
-            copy register: aReg).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         hash = ( |
-            | register hash).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isRegister = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isVolatile: aLocalsAllocator = ( |
-            | 
-            aLocalsAllocator isRegisterVolatile: register).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: accessing oop\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         oopInActivation: a Frame: f IfFail: fb = ( |
-            | 
-            a oopInRegister: register IfFail: fb).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: saving location info\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         spOffsetForNMethod: aCodeGenerator = ( |
-            | 
-            register number negate).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: printing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         statePrintString = ( |
-            | 
-            register ifNil: [''] IfNotNil: [register printString]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         tell: aCodeGenerator ToLoadMeToRegister: r = ( |
-            | 
-            aCodeGenerator loadRegisterLocation: self ToRegister: r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> 'parent' -> () From: ( | {
-         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         tell: aCodeGenerator ToStoreMeFromRegister: r = ( |
-            | 
-            aCodeGenerator storeRegister: r ToRegisterLocation: self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'register' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: InitializeToExpression: (nil)'
-        
-         register.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> () From: ( | {
@@ -900,7 +776,7 @@ SlotsToOmit: parent.
         
          = x = ( |
             | 
-            x isStackPointer && [lexicalLevel = x lexicalLevel]).
+            (locationTypeName = x locationTypeName) && [lexicalLevel = x lexicalLevel]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
@@ -921,15 +797,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
-         isStackPointer = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isVolatile: aLocalsAllocator = ( |
-            | 
-            false).
+         locationTypeName = 'stackPointer'.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'stackPointer' -> 'parent' -> () From: ( | {
@@ -945,84 +813,6 @@ SlotsToOmit: parent.
             | 
             aCodeGenerator moveStackPointerForLexicalLevel: lexicalLevel
                                                 ToRegister: r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         unusedValue = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             globals klein locations abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein locations unusedValue.
-
-CopyDowns:
-globals klein locations abstract. copy 
-SlotsToOmit: parent.
-
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein locations unusedValue parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         = x = ( |
-            | 
-            x isUnusedValue).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         hash = ( |
-            | 
-            'unusedValue' hash).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isUnusedValue = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isVolatile: aLocalsAllocator = ( |
-            | 
-            false).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'abstract' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         tell: aCodeGenerator ToLoadMeToRegister: r = ( |
-            | 
-            error: 'Should never need this value').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'unusedValue' -> 'parent' -> () From: ( | {
-         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         tell: aCodeGenerator ToStoreMeFromRegister: r = ( |
-            | 
-            "Unused--do nothing, dmu 10/04"
-            aCodeGenerator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

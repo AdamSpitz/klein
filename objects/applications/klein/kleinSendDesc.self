@@ -89,7 +89,7 @@ See the LICENSE file for license information.
         
          locationRepresentedByBit: i = ( |
             | 
-            locations register copyForRegister: myAssemblerSystem operands gprFor: i).
+            myAssemblerSystem operands gprFor: i).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'ppc' -> 'gcMaskLayout' -> () From: ( | {

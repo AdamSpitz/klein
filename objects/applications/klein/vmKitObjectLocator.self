@@ -1184,7 +1184,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         
          asAddressForObjectLocator: objectLocator IfInvalid: fb = ( |
             | 
-            fb value: 'unallocated').
+            fb value: 'OID is unallocated').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'smallInt' -> () From: ( | {
