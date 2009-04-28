@@ -1002,7 +1002,7 @@ See the LICENSE file for license information.
             s: (() _Mirror copyAt: 'doit' PutContents: m) slotAt: 'doit'.
 
             c: myVM compilerPrototype
-                        copyForSlot: s
+                     copyForContext: (myVM compilerPrototype prototypes compilationContext copyForSlot: s)
                        Architecture: myVM architecture
                              Oracle: myVM image
                               Debug: true.

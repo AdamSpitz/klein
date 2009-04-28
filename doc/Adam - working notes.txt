@@ -71,14 +71,12 @@ So it looks like the deal is:
 
 That doesn't look so scary. And since we don't have source-level single-stepping or runtime changes yet anyway, I won't be breaking anything if I just implement inlining and make sure that the debugger can display stuff right. Cool!
 
-First step is just to create the scopeDesc info.
-
 ----
 
-So now I've split up the machine-level and source-level allocators. Good! What next?
+Inlining plan:
 
-OK, so when we inline a call to a method, what's different?
-
-  - Instead of moving stuff to the machine-level outgoing locations, we've gotta just move it to some new values that we create to hold the scope's incoming rcvr+args. (And those values have to be located in memory if the inlined scope has blocks.) And the scope has to have a valueForOutgoingResult too. Basically just the same as for primitives.
-  - The incoming args still need to be stored in memory for uplevel access, though, right?
-  - Just gotta call generateInitializationForLocals.
+  - Make dynamic compilation work inside Klein (even if it's really slow). (Shouldn't be too hard - maybe make the sendMessage_stub backpatch to call a lookupSlot_stub or something, which can be based on a generalized version of the code in compileSlotOn:Named:).
+  - Turn static inlining off, except for a few specific slots that the exportPolicy can specify. Then figure out which stuff needs to be pre-inlined to make the system ramp up quickly enough.
+  - Inline methods containing blocks. (The problem is that the block needs to be customized for each type of enclosing nmethod, since the enclosing nmethod might put the uplevel values in different places.) How about I have each nmethod keep a vector of the blocks that it uses (and clone each one of them from the original block literal)? And then add a constant VM slot to every block, containing a pointer to its value nmethod (or maybe to the enclosing nmethod)? (See forReflecteeOf:AddAllMappedVMSlotsTo:Mapper:.) That'll make sure that each block has a different map. Then I've just gotta make sure each one gets the right nmethod in its nmethod cache.
+  - Inline other sends where we know the receiver type, not just self-sends.
+  - In particular, inline block methods, so that we can eliminate the block. (We should have the lexicalParentAllocator lying around in the compiler object somewhere, since we're not gonna be inlining a block unless we've also inlined its lexical parent.)

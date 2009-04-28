@@ -727,6 +727,727 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         translatorMixin = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein primitives translatorMixin.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: failure handling\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         failureHandler = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein primitives translatorMixin failureHandler.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         cg.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         dstReg.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         endLabel.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         fbReg.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (\'\')\x7fVisibility: private'
+        
+         node <- ''.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein primitives translatorMixin failureHandler parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assert: reg1 Equals: reg2 ErrorMessage: m = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              cg generateIf: reg1 Equals: reg2 ThenBranchTo: okLabel.
+              fail: m.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assert: reg HasAnyMapTypeIn: maps = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object generateIf: reg
+                                   Temp: dstReg
+                        HasAnyMapTypeIn: maps
+                           ThenBranchTo: okLabel
+                                   With: cg.
+              mapTypeError: maps.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assert: reg HasMapType: map = ( |
+            | 
+            assert: reg HasAnyMapTypeIn:  vector copyAddFirst: map).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assert: smiReg IsBetweenZeroAnd: max = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              cg generateIf: smiReg IsBetweenZeroAnd: max ThenBranchTo: okLabel.
+              badValueError: 'a value between 0 and ', max printString, ' inclusive'
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertBlock: reg = ( |
+            | 
+            assert: reg HasMapType: maps blockMap).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertBounds: indexSmiReg InByteVector: byteVectReg = ( |
+            | 
+            cg generateIf: [|:trueFork|
+              cg byteVectorLayout generateFor:  byteVectReg
+                                      IfIndex:  indexSmiReg
+                                         Temp:  dstReg
+                    IsOutOfBoundsThenBranchTo:  trueFork
+                                         With:  cg.
+            ] Then: [
+              boundsError.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertBounds: indexSmiReg InVector: objVectReg = ( |
+            | 
+            cg generateIf: [|:trueFork|
+              layouts objVector generateFor:  objVectReg
+                                    IfIndex:  indexSmiReg
+                                       Temp:  dstReg
+                  IsOutOfBoundsThenBranchTo:  trueFork
+                                       With:  cg.
+            ] Then: [
+              boundsError.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertByteVector: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              cg withTemporaryRegisterDo: [|:tempReg|
+                cg byteVectorLayout
+                                generateIf: reg
+                                      Temp: tempReg
+                  IsByteVectorThenBranchTo: okLabel
+                                      With: cg.
+              ].
+              typeError: 'byteVector'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertBytesPart: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object generateIf: reg
+                                   Temp: dstReg
+                IsBytesPartThenBranchTo: okLabel
+                                   With: cg.
+              typeError: 'bytesPart'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertFloat: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object
+                         generateIf: reg
+                               Temp: dstReg
+                IsFloatThenBranchTo: okLabel
+                               With: cg.
+              typeError: 'float'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertImmediate: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object
+                         generateIf: reg
+                               Temp: dstReg
+                  IsSmiThenBranchTo: okLabel
+                               With: cg.
+
+              layouts object
+                         generateIf: reg
+                               Temp: dstReg
+                IsFloatThenBranchTo: okLabel
+                               With: cg.
+
+              typeError: 'immediate'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertInt32: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object generateIf: reg
+                                   Temp: dstReg
+                      IsSmiThenBranchTo: okLabel
+                                   With: cg.
+
+              cg byteVectorLayout generateIf: reg
+                                        Temp: dstReg
+                    IsByteVectorThenBranchTo: okLabel
+                                        With: cg.
+
+              typeError: 'int32'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertInteger: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object
+                         generateIf: reg
+                               Temp: dstReg
+                  IsSmiThenBranchTo: okLabel
+                               With: cg.
+              typeError: 'integer'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertMap: reg = ( |
+            | 
+            assert: reg HasAnyMapTypeIn: ( maps mapMap
+                                         & maps outerActivationMapMap
+                                         & maps blockActivationMapMap) asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertMemoryObject: reg = ( |
+            | 
+            cg generateExit: [|:okLabel|
+              layouts object
+                                 generateIf: reg
+                                       Temp: dstReg
+                 IsMemoryObjectThenBranchTo: okLabel
+                                       With: cg.
+              typeError: 'memoryObject'.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertNMethod: reg = ( |
+            | 
+            assert: reg HasAnyMapTypeIn:  vector copyAddFirst: maps nmethodMap).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertNoOverflow: operationName During: aBlock = ( |
+            | 
+            cg generateIf: [|:trueFork|
+              cg generateIfIntegerOverflowDuring: aBlock ThenBranchTo: trueFork.
+            ] Then: [
+              overflowError: operationName
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertNotMarkInDstReg = ( |
+            | 
+            cg generateIf: [|:trueFork|
+              cg withTemporaryRegisterDo: [|:tempReg|
+                layouts object generateIf: dstReg
+                                     Temp: tempReg
+                       IsMarkThenBranchTo: trueFork
+                                     With: cg.
+              ].
+            ] Then: [
+              markAccessError.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertValidNonMarkTag: tagSmiReg = ( |
+            | 
+            cg generateIfTag: tagSmiReg
+                      IsMark: [markAccessError]
+                IsInvalidTag: [badValueError: 'a valid non-mark tag'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         assertVector: reg = ( |
+            | 
+            assert: reg HasAnyMapTypeIn: ( maps objVectorMap
+                                         & maps mapMap
+                                         & maps outerActivationMapMap
+                                         & maps blockActivationMapMap) asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyFor: aCodeGenerator Node: n Receiver: r FailBlock: f Dest: d = ( |
+            | 
+            (((((copy cg: aCodeGenerator) node: n) rcvrReg: r) fbReg: f) dstReg: d) endLabel: aCodeGenerator newLabel).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         errors* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'primitives' -> 'errorsMixin' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: errors\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         fail: errorMessage = ( |
+            | 
+            cg sendErrorTo: fbReg PutResultInto: dstReg Name: node selector Message: errorMessage Node: node.
+            cg branchToLabel: endLabel.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         layouts = ( |
+            | 
+            vmKit layouts).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         maps = ( |
+            | 
+            vmKit maps).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         vmKit = ( |
+            | 
+            "Should we do this statically instead? -- Adam, 2/06"
+            cg vmKit).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         rcvrReg.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: materializing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         materializeLocsAndFailureHandlerOf: node AndDo: blk = ( |
+            | 
+            materializeLocsAndFailureHandlerVectorOf: node AndDo: [|:argsToPassIn|
+              pass: argsToPassIn Into: blk.
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: materializing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         materializeLocsAndFailureHandlerVectorOf: node AndDo: blk = ( |
+            | 
+            materializeDestAndArgsOf: node AndDo: [|:dstReg. :rcvrAndArgRegs. rcvrReg. fbReg. hasExplicitFailBlock|
+              rcvrAndArgRegs size > 5  ifTrue: [error: 'unimplemented'].
+              hasExplicitFailBlock: 'IfFail:' isSuffixOf: node selector.
+              rcvrReg: rcvrAndArgRegs first.
+              fbReg: hasExplicitFailBlock ifTrue: [rcvrAndArgRegs last] False: [rcvrReg].
+              try: [|:fh. argsToPassIn|
+                argsToPassIn:  rcvrAndArgRegs.
+                hasExplicitFailBlock ifTrue: [argsToPassIn: argsToPassIn copyWithoutLast].
+                argsToPassIn: argsToPassIn copyAddLast: fh.
+                argsToPassIn: argsToPassIn copyAddFirst: dstReg.
+                blk value: argsToPassIn.
+              ] Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: materializing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         pass: argsToPassIn Into: blk = ( |
+            | 
+            blk value: (argsToPassIn at: 0              )
+                 With: (argsToPassIn at: 1              )
+                 With: (argsToPassIn at: 2 IfAbsent: nil)
+                 With: (argsToPassIn at: 3 IfAbsent: nil)
+                 With: (argsToPassIn at: 4 IfAbsent: nil)
+                 With: (argsToPassIn at: 5 IfAbsent: nil)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: failure handling\x7fComment: Send an error message to the specified fail block.
+\'fbReg\' may be \'nil\' in the case that no fail block
+was supplied by the user program.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sendErrorTo: fbReg PutResultInto: dstReg Name: name Message: message Node: node = ( |
+            | 
+            compiler noSendsAllowed ifTrue: [
+              breakpoint: message.
+            ] False: [|nlr. sel|
+              setUpSendArguments: (fbReg
+                                & (locationForConstant: message canonicalize)
+                                & (locationForConstant:    name canonicalize)) asVector.
+
+              [value: ''                With: '']. "browsing"
+              [primitiveFailedError: '' Name: '']. "browsing"
+              sel: ('IfFail:' isSuffixOf: node selector) ifTrue: 'value:With:' False: 'primitiveFailedError:Name:'.
+              nlr: genNormalCallSelector: sel LiveOopTracker: liveOopTracker copyForNode: node.
+              compiler nlrPoints add: nlr.
+
+              moveSendResultTo: dstReg.
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: unmapped\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         slotGenerator = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein primitives translatorMixin slotGenerator.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein primitives translatorMixin slotGenerator parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: generating\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         autoGeneratePrimitiveMethodForSelector: primitiveMethodName ArgumentCountIncludingReceiver: argumentCountIncludingReceiver On: mir = ( |
+             args.
+             body.
+             destinationMethodName.
+             primitiveMethodNameWithIfFail.
+             primitiveMethodNameWithoutIfFail.
+             r <- ''.
+             sourceMethodName.
+            | 
+
+            [materializeLocsAndFailureHandlerOf: n AndDo: b]. "browsing"
+
+            destinationMethodName: mir reflectee primitiveGenerationMethodNameForSelector: primitiveMethodName.
+            (mir lookupKey: destinationMethodName) isEmpty ifFalse: [^ self].
+
+            primitiveMethodNameWithoutIfFail: primitiveMethodName copyWithoutSuffix: 'IfFail:'.
+            primitiveMethodNameWithIfFail: primitiveMethodNameWithoutIfFail, 'IfFail:'.
+
+            sourceMethodName:  autoGeneratingMethodNameForSelector: primitiveMethodName.
+
+            r: r & destinationMethodName & ' n = (\n'.
+
+            r: r & '"this method was auto-generated by" '
+                 & '[autoGeneratePrimitiveMethodForSelector: abc
+                    ArgumentCountIncludingReceiver: 1
+                                                On: mir].\n'.
+            r: r & '[ ' & (browsingTagFor: primitiveMethodNameWithoutIfFail) & '              ]. "browsing"\n'.
+            r: r & '[ ' & (browsingTagFor: primitiveMethodNameWithIfFail   ) &              ' ]. "browsing"\n'.
+
+            r: r & 'materializeLocsAndFailureHandlerOf: n AndDo: [|'.
+
+            (mir lookupKey: sourceMethodName) ifNone: [
+              args: (vector copySize: argumentCountIncludingReceiver succ) copyMappedBy: [|:v. :i| 'arg', i asString].
+              body: args last & ' notImplementedYetError: \'' & primitiveMethodNameWithIfFail & '\''.
+            ] IfOne: [|:s|
+              args: s contents arguments.
+              body: (selector copyStr: s name) intersperse: args.
+            ] IfMany: [
+              error: 'The automatic primitive generator got confused. Please resolve the problem manually.'.
+            ].
+
+            args do: [|:a| r: r & ':' & a] SeparatedBy: [r: r & '. '].
+            r: r & '|\n'.
+            r: r & '  ' & body & '. \n'.
+
+            r: r & '].\n'.
+            r: r & 'self)'.
+
+            (reflect: ('(| ' & r & ' |)') flatString eval) do: [|:slot|
+              slot category: generatedSlotCategory.
+              slot module: 'init'.
+              slot comment: 'this method was auto-generated by autoGeneratePrimitiveMethodForSelector:ArgumentCountIncludingReceiver:On:'.
+              slot visibility: visibility privateSlot.
+              mir addSlot: slot.
+            ].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: slot names\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         autoGeneratingMethodNameForSelector: primitiveMethodName = ( |
+            | 
+            autoGeneratingPrefix,
+            (primitiveMethodName copyFrom: 1), "rm _"
+            (
+              ( 'IfFail:' isSuffixOf: primitiveMethodName )
+                            ifTrue: ''
+                             False: 'IfFail:'
+            )).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: slot names\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         autoGeneratingPrefix = ( |
+            | 'generatePrimitiveInto:Receiver:').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: browsing tags\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         browsingTagFor: primitiveMethodName = ( |
+             sel.
+            | 
+            sel: selector copyStr: primitiveMethodName.
+            sel ifUnary: [primitiveMethodName]
+                 Binary: [error: 'primitive method name should not be binary']
+                Keyword: [sel intersperse: (sel keywords asVector copyMappedBy: [|:k. :i| 'arg', i asString])]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyGenerateSlotsIn: o = ( |
+            | 
+            (copy targetMirror: o asMirror) generateSlots).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: generating\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateBrowsingTagsForGeneratedSlots = ( |
+             s <- 'browsingTagsForGeneratedSlots = (
+'.
+            | 
+            primitiveGenerationMethods do: [|:slot| s: s & '[ ' & slot name & ' n ]. "browsing"\n'].
+            s: s & 'self)'.
+
+            (reflect: ('(| ' & s & ' |)') flatString eval) do: [|:slot|
+              slot category: generatedSlotCategory.
+              slot module: 'kleinC1_Gens'.
+              slot comment: 'this method was auto-generated by generateBrowsingTagsForGeneratedSlots'.
+              slot visibility: visibility privateSlot.
+              asMirror addSlot: slot.
+            ].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: generating\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateSlots = ( |
+            | 
+            (targetMirror ancestorsUpTo: traits clonable asMirror) do: [|:m|
+              m do: [|:s|
+                (autoGeneratingPrefix isPrefixOf: s name) ifTrue: [|primName|
+                  primName: primitiveNameForSourceMethod: s.
+                  autoGeneratePrimitiveMethodForSelector: primName
+                          ArgumentCountIncludingReceiver: (selector copyStr: primName) numberOfArguments
+                                                      On: m.
+                ].
+              ].
+            ].
+            modules init beClean.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: categories\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generatedSlotCategory = 'auto-generated'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: accessing generated slots\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generatedSlots = ( |
+            | 
+            (vector copyAddLast: asMirror), (browse descendantsOf: self) gather: [|:m| m asList copyFilteredBy: [|:s| isSlotGenerated: s]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: slot names\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isPrimitiveGenerationMethod: aSlot = ( |
+            | 
+            isPrimitiveGenerationSelector: aSlot name).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: slot names\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isPrimitiveGenerationSelector: sel = ( |
+            | 
+            'generatePrimitive_' isPrefixOf: sel).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: categories\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isSlotGenerated: s = ( |
+            | 
+            s categories includes: generatedSlotCategory).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: generating\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         primitiveGenerationMethods = ( |
+            | 
+            (vector copyAddLast: targetMirror), (browse descendantsOf: targetMirror reflectee)
+               gather: [|:m| m asList copyFilteredBy: [|:s| isPrimitiveGenerationMethod: s]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: slot names\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         primitiveNameForSourceMethod: s = ( |
+            | 
+            '_', (s name copyWithoutPrefix: autoGeneratingPrefix)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> 'parent' -> () From: ( | {
+         'Category: removing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         removeGeneratedSlots = ( |
+            | 
+            generatedSlots do: [|:s| s holder removeSlot: s name IfFail: []].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'slotGenerator' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         targetMirror.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
+         'Category: failure handling\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         try: aBlock Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg = ( |
+             fh.
+             result.
+            | 
+            fh: failureHandler copyFor: self Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
+            result:  aBlock value: fh.
+            bindLabel: fh endLabel.
+            result).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
         
          vmKit = bootstrap stub -> 'globals' -> 'klein' -> ().

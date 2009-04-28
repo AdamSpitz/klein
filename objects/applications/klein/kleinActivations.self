@@ -204,59 +204,60 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         kleinSpecific* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific.
+         kleinSpecificParent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register locator prototypes\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
-         abstractRegisterLocator = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific abstractRegisterLocator.
+         abstractRegisterLocator = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent abstractRegisterLocator.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> () From: ( | {
          'Comment: 0 = reg has not been saved
 -1 = reg is unknown\x7fModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (vector copySize: 32 FillingWith: 0)'
         
          gprAddresses <- vector copySize: 32 FillingWith: 0.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (nil)'
         
          myProcess.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific abstractRegisterLocator parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent abstractRegisterLocator parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'Category: creating activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         activationMirrorProtoIfFail: fb = ( |
+         activationMirrorProtoForScope: sm IfFail: fb = ( |
              mm.
-             nmm.
             | 
-            nmm:    nmethodMirrorIfFail: [|:e| ^ fb value: e].
-             mm: nmm methodMirrorIfFail: [|:e| ^ fb value: e].
+            sm ifNil: [^ fb value: 'no scope -- radio'].
+
+            [method]. "browsing"
+            mm: sm primitiveContentsAt: 'method' IfFail: [|:e| ^ fb value: e].
 
             mm isReflecteeBlockMethod
               ifTrue: [myProcess myVM mirrorPrototypes blockMethodActivation]
                False: [myProcess myVM mirrorPrototypes      methodActivation]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          callAddressIfAbsent: fb = ( |
@@ -264,7 +265,7 @@ SlotsToOmit: parent.
             (senderPCIfAbsent: [|:e| ^ fb value: e]) - oopSize).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          contentsOfRegister: regName IfFail: fb = ( |
@@ -274,34 +275,42 @@ SlotsToOmit: parent.
                         AreInRegister: [myProcess contentsOfRegister: regName IfFail: fb]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          copy = ( |
             | resend.copy gprAddresses: gprAddresses copy).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'Category: creating activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          createActivationMirror = ( |
+            | 
+            createActivationMirrorForScope: narrowestScopeMirrorIfFail: nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+         'Category: creating activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
+        
+         createActivationMirrorForScope: sm = ( |
              p.
             | 
             "Should this be ^ deadActivation? The problem is that hitting Step on a
              not-yet-Continued debugger depends on having an activation in the stack.
              -- Adam, 4/06"
-            p:  activationMirrorProtoIfFail: [vmKit mirrors methodActivation].
-            p copyForRegisterLocator: self).
+            p:  activationMirrorProtoForScope: sm IfFail: [vmKit mirrors methodActivation].
+            p copyForRegisterLocator: self Scope: sm).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          frameProto = ( |
             | klein stackFrames protoForArchitecture: myProcess architecture).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          gprAddressForRegister: r = ( |
@@ -310,7 +319,7 @@ SlotsToOmit: parent.
             gprAddresses at: r number).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          gprAddressForRegisterNamed: regName = ( |
@@ -322,7 +331,7 @@ SlotsToOmit: parent.
                     IfAbsent:  0 "not a GPR, no stored address").
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          ifContentsOfRegister: r AreInMemory: memBlk AreInRegister: regBlk = ( |
@@ -333,7 +342,7 @@ SlotsToOmit: parent.
                     False: [memBlk value: a]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          ifContentsOfRegisterNamed: regName AreInMemory: memBlk AreInRegister: regBlk = ( |
@@ -344,7 +353,7 @@ SlotsToOmit: parent.
                     False: [memBlk value: a      ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'Category: byte offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          lastSavedRegisterByteOffset = ( |
@@ -352,13 +361,13 @@ SlotsToOmit: parent.
             frameProto lastSavedRegisterOffset * oopSize).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
          myProcess = 0.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
          myVM = ( |
@@ -366,7 +375,17 @@ SlotsToOmit: parent.
             myProcess myVM).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
+        
+         narrowestScopeMirrorIfFail: fb = ( |
+             nmm.
+            | 
+            nmm: nmethodMirrorIfFail: [|:e| ^ fb value: e].
+            nmm scopeMirrorForPC: (pcIfFail: [|:e| ^ fb value: e]) IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'Category: byte offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          nmethodByteOffset = ( |
@@ -374,7 +393,7 @@ SlotsToOmit: parent.
             frameProto nmethodOffset * oopSize).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          nmethodMirrorIfFail: fb = ( |
@@ -396,7 +415,7 @@ SlotsToOmit: parent.
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          nonVolRegSaveAreaWordCountIfAbsent: fb = ( |
@@ -413,7 +432,7 @@ SlotsToOmit: parent.
             (0 <= r)  &&  [r < 32]  ifTrue: [r]  False: [ fb value: 'out of range: ', r printString ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          oopInRegister: r IfFail: fb = ( |
@@ -423,7 +442,7 @@ SlotsToOmit: parent.
                    AreInRegister: [myProcess oopInRegisterNamed: r name IfFail: fb]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          oopInRegisterNamed: regName IfFail: fb = ( |
@@ -433,7 +452,7 @@ SlotsToOmit: parent.
                         AreInRegister: [myProcess oopInRegisterNamed: regName IfFail: fb]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
          oopSize = ( |
@@ -441,13 +460,13 @@ SlotsToOmit: parent.
             klein layouts abstract oopSize).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'Category: byte offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          pcByteOffset = ( |
@@ -455,7 +474,7 @@ SlotsToOmit: parent.
             frameProto savedPCOffset * oopSize).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          senderPCIfAbsent: fb = ( |
@@ -464,7 +483,7 @@ SlotsToOmit: parent.
                                 IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          senderSPIfAbsent: blk = ( |
@@ -474,7 +493,7 @@ SlotsToOmit: parent.
                         IfFail: blk).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          sendersGPRAddressesIfAbsent: fb = ( |
@@ -492,7 +511,7 @@ SlotsToOmit: parent.
             r).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          setContentsOfRegister: regName To: aNumber IfFail: fb = ( |
@@ -505,7 +524,7 @@ SlotsToOmit: parent.
             myProcess writeWord: aNumber ToMemoryAt: a IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'Category: byte offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          spByteOffset = ( |
@@ -513,7 +532,7 @@ SlotsToOmit: parent.
             frameProto savedSPOffset * oopSize).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
          vmKit = ( |
@@ -526,7 +545,7 @@ SlotsToOmit: parent.
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: creating Klein activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          activationForLocalProcess: p SP: sp = ( |
@@ -535,7 +554,7 @@ SlotsToOmit: parent.
             (registerLocator copyForSP: sp Process: p) createActivationMirror).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          activationMapIfFail: fb = ( |
@@ -545,7 +564,7 @@ SlotsToOmit: parent.
             mir reflectionPrimitives importReflecteeActivationMapIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: send desc\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          addressOfSendDescWordAt: indexBlk IfFail: fb = ( |
@@ -555,7 +574,7 @@ SlotsToOmit: parent.
             (pcAfterBranchIfFail: [|:e| ^ fb value: e]) + byteOffset).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          allocatedRegionFor: pc = ( |
@@ -563,14 +582,14 @@ SlotsToOmit: parent.
             myProcess allocatedRegionFor: pc).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          allocatedRegions = ( |
             | myProcess allocatedRegions).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: sender\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          ancestorSenderWithSP: desiredSP IfAbsent: fb = ( |
@@ -583,7 +602,7 @@ SlotsToOmit: parent.
              rl: senderRL] loop).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: converting\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          asMachineLevelActivation = ( |
@@ -591,7 +610,7 @@ SlotsToOmit: parent.
             copy isReflecteeMachineLevelForeignActivation: true).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          contentsOfRegister: regName IfFail: fb = ( |
@@ -600,13 +619,14 @@ SlotsToOmit: parent.
             myRegisterLocator contentsOfRegister: regName IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: creating Klein activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyForRegisterLocator: rl = ( |
+         copyForRegisterLocator: rl Scope: sm = ( |
              c.
             | 
             c: copy.
+            c scopeMirror:          sm.
             c myRegisterLocator:    rl.
             c myProcess:            rl myProcess.
             c reflectionPrimitives: (reflectionPrimitives copy
@@ -616,14 +636,14 @@ SlotsToOmit: parent.
             c).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          endPoint = ( |
             | myProcess endPoint).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: entry address\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          entryAddressIfFail: fb = ( |
@@ -632,7 +652,7 @@ SlotsToOmit: parent.
               entryAddressIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: entry address\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          entryAddressMirrorIfFail: fb = ( |
@@ -641,14 +661,14 @@ SlotsToOmit: parent.
               entryAddressMirrorIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          entryPoint = ( |
             | myProcess entryPoint).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: stack frame\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          frameSizeIfFail: fb = ( |
@@ -656,7 +676,7 @@ SlotsToOmit: parent.
             ((senderSPIfAbsent: [^ fb value: 'no sender']) - sp) absoluteValue).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register masks\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          gcMaskIfFail: fb = ( |
@@ -664,17 +684,22 @@ SlotsToOmit: parent.
             sendDescWordAt: [|:sd| sd gcMaskIndex] IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
-         'Category: accessing\x7fCategory: machine-level info\x7fCategory: sp offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine-level info\x7fCategory: nmethod\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
-         ifSPOffset: spo IsForARegisterThen: regBlk IsForAStackLocationThen: memBlk IfFail: fb = ( |
+         ifScopeIsInlined: inlinedBlk IfNotInlined: notInlinedBlk IfFail: fb = ( |
+             ism.
+             sm.
             | 
-            spo < 0  "negative <-> register number, positive <-> stack offset"
-              ifTrue: [ regBlk value: spo negate ]
-               False: [ memBlk value: sp + spo   ]).
+            sm: scopeMirrorIfFail: [|:e| ^ fb value: e].
+            [sm reflectee inliningScope]. "browsing"
+            ism: sm primitiveContentsAt: 'inliningScope' IfFail: [|:e| ^ fb value: e].
+            [ism reflectee isScopeDesc]. "browsing"
+            (ism includesKey: 'isScopeDesc') ifTrue: [   inlinedBlk value: ism]
+                                              False: [notInlinedBlk value     ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: creating Klein activations\x7fCategory: double dispatch\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          initializeLocalActivation = ( |
@@ -682,7 +707,7 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: creating Klein activations\x7fCategory: double dispatch\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          initializeRemoteActivation = ( |
@@ -694,7 +719,7 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: lexical parent\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          lexicalParentSPIfFail: fb = ( |
@@ -706,15 +731,15 @@ SlotsToOmit: parent.
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: stack frame\x7fCategory: double dispatch\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
          localStackFrameIfAbsent: ab = ( |
             | 
-            (nmethodMirrorIfFail: ab) reflectee frameIfNil: ab).
+            (nmethodMirrorIfFail: ab) reflectee frame ifNil: ab).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: memory slots\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          memorySlotForAddress: a = ( |
@@ -722,7 +747,7 @@ SlotsToOmit: parent.
             myVMKit foreignMemorySlot copyMirror: self Address: a).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          methodMirrorIfFail: fb = ( |
@@ -730,14 +755,14 @@ SlotsToOmit: parent.
             reflectionPrimitives forActivationMirror: self MethodMirrorIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          myAssemblerSystem = ( |
             | myProcess myAssemblerSystem).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          myVM = ( |
@@ -745,7 +770,7 @@ SlotsToOmit: parent.
             myProcess myVM).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: nmethod\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          nmethodMirrorIfFail: fb = ( |
@@ -753,7 +778,7 @@ SlotsToOmit: parent.
             reflectionPrimitives forActivationMirror: self NMethodMirrorIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          nonVolatileRegisterContentsDo: blk IfFail: fb = ( |
@@ -768,7 +793,7 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAt: i IfFail: fb = ( |
@@ -776,18 +801,17 @@ SlotsToOmit: parent.
             myProcess oopAt: i IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: sp offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          oopAtSPOffset: spo IfFail: fb = ( |
             | 
-                         ifSPOffset: spo
-                 IsForARegisterThen: [|:regNum| oopInRegister: (registerForNumber: regNum) IfFail: fb]
-            IsForAStackLocationThen: [|:addr| oopAt: addr IfFail: fb]
-                             IfFail: fb).
+            klein nmethod ifSPOffset: spo
+                  IsForARegisterThen: [|:regNum| oopInRegister: (registerForNumber: regNum) IfFail: fb]
+             IsForAStackLocationThen: [|:offset| oopAt: sp + offset IfFail: fb]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: source-level info\x7fCategory: slot contents\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          oopForArgumentOrAssignableLocalAt: n IfFail: fb = ( |
@@ -796,7 +820,7 @@ SlotsToOmit: parent.
                    IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          oopInRegister: r IfFail: fb = ( |
@@ -805,7 +829,7 @@ SlotsToOmit: parent.
             myRegisterLocator oopInRegister: r IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          oopInRegisterNamed: regName IfFail: fb = ( |
@@ -814,7 +838,7 @@ SlotsToOmit: parent.
             myRegisterLocator oopInRegisterNamed: regName IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: program counter\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcAfterBranchIfFail: fb = ( |
@@ -822,7 +846,7 @@ SlotsToOmit: parent.
             myRegisterLocator pcAfterBranchIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: program counter\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcIfFail: fb = ( |
@@ -830,7 +854,7 @@ SlotsToOmit: parent.
             myRegisterLocator pcIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: program counter\x7fCategory: offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcOffsetsByBCIIfFail: fb = ( |
@@ -841,18 +865,18 @@ SlotsToOmit: parent.
               mapBy: [|:unused. :i| m reflecteeAt: i]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: program counter\x7fCategory: offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcOffsetsByBCIMirrorIfFail: fb = ( |
-             nmm.
+             sm.
             | 
-            nmm: nmethodMirrorIfFail: [|:e| ^ fb value: e].
-            [nmm reflectee pcOffsetsByBCI]. "browsing"
-            (nmm at: 'pcOffsetsByBCI' IfAbsent: [|:e| ^ fb value: e]) contents).
+            sm: scopeMirrorIfFail: [|:e| ^ fb value: e].
+            [sm reflectee pcOffsetsByBCI]. "browsing"
+            (sm at: 'pcOffsetsByBCI' IfAbsent: [|:e| ^ fb value: e]) contents).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register masks\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          possiblyLiveLocationsDo: blk = ( |
@@ -892,7 +916,7 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register masks\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          possiblyLiveOopsDo: blk = ( |
@@ -908,7 +932,7 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          readMemoryAt: x Size: s IfFail: fb = ( |
@@ -916,7 +940,7 @@ SlotsToOmit: parent.
             myProcess readMemoryAt: x Size: s IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          readMemoryWordAt: i IfFail: fb = ( |
@@ -924,7 +948,7 @@ SlotsToOmit: parent.
             myProcess readMemoryWordAt: i IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: source-level info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          receiverAndArgumentOopsIfFail: fb = ( |
@@ -938,7 +962,7 @@ SlotsToOmit: parent.
             r asVector).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: source-level info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          receiverOopIfFail: fb = ( |
@@ -946,19 +970,19 @@ SlotsToOmit: parent.
             reflectionPrimitives forActivationMirror: self ReceiverOopIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: sp offsets\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          receiverSPOffsetIfFail: fb = ( |
-             nmm.
+             sm.
             | 
-            nmm: nmethodMirrorIfFail: [|:e| ^ fb value: e].
+            sm: scopeMirrorIfFail: [|:e| ^ fb value: e].
 
-            [nmm reflectee incomingRcvrSPOffset]. "browsing"
-            (nmm primitiveContentsAt: 'incomingRcvrSPOffset' IfFail: [|:e| ^ fb value: e]) reflectee).
+            [sm reflectee incomingRcvrSPOffset]. "browsing"
+            (sm primitiveContentsAt: 'incomingRcvrSPOffset' IfFail: [|:e| ^ fb value: e]) reflectee).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          registerForNumber: n = ( |
@@ -966,32 +990,32 @@ SlotsToOmit: parent.
             myAssemblerSystem operands gprFor: n).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register locator prototypes\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
-         registerLocator = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> () ToBe: bootstrap addSlotsTo: (
+         registerLocator = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> () ToBe: bootstrap addSlotsTo: (
              bootstrap remove: 'parent' From:
-             globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific abstractRegisterLocator copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific registerLocator.
+             globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent abstractRegisterLocator copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent registerLocator.
 
 CopyDowns:
-globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific abstractRegisterLocator. copy 
+globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent abstractRegisterLocator. copy 
 SlotsToOmit: parent.
 
 \x7fIsComplete: '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific registerLocator parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent registerLocator parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( | {
          'Category: creating\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          copyForSP: sp Process: p = ( |
@@ -999,13 +1023,13 @@ SlotsToOmit: parent.
             (copy sp: sp) myProcess: p).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> ().
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( | {
          'Category: pc\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcAfterBranchIfFail: fb = ( |
@@ -1014,7 +1038,7 @@ SlotsToOmit: parent.
                                 IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( | {
          'Category: pc\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcIfFail: fb = ( |
@@ -1022,7 +1046,7 @@ SlotsToOmit: parent.
             (pcAfterBranchIfFail: fb) - int32 size).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( | {
          'Category: creating\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          senderOf: rl IfAbsent: blk = ( |
@@ -1035,7 +1059,7 @@ SlotsToOmit: parent.
                gprAddresses: rl sendersGPRAddressesIfAbsent: [|:e| ^ blk value: e]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> 'parent' -> () From: ( | {
          'Category: pc\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          setPC: position IfFail: fb = ( |
@@ -1046,13 +1070,13 @@ SlotsToOmit: parent.
                   IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'registerLocator' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'registerLocator' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (nil)'
         
          sp.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          registerSlotNamed: n = ( |
@@ -1060,7 +1084,7 @@ SlotsToOmit: parent.
             klein foreignRegisterSlot copyMirror: self Name: n).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          registerSlotsForOperands: symbolicOperands = ( |
@@ -1071,7 +1095,7 @@ SlotsToOmit: parent.
                                         copyMappedBy: [|:reg| registerSlotNamed: reg name]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: stack frame\x7fCategory: double dispatch\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
          remoteStackFrameIfAbsent: ab = ( |
@@ -1079,7 +1103,15 @@ SlotsToOmit: parent.
             (nmethodMirrorIfFail: ab) primitiveContentsAt: 'frame' IfFail: ab).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine-level info\x7fCategory: nmethod\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
+        
+         scopeMirrorIfFail: fb = ( |
+            | 
+            scopeMirror ifNil: [^ fb value: 'no scope -- radio']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: send desc\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          sendDescWordAt: indexBlk IfFail: fb = ( |
@@ -1088,7 +1120,7 @@ SlotsToOmit: parent.
                       IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: sender\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          senderSPIfAbsent: fb = ( |
@@ -1096,7 +1128,7 @@ SlotsToOmit: parent.
             myRegisterLocator senderSPIfAbsent: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: registers\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          setContentsOfRegister: regName To: aNumber IfFail: fb = ( |
@@ -1104,42 +1136,42 @@ SlotsToOmit: parent.
             myRegisterLocator setContentsOfRegister: regName To: aNumber IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: program counter\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          setPC: pc IfFail: fb = ( |
             | myRegisterLocator setPC: pc IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          sp = ( |
             | myRegisterLocator sp).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: source-level info\x7fCategory: slot contents\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          spOffsetForSlotAt: n IfFail: fb = ( |
              index.
              map.
              mm.
-             nmm.
+             sm.
             | 
-            nmm:     nmethodMirrorIfFail:                                      [|:e| ^ fb value: e].
-             mm:  nmm methodMirrorIfFail:                                      [|:e| ^ fb value: e].
+            sm:        scopeMirrorIfFail:                                      [|:e| ^ fb value: e].
+            mm:   sm primitiveContentsAt: 'method'                    IfFail:  [|:e| ^ fb value: e].
             map:  mm reflectionPrimitives importReflecteeActivationMapIfFail:  [|:e| ^ fb value: e].
 
             index: spOffsetsIndexForSlotAt: n InActivationMap: map IfFail: [|:e| ^ fb value: e].
 
-            [nmm reflectee slotSPOffsets]. "browsing"
-            ( (nmm at: 'slotSPOffsets') contents 
+            [sm reflectee slotSPOffsets]. "browsing"
+            ( (sm at: 'slotSPOffsets') contents 
                  reflecteeMirrorAt: index IfFail: [|:e| ^ fb value: e]
              ) reflectee).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: source-level info\x7fCategory: slot contents\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          spOffsetsIndexForSlotAt: n InActivationMap: map IfFail: fb = ( |
@@ -1152,7 +1184,7 @@ SlotsToOmit: parent.
             fb value: n, ' not found').
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: stack frame\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
          stackFrameIfAbsent: ab = ( |
@@ -1160,7 +1192,7 @@ SlotsToOmit: parent.
             myProcess lens stackFrameForActivation: self IfAbsent: ab).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: creating Klein activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          topmostActivationForProcess: fp = ( |
@@ -1168,32 +1200,32 @@ SlotsToOmit: parent.
             (topmostRegisterLocator copyForProcess: fp) createActivationMirror).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: register locator prototypes\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot'
         
-         topmostRegisterLocator = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> () ToBe: bootstrap addSlotsTo: (
+         topmostRegisterLocator = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> () ToBe: bootstrap addSlotsTo: (
              bootstrap remove: 'parent' From:
-             globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific abstractRegisterLocator copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific topmostRegisterLocator.
+             globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent abstractRegisterLocator copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent topmostRegisterLocator.
 
 CopyDowns:
-globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific abstractRegisterLocator. copy 
+globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent abstractRegisterLocator. copy 
 SlotsToOmit: parent.
 
 \x7fIsComplete: '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecific topmostRegisterLocator parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein mirrors copyDownParentForActivationPrototypes kleinSpecificParent topmostRegisterLocator parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          copyForProcess: p = ( |
@@ -1201,13 +1233,13 @@ SlotsToOmit: parent.
             copy myProcess: p).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'abstractRegisterLocator' -> 'parent' -> ().
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'abstractRegisterLocator' -> 'parent' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          pcIfFail: fb = ( |
@@ -1215,7 +1247,7 @@ SlotsToOmit: parent.
             myProcess pcIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          setPC: position IfFail: fb = ( |
@@ -1223,7 +1255,7 @@ SlotsToOmit: parent.
             myProcess setPC: position IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> 'topmostRegisterLocator' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          sp = ( |
@@ -1231,7 +1263,7 @@ SlotsToOmit: parent.
             myProcess contentsOfRegister: 'sp' IfFail: 0).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          wordsAt: addr Size: size = ( |
@@ -1239,7 +1271,7 @@ SlotsToOmit: parent.
             myProcess wordsAt: addr Size: size).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          write: bv ToMemoryAt: addr IfFail: fb = ( |
@@ -1247,7 +1279,7 @@ SlotsToOmit: parent.
             myProcess write: bv ToMemoryAt: addr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecific' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: process info\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          writeWord: w ToMemoryAt: i IfFail: fb = ( |
@@ -1268,7 +1300,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> () From: ( | {
-         'ModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (nil)'
+         'ModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          myRegisterLocator.
         } | ) 
@@ -1308,6 +1340,12 @@ SlotsToOmit: parent.
          prototype = ( |
             | 
             klein mirrors copyDownParentForActivationPrototypes).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> () From: ( | {
+         'ModuleInfo: Module: kleinActivations InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         scopeMirror.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {
@@ -1450,6 +1488,7 @@ SlotsToOmit: parent.
         
          forActivationMirror: m LexicalParentIfFail: fb = ( |
             | 
+            [aaaaa]. "This isn't gonna work with inlining."
             m isReflecteeBlockMethodActivation ifFalse: [^ fb value: 'noParentError'].
             m ancestorSenderWithSP: (m lexicalParentSPIfFail: [|:e| ^ fb value: e])
                           IfAbsent: fb).
@@ -1460,8 +1499,9 @@ SlotsToOmit: parent.
         
          forActivationMirror: m MethodHolderIfFail: fb = ( |
             | 
-            (m nmethodMirrorIfFail: [|:e| ^ fb value: e])
-                methodHolderIfFail: fb).
+            [methodHolder]. "browsing"
+            (m scopeMirrorIfFail: [|:e| ^ fb value: e])
+                primitiveContentsAt: 'methodHolder' IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {
@@ -1469,8 +1509,9 @@ SlotsToOmit: parent.
         
          forActivationMirror: m MethodMirrorIfFail: fb = ( |
             | 
-            (m nmethodMirrorIfFail: [|:e| ^ fb value: 'no nmethod: ', e])
-                methodMirrorIfFail: fb).
+            [method]. "browsing"
+            (m scopeMirrorIfFail: [|:e| ^ fb value: 'no nmethod: ', e])
+                primitiveContentsAt: 'method' IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {
@@ -1554,8 +1595,10 @@ SlotsToOmit: parent.
         
          forActivationMirror: m SelectorMirrorIfFail: fb = ( |
             | 
-            (m nmethodMirrorIfFail: [|:e| ^ fb value: e])
-              selectorMirrorIfFail:    fb).
+            [aaaaa]. "I have a feeling we're going to want to cache all this stuff."
+            ((m scopeMirrorIfFail: [|:e| ^ fb value: e])
+               primitiveContentsAt: 'lookupKey' IfFail: [|:e| ^ fb value: e])
+               primitiveContentsAt: 'selector'  IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {
@@ -1564,11 +1607,14 @@ SlotsToOmit: parent.
          forActivationMirror: m SenderIfFail: fb = ( |
              r.
              reg.
-             senderRL.
             | 
-            senderRL:  m registerLocator senderOf: m myRegisterLocator 
-                                         IfAbsent: [|:e| ^ fb value: e].
-            r:  senderRL createActivationMirror.
+            m ifScopeIsInlined: [|:inliningScopeMir|
+              r: m myRegisterLocator createActivationMirrorForScope: inliningScopeMir.
+            ] IfNotInlined: [| senderRL |
+              senderRL:  m registerLocator senderOf: m myRegisterLocator 
+                                           IfAbsent: [|:e| ^ fb value: e].
+              r:  senderRL createActivationMirror.
+            ] IfFail: [|:e| ^ fb value: e].
             r isReflecteeMachineLevelForeignActivation: m isReflecteeMachineLevelForeignActivation.
             reg: m allocatedRegionFor:  r pcIfFail: [|:e| ^ fb value: e].
             reg y pred = reg x  ifTrue: [^ fb value: 'not Klein'].

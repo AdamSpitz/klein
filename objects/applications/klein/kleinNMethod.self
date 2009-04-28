@@ -85,6 +85,16 @@ For a      normal   send, this is 0 instead of nil because 0 is immediate, and s
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForSendBC: bc = ( |
+            | 
+            copyForSelector: bc selector
+                 LookupType: (kleinAndYoda lookupType forBytecode: bc)
+                  Delegatee: bc delegatee).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          delegateeOrMethodHolderForNormalSend = ( |
@@ -137,12 +147,63 @@ For a      normal   send, this is 0 instead of nil because 0 is immediate, and s
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
+         isDirectedResend = ( |
+            | 
+            klein lookupType isDirectedResend: lookupType).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
          isResend = ( |
             | klein lookupType isResend: lookupType).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot'
+         'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSelfExplicit = ( |
+            | 
+            isSelfImplicit not).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSelfImplicit = ( |
+            | 
+            klein lookupType lookupReceiverIsSelf: lookupType).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isUndirectedResend = ( |
+            | 
+            klein lookupType isUndirectedResend: lookupType).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: lookup\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         lookupSlotsInContext: c = ( |
+            | 
+            lookupSlotsUsing: c protoSlotFinder Self: c selfMirror Holder: c outermostMethodHolder).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: lookup\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         lookupSlotsUsing: protoSlotFinder Self: selfMir Holder: holderMir = ( |
+            | 
+            case
+              if: [isUndirectedResend] Then: [(protoSlotFinder copyForMirror:  holderMir                             Selector: selector) findSlotsInParents]
+              If: [  isDirectedResend] Then: [(protoSlotFinder copyForMirror: (holderMir slotAt: delegatee) contents Selector: selector) findSlots         ]
+                                       Else: [(protoSlotFinder copyForMirror:    selfMir                             Selector: selector) findSlots         ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
@@ -191,12 +252,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Category: allocated locations\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
-        
-         incomingRcvrSPOffset.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
          'Category: recompilation\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (0)'
         
          invocationCount <- 0.
@@ -212,18 +267,6 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (klein lookupKey)'
         
          lookupKey <- bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Comment: should use slotMethod instead but can\'t get a mirror on Klein side\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
-        
-         method.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
-        
-         methodHolder.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
@@ -290,14 +333,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
-        
-         frameIfNil: ab = ( |
-            | 
-            frame ifNil: ab).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
          'Category: incrementally updating\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
          if: oldMir IsFoundCopyAndReplaceWith: newMir IfFound: blk = ( |
@@ -328,12 +363,30 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
          'Category: sp offsets\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
+         ifSPOffset: spo IsForARegisterThen: regBlk IsForAStackLocationThen: memBlk = ( |
+            | 
+            spo < 0  "negative <-> register number, positive <-> stack offset"
+              ifTrue: [ regBlk value: spo negate ]
+               False: [ memBlk value: spo        ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: sp offsets\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
          isSPOffsetRecordedForSlotOfType: slotType = ( |
             | 
             "Duplication with" [isKleinSlotOffsetRecorded].
 
                (klein slotType isObjectSlot:   slotType)
             || [klein slotType isArgumentSlot: slotType]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         locations = ( |
+            | 
+            vmKit location).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
@@ -388,6 +441,119 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: scopes\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         scopeDesc = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( |
+             {} = 'Comment: Not yet the same as a scopeDesc in the Self VM, but
+I think it will eventually be. -- Adam, Apr. 2009\x7fModuleInfo: Creator: globals klein nmethod parent scopeDesc.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         incomingRcvrSPOffset.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (vector)'
+        
+         inlinedScopes <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         inliningScope.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot'
+        
+         isScopeDesc = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         lookupKey.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'Comment: should use slotMethod instead but can\'t get a mirror on Klein side\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         method.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         methodHolder.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         nmethod.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein nmethod parent scopeDesc parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         frame = ( |
+            | 
+            nmethod frame).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForIncomingReceiver = ( |
+            | 
+            nmethod      ifSPOffset: incomingRcvrSPOffset
+                 IsForARegisterThen: [|:regNum| theVM myAssemblerSystem operands gprFor: regNum]
+            IsForAStackLocationThen: [|:offset| frame locationForStackOffset: offset]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForOffset: i = ( |
+            | 
+            nmethod      ifSPOffset: i
+                 IsForARegisterThen: [|:regNum| theVM myAssemblerSystem operands gprFor: regNum]
+            IsForAStackLocationThen: [|:offset| frame locationForStackOffset: offset]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         pcOffsetsByBCI.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (vector)'
+        
+         slotSPOffsets <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
          'Category: printing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
          statePrintString = ( |
@@ -403,10 +569,12 @@ SlotsToOmit: parent.
             prototype).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
-         pcOffsetsByBCI.
+         vmKit = ( |
+            | 
+            klein).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
@@ -417,9 +585,9 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Category: allocated locations\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (vector)'
+         'Category: allocated locations\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
         
-         slotSPOffsets <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+         topScope.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

@@ -1,6 +1,7 @@
  '$Revision: 30.82 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -379,8 +380,11 @@ SlotsToOmit: parent.
         
          forNMethodMirror: m MethodHolderIfFail: fb = ( |
             | 
-            withMapDo: [primitiveContentsAt: 'methodHolder' IfFail: fb]
-               IfFail: fb).
+            [m reflectee topScope methodHolder]. "browsing"
+            withMapDo: [
+              (primitiveContentsAt: 'topScope'     IfFail: [|:e| ^ fb value: e])
+               primitiveContentsAt: 'methodHolder' IfFail: fb
+            ] IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {
@@ -393,8 +397,11 @@ SlotsToOmit: parent.
              method, since we often only need it for its
              reflecteeOop. -- Adam, 2/06"
 
-            withMapDo: [primitiveContentsAt: 'method' IfFail: fb]
-               IfFail: fb).
+            [m reflectee topScope method]. "browsing"
+            withMapDo: [
+              (primitiveContentsAt: 'topScope' IfFail: [|:e| ^ fb value: e])
+               primitiveContentsAt: 'method'   IfFail: fb
+            ] IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {
@@ -402,6 +409,7 @@ SlotsToOmit: parent.
         
          forNMethodMirror: m SelectorMirrorIfFail: fb = ( |
             | 
+            [m reflectee lookupKey selector]. "browsing"
             withMapDo: [ 
               (primitiveContentsAt: 'lookupKey' IfFail: [|:e| ^ fb value: e])
                primitiveContentsAt: 'selector'  IfFail: fb
@@ -699,6 +707,25 @@ kleinProcess
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {
+         'Category: scopes\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: private'
+        
+         inlinedScopeIn: scopeMir ForPC: pc IfFail: fb = ( |
+             failBlk.
+             inlinedScopesMir.
+            | 
+            failBlk: [|:e| ^ fb value: e].
+            [scopeMir reflectee inlinedScopes]. "browsing"
+            inlinedScopesMir: scopeMir primitiveContentsAt: 'inlinedScopes' IfFail: failBlk.
+            (inlinedScopesMir reflecteeSizeIfFail: failBlk) do: [|:i. ism|
+              ism: inlinedScopesMir reflecteeMirrorAt: i IfFail: failBlk.
+              (scope: ism IncludesPC: pc IfFail: failBlk) ifTrue: [
+                ^ inlinedScopeIn: ism ForPC: pc IfFail: fb
+              ].
+            ].
+            scopeMir).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: public'
         
          isReflecteeNMethod = bootstrap stub -> 'globals' -> 'true' -> ().
@@ -732,6 +759,38 @@ kleinProcess
          'ModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'mirrors' -> 'byteVector' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {
+         'Category: scopes\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: private'
+        
+         scope: scopeMir IncludesPC: pc IfFail: fb = ( |
+             failBlk.
+             firstPCO.
+             lastPCO.
+             pcOffsetsMir.
+             pco.
+            | 
+            failBlk: [|:e| ^ fb value: e].
+            pco: pc - (entryAddressIfFail: failBlk).
+            [scopeMir reflectee pcOffsetsByBCI]. "browsing"
+            pcOffsetsMir: scopeMir primitiveContentsAt: 'pcOffsetsByBCI' IfFail: failBlk.
+            firstPCO: pcOffsetsMir reflecteeAt: 0 IfFail: failBlk.
+            pco < firstPCO ifTrue: [^ false].
+             lastPCO: pcOffsetsMir reflecteeAt: (pcOffsetsMir reflecteeSizeIfFail: failBlk) pred IfFail: failBlk.
+            pco >  lastPCO ifTrue: [^ false].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {
+         'Category: scopes\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: public'
+        
+         scopeMirrorForPC: pc IfFail: fb = ( |
+             sm.
+            | 
+            [reflectee topScope]. "browsing"
+            sm: primitiveContentsAt: 'topScope' IfFail: [|:e| ^ fb value: e].
+            inlinedScopeIn: sm ForPC: pc IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {

@@ -1276,6 +1276,18 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'machineLevelForeignActivationModel' -> 'parent' -> () From: ( | {
+         'Category: method source & selection\x7fModuleInfo: Module: kleinModels InitialContents: FollowSlot\x7fVisibility: private'
+        
+         innerMethod: im SelectionForBCI: bci = ( |
+            | 
+            "This is just here so that the system won't crash on me anymore
+             when I accidentally try to highlight something in the machine-level
+             debugger. -- Adam, Apr. 2009"
+            [todo machineLevelDebugger].
+            (0@0) # (0@0)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'machineLevelForeignActivationModel' -> 'parent' -> () From: ( | {
          'Category: editing\x7fCategory: editing contents\x7fModuleInfo: Module: kleinModels InitialContents: FollowSlot\x7fVisibility: private'
         
          instructionPatchingResultReporter = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'machineLevelForeignActivationModel' -> 'parent' -> 'instructionPatchingResultReporter' -> () ToBe: bootstrap addSlotsTo: (

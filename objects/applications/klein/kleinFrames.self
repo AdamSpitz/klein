@@ -281,16 +281,28 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: stack offsets from stack pointer\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot'
-        
-         firstArgStackOffset = ( |
-            | receiverStackOffset succ).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: sizing me & my parts\x7fComment: align frames to quad word for best load/store multiple speed\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: private'
         
          frameWordAlignment = 4.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: converting offsets to locations\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
+        
+         ifWordOffset: wordOffset IsLocal: localBlk IsOutgoing: outgoingBlk IsIncoming: incomingBlk = ( |
+            | 
+            case
+              if: (wordOffset >= totalWordCount) Then: [
+                [wordOffset >= (totalWordCount + receiverStackOffset)] assert.
+                incomingBlk value: wordOffset - totalWordCount - receiverStackOffset
+              ]
+              If: [wordOffset >= outgoingRcvrAndArgAreaEnd] Then: [
+                localBlk value: wordOffset - outgoingRcvrAndArgAreaEnd
+              ]
+              If: [wordOffset >= receiverStackOffset] Then: [
+                outgoingBlk value: wordOffset - receiverStackOffset
+              ]
+              Else: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -329,6 +341,17 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: converting offsets to locations\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForStackOffset: byteOffset = ( |
+            | 
+            ifWordOffset: byteOffset >> 2
+                 IsLocal: [|:i| locations nonVolMemoryLocal      copyIndex:        i]
+              IsOutgoing: [|:i| locations outgoingMemoryArgument copyRcvrAndArgNo: i]
+              IsIncoming: [|:i| locations incomingMemoryArgument copyRcvrAndArgNo: i]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: offsets for saved arg part of stack (parent\'s frame)\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
         
          locationsForNonVolLocals = ( |
@@ -344,7 +367,7 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
          locationsForSavedNonVolRegisters = ( |
              allRegLocs.
             | 
-            allRegLocs: theVM myAssemblerSystem.
+            allRegLocs: theVM myAssemblerSystem allRegisters.
             (vector copySize: nonVolRegSaveAreaWordCount) mapBy: [|:x. :i|
               allRegLocs _At: 31 _IntSub: i.
             ]).

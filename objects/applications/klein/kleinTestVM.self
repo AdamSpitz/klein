@@ -528,6 +528,14 @@ to just keep upping it by hand.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSlotToBeCompiled: s = ( |
+            | 
+            (resend.isSlotToBeCompiled: s) || [(s name = 'value') && [s holder = (reflect: defaultBehavior)]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'Category: object mapping policy\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          modulesToMap = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( |
@@ -539,7 +547,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules.
+         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -611,6 +619,9 @@ to just keep upping it by hand.
                   (s name = 'file')
               || [ s name = 'line'] ifTrue: [^ true].
             ].
+
+            [value]. "browsing"
+            (s name = 'value') && [s holder = (reflect: defaultBehavior)] ifTrue: [^ true].
 
             resend.shouldAlwaysMapSlotNoMatterWhatModuleItIsIn: s).
         } | ) 
@@ -1150,6 +1161,32 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
+         simpleMethod1 = ( |
+            | 
+            simpleMethod2a.
+            simpleMethod2b.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         simpleMethod2a = ( |
+            | 
+            3).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         simpleMethod2b = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
          slotFinderTesterObj = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'slotFinderTesterObj' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent slotFinderTesterObj.
 \x7fIsComplete: '.
@@ -1201,6 +1238,9 @@ SlotsToOmit: parent prototype safety.
             testReturnValueOfLocalAssignment.
             testLeafMethodWithBrowsingTag.
             testMethodWithManyArguments.
+            testIfTrueAndIfFalse.
+            testInliningSimpleMethods.
+            tryingToReplicateInliningBug run.
             testPrimitiveFailure.
             testFixAndContinue: 10 With: 11 And: 6.
             [] vmTests run.
@@ -1269,6 +1309,29 @@ SlotsToOmit: parent prototype safety.
             r: r _IntMul: x.
             r: r _IntSub: b.
             r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testIfTrueAndIfFalse = ( |
+            | 
+            assert: (true  ifTrue: 3 False: 4) Is: 3.
+            assert: (false ifTrue: 5 False: 6) Is: 6.
+            false ifTrue: [fail].
+            true ifFalse: [fail].
+            assert: (true ifTrue: [7]) Is: 7.
+            assert: (false ifFalse: 8) Is: 8.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testInliningSimpleMethods = ( |
+            | 
+            simpleMethod1.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1353,6 +1416,69 @@ SlotsToOmit: parent prototype safety.
          'ModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (nil)'
         
          three.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         tryingToReplicateInliningBug = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent tryingToReplicateInliningBug.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         assert: blk = ( |
+            | 
+            blk value ifFalse: [_Breakpoint: 'Klein test failed'].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         assert: a Is: b = ( |
+            | 
+            "This method is just useful because you
+             can click on a and b right in the debugger
+             to see what the two values are."
+            assert: [a _Eq: b]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         run = ( |
+            | 
+            0.
+            testCheckingReceiverMap.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         shouldReturnOne = ( |
+            | 
+            true ifTrue: 0.
+            true ifTrue: [^ 1].
+            fail).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         testCheckingReceiverMap = ( |
+            | 
+            assert: shouldReturnOne Is: 1).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {

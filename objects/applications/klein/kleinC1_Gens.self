@@ -309,414 +309,11 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: failure handling\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         failureHandler = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes codeGenerators abstract parent failureHandler.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         cg.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         dstReg.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         endLabel.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         fbReg.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (\'\')\x7fVisibility: private'
-        
-         node <- ''.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes codeGenerators abstract parent failureHandler parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assert: reg1 Equals: reg2 ErrorMessage: m = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              cg generateIf: reg1 Equals: reg2 ThenBranchTo: okLabel.
-              fail: m.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assert: reg HasAnyMapTypeIn: maps = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object generateIf: reg
-                                   Temp: dstReg
-                        HasAnyMapTypeIn: maps
-                           ThenBranchTo: okLabel
-                                   With: cg.
-              mapTypeError: maps.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assert: reg HasMapType: map = ( |
-            | 
-            assert: reg HasAnyMapTypeIn:  vector copyAddFirst: map).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assert: smiReg IsBetweenZeroAnd: max = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              cg generateIf: smiReg IsBetweenZeroAnd: max ThenBranchTo: okLabel.
-              badValueError: 'a value between 0 and ', max printString, ' inclusive'
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertBlock: reg = ( |
-            | 
-            assert: reg HasMapType: maps blockMap).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertBounds: indexSmiReg InByteVector: byteVectReg = ( |
-            | 
-            cg generateIf: [|:trueFork|
-              cg byteVectorLayout generateFor:  byteVectReg
-                                      IfIndex:  indexSmiReg
-                                         Temp:  dstReg
-                    IsOutOfBoundsThenBranchTo:  trueFork
-                                         With:  cg.
-            ] Then: [
-              boundsError.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertBounds: indexSmiReg InVector: objVectReg = ( |
-            | 
-            cg generateIf: [|:trueFork|
-              layouts objVector generateFor:  objVectReg
-                                    IfIndex:  indexSmiReg
-                                       Temp:  dstReg
-                  IsOutOfBoundsThenBranchTo:  trueFork
-                                       With:  cg.
-            ] Then: [
-              boundsError.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertByteVector: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              cg withTemporaryRegisterDo: [|:tempReg|
-                cg byteVectorLayout
-                                generateIf: reg
-                                      Temp: tempReg
-                  IsByteVectorThenBranchTo: okLabel
-                                      With: cg.
-              ].
-              typeError: 'byteVector'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertBytesPart: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object generateIf: reg
-                                   Temp: dstReg
-                IsBytesPartThenBranchTo: okLabel
-                                   With: cg.
-              typeError: 'bytesPart'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertFloat: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object
-                         generateIf: reg
-                               Temp: dstReg
-                IsFloatThenBranchTo: okLabel
-                               With: cg.
-              typeError: 'float'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertImmediate: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object
-                         generateIf: reg
-                               Temp: dstReg
-                  IsSmiThenBranchTo: okLabel
-                               With: cg.
-
-              layouts object
-                         generateIf: reg
-                               Temp: dstReg
-                IsFloatThenBranchTo: okLabel
-                               With: cg.
-
-              typeError: 'immediate'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertInt32: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object generateIf: reg
-                                   Temp: dstReg
-                      IsSmiThenBranchTo: okLabel
-                                   With: cg.
-
-              cg byteVectorLayout generateIf: reg
-                                        Temp: dstReg
-                    IsByteVectorThenBranchTo: okLabel
-                                        With: cg.
-
-              typeError: 'int32'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertInteger: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object
-                         generateIf: reg
-                               Temp: dstReg
-                  IsSmiThenBranchTo: okLabel
-                               With: cg.
-              typeError: 'integer'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertMap: reg = ( |
-            | 
-            assert: reg HasAnyMapTypeIn: ( maps mapMap
-                                         & maps outerActivationMapMap
-                                         & maps blockActivationMapMap) asVector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertMemoryObject: reg = ( |
-            | 
-            cg generateExit: [|:okLabel|
-              layouts object
-                                 generateIf: reg
-                                       Temp: dstReg
-                 IsMemoryObjectThenBranchTo: okLabel
-                                       With: cg.
-              typeError: 'memoryObject'.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertNMethod: reg = ( |
-            | 
-            assert: reg HasAnyMapTypeIn:  vector copyAddFirst: maps nmethodMap).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertNoOverflow: operationName During: aBlock = ( |
-            | 
-            cg generateIf: [|:trueFork|
-              cg generateIfIntegerOverflowDuring: aBlock ThenBranchTo: trueFork.
-            ] Then: [
-              overflowError: operationName
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertNotMarkInDstReg = ( |
-            | 
-            cg generateIf: [|:trueFork|
-              cg withTemporaryRegisterDo: [|:tempReg|
-                layouts object generateIf: dstReg
-                                     Temp: tempReg
-                       IsMarkThenBranchTo: trueFork
-                                     With: cg.
-              ].
-            ] Then: [
-              markAccessError.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertValidNonMarkTag: tagSmiReg = ( |
-            | 
-            cg generateIfTag: tagSmiReg
-                      IsMark: [markAccessError]
-                IsInvalidTag: [badValueError: 'a valid non-mark tag'].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: assertions\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         assertVector: reg = ( |
-            | 
-            assert: reg HasAnyMapTypeIn: ( maps objVectorMap
-                                         & maps mapMap
-                                         & maps outerActivationMapMap
-                                         & maps blockActivationMapMap) asVector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyFor: aCodeGenerator Node: n Receiver: r FailBlock: f Dest: d = ( |
-            | 
-            (((((copy cg: aCodeGenerator) node: n) rcvrReg: r) fbReg: f) dstReg: d) endLabel: aCodeGenerator newLabel).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         errors* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'primitives' -> 'errorsMixin' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: errors\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         fail: errorMessage = ( |
-            | 
-            cg sendErrorTo: fbReg PutResultInto: dstReg Name: node selector Message: errorMessage Node: node.
-            cg branchToLabel: endLabel.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         layouts = ( |
-            | 
-            vmKit layouts).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         maps = ( |
-            | 
-            vmKit maps).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         vmKit = ( |
-            | 
-            "Should we do this statically instead? -- Adam, 2/06"
-            cg vmKit).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'failureHandler' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         rcvrReg.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          frame = ( |
             | 
             machineLevelAllocator frame).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         frameAtLexicalLevel: ll = ( |
-            | 
-            compiler frameAtLexicalLevel: ll).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1684,7 +1281,7 @@ Returns an address into a bytes part masquerading as a small integer.
             [generatePrimitive_IntAdd_IfFail_: n]. "browsing"
             "For more browsing tags, see" [browsingTagsForGeneratedSlots].
 
-            ( selectorForTheMethodThatTakesTheNode: n selector )
+            ( primitiveGenerationMethodNameForSelector: n selector )
                sendTo: self With: n.
             "browsing"
             [undefinedSelector: nil Type: nil Delegatee: nil MethodHolder: nil Arguments: nil].
@@ -1750,7 +1347,7 @@ Returns an address into a bytes part masquerading as a small integer.
                                  Space: spaceReg
                                   Into: dstReg
                      IfOutOfMemoryThen: [| nlr |
-                                         setUpSendArguments: vector copyAddFirst: sourceLevelAllocator locationForConstant: vmKit garbageCollector.
+                                         setUpSendArguments: vector copyAddFirst: locationForConstant: vmKit garbageCollector.
                                          nlr: genNormalCallSelector: 'scavenge' LiveOopTracker: liveOopTracker copyForNode: node.
                                          compiler nlrPoints add: nlr.
                                          branchToLabel: retryLabel]
@@ -1790,13 +1387,8 @@ Returns an address into a bytes part masquerading as a small integer.
          generatePrimitive_OnNonLocalReturn_IfFail_: node = ( |
              doneCleanupLabel.
              doneLabel.
-             inRes.
-             nlrHome.
              nlrLabel.
              nlrLabelForProtectBlock.
-             origHome.
-             outRcv.
-             protectBlockArg.
             | 
             "The Self VM checks the original result for mark-ness
              to propagate an abort. We don't. -- dmu 9/04"
@@ -1804,18 +1396,12 @@ Returns an address into a bytes part masquerading as a small integer.
             [b _OnNonLocalReturn: protectBlock           ]. "browsing"
             [b _OnNonLocalReturn: protectBlock IfFail: fb]. "browsing"
 
-                     outRcv: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 0.
-                      inRes: machineLevelAllocator locationForIncomingResult.
-                    nlrHome: machineLevelAllocator locationForIncomingNLRHomeScope.
-                   origHome:  sourceLevelAllocator valueFor_OnNLR_homeScope location.
-            protectBlockArg: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 1.
-
             comment: 'call orig block'.
-            moveLocation: node rcvrLoc ToLocation: outRcv.
+            moveLocation: node rcvrLoc ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 0.
             nlrLabel: genNormalCallSelector: 'value' LiveOopTracker: liveOopTracker copyForNode: node.
 
             comment: 'no NLR happened, so return the result of running the block'.
-            moveLocation: inRes ToLocation: node resultLoc.
+            moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: node resultLoc.
             doneLabel: newLabel.
             branchToLabel: doneLabel.
 
@@ -1823,18 +1409,18 @@ Returns an address into a bytes part masquerading as a small integer.
             bindLabel: nlrLabel.
 
             comment: 'save orig NLR data in a safe place'.
-            moveLocation: nlrHome      ToLocation: origHome.
+            moveLocation: machineLevelAllocator locationForIncomingNLRHomeScope ToLocation: node homeScopeValue location.
 
             comment: 'call protect block'.
-            moveLocation: inRes                   ToLocation: protectBlockArg.
-            moveLocation: node arg1Value location ToLocation: outRcv.
+            moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 1.
+            moveLocation: node arg1Value location                         ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 0.
 
             nlrLabelForProtectBlock: genNormalCallSelector: 'value:' LiveOopTracker: liveOopTracker copyForNode: node.
 
             bindLabel: nlrLabelForProtectBlock. "ignore protect block NLR"
 
             comment: 'resume orig NLR'.
-            moveLocation: origHome ToLocation: nlrHome.
+            moveLocation: node homeScopeValue location ToLocation: machineLevelAllocator locationForIncomingNLRHomeScope.
 
             "Continue NLRing."
             doneCleanupLabel: newLabel.
@@ -2400,6 +1986,14 @@ Returns an address into a bytes part masquerading as a small integer.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
+         locationForConstant: o = ( |
+            | 
+            machineLevelAllocator locationForConstant: o).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
          locations = ( |
             | 
             compiler locations).
@@ -2497,35 +2091,6 @@ and may fail to compile otherwise.
             ].
 
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: materializing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         materializeLocsAndFailureHandlerOf: node AndDo: blk = ( |
-            | 
-            materializeLocsAndFailureHandlerVectorOf: node AndDo: [|:argsToPassIn|
-              pass: argsToPassIn Into: blk.
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: materializing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         materializeLocsAndFailureHandlerVectorOf: node AndDo: blk = ( |
-            | 
-            materializeDestAndArgsOf: node AndDo: [|:dstReg. :rcvrAndArgRegs. rcvrReg. fbReg|
-              rcvrAndArgRegs size > 5  ifTrue: [error: 'unimplemented'].
-              rcvrReg: rcvrAndArgRegs first.
-              fbReg: node hasExplicitFailBlock ifTrue: [rcvrAndArgRegs last] False: [rcvrReg].
-              try: [|:fh. argsToPassIn|
-                argsToPassIn:  rcvrAndArgRegs.
-                node hasExplicitFailBlock ifTrue: [argsToPassIn: argsToPassIn copyWithoutLast].
-                argsToPassIn: argsToPassIn copyAddLast: fh.
-                argsToPassIn: argsToPassIn copyAddFirst: dstReg.
-                blk value: argsToPassIn.
-              ] Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
-            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2730,16 +2295,19 @@ and may fail to compile otherwise.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: materializing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: primitives\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         pass: argsToPassIn Into: blk = ( |
+         primitiveGenerationMethodNameForSelector: primitiveMethodName = ( |
+             s.
             | 
-            blk value: (argsToPassIn at: 0              )
-                 With: (argsToPassIn at: 1              )
-                 With: (argsToPassIn at: 2 IfAbsent: nil)
-                 With: (argsToPassIn at: 3 IfAbsent: nil)
-                 With: (argsToPassIn at: 4 IfAbsent: nil)
-                 With: (argsToPassIn at: 5 IfAbsent: nil)).
+            s: primitiveMethodName.
+
+            "Automatically append IfFail: to selector name if not already present
+             because both variants are generated identically except for the
+             handling of failures. -- jb 7/03"
+            ('IfFail:' isSuffixOf: s) ifFalse: [s: s, 'IfFail:'].
+
+            'generatePrimitive', (s copyMutable mapBy: [|:c| c = ':' ifTrue: '_' False: c]), ':').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2750,6 +2318,12 @@ and may fail to compile otherwise.
             ( asMirror ancestorsUpTo: lobby asMirror )  gather: [|:m|
               m asList copyFilteredBy: [|:s| 'generatePrimitive_' isPrefixOf: s name]
             ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         primitiveTranslatorMixin* = bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2851,43 +2425,6 @@ and may fail to compile otherwise.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         selectorForTheMethodThatTakesTheNode: primitiveMethodName = ( |
-             s.
-            | 
-            s: primitiveMethodName.
-
-            "Automatically append IfFail: to selector name if not already present
-             because both variants are generated identically except for the
-             handling of failures. -- jb 7/03"
-            ('IfFail:' isSuffixOf: s) ifFalse: [s: s, 'IfFail:'].
-
-            'generatePrimitive', (s copyMutable mapBy: [|:c| c = ':' ifTrue: '_' False: c]), ':').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: failure handling\x7fComment: Send an error message to the specified fail block.
-\'fbReg\' may be \'nil\' in the case that no fail block
-was supplied by the user program.\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         sendErrorTo: fbReg PutResultInto: dstReg Name: name Message: message Node: node = ( |
-            | 
-            compiler noSendsAllowed ifTrue: [
-              breakpoint: message.
-            ] False: [|nlr|
-              setUpSendArguments: (fbReg
-                                & (sourceLevelAllocator locationForConstant: message canonicalize)
-                                & (sourceLevelAllocator locationForConstant:    name canonicalize)) asVector.
-
-              nlr: genNormalCallSelector: node selectorToSendOnFailure LiveOopTracker: liveOopTracker copyForNode: node.
-              compiler nlrPoints add: nlr.
-
-              moveSendResultTo: dstReg.
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          setUpSendArguments: rcvrAndArgLocs = ( |
@@ -2940,240 +2477,12 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinC1_Gens InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: auto-generating\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         slotGenerator = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes codeGenerators abstract parent slotGenerator.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes codeGenerators abstract parent slotGenerator parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: generating\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         autoGeneratePrimitiveMethodForSelector: primitiveMethodName ArgumentCountIncludingReceiver: argumentCountIncludingReceiver On: mir = ( |
-             args.
-             body.
-             destinationMethodName.
-             primitiveMethodNameWithIfFail.
-             primitiveMethodNameWithoutIfFail.
-             r <- ''.
-             sourceMethodName.
-            | 
-
-            [materializeLocsAndFailureHandlerOf: n AndDo: b]. "browsing"
-
-            destinationMethodName: mir reflectee selectorForTheMethodThatTakesTheNode: primitiveMethodName.
-            (mir lookupKey: destinationMethodName) isEmpty ifFalse: [^ self].
-
-            primitiveMethodNameWithoutIfFail: primitiveMethodName copyWithoutSuffix: 'IfFail:'.
-            primitiveMethodNameWithIfFail: primitiveMethodNameWithoutIfFail, 'IfFail:'.
-
-            sourceMethodName:  autoGeneratingMethodNameForSelector: primitiveMethodName.
-
-            r: r & destinationMethodName & ' n = (\n'.
-
-            r: r & '"this method was auto-generated by" '
-                 & '[autoGeneratePrimitiveMethodForSelector: abc
-                    ArgumentCountIncludingReceiver: 1
-                                                On: mir].\n'.
-            r: r & '[ ' & (browsingTagFor: primitiveMethodNameWithoutIfFail) & '              ]. "browsing"\n'.
-            r: r & '[ ' & (browsingTagFor: primitiveMethodNameWithIfFail   ) &              ' ]. "browsing"\n'.
-
-            r: r & 'materializeLocsAndFailureHandlerOf: n AndDo: [|'.
-
-            (mir lookupKey: sourceMethodName) ifNone: [
-              args: (vector copySize: argumentCountIncludingReceiver succ) copyMappedBy: [|:v. :i| 'arg', i asString].
-              body: args last & ' notImplementedYetError: \'' & primitiveMethodNameWithIfFail & '\''.
-            ] IfOne: [|:s|
-              args: s contents arguments.
-              body: (selector copyStr: s name) intersperse: args.
-            ] IfMany: [
-              error: 'The automatic primitive generator got confused. Please resolve the problem manually.'.
-            ].
-
-            args do: [|:a| r: r & ':' & a] SeparatedBy: [r: r & '. '].
-            r: r & '|\n'.
-            r: r & '  ' & body & '. \n'.
-
-            r: r & '].\n'.
-            r: r & 'self)'.
-
-            (reflect: ('(| ' & r & ' |)') flatString eval) do: [|:slot|
-              slot category: generatedSlotCategory.
-              slot module: 'init'.
-              slot comment: 'this method was auto-generated by autoGeneratePrimitiveMethodForSelector:ArgumentCountIncludingReceiver:On:'.
-              slot visibility: visibility privateSlot.
-              mir addSlot: slot.
-            ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: slot names\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         autoGeneratingMethodNameForSelector: primitiveMethodName = ( |
-            | 
-            autoGeneratingPrefix,
-            (primitiveMethodName copyFrom: 1), "rm _"
-            (
-              ( 'IfFail:' isSuffixOf: primitiveMethodName )
-                            ifTrue: ''
-                             False: 'IfFail:'
-            )).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: slot names\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         autoGeneratingPrefix = ( |
-            | 'generatePrimitiveInto:Receiver:').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: browsing tags\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         browsingTagFor: primitiveMethodName = ( |
-             sel.
-            | 
-            sel: selector copyStr: primitiveMethodName.
-            sel ifUnary: [primitiveMethodName]
-                 Binary: [error: 'primitive method name should not be binary']
-                Keyword: [sel intersperse: (sel keywords asVector copyMappedBy: [|:k. :i| 'arg', i asString])]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyGenerateSlotsIn: o = ( |
-            | 
-            (copy targetMirror: o asMirror) generateSlots).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: generating\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateBrowsingTagsForGeneratedSlots = ( |
-             s <- 'browsingTagsForGeneratedSlots = (
-'.
-            | 
-            primitiveGenerationMethods do: [|:slot| s: s & '[ ' & slot name & ' n ]. "browsing"\n'].
-            s: s & 'self)'.
-
-            (reflect: ('(| ' & s & ' |)') flatString eval) do: [|:slot|
-              slot category: generatedSlotCategory.
-              slot module: 'kleinC1_Gens'.
-              slot comment: 'this method was auto-generated by generateBrowsingTagsForGeneratedSlots'.
-              slot visibility: visibility privateSlot.
-              asMirror addSlot: slot.
-            ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: generating\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateSlots = ( |
-            | 
-            (targetMirror ancestorsUpTo: traits clonable asMirror) do: [|:m|
-              m do: [|:s|
-                (autoGeneratingPrefix isPrefixOf: s name) ifTrue: [|primName|
-                  primName: primitiveNameForSourceMethod: s.
-                  autoGeneratePrimitiveMethodForSelector: primName
-                          ArgumentCountIncludingReceiver: (selector copyStr: primName) numberOfArguments
-                                                      On: m.
-                ].
-              ].
-            ].
-            modules init beClean.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: categories\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generatedSlotCategory = 'auto-generated'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: accessing generated slots\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generatedSlots = ( |
-            | 
-            (vector copyAddLast: asMirror), (browse descendantsOf: self) gather: [|:m| m asList copyFilteredBy: [|:s| isSlotGenerated: s]]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: slot names\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isPrimitiveGenerationMethod: aSlot = ( |
-            | 
-            'generatePrimitive_' isPrefixOf: aSlot name).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: categories\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isSlotGenerated: s = ( |
-            | 
-            s categories includes: generatedSlotCategory).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: generating\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         primitiveGenerationMethods = ( |
-            | 
-            (vector copyAddLast: targetMirror), (browse descendantsOf: targetMirror reflectee)
-               gather: [|:m| m asList copyFilteredBy: [|:s| isPrimitiveGenerationMethod: s]]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: slot names\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         primitiveNameForSourceMethod: s = ( |
-            | 
-            '_', (s name copyWithoutPrefix: autoGeneratingPrefix)).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> 'parent' -> () From: ( | {
-         'Category: removing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         removeGeneratedSlots = ( |
-            | 
-            generatedSlots do: [|:s| s holder removeSlot: s name IfFail: []].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'slotGenerator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         targetMirror.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          sourceLevelAllocator = ( |
             | 
-            compiler sourceLevelAllocator).
+            [aaaaa]. "This'll need to change or disappear once we start inlining."
+            machineLevelAllocator topSourceLevelAllocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -3284,16 +2593,11 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinC1_Gens InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: failure handling\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         try: aBlock Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg = ( |
-             fh.
-             result.
+         topSourceLevelAllocator = ( |
             | 
-            fh: failureHandler copyFor: self Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
-            result:  aBlock value: fh.
-            bindLabel: fh endLabel.
-            result).
+            machineLevelAllocator topSourceLevelAllocator).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -3309,7 +2613,7 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinC1_Gens InitialCon
                 ( t = 'normal')
             && [  d isNil
             && [ mh isNil
-            && ['generatePrimitive_' isPrefixOf: sel]]]
+            && [slotGenerator isPrimitiveGenerationSelector: sel]]]
              ifFalse: [error: sel, ' is not understood'].
 
             "may need to auto-generate"
@@ -3633,8 +2937,7 @@ SlotsToOmit: parent.
               generateExit: [|:alreadyNonZeroLabel|
                 generateIf: memoizedBlockReg IsNonZeroThenBranchTo: alreadyNonZeroLabel.
 
-                setUpSendArguments: (node blockProtoLoc
-                                   & (locations stackPointer copyLexicalLevel: 0)) asVector.
+                setUpSendArguments: (node blockProtoLoc & sp) asVector.
 
                 [cloneBlockHomeFrame_stub: fp].
                 sendDesc generateCallStubName: 'cloneBlockHomeFrame_stub:'
@@ -3991,7 +3294,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          generateMoveIncomingReceiverAndArgumentsToNonVolLocations = ( |
             | 
             "could use stswi someday"
-            sourceLevelAllocator incomingVolatileRegRcvrAndArgLocationsToSaveDo: [|:vol. :nonVolReg. :nonVolMem|
+            topSourceLevelAllocator incomingVolatileRegRcvrAndArgLocationsToSaveDo: [|:vol. :nonVolReg. :nonVolMem|
               nonVolReg ifNotNil: [moveLocation: vol ToLocation: nonVolReg].
               nonVolMem ifNotNil: [moveLocation: vol ToLocation: nonVolMem].
             ].
@@ -4007,6 +3310,31 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
               loadNMethodIntoRegister: r.
               storeWordInRegister: r ToOffset: frame nmethodOffset * oopSize FromAddressInRegister: sp.
             ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateNLRFrom: aSourceLevelAllocator = ( |
+            | 
+            [compiler slot contents isReflecteeBlockMethod] assert.
+            moveLocation: aSourceLevelAllocator locationForOutgoingResult ToLocation: machineLevelAllocator locationForOutgoingResult.
+            generateEpilogueWordOffset: sendDesc nlrReturnIndex.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateNLRHomeScopeOf: aSourceLevelAllocator Into: dstLoc = ( |
+            | 
+            [compiler slot contents isReflecteeBlockMethod] assert.
+
+            withStackPointerForLexicalLevel: aSourceLevelAllocator lexicalParentCount StartingFrom: aSourceLevelAllocator Do: [|:sp|
+              moveRegister: sp ToLocation: dstLoc.
+            ].
+
             self).
         } | ) 
 
@@ -4032,40 +3360,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
                 Equals: sp
                   Then: [ restoreFrameAndReturn: sendDesc normalReturnIndex ]
                   Else: [ restoreFrameAndReturn: sendDesc    nlrReturnIndex ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateNLRReallyReturningValueInLocation: returnedValueLoc = ( |
-            | 
-            moveLocation: (locations stackPointer copyLexicalLevel: compiler lexicalParentCount)
-              ToLocation: machineLevelAllocator locationForOutgoingNLRHomeScope.
-
-            moveLocation: returnedValueLoc
-              ToLocation: machineLevelAllocator locationForOutgoingResult.
-
-            generateEpilogueWordOffset: sendDesc nlrReturnIndex.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateNLRReturningValueInLocation: returnedValueLoc = ( |
-            | 
-            [compiler slot contents isReflecteeBlockMethod] assert.
-
-            [machineLevelAllocator locationForOutgoingResult != machineLevelAllocator locationForOutgoingNLRHomeScope] assert.
-
-            returnedValueLoc = machineLevelAllocator locationForOutgoingNLRHomeScope ifFalse: [
-                generateNLRReallyReturningValueInLocation: returnedValueLoc.
-            ] True: [
-              withTemporaryRegisterDo: [|:tempReg|
-                moveLocation: returnedValueLoc ToRegister: tempReg.
-                generateNLRReallyReturningValueInLocation: tempReg.
-              ].
-            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -4843,7 +4137,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generateRestoreIncomingReceiverAndArgumentsFromNonVolRegisters = ( |
             | 
-            sourceLevelAllocator incomingVolatileRegRcvrAndArgLocationsDo: [|:vol. :nonVol|
+            topSourceLevelAllocator incomingVolatileRegRcvrAndArgLocationsDo: [|:vol. :nonVol|
               moveLocation: nonVol ToLocation: vol.
             ].
             self).
@@ -4927,19 +4221,35 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fCategory: location-specific methods\x7fCategory: loading\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
+         loadIncomingMemoryArgumentLocation: loc InFrame: f AtSP: sp ToRegister: r = ( |
+            | 
+            false ifTrue: [
+              todo optimization lexicalParentFrameSize.
+              loadValueAtOffset: (loc spOffsetFor: self InFrame: f) FromAddressInRegister: sp ToRegister: r.
+            ]
+            False: [
+              loadValueAtOffset: oopSize * f savedSPOffset                          FromAddressInRegister: sp ToRegister: r.
+              loadValueAtOffset: (spOffsetOfOutgoingMemoryArgument: loc InFrame: f) FromAddressInRegister: r  ToRegister: r.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fCategory: location-specific methods\x7fCategory: loading\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
          loadIncomingMemoryArgumentLocation: loc ToRegister: r = ( |
             | 
-            withStackPointerForMemoryLocation: loc Do: [|:sp. thisFrame|
-              thisFrame: frameAtLexicalLevel: loc lexicalLevel.
-              false ifTrue: [
-                todo optimization lexicalParentFrameSize.
-                loadValueAtOffset: (spOffsetOfIncomingMemoryArgument: loc) FromAddressInRegister: sp ToRegister: r.
-              ]
-              False: [
-                loadValueAtOffset: oopSize * thisFrame savedSPOffset       FromAddressInRegister: sp ToRegister: r.
-                loadValueAtOffset: (spOffsetOfOutgoingMemoryArgument: loc) FromAddressInRegister: r  ToRegister: r.
-              ].
+            withStackPointerForMemoryLocation: loc Do: [|:sp. :f|
+              loadIncomingMemoryArgumentLocation: loc InFrame: f AtSP: sp ToRegister: r.
             ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fCategory: location-specific methods\x7fCategory: loading\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         loadNonVolMemoryLocalLocation: loc InFrame: f AtSP: sp ToRegister: r = ( |
+            | 
+            loadValueAtOffset: (loc spOffsetFor: self InFrame: f) FromAddressInRegister: sp ToRegister: r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -4947,8 +4257,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          loadNonVolMemoryLocalLocation: loc ToRegister: r = ( |
             | 
-            withStackPointerForMemoryLocation: loc Do: [|:sp|
-              loadValueAtOffset: (spOffsetOfNonVolMemoryLocal: loc) FromAddressInRegister: sp ToRegister: r.
+            withStackPointerForMemoryLocation: loc Do: [|:sp. :f|
+              loadNonVolMemoryLocalLocation: loc InFrame: f AtSP: sp ToRegister: r.
             ]).
         } | ) 
 
@@ -4998,10 +4308,18 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fCategory: location-specific methods\x7fCategory: loading\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
+         loadOutgoingMemoryArgumentLocation: loc InFrame: f AtSP: sp ToRegister: r = ( |
+            | 
+            loadValueAtOffset: (loc spOffsetFor: self InFrame: f) FromAddressInRegister: sp ToRegister: r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fCategory: location-specific methods\x7fCategory: loading\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
          loadOutgoingMemoryArgumentLocation: loc ToRegister: r = ( |
             | 
-            withStackPointerForMemoryLocation: loc Do: [|:sp|
-              loadValueAtOffset: (spOffsetOfOutgoingMemoryArgument: loc) FromAddressInRegister: sp ToRegister: r.
+            withStackPointerForMemoryLocation: loc Do: [|:sp. :f|
+              loadOutgoingMemoryArgumentLocation: loc InFrame: f AtSP: sp ToRegister: r.
             ]).
         } | ) 
 
@@ -5051,18 +4369,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             | 
             rs = rd ifTrue: [^ self].
             a mrTo: rd From: rs.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: frame pointer\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         moveStackPointerForLexicalLevel: ll ToRegister: r = ( |
-            | 
-            withStackPointerForLexicalLevel: ll Do: [|:sp|
-              moveRegister: sp
-                ToRegister: r.
-            ].
             self).
         } | ) 
 
@@ -5281,27 +4587,26 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fCategory: location-specific methods\x7fCategory: offsets\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         spOffsetOfIncomingMemoryArgument: loc = ( |
+         spOffsetOfIncomingMemoryArgument: loc InFrame: f = ( |
             | 
-            (oopSize * ((frameAtLexicalLevel: loc lexicalLevel) totalWordCount)) +
-              spOffsetOfOutgoingMemoryArgument: loc).
+            (oopSize * f totalWordCount) +
+              spOffsetOfOutgoingMemoryArgument: loc InFrame: f  "should really be f caller, I guess, except we don't have that info").
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fCategory: location-specific methods\x7fCategory: offsets\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         spOffsetOfNonVolMemoryLocal: loc = ( |
+         spOffsetOfNonVolMemoryLocal: loc InFrame: f = ( |
             | 
-            oopSize * ((frameAtLexicalLevel: loc lexicalLevel) localSPOffsetAt: loc index)).
+            oopSize * (f localSPOffsetAt: loc index)).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fCategory: location-specific methods\x7fCategory: offsets\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         spOffsetOfOutgoingMemoryArgument: loc = ( |
+         spOffsetOfOutgoingMemoryArgument: loc InFrame: f = ( |
             | 
-            oopSize * ((frameAtLexicalLevel: loc lexicalLevel)
-                receiverAndArgumentSPOffsetAt: loc rcvrAndArgNo)).
+            oopSize * (f receiverAndArgumentSPOffsetAt: loc rcvrAndArgNo)).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -5318,16 +4623,15 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          storeRegister: r ToIncomingMemoryArgumentLocation: loc = ( |
             | 
-            withStackPointerForMemoryLocation: loc Do: [|:sp. thisFrame|
-              thisFrame: frameAtLexicalLevel: loc lexicalLevel.
+            withStackPointerForMemoryLocation: loc Do: [|:sp. :f|
               false ifTrue: [
                 todo optimization lexicalParentFrameSize.
-                storeWordInRegister: r ToOffset: (loc spOffsetForNMethod: self) FromAddressInRegister: sp.
+                storeWordInRegister: r ToOffset: (loc spOffsetFor: self InFrame: f) FromAddressInRegister: sp.
               ]
               False: [
                 withTemporaryRegisterDo: [|:tempReg|
-                  loadValueAtOffset: oopSize * thisFrame savedSPOffset FromAddressInRegister: sp ToRegister: tempReg.
-                  storeWordInRegister: r ToOffset: (spOffsetOfOutgoingMemoryArgument: loc) FromAddressInRegister: tempReg.
+                  loadValueAtOffset: oopSize * f savedSPOffset FromAddressInRegister: sp ToRegister: tempReg.
+                  storeWordInRegister: r ToOffset: (spOffsetOfOutgoingMemoryArgument: loc InFrame: f) FromAddressInRegister: tempReg.
                 ]
               ]
             ].
@@ -5339,8 +4643,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          storeRegister: r ToNonVolMemoryLocalLocation: loc = ( |
             | 
-            withStackPointerForMemoryLocation: loc Do: [|:sp|
-              storeWordInRegister: r ToOffset: (loc spOffsetForNMethod: self) FromAddressInRegister: sp.
+            withStackPointerForMemoryLocation: loc Do: [|:sp. :f|
+              storeWordInRegister: r ToOffset: (loc spOffsetFor: self InFrame: f) FromAddressInRegister: sp.
             ]).
         } | ) 
 
@@ -5349,8 +4653,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          storeRegister: r ToOutgoingMemoryArgumentLocation: loc = ( |
             | 
-            withStackPointerForMemoryLocation: loc Do: [|:sp|
-              storeWordInRegister: r ToOffset: (loc spOffsetForNMethod: self) FromAddressInRegister: sp.
+            withStackPointerForMemoryLocation: loc Do: [|:sp. :f|
+              storeWordInRegister: r ToOffset: (loc spOffsetFor: self InFrame: f) FromAddressInRegister: sp.
             ]).
         } | ) 
 
@@ -5383,40 +4687,34 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: frame pointer\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         withStackPointerForLexicalLevel: ll Do: blk = ( |
+         withStackPointerForLexicalLevel: ll StartingFrom: aSourceLevelAllocator Do: blk = ( |
+             f.
+             lps.
+             lpss.
             | 
-            ll = 0 ifTrue: [^ blk value: sp].
+            f: aSourceLevelAllocator machineLevelAllocator frame.
+            ll = 0 ifTrue: [^ blk value: sp With: f].
 
+            lpss: aSourceLevelAllocator lexicalParentScopes.
             withTemporaryRegisterDo: [|:ancestorSP|
               ll do: [|:i. blockReg|
-                blockReg: i = 0 ifTrue: [
-                  "Incoming receiver is the block"
-                  sourceLevelAllocator locationForIncomingReceiver register
-                ]
-                False: [| thisFrame |
-                  thisFrame: frameAtLexicalLevel: i.
-                  false ifTrue: [
-                    [todo optimization lexicalParentFrameSize]. "do this if we can add relocs to get lexical parent frame size"
+                "Incoming receiver is the block"
 
-                    "Load outgoing receiver from parent frame"
-                        loadValueAtOffset: oopSize * (thisFrame totalWordCount + thisFrame receiverStackOffset)
-                    FromAddressInRegister: ancestorSP
-                               ToRegister: ancestorSP.
-                  ]
-                  False: [
-                    "Load outgoing receiver from parent frame.
-                     Don't know how big it is so follow link. -- dmu 9/03"
-                    loadValueAtOffset: oopSize * thisFrame       savedSPOffset FromAddressInRegister: ancestorSP ToRegister: ancestorSP.
-                    loadValueAtOffset: oopSize * thisFrame receiverStackOffset FromAddressInRegister: ancestorSP ToRegister: ancestorSP.
-                  ].
+                blockReg: i = 0 ifTrue: [
+                  aSourceLevelAllocator locationForIncomingReceiver register
+                ] False: [| uplevelRcvrLoc |
+                  uplevelRcvrLoc: aSourceLevelAllocator locationForUplevel: i AccessTo: lps locationForIncomingReceiver.
+                  uplevelRcvrLoc tell: self ToLoadMeFromFrame: f AtSP: ancestorSP ToRegister: ancestorSP.
                   ancestorSP
                 ].
 
                 [todo assertion]. "Might be a good idea to check that we actually have a block"
                 layouts block generateHomeFramePointerOf: blockReg Into: ancestorSP With: self.
+                lps: lpss at: lpss size - i succ.
+                f: lps frame.
               ].
 
-              blk value: ancestorSP
+              blk value: ancestorSP With: f.
             ]).
         } | ) 
 
@@ -5425,7 +4723,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          withStackPointerForMemoryLocation: loc Do: blk = ( |
             | 
-            withStackPointerForLexicalLevel: loc lexicalLevel Do: blk).
+            withStackPointerForLexicalLevel: loc lexicalLevel StartingFrom: loc accessingSourceLevelAllocator Do: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {

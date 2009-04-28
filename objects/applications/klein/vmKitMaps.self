@@ -2224,6 +2224,21 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         slotNamesWithSPOffsetRecorded = ( |
+             ns.
+            | 
+            ns: list copyRemoveAll.
+            size do: [|:i|
+              (klein nmethod isSPOffsetRecordedForSlotOfType: typeAt: i) ifTrue: [
+                ns add: nameAt: i.
+              ].
+            ].
+            ns).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
          'Category: pretending to be a mirror\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
          slotObjectsForSlotsSatisfying: blk = ( |

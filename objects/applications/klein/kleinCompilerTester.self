@@ -192,16 +192,19 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: kleinCompilerTester InitialContents: FollowSlot\x7fVisibility: private'
         
-         compile: aSlot For: arch LexicalParentCompiler: lpc = ( |
+         compile: aSlot For: arch LexicalParentScopes: lpss = ( |
              c.
+             context.
             | 
-            c: compilerPrototype
-                        copyForSlot: aSlot
-                               Self: asMirror
-              LexicalParentCompiler: lpc
-                       Architecture: arch
-                             Oracle: compilerPrototype oracleThatCannotDoEagerRelocation
-                              Debug: true.
+            c: compilerPrototype.
+            context: c prototypes compilationContext
+                                    copyForSlot: aSlot
+                                           Self: asMirror
+                            LexicalParentScopes: lpss.
+            c: c copyForContext: context
+                   Architecture: arch
+                         Oracle: compilerPrototype oracleThatCannotDoEagerRelocation
+                          Debug: true.
             c compileForcingNonLeafIfNecessary).
         } | ) 
 
@@ -256,7 +259,8 @@ See the LICENSE file for license information.
               compiler: 
                               compile: slot 
                                   For: arch 
-                LexicalParentCompiler: lastCompiler.
+               LexicalParentAllocator: lastCompiler ifNotNil: [|:c| c topSourceLevelAllocator]
+                  LexicalParentScopes: outerNMethods.
 
               outerNMethods addLast: compiler buildNMethod.
               lastCompiler: compiler.
