@@ -1440,7 +1440,7 @@ Returns an address into a bytes part masquerading as a small integer.
             [ _Restart           ]. "browsing"
             [ _RestartIfFail: fb ]. "browsing"
             genStackCheck.
-            genBranchTo: node nodeToBranchTo).
+            genBranchTo: node destinationNode).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1711,7 +1711,7 @@ Returns an address into a bytes part masquerading as a small integer.
         
          gcMask = ( |
             | 
-            gcMaskLayout maskForLocations: locationsThatNeedToBePreserved).
+            gcMaskLayout maskForLocations: node locationsThatNeedToBePreserved).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> 'parent' -> () From: ( | {
@@ -1723,14 +1723,6 @@ Returns an address into a bytes part masquerading as a small integer.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         locationsThatNeedToBePreserved = ( |
-            | 
-            node locationsThatNeedToBePreserved).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> 'parent' -> () From: ( | {
          'Category: zapping\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          locationsThatShouldBeZapped = ( |
@@ -1738,19 +1730,11 @@ Returns an address into a bytes part masquerading as a small integer.
              preserve.
             | 
             couldZap: node machineLevelAllocator locationsThatCouldBeDead.
-            preserve: locationsThatShouldNotBeZapped.
+            preserve: node locationsThatNeedToBePreserved.
             couldZap asSet copyFilteredBy: [|:loc|
                  (gcMaskLayout shouldLocationBeRepresentedInGCMask: loc)
               && [(preserve includes: loc) not]
             ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         locationsThatShouldNotBeZapped = ( |
-            | 
-            locationsThatNeedToBePreserved).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> 'parent' -> () From: ( | {
@@ -2821,13 +2805,8 @@ SlotsToOmit: parent.
          'Category: stubs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          branchToStubName: stubName UsingCTRAnd: r SetLink: shouldSetLink = ( |
-             or.
             | 
-            or: vmKit relocators stub
-              copyDstReg: r Offset: a locationCounter MethodNamed: stubName.
-            compiler addRelocator: or.
-            [sendDesc retryIndex]. "next instruction gets backpatched!"
-            or assembleRealOrPlaceholderInstructionsWith: self.
+            generateEntryAddressOfStubNamed: stubName Into: r.
             a mtctrFrom: r.
             shouldSetLink ifTrue: [a bctrl]
                            False: [a bctr ].
@@ -2837,7 +2816,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedMethodStartInstruction.
+         cachedMethodStartInstruction <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -3062,6 +3041,20 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
                   With: lcOfSendDesc - lcInSendDescReg. "(N + X) - (N + 4)"
             ].
 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: stubs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateEntryAddressOfStubNamed: stubName Into: r = ( |
+             or.
+            | 
+            or: vmKit relocators stub
+              copyDstReg: r Offset: a locationCounter MethodNamed: stubName.
+            compiler addRelocator: or.
+            [sendDesc retryIndex]. "next instruction gets backpatched!"
+            or assembleRealOrPlaceholderInstructionsWith: self.
             self).
         } | ) 
 
@@ -3419,6 +3412,16 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             | 
             fh assertInteger: rcvrReg.
             generateChangeTagOf: rcvrReg From: vmKit tag smi To: vmKit tag float Into: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfCompileSlotStubIfFail: fh = ( |
+            | 
+            [compileSlot_stub]. "browsing"
+            generateEntryAddressOfStubNamed: 'compileSlot_stub' Into: dstReg.
             self).
         } | ) 
 

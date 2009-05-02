@@ -670,6 +670,16 @@ kleinProcess
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: public'
         
+         constantAt: index IfFail: fb = ( |
+            | 
+            [reflectee constants]. "browsing"
+            (primitiveContentsAt: 'constants' IfFail: [|:e| ^ fb value: e])
+               reflecteeMirrorAt: index       IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'nmethod' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: public'
+        
          disassembledMachineCode = ( |
             | disassembledMachineCodeIfFail: raiseError).
         } | ) 

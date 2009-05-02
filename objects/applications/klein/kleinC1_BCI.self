@@ -36,9 +36,21 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
+         'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+        
+         firstNode.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
          'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (list copyRemoveAll)'
         
          inlinedInterpreters <- list copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
+         'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+        
+         inliningInterpreter.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
@@ -51,6 +63,12 @@ SlotsToOmit: parent.
          'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
         
          irNodesByBCI.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
+         'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+        
+         lastNode.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
@@ -128,11 +146,9 @@ SlotsToOmit: parent.
             sd method: slot contents.
             sd methodHolder: slot holder reflectee.
             sd incomingRcvrSPOffset: sourceLevelAllocator locationForIncomingReceiver spOffsetFor: myCompiler codeGenerator InFrame: nm frame.
-            sd slotSPOffsets:  findSlotSPOffsetsForFrame: nm frame.
-            sd pcOffsetsByBCI: pcOffsetsByBCI.
-            sd inlinedScopes: inlinedInterpreters isEmpty
-                                    ifTrue: [vector] "no sense mapping a whole new empty vector"
-                                     False: [(inlinedInterpreters copyMappedBy: [|:i| (i createScopeDescForNMethod: nm) inliningScope: sd]) asVector].
+            sd slotSPOffsets: findSlotSPOffsetsFor: sd Frame: nm frame.
+            sd pcOffsetsByBCI: findPCOffsetsByBCI.
+            sd inlinedScopes: (inlinedInterpreters copyMappedBy: [|:i| (i createScopeDescForNMethod: nm) inliningScope: sd]) asVector ifNone: vector.
             sd).
         } | ) 
 
@@ -193,17 +209,53 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
          'Category: building scope descs for nmethods\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
-         findSlotSPOffsetsForFrame: f = ( |
+         findPCOffsetsByBCI = ( |
+            | 
+            irNodesByBCI asVector copyMappedBy: [|:n| n pcOffsetIfPresent: [|:o| o] IfAbsent: -1]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: building scope descs for nmethods\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         findSlotSPOffsetsFor: sd Frame: f = ( |
              slotSPOffsets.
             | 
             slot isMethod ifFalse: [^ vector].
             slotSPOffsets: list copyRemoveAll.
             method allSlotsOnThisMethod do: [|:s|
-              s isKleinSlotOffsetRecorded ifTrue: [
-                slotSPOffsets addLast: (sourceLevelAllocator valueForSlot: s name) location spOffsetFor: myCompiler codeGenerator InFrame: f.
+              s isKleinSlotOffsetRecorded ifTrue: [| loc |
+                loc: (sourceLevelAllocator valueForSlot: s name) location.
+                loc isConstant ifFalse: [
+                  slotSPOffsets addLast: loc spOffsetFor: myCompiler codeGenerator InFrame: f.
+                ] True: [| index |
+                  index: sd nmethod addConstant: loc oopValue.
+                  slotSPOffsets addLast: sd nmethod spOffsetIndicatingConstantAt: index.
+                ].
               ].
             ].
-            slotSPOffsets asVector).
+            slotSPOffsets asVector ifNone: vector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         finished = ( |
+            | 
+            lastNode: irNodeGenerator nodeToInsertAfter.
+            resolveUnresolvedMoveNodes.
+            forgeControlFlowLinks.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         forgeControlFlowLinks = ( |
+            | 
+            irNodeGenerator
+              forgeControlFlowLinksStartingFrom: nodeToStartForgingControlFlowLinksFrom
+                                          Until: lastNode.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -369,6 +421,19 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         nodeToStartForgingControlFlowLinksFrom = ( |
+             n.
+            | 
+            n: firstNode.
+            [n sourcePred isNil || [n sourcePred controlFlowSuccs isEmpty not]] whileFalse: [
+              n: n sourcePred.
+            ].
+            n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
          'Category: prologue and epilogue\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          nonexistentBC = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> 'nonexistentBC' -> () From: ( |
@@ -432,14 +497,6 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'abstractBytecodeInterpreter' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
-         'Category: building scope descs for nmethods\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
-        
-         pcOffsetsByBCI = ( |
-            | 
-            irNodesByBCI asVector copyMappedBy: [|:n| n pcOffsetIfPresent: [|:o| o] IfAbsent: -1]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -605,7 +662,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          resolveUnresolvedMoveNodes = ( |
             | 
@@ -658,26 +715,14 @@ SlotsToOmit: parent.
             rcvrAndArgs: popRcvrAndArgsForSend: bc.
             result: pushStackValue.
 
-            bc isPrimitive ifTrue: [^ irNodeGenerator addSendNodeProto: (irNodeGenerator irNodeProtos primitiveProtoForBC: bc) RcvrAndArgs: rcvrAndArgs Result: result].
-
-            key: klein lookupKey copyForSendBC: bc.
-            (irNodeGenerator slotToInlineFor: rcvrAndArgs first Key: key) ifNil: [
-              irNodeGenerator addSendNodeProto: irNodeGenerator irNodeProtos send RcvrAndArgs: rcvrAndArgs Result: result. "will be error"
-            ] IfNotNil: [|:s|
-              [bc isSelfImplicit] assert. "Don't know how to inline non-self-sends yet."
-
-              "I'm not completely sure about this, but I think that we don't need to worry about resends
-               making the nmethod unreusable, since the resend lookup starts from the method holder rather
-               than from self. -- Adam, Apr. 2009"
-              bc isResend && [sourceLevelAllocator slot holder != selfMirror] ifFalse: [
-                myCompiler dependsOnKey: key ResolvingToSlot: s.
-              ].
-
-              s isMethod ifFalse: [
-                irNodeGenerator dataSlot: s InReceiverOfType: selfMirror RcvrAndArgs: rcvrAndArgs Result: result.
-              ] True: [
-                irNodeGenerator inlineMethodSlot: s Key: key ReceiverType: selfMirror RcvrAndArgs: rcvrAndArgs Result: result.
-              ].
+            bc isPrimitive ifTrue: [| n |
+              n: (irNodeGenerator irNodeProtos primitiveProtoForBC: bc) copyBC: bc RcvrAndArgs: rcvrAndArgs Result: result.
+              n setSpecialMode.
+              n isSpecialCompilationMode
+                      ifTrue: [irNodeGenerator addNode:     n]
+                       False: [irNodeGenerator addSendNode: n].
+            ] False: [
+              irNodeGenerator addSendNode: irNodeGenerator irNodeProtos send copyBC: bc RcvrAndArgs: rcvrAndArgs Result: result.
             ].
 
             bc).
@@ -697,6 +742,14 @@ SlotsToOmit: parent.
          stackValuesWhenBCIWas: bci = ( |
             | 
             stackValuesByBCI at: bci).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         vmKit = ( |
+            | 
+            klein).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
@@ -727,27 +780,33 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         bytecodeInterpreters <- list copyRemoveAll.
+         currentBytecodeInterpreter.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          firstNode.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          lastNode.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          myCompiler.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         nodeToInsertAfter.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {
@@ -764,34 +823,29 @@ SlotsToOmit: parent.
         
          addNode: n = ( |
             | 
-            [aaaaa]. "Duplicated. Bleh."
-            machineLevelAllocator allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations.
-
-            lastNode ifNotNil: [
-              n sourcePred: lastNode.
-              lastNode sourceSucc: n.
+            nodeToInsertAfter ifNotNil: [
+              n sourcePred: nodeToInsertAfter.
+              n sourceSucc: nodeToInsertAfter sourceSucc.
+              n sourceSucc ifNotNil: [|:succ| succ sourcePred: n].
+              nodeToInsertAfter sourceSucc: n.
             ].
-            lastNode: n.
-            firstNode ifNil: [firstNode: n].
+            nodeToInsertAfter: n.
+            n sourceSucc ifNil: [ lastNode: n].
+            n sourcePred ifNil: [firstNode: n].
+            currentBytecodeInterpreter firstNode ifNil: [currentBytecodeInterpreter firstNode: n].
             n bc).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: sends\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: sends\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
-         addSendNodeProto: irNodeProto RcvrAndArgs: rcvrAndArgs Result: result = ( |
-             n.
+         addSendNode: n = ( |
             | 
-            n: irNodeProto copyBC: currentBC.
-            n setSpecialMode.
-            n isSpecialCompilationMode ifTrue: [^ addNode: n].
-
-            machineLevelAllocator allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations.
-
-            n rcvrAndArgValuesToMoveTo with: rcvrAndArgs Do: [|:dstV. :srcV| move: srcV To: dstV].
+            n lastNodeBeforeSettingUpTheSend: nodeToInsertAfter.
+            n rcvrAndArgValuesToMoveTo with: n rcvrAndArgStackValues Do: [|:dstV. :srcV| move: srcV To: dstV].
             addNode: n.
-            move: n valueToGetResultFrom To: result.
-
+            move: n valueToGetResultFrom To: n resultStackValue.
+            n lastNodeSettingUpTheSendResult: nodeToInsertAfter.
             currentBC).
         } | ) 
 
@@ -823,6 +877,17 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canInlineSlot: s = ( |
+            | 
+            s isMethod                       ifFalse: [^  true]. "Data slots are fine."
+            s contents isReflecteeBlockMethod ifTrue: [^ false]. "Don't know how to inline block methods yet."
+            s contents hasBlocks              ifTrue: [^ false]. "Don't know how to inline methods containing blocks yet - gotta customize the nmethod so it can find the uplevel locations."
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: blocks\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          cloneBlockLiteral: mir Into: dst = ( |
@@ -830,14 +895,14 @@ SlotsToOmit: parent.
              memoValue.
             | 
             literalValue: sourceLevelAllocator valueForConstant: mir reflectee.
-            memoValue: machineLevelAllocator valueForMemoizedBlockMirror: mir.
+               memoValue: machineLevelAllocator valueForMemoizedBlockMirror: mir.
             addNode: irNodeProtos blockLiteral copyBC: currentBC
-                                               Source: literalValue
-                                          Destination: memoValue.
+                                              Literal: literalValue
+                                             Memoized: memoValue.
             move: memoValue To: dst.
 
-            [aaa]. "Not the right solution in the long run, but for now the memoixedBlockLoc
-                    needs to be a register. -- Adam, Apr. 2009"
+            [aaaaa]. "Not the right solution in the long run, but for now the memoixedBlockLoc
+                      needs to be a register. -- Adam, Apr. 2009"
             lastNode aaa_doNotCoalesce: true.
             self).
         } | ) 
@@ -900,14 +965,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
-        
-         copy = ( |
-            | 
-            resend.copy bytecodeInterpreters: bytecodeInterpreters copy).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          copyForCompiler: c = ( |
@@ -921,14 +978,6 @@ SlotsToOmit: parent.
          currentBC = ( |
             | 
             currentBytecodeInterpreter currentBC).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
-        
-         currentBytecodeInterpreter = ( |
-            | 
-            bytecodeInterpreters isEmpty ifTrue: nil False: [bytecodeInterpreters last]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -962,6 +1011,18 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forgeControlFlowLinksStartingFrom: n1 Until: n2 = ( |
+            | 
+            n1 sourceNodesDo: [|:n|
+              n forgeControlFlowLinks.
+              n == n2 ifTrue: [^ self].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateExit: aBlock = ( |
@@ -979,12 +1040,41 @@ SlotsToOmit: parent.
         
          generateIf: objValue DoesNotEqual: otherObjValue ThenBranchTo: trueFork = ( |
             | 
+            generateIf: objValue Is: comparisons notEqual With: otherObjValue ThenBranchTo: trueFork).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: objValue Is: comparison With: otherObjValue ThenBranchTo: trueFork = ( |
+            | 
             addNode: irNodeProtos conditionalBranch
                                      copyBC: currentBC
                                 Destination: trueFork
                                        Obj1: objValue
                                        Obj2: otherObjValue
-                                 Comparison: comparisons notEqual).
+                                 Comparison: comparison.
+
+            defineLabel. "To mark the start of the false branch."
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         ifShouldInlineSend: key To: rcvrValue Then: inlineBlk Else: noInlineBlk = ( |
+             ss.
+             t.
+            | 
+            myCompiler optimizationPolicy shouldNeverDoInlining  ifTrue: [^ noInlineBlk value].
+            machineLevelAllocator method isReflecteeBlockMethod  ifTrue: [^ noInlineBlk value]. "Would require customizing the block, which we don't do yet."
+            t: rcvrValue knownTypeIfFail:                                [^ noInlineBlk value].
+
+            ss: key lookupSlotsUsing: sourceLevelAllocator context protoSlotFinder Self: t Holder: sourceLevelAllocator context outermostMethodHolder.
+            ss ifNone: noInlineBlk
+                IfOne: [|:s| (canInlineSlot: s) && [myCompiler optimizationPolicy shouldInlineSlot: s For: rcvrValue Key: key] ifTrue: [inlineBlk value: s With: t] False: noInlineBlk]
+               IfMany: noInlineBlk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -997,14 +1087,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          inlineMethodSlot: s Key: key ReceiverType: rcvrMir RcvrAndArgs: rcvrAndArgValues Result: resultValue = ( |
              c.
              sla.
             | 
             [aaaaa]. "Could probably merge this with the data-slot inlining code - it'd be a bit cleaner. Um, maybe."
-            [s contents isReflecteeBlockMethod not] assert. "Don't know how to inline block methods yet - gotta get the lexical parent allocator somehow."
+            [s contents isReflecteeBlockMethod not] assert. "Don't know how to inline block methods yet - gotta get the lexical parent scopes somehow."
             comment: 'inlining call to ', s name.
             c: myCompiler prototypes compilationContext copyForSlot: (myCompiler oracleForEagerRelocation kleinifySlot: s)
                                                                 Key: key
@@ -1014,6 +1104,7 @@ SlotsToOmit: parent.
             sla: myCompiler prototypes sourceLevelAllocator
                                  copyForMachineLevelAllocator: machineLevelAllocator
                                                       Context: c.
+            sla initializeValues.
             sla allocateIncomingAndPreallocatedLocations. "Is it OK to put this here, or do I have to put it after the IR nodes are generated, or what?"
             rcvrAndArgValues with: sla incomingRcvrAndArgValues Do: [|:srcV. :dstV| move: srcV To: dstV].
             pushNewInterpreterFor: sla.
@@ -1026,12 +1117,28 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         inlineSlot: s Key: key ReceiverType: rcvrMir RcvrAndArgs: rcvrAndArgValues Result: resultValue = ( |
+            | 
+            myCompiler dependsOnKey: key ResolvingToSlot: s.
+            s isMethod ifTrue: [
+              inlineMethodSlot: s Key: key ReceiverType: rcvrMir RcvrAndArgs: rcvrAndArgValues Result: resultValue.
+            ] False: [| nodeBefore |
+              nodeBefore: nodeToInsertAfter.
+              dataSlot: s InReceiverOfType: rcvrMir RcvrAndArgs: rcvrAndArgValues Result: resultValue.
+              forgeControlFlowLinksStartingFrom: nodeBefore Until: nodeToInsertAfter.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: scoping\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          interpreterFinished = ( |
             | 
-            currentBytecodeInterpreter resolveUnresolvedMoveNodes.
-            bytecodeInterpreters removeLast.
+            currentBytecodeInterpreter finished.
+            currentBytecodeInterpreter: currentBytecodeInterpreter inliningInterpreter.
             self).
         } | ) 
 
@@ -1181,8 +1288,11 @@ SlotsToOmit: parent.
             i: myCompiler prototypes bytecodeInterpreter
                                     copyForIRNodeGenerator: self
                                                  Allocator: aSourceLevelAllocator.
-            currentBytecodeInterpreter ifNotNil: [|:ci| ci inlinedInterpreters addLast: i].
-            bytecodeInterpreters addLast: i.
+            currentBytecodeInterpreter ifNotNil: [|:ci|
+              ci inlinedInterpreters addLast: i.
+              i inliningInterpreter: ci.
+            ].
+            currentBytecodeInterpreter: i.
             self).
         } | ) 
 
@@ -1195,34 +1305,6 @@ SlotsToOmit: parent.
             localValue: sourceLevelAllocator valueForSlot: s.
             move: localValue To: dst.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
-        
-         shouldDoInlining = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
-        
-         slotToInlineFor: rcvrValue Key: key = ( |
-             s.
-             ss.
-             t.
-            | 
-            shouldDoInlining                                       ifFalse: [^ nil].
-            machineLevelAllocator method isReflecteeBlockMethod     ifTrue: [^ nil]. "Inlining things in block methods would require customizing the block, which we don't do yet."
-            t: rcvrValue knownType                                   ifNil: [^ nil].
-
-            ss: key lookupSlotsUsing: sourceLevelAllocator context protoSlotFinder Self: t Holder: sourceLevelAllocator context outermostMethodHolder.
-            s: ss ifNone: [^ nil] IfOne: [|:s| s] IfMany: [^ nil].
-
-            s isMethod                       ifFalse: [^ s  ]. "Data slots are fine."
-            s contents isReflecteeBlockMethod ifTrue: [^ nil]. "Don't know how to inline block methods yet."
-            s contents hasBlocks              ifTrue: [^ nil]. "Don't know how to inline methods containing blocks yet - gotta customize the nmethod so it can find the uplevel locations."
-            s contents codes size >= 10       ifTrue: [^ nil]. "Just a simple static threshold for now."
-            s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {

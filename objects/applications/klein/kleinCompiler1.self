@@ -120,6 +120,12 @@ that it does not apply.  -- jb 8/03\x7fModuleInfo: Module: kleinCompiler1 Initia
          noSendsAllowed <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
+         'Category: compilation modes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)'
+        
+         optimizationPolicy.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: oracle for eager relocation\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -175,9 +181,9 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
-         allocateRemainingLocations = ( |
+         allocateLocations = ( |
             | 
-            (locationAssigner copyForCompiler: self) go).
+            (prototypes locationAssigner copyForCompiler: self) go).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -202,35 +208,12 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         buildAndLinkIRNodes = ( |
-            | 
-            makeSureIRNodesAreBuilt.
-            resolveUnresolvedMoveNodes.
-            forgeControlFlowLinks.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          buildAndLinkValues = ( |
             | 
             allocateIncomingAndPreallocatedLocations.
             recordDefinersAndUsers.
-            calculateValueLiveness.
-            buildInterferenceInformation.
-            allocateRemainingLocations.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         buildInterferenceInformation = ( |
-            | 
-            startNode controlFlowOrderDo: [|:n| n addInterferenceInformationToValues].
             self).
         } | ) 
 
@@ -261,10 +244,10 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
              ns.
             | 
 
-            [aaa]. "Using reverse source order, but for maximum efficiency this should be
-                    reverse control-flow order. In practice I doubt it'll matter much.
-                    The problem with reverse control-flow order is that we don't have a
-                    list of all the NLR nodes (do we?). -- Adam, Mar. 2009"
+            [aaaaa]. "Using reverse source order, but for maximum efficiency this should be
+                      reverse control-flow order. In practice I doubt it'll matter much.
+                      The problem with reverse control-flow order is that we don't have a
+                      list of all the possible end nodes (do we?). -- Adam, Mar. 2009"
 
             ns: nodesInReverseSourceOrder.
 
@@ -318,11 +301,9 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
               -- dmu 8/03"
 
             compiler: copy.
-            compiler initializeForceNonLeaf: false.
-            compiler doCompileIfBackout: [|:e|
+            compiler doCompileForceNonLeaf: false IfBackout: [|:e|
               compiler: copy.
-              compiler initializeForceNonLeaf: true.
-              compiler doCompileIfBackout: [|:e| ^ error: 'should not have backed out:', e].
+              compiler doCompileForceNonLeaf: true IfBackout: [|:e| ^ error: 'should not have backed out:', e].
               ^ compiler "necessary because we need to back out"
             ].
             compiler).
@@ -347,7 +328,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyForContext: cntxt Architecture: arch Oracle: oracle Debug: d = ( |
+         copyForContext: cntxt Architecture: arch Oracle: oracle Debug: d Optimize: op = ( |
              c.
             | 
             checkThatItMakesSenseToCompileSlot: cntxt slot ForSelf: cntxt selfMirror AndReceiver: cntxt rcvrMirror.
@@ -359,8 +340,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             c relocators:                    list copyRemoveAll.
             c nmethodRelocators:             list copyRemoveAll.
             c oracleForEagerRelocation:      oracle.
-
-            c initializeForceNonLeaf: false.
+            c optimizationPolicy:            op.
 
             c).
         } | ) 
@@ -378,7 +358,14 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          dependsOnKey: k ResolvingToSlot: s = ( |
             | 
-            reusabilityConditions add: reusableIfSlotIsTheSame copyForKey: k Slot: s.
+            [aaaaa]. "This could probably be factored a bit better."
+
+            "I'm not completely sure about this, but I think that we don't need to worry about resends
+             making the nmethod unreusable, since the resend lookup starts from the method holder rather
+             than from self. -- Adam, Apr. 2009"
+            k isResend && [irNodeGenerator sourceLevelAllocator slot holder != irNodeGenerator sourceLevelAllocator context selfMirror] ifFalse: [
+              reusabilityConditions add: reusableIfSlotIsTheSame copyForKey: k Slot: s.
+            ].
             self).
         } | ) 
 
@@ -387,8 +374,11 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          doCompile = ( |
             | 
-            buildAndLinkIRNodes.
+            makeSureIRNodesAreBuilt.
             buildAndLinkValues.
+            doInlining.
+            calculateValueLiveness.
+            allocateLocations.
             generateCode.
             self).
         } | ) 
@@ -396,18 +386,28 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
-         doCompileIfBackout: blk = ( |
+         doCompileForceNonLeaf: fnl IfBackout: blk = ( |
             | 
             backoutBlock: blk.
+            initializeForceNonLeaf: fnl.
             doCompile).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: optimizing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
-         forgeControlFlowLinks = ( |
+         doInlining = ( |
             | 
-            startNode sourceNodesDo: [|:n| n forgeControlFlowLinks].
+            optimizationPolicy shouldNeverDoInlining ifTrue: [^ self].
+            sendNodesDo: [|:n. key|
+              key: klein lookupKey copyForSendBC: n bc.
+              irNodeGenerator currentBytecodeInterpreter: n bc interpreter.
+              irNodeGenerator ifShouldInlineSend: key To: n rcvrAndArgStackValues first Then: [|:s. :rcvrMir|
+                n removeFromGraphInPreparationForInlining.
+                irNodeGenerator inlineSlot: s Key: key ReceiverType: rcvrMir RcvrAndArgs: n rcvrAndArgStackValues Result: n resultStackValue.
+                [n lastNodeBeforeSettingUpTheSend controlFlowSuccs isEmpty not] assert.
+              ] Else: [].
+            ].
             self).
         } | ) 
 
@@ -462,6 +462,8 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
                 prototypes sourceLevelAllocator copyForMachineLevelAllocator: machineLevelAllocator
                                                                      Context: context.
 
+            machineLevelAllocator topSourceLevelAllocator initializeValues.
+
             codeGenerator: protoCodeGenForMyPlatform copyForCompiler: self.
             self).
         } | ) 
@@ -482,717 +484,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             case
               if: [slot isMethod] Then: [a localSlotsOfMethod]
               Else: [vector]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         locationAssigner = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent locationAssigner.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
-        
-         aliasesForCoalescedValues <- dictionary copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         availableRegisterLocations.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         coalescedMoveNodes <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         compiler.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         moveNodes <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
-        
-         moveNodesByRelatedValue <- dictionary copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         moveNodesNotYetReadyForCoalescing <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         moveNodesThatCannotBeCoalesced <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         moveNodesThatMayBeCoalescable <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         moveNodesThatWillNotBeCoalesced <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         moveRelatedValuesThatHaveNotYetBeenCoalesced <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent locationAssigner parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         aliasOf: v = ( |
-            | 
-            aliasesForCoalescedValues
-                        if: v
-               IsPresentDo: [|:alias| aliasOf: alias]
-                IfAbsentDo: [v]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         assignLocations = ( |
-             highestIndexUsed <- -1.
-            | 
-            [valuesThatHaveBeenFactoredOut isEmpty] whileFalse: [| v. badLocs |
-              debugMode ifTrue: [checkInvariants].
-              v: valuesThatHaveBeenFactoredOut removeLast.
-              badLocs: set copyRemoveAll.
-              v interferingValues do: [|:iv| iv hasLocation ifTrue: [badLocs add: iv location]].
-              availableRegisterLocations findFirst: [|:loc    | (badLocs includes: loc) not]
-                                         IfPresent: [|:loc. :i| highestIndexUsed: highestIndexUsed max: i. v location: loc]
-                                          IfAbsent: [           v location: machineLevelAllocator makeAnotherNonVolLocalMemLocation].
-              valuesThatAlreadyHaveALocation add: v.
-            ].
-
-            aliasesForCoalescedValues do: [|:alias. :v. realAlias|
-              realAlias: aliasOf: alias.
-              v location: realAlias location.
-              valuesThatAlreadyHaveALocation add: v.
-            ].
-
-            highestIndexUsed >= 0 ifTrue: [
-              machineLevelAllocator lastAvailableRegisterThatWasActuallyAssigned: (availableRegisterLocations at: highestIndexUsed) register.
-            ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         checkInvariants = ( |
-            | 
-            machineLevelAllocator allValues do: [|:v| [(valueSetContaining: v) isNotNil] assert].
-
-            moveNodes do: [|:m. itsInThisOne|
-              moveNodeSetsDo: [|:s|
-                (s includes: m) ifTrue: [
-                  itsInThisOne ifNotNil: [error: 'a move node should never be in two of these sets at once'].
-                  itsInThisOne: s.
-                ].
-              ].
-              itsInThisOne ifNil: [error: 'a move node must belong to one of the sets'].
-            ].
-
-            valuesThatCanBeFactoredOut do: [|:v|
-              [hasInsignificantDegree: v] assert.
-              [hasAlreadyProcessedAllMoveNodesFor: v] assert.
-              checkRemainingDegreeOf: v.
-            ].
-
-            moveRelatedValuesThatHaveNotYetBeenCoalesced do: [|:v|
-              [hasInsignificantDegree: v] assert.
-              [(hasAlreadyProcessedAllMoveNodesFor: v) not] assert.
-              checkRemainingDegreeOf: v.
-            ].
-
-            valuesThatCannotBeFactoredOutYet do: [|:v|
-              [hasSignificantDegree: v] assert.
-              checkRemainingDegreeOf: v.
-            ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         checkRemainingDegreeOf: v = ( |
-             d.
-             remainingInterferingValues.
-             remainingValues.
-            | 
-            d: remainingDegreeOf: v.
-            remainingValues: set copyRemoveAll.
-            remainingValues addAll: valuesThatCanBeFactoredOut.
-            remainingValues addAll: moveRelatedValuesThatHaveNotYetBeenCoalesced.
-            remainingValues addAll: valuesThatCannotBeFactoredOutYet.
-            remainingInterferingValues: v interferingValues intersect: remainingValues.
-            [d = remainingInterferingValues size] assert.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: spilling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         chooseAValueToSpill = ( |
-             v.
-            | 
-            [todo optimization]. "Use a better heuristic for choosing which one to spill."
-            v: valuesThatCannotBeFactoredOutYet removeFirst.
-            valuesThatHaveBeenFactoredOut addLast: v.
-            freezeMovesOf: v.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         combine: u With: v = ( |
-            | 
-            (moveRelatedValuesThatHaveNotYetBeenCoalesced includes: v) ifTrue: [
-              moveRelatedValuesThatHaveNotYetBeenCoalesced remove: v.
-            ] False: [
-              valuesThatCannotBeFactoredOutYet remove: v.
-            ].
-            aliasesForCoalescedValues at: v Put: u.
-            (moveNodesByRelatedValue at: u) addAll: moveNodesByRelatedValue at: v.
-            remainingValuesThatInterfereWith: v Do: [|:t. wasInsignificantBefore|
-              wasInsignificantBefore: hasInsignificantDegree: t.
-              recordInterferenceBetween: t And: u.
-
-              "Gotta decrement t's degree, because t was interfering with v but v is no longer remaining."
-              wasInsignificantBefore ifTrue: [
-                setRemainingDegreeOf: t To: (remainingDegreeOf: t) pred.
-              ] False: [
-                decrementDegreeOf: t.
-              ].
-            ].
-            (hasSignificantDegree: u) && [moveRelatedValuesThatHaveNotYetBeenCoalesced includes: u] ifTrue: [
-              moveRelatedValuesThatHaveNotYetBeenCoalesced remove: u.
-              valuesThatCannotBeFactoredOutYet add: u.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         copy = ( |
-            | 
-            (((((((((((((resend.copy
-              moveNodes: moveNodes copy)
-              moveNodesThatMayBeCoalescable: moveNodesThatMayBeCoalescable copy)
-              moveNodesThatWillNotBeCoalesced: moveNodesThatWillNotBeCoalesced copy)
-              moveNodesNotYetReadyForCoalescing: moveNodesNotYetReadyForCoalescing copy)
-              moveRelatedValuesThatHaveNotYetBeenCoalesced: moveRelatedValuesThatHaveNotYetBeenCoalesced copy)
-              moveNodesByRelatedValue: moveNodesByRelatedValue copy)
-              remainingDegreeByValue: remainingDegreeByValue copy)
-              aliasesForCoalescedValues: aliasesForCoalescedValues copy)
-              coalescedMoveNodes: coalescedMoveNodes copy)
-              moveNodesThatCannotBeCoalesced: moveNodesThatCannotBeCoalesced copy)
-              valuesThatHaveBeenFactoredOut: valuesThatHaveBeenFactoredOut copy)
-              valuesThatCanBeFactoredOut: valuesThatCanBeFactoredOut copy)
-              valuesThatCannotBeFactoredOutYet: valuesThatCannotBeFactoredOutYet copy)
-              valuesThatAlreadyHaveALocation: valuesThatAlreadyHaveALocation copy).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForCompiler: c = ( |
-            | 
-            (copy compiler: c) initialize).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         debugMode = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         decrementDegreeOf: v = ( |
-             d.
-            | 
-            d: remainingDegreeOf: v.
-            setRemainingDegreeOf: v To: d pred.
-            d = numberOfAvailableRegisterLocations ifTrue: [
-              valueHasFewEnoughNeighboursNowSoWeCanFactorItOut: v.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         determineAGoodOrderForAssigningLocations = ( |
-            | 
-            [|:exit|
-              case
-                if: [valuesThatCanBeFactoredOut                   isEmpty not] Then: [factorOutAValue.         debugMode ifTrue: [checkInvariants]]
-                If: [moveNodesThatMayBeCoalescable                isEmpty not] Then: [tryToCoalesceAMoveNode.  debugMode ifTrue: [checkInvariants]]
-                If: [moveRelatedValuesThatHaveNotYetBeenCoalesced isEmpty not] Then: [freezeAMoveRelatedValue. debugMode ifTrue: [checkInvariants]]
-                If: [valuesThatCannotBeFactoredOutYet             isEmpty not] Then: [chooseAValueToSpill.     debugMode ifTrue: [checkInvariants]]
-                Else: exit.
-            ] loopExit.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         enableMovesOf: v = ( |
-            | 
-            moveNodesRelatedTo: v Do: [|:n|
-              (moveNodesNotYetReadyForCoalescing includes: n) ifTrue: [
-                moveNodesNotYetReadyForCoalescing remove: n.
-                moveNodesThatMayBeCoalescable add: n.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         factorOutAValue = ( |
-             v.
-            | 
-            v: valuesThatCanBeFactoredOut removeFirst.
-            valuesThatHaveBeenFactoredOut addLast: v.
-            remainingValuesThatInterfereWith: v Do: [|:iv| decrementDegreeOf: iv].
-            v).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         findMoveNodesAndRelatedValues = ( |
-            | 
-            compiler startNode sourceNodesDo: [|:n|
-              n isMove && [n aaa_doNotCoalesce not] ifTrue: [
-                moveNodes add: n.
-                moveNodesThatMayBeCoalescable add: n.
-                n usedAndDefinedValuesDo: [|:v|
-                  (moveNodesByRelatedValue at: v IfAbsentPut: [set copyRemoveAll]) add: n.
-                ].
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: freezing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         freezeAMoveRelatedValue = ( |
-             u.
-            | 
-            u: moveRelatedValuesThatHaveNotYetBeenCoalesced removeFirst.
-            valuesThatCanBeFactoredOut add: u.
-            freezeMovesOf: u.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: freezing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         freezeMovesOf: u = ( |
-             uAlias.
-            | 
-            uAlias: aliasOf: u.
-            moveNodesRelatedTo: u Do: [|:m. dst. v|
-              dst: aliasOf: m destinationValue.
-              v:  dst = uAlias ifTrue: [aliasOf: m sourceValue] False: [dst].
-              moveNodesNotYetReadyForCoalescing remove: m.
-              moveNodesThatWillNotBeCoalesced add: m.
-              mightNotBeMoveRelatedAnymore: v.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
-        
-         go = ( |
-            | 
-            determineAGoodOrderForAssigningLocations.
-            assignLocations.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         hasAlreadyProcessedAllMoveNodesFor: v = ( |
-            | 
-            moveNodesRelatedTo: v Do: [^ false].
-            true).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         hasInsignificantDegree: v = ( |
-            | 
-            (remainingDegreeOf: v) < numberOfAvailableRegisterLocations).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         hasSignificantDegree: v = ( |
-            | 
-            (remainingDegreeOf: v) >= numberOfAvailableRegisterLocations).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initialize = ( |
-            | 
-            availableRegisterLocations: machineLevelAllocator availableRegisterLocations.
-            shouldTryToCoalesceMoveNodes ifTrue: [findMoveNodesAndRelatedValues].
-            putEachValueInTheAppropriateWorkingSet.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isMoveRelated: v = ( |
-            | 
-            moveNodesRelatedTo: v Do: [|:n| ^ true].
-            false).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         isNoLongerInterfering: v = ( |
-            | 
-            (valuesThatHaveBeenFactoredOut includes: v) || [aliasesForCoalescedValues includesKey: v]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         machineLevelAllocator = ( |
-            | 
-            compiler machineLevelAllocator).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         mightNotBeMoveRelatedAnymore: v = ( |
-            | 
-            v hasLocation not && [(isMoveRelated: v) not && [hasInsignificantDegree: v]] ifTrue: [
-              moveRelatedValuesThatHaveNotYetBeenCoalesced remove: v.
-              valuesThatCanBeFactoredOut add: v.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         moveNodeSetsDo: blk = ( |
-            | 
-            blk value: coalescedMoveNodes.
-            blk value: moveNodesThatMayBeCoalescable.
-            blk value: moveNodesThatWillNotBeCoalesced.
-            blk value: moveNodesThatCannotBeCoalesced.
-            blk value: moveNodesNotYetReadyForCoalescing.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         moveNodesRelatedTo: v Do: blk = ( |
-             ns.
-            | 
-            ns: moveNodesByRelatedValue at: v IfAbsent: [^ self].
-            ns do: [|:n|
-              (moveNodesThatMayBeCoalescable includes: n) || [moveNodesNotYetReadyForCoalescing includes: n] ifTrue: [
-                blk value: n.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         numberOfAvailableRegisterLocations = ( |
-            | 
-            availableRegisterLocations size).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         putEachValueInTheAppropriateWorkingSet = ( |
-            | 
-            machineLevelAllocator allValues do: [|:v. s|
-              s: v hasLocation ifTrue: [
-                valuesThatAlreadyHaveALocation.
-              ] False: [|d|
-                d: v interferingValues countHowMany: [|:iv| iv hasLocation not].
-                setRemainingDegreeOf: v To: d.
-                case
-                  if: [d >= numberOfAvailableRegisterLocations] Then: [valuesThatCannotBeFactoredOutYet            ]
-                  If: [moveNodesByRelatedValue includesKey: v]  Then: [moveRelatedValuesThatHaveNotYetBeenCoalesced]
-                                                                Else: [valuesThatCanBeFactoredOut                  ].
-              ].
-              s add: v.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         recordInterferenceBetween: u And: v = ( |
-            | 
-            u = v ifTrue: [^ self].
-            (u interferingValues includes: v) ifTrue: [[v interferingValues includes: u] assert. ^ self].
-            [(v interferingValues includes: u) not] assert.
-            u interferingValues add: v.
-            v interferingValues add: u.
-            (isNoLongerInterfering: v) || [v hasLocation] ifFalse: [setRemainingDegreeOf: u To: (remainingDegreeOf: u) succ].
-            (isNoLongerInterfering: u) || [u hasLocation] ifFalse: [setRemainingDegreeOf: v To: (remainingDegreeOf: v) succ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         remainingDegreeOf: v = ( |
-            | 
-            remainingDegreeByValue at: v IfAbsentPut: 0).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         remainingValuesThatInterfereWith: v Do: blk = ( |
-            | 
-            v interferingValues do: [|:iv|
-              (isNoLongerInterfering: iv) ifFalse: [
-                blk value: iv.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         setRemainingDegreeOf: v To: d = ( |
-            | 
-            remainingDegreeByValue at: v Put: d.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         shouldTryToCoalesceMoveNodes = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         tryToCoalesceAMoveNode = ( |
-             m.
-             u.
-             v.
-             x.
-             y.
-            | 
-            m: moveNodesThatMayBeCoalescable removeFirst.
-            x: aliasOf: m      sourceValue.
-            y: aliasOf: m destinationValue.
-            y hasLocation ifTrue: [u: y. v: x]
-                           False: [u: x. v: y].
-            "So if v hasLocation then u does too."
-
-            case
-              if: [(u = v) || [v hasLocation && [u location = v location]]] Then: [
-                coalescedMoveNodes add: m.
-                mightNotBeMoveRelatedAnymore: u.
-              ]
-              If: [v hasLocation || [v interferingValues includes: u]] Then: [
-                moveNodesThatCannotBeCoalesced add: m.
-                mightNotBeMoveRelatedAnymore: u.
-                mightNotBeMoveRelatedAnymore: v.
-              ]
-              If: [willNotCauseSpillsIfWeCoalesce: u With: v] Then: [
-                coalescedMoveNodes add: m.
-                combine: u With: v.
-                mightNotBeMoveRelatedAnymore: u.
-              ] Else: [
-                moveNodesNotYetReadyForCoalescing add: m.
-              ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         valueHasFewEnoughNeighboursNowSoWeCanFactorItOut: v = ( |
-            | 
-            enableMovesOf: v.
-            remainingValuesThatInterfereWith: v Do: [|:iv| enableMovesOf: v].
-
-            case
-              if: [v hasLocation] Then: [
-              ]
-              If: [valuesThatCannotBeFactoredOutYet includes: v] Then: [
-                valuesThatCannotBeFactoredOutYet remove: v.
-                (isMoveRelated: v) ifTrue: [moveRelatedValuesThatHaveNotYetBeenCoalesced add: v]
-                                    False: [valuesThatCanBeFactoredOut                   add: v].
-              ]
-              Else: [
-                error: 'huh?'
-              ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         valueSetContaining: v = ( |
-             itsInThisOne.
-            | 
-            valueSetsDo: [|:s|
-              (s includes: v) ifTrue: [
-                itsInThisOne ifNotNil: [error: 'a value should never be in two of these sets at once'].
-                itsInThisOne: s.
-              ].
-            ].
-            itsInThisOne ifNil: [error: 'a value must belong to one of the sets'].
-            itsInThisOne).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         valueSetsDo: blk = ( |
-            | 
-            blk value: valuesThatHaveBeenFactoredOut.
-            blk value: valuesThatCanBeFactoredOut.
-            blk value: moveRelatedValuesThatHaveNotYetBeenCoalesced.
-            blk value: valuesThatCannotBeFactoredOutYet.
-            blk value: aliasesForCoalescedValues keys.
-            blk value: valuesThatAlreadyHaveALocation.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         willNotCauseSpillsIfWeCoalesce: u With: v = ( |
-            | 
-            u hasLocation ifTrue: [willNotCauseSpillsIfWeCoalescePreallocated:    u With: v]
-                           False: [willNotCauseSpillsIfWeCoalesceNonPreallocated: u With: v]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         willNotCauseSpillsIfWeCoalesceNonPreallocated: u With: v = ( |
-             interferingValuesIfCoalesced.
-            | 
-            interferingValuesIfCoalesced: set copyRemoveAll.
-            remainingValuesThatInterfereWith: u Do: [|:iv| interferingValuesIfCoalesced add: iv].
-            remainingValuesThatInterfereWith: v Do: [|:iv| interferingValuesIfCoalesced add: iv].
-
-            (interferingValuesIfCoalesced copyFilteredBy: [|:iv| hasSignificantDegree: iv]) size < numberOfAvailableRegisterLocations).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> 'parent' -> () From: ( | {
-         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         willNotCauseSpillsIfWeCoalescePreallocated: u With: v = ( |
-            | 
-            remainingValuesThatInterfereWith: v Do: [|:t|
-              (hasInsignificantDegree: t) || [t hasLocation || [t interferingValues includes: u]] ifFalse: [^ false].
-            ].
-            true).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
-        
-         remainingDegreeByValue <- dictionary copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         valuesThatAlreadyHaveALocation <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         valuesThatCanBeFactoredOut <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         valuesThatCannotBeFactoredOutYet <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'locationAssigner' -> () From: ( | {
-         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (orderedSet copyRemoveAll)\x7fVisibility: private'
-        
-         valuesThatHaveBeenFactoredOut <- orderedSet copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -1227,6 +518,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
               myReturnNode: irNodeGenerator lastNode.
 
               irNodeGenerator currentBytecodeInterpreter fillInMissingIRNodesByBCI.
+              irNodeGenerator interpreterFinished.
             ].
             self).
         } | ) 
@@ -1529,21 +821,983 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             | ) .
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationAssigner = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes locationAssigner.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
+        
+         aliasesForCoalescedValues <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         availableRegisterLocations.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         coalescedMoveNodes <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         compiler.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         interferingValuesByValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         moveNodes <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
+        
+         moveNodesByRelatedValue <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         moveNodesNotYetReadyForCoalescing <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         moveNodesThatCannotBeCoalesced <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         moveNodesThatMayBeCoalescable <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: move nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         moveNodesThatWillNotBeCoalesced <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         moveRelatedValuesThatHaveNotYetBeenCoalesced <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes locationAssigner parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         aliasOf: v = ( |
+            | 
+            aliasesForCoalescedValues
+                        if: v
+               IsPresentDo: [|:alias| aliasOf: alias]
+                IfAbsentDo: [v]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: interference info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         allValuesThatInterfereWith: v = ( |
+            | 
+            interferingValuesByValue at: v IfAbsentPut: [set copyRemoveAll]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         assignLocations = ( |
+             highestIndexUsed <- -1.
+            | 
+            [valuesThatHaveBeenFactoredOut isEmpty] whileFalse: [| v. badLocs |
+              debugMode ifTrue: [checkInvariants].
+              v: valuesThatHaveBeenFactoredOut removeLast.
+              badLocs: set copyRemoveAll.
+              (allValuesThatInterfereWith: v) do: [|:iv| iv hasLocation ifTrue: [badLocs add: iv location]].
+              availableRegisterLocations findFirst: [|:loc    | (badLocs includes: loc) not]
+                                         IfPresent: [|:loc. :i| highestIndexUsed: highestIndexUsed max: i. v location: loc]
+                                          IfAbsent: [           v location: machineLevelAllocator makeAnotherNonVolLocalMemLocation].
+              valuesThatAlreadyHaveALocation add: v.
+            ].
+
+            aliasesForCoalescedValues do: [|:alias. :v. realAlias|
+              realAlias: aliasOf: alias.
+              v location: realAlias location.
+              valuesThatAlreadyHaveALocation add: v.
+            ].
+
+            highestIndexUsed >= 0 ifTrue: [
+              machineLevelAllocator lastAvailableRegisterThatWasActuallyAssigned: (availableRegisterLocations at: highestIndexUsed) register.
+            ].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         buildDictionaryOfPreallocatedValues = ( |
+            | 
+            machineLevelAllocator allValues do: [|:v|
+              v hasLocation ifTrue: [
+                (preallocatedValuesByLocation at: v location IfAbsentPut: [set copyRemoveAll]) add: v.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         buildInterferenceInformation = ( |
+            | 
+            interferingValuesByValue: dictionary copyRemoveAll.
+            compiler startNode controlFlowOrderDo: [|:n| n addInterferenceInformationToValuesWith: self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         checkInvariants = ( |
+            | 
+            machineLevelAllocator allValues do: [|:v| [(   valueSetContaining: v) isNotNil] assert].
+            moveNodes                       do: [|:m| [(moveNodeSetContaining: m) isNotNil] assert].
+
+            valuesThatCanBeFactoredOut do: [|:v|
+              [hasInsignificantDegree: v] assert.
+              [hasAlreadyProcessedAllMoveNodesFor: v] assert.
+              checkRemainingDegreeOf: v.
+            ].
+
+            moveRelatedValuesThatHaveNotYetBeenCoalesced do: [|:v|
+              [hasInsignificantDegree: v] assert.
+              [(hasAlreadyProcessedAllMoveNodesFor: v) not] assert.
+              checkRemainingDegreeOf: v.
+            ].
+
+            valuesThatCannotBeFactoredOutYet do: [|:v|
+              [hasSignificantDegree: v] assert.
+              checkRemainingDegreeOf: v.
+            ].
+
+            coalescedMoveNodes do: [|:m|
+              checkThatNoConstantsAreBeingAssignedToAsAResultOfCoalescing: m
+            ].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         checkRemainingDegreeOf: v = ( |
+             d.
+             remainingInterferingValues.
+             remainingValues.
+            | 
+            d: remainingDegreeOf: v.
+            remainingValues: set copyRemoveAll.
+            remainingValues addAll: valuesThatCanBeFactoredOut.
+            remainingValues addAll: moveRelatedValuesThatHaveNotYetBeenCoalesced.
+            remainingValues addAll: valuesThatCannotBeFactoredOutYet.
+            remainingInterferingValues: (allValuesThatInterfereWith: v) intersect: remainingValues.
+            [d = remainingInterferingValues size] assert.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         checkThatNoConstantsAreBeingAssignedToAsAResultOfCoalescing: m = ( |
+             src.
+            | 
+            src: aliasOf: m sourceValue.
+            src hasLocation ifTrue: [| loc |
+              loc: src location.
+              loc isNotNil && [loc isConstant] ifTrue: [
+                m usedAndDefinedValuesDo: [|:v|
+                  (moveNodesByRelatedValue at: v) do: [|:m2|
+                    m == m2 ifFalse: [| dst2 |
+                      dst2: aliasOf: m2 destinationValue.
+                      dst2 hasLocation ifTrue: [| y |
+                        y: dst location.
+                        y isNotNil && [y isConstant] ifTrue: [| src2 |
+                          src2: aliasOf: m2 sourceValue.
+                          src2 hsaLocation ifTrue: [| x |
+                            x: src2 location.
+                            [x isNotNil && [x isConstant && [x oopValue _Eq: y oopValue]]] assert: 'cannot move something into a constant location'.
+                          ].
+                        ].
+                      ].
+                    ].
+                  ].
+                ].
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: spilling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         chooseAValueToSpill = ( |
+             v.
+            | 
+            [todo optimization]. "Use a better heuristic for choosing which one to spill."
+            v: valuesThatCannotBeFactoredOutYet removeFirst.
+            valuesThatHaveBeenFactoredOut addLast: v.
+            remainingValuesThatInterfereWith: v Do: [|:iv| decrementDegreeOf: iv].
+            freezeMovesOf: v.
+            v).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         combine: u With: v ForMove: m = ( |
+            | 
+            (moveRelatedValuesThatHaveNotYetBeenCoalesced includes: v) ifTrue: [
+              moveRelatedValuesThatHaveNotYetBeenCoalesced remove: v.
+            ] False: [
+              valuesThatCannotBeFactoredOutYet remove: v.
+            ].
+            aliasesForCoalescedValues at: v Put: u.
+            (moveNodesByRelatedValue at: u) addAll: moveNodesByRelatedValue at: v.
+            remainingValuesThatInterfereWith: v Do: [|:t. wasInsignificantBefore|
+              wasInsignificantBefore: hasInsignificantDegree: t.
+              recordPostCoalescenceInterferenceBetween: t And: u.
+
+              "Gotta decrement t's degree, because t was interfering with v but v is no longer remaining."
+              wasInsignificantBefore ifTrue: [
+                setRemainingDegreeOf: t To: (remainingDegreeOf: t) pred.
+              ] False: [
+                decrementDegreeOf: t.
+              ].
+            ].
+            (hasSignificantDegree: u) && [moveRelatedValuesThatHaveNotYetBeenCoalesced includes: u] ifTrue: [
+              moveRelatedValuesThatHaveNotYetBeenCoalesced remove: u.
+              valuesThatCannotBeFactoredOutYet add: u.
+            ].
+
+            "Combine their definers and users. I think this is kind of a hack - is there
+             a more elegant way? --Adam, Apr. 2009"
+            u definers addAll: v definers. u definers remove: m. v definers: u definers.
+            u users    addAll: v users.    u users    remove: m. v users:    u users.
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         copy = ( |
+            | 
+            (((((((((((((((resend.copy
+              moveNodes: moveNodes copy)
+              moveNodesThatMayBeCoalescable: moveNodesThatMayBeCoalescable copy)
+              moveNodesThatWillNotBeCoalesced: moveNodesThatWillNotBeCoalesced copy)
+              moveNodesNotYetReadyForCoalescing: moveNodesNotYetReadyForCoalescing copy)
+              moveRelatedValuesThatHaveNotYetBeenCoalesced: moveRelatedValuesThatHaveNotYetBeenCoalesced copy)
+              moveNodesByRelatedValue: moveNodesByRelatedValue copy)
+              remainingDegreeByValue: remainingDegreeByValue copy)
+              aliasesForCoalescedValues: aliasesForCoalescedValues copy)
+              coalescedMoveNodes: coalescedMoveNodes copy)
+              moveNodesThatCannotBeCoalesced: moveNodesThatCannotBeCoalesced copy)
+              valuesThatHaveBeenFactoredOut: valuesThatHaveBeenFactoredOut copy)
+              valuesThatCanBeFactoredOut: valuesThatCanBeFactoredOut copy)
+              valuesThatCannotBeFactoredOutYet: valuesThatCannotBeFactoredOutYet copy)
+              valuesThatAlreadyHaveALocation: valuesThatAlreadyHaveALocation copy)
+              preallocatedValuesByLocation: preallocatedValuesByLocation copy)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForCompiler: c = ( |
+            | 
+            (copy compiler: c) initialize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         debugMode = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         decrementDegreeOf: v = ( |
+             d.
+            | 
+            d: remainingDegreeOf: v.
+            setRemainingDegreeOf: v To: d pred.
+            d = numberOfAvailableRegisterLocations ifTrue: [
+              valueHasFewEnoughNeighboursNowSoWeCanFactorItOut: v.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         determineAGoodOrderForAssigningLocations = ( |
+            | 
+            [|:exit|
+              case
+                if: [valuesThatCanBeFactoredOut                   isEmpty not] Then: [|v| v: factorOutAValue.         debugMode ifTrue: [checkInvariants]]
+                If: [moveNodesThatMayBeCoalescable                isEmpty not] Then: [|m| m: tryToCoalesceAMoveNode.  debugMode ifTrue: [checkInvariants]]
+                If: [moveRelatedValuesThatHaveNotYetBeenCoalesced isEmpty not] Then: [|v| v: freezeAMoveRelatedValue. debugMode ifTrue: [checkInvariants]]
+                If: [valuesThatCannotBeFactoredOutYet             isEmpty not] Then: [|v| v: chooseAValueToSpill.     debugMode ifTrue: [checkInvariants]]
+                Else: exit.
+            ] loopExit.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: interference info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         does: u InterfereWith: v = ( |
+            | 
+            (allValuesThatInterfereWith: v) includes: u).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         enableMovesOf: v = ( |
+            | 
+            moveNodesRelatedTo: v Do: [|:n|
+              (moveNodesNotYetReadyForCoalescing includes: n) ifTrue: [
+                moveNodesNotYetReadyForCoalescing remove: n.
+                moveNodesThatMayBeCoalescable add: n.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         factorOutAValue = ( |
+             v.
+            | 
+            v: valuesThatCanBeFactoredOut removeFirst.
+            valuesThatHaveBeenFactoredOut addLast: v.
+            remainingValuesThatInterfereWith: v Do: [|:iv| decrementDegreeOf: iv].
+            v).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         findMoveNodesAndRelatedValues = ( |
+            | 
+            compiler startNode sourceNodesDo: [|:n|
+              n isMove && [n aaa_doNotCoalesce not] ifTrue: [
+                moveNodes add: n.
+                moveNodesThatMayBeCoalescable add: n.
+                n usedAndDefinedValuesDo: [|:v|
+                  (moveNodesByRelatedValue at: v IfAbsentPut: [set copyRemoveAll]) add: n.
+                ].
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: freezing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         freezeAMoveRelatedValue = ( |
+             u.
+            | 
+            u: moveRelatedValuesThatHaveNotYetBeenCoalesced removeFirst.
+            valuesThatCanBeFactoredOut add: u.
+            freezeMovesOf: u.
+            u).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: freezing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         freezeMovesOf: u = ( |
+             uAlias.
+            | 
+            uAlias: aliasOf: u.
+            moveNodesRelatedTo: u Do: [|:m. dst. v|
+              dst: aliasOf: m destinationValue.
+              v:  dst = uAlias ifTrue: [aliasOf: m sourceValue] False: [dst].
+              moveNodesNotYetReadyForCoalescing remove: m.
+              moveNodesThatWillNotBeCoalesced add: m.
+              mightNotBeMoveRelatedAnymore: v.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         go = ( |
+            | 
+            determineAGoodOrderForAssigningLocations.
+            assignLocations.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         hasAlreadyProcessedAllMoveNodesFor: v = ( |
+            | 
+            moveNodesRelatedTo: v Do: [^ false].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: degree\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         hasInsignificantDegree: v = ( |
+            | 
+            (remainingDegreeOf: v) < numberOfAvailableRegisterLocations).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: degree\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         hasSignificantDegree: v = ( |
+            | 
+            (remainingDegreeOf: v) >= numberOfAvailableRegisterLocations).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initialize = ( |
+            | 
+            buildDictionaryOfPreallocatedValues.
+            buildInterferenceInformation.
+            availableRegisterLocations: machineLevelAllocator availableRegisterLocations.
+            shouldTryToCoalesceMoveNodes ifTrue: [findMoveNodesAndRelatedValues].
+            putEachValueInTheAppropriateWorkingSet.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: move node relations\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isMoveRelated: v = ( |
+            | 
+            moveNodesRelatedTo: v Do: [|:n| ^ true].
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: interference info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isNoLongerInterfering: v = ( |
+            | 
+            (valuesThatHaveBeenFactoredOut includes: v) || [aliasesForCoalescedValues includesKey: v]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         machineLevelAllocator = ( |
+            | 
+            compiler machineLevelAllocator).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         mightNotBeMoveRelatedAnymore: v = ( |
+            | 
+            v hasLocation not && [(isMoveRelated: v) not && [hasInsignificantDegree: v]] ifTrue: [
+              moveRelatedValuesThatHaveNotYetBeenCoalesced remove: v.
+              valuesThatCanBeFactoredOut add: v.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         moveNodeSetContaining: m = ( |
+             itsInThisOne.
+            | 
+            moveNodeSetsDo: [|:s|
+              (s includes: m) ifTrue: [
+                itsInThisOne ifNotNil: [error: 'a move node should never be in two of these sets at once'].
+                itsInThisOne: s.
+              ].
+            ].
+            itsInThisOne ifNil: [error: 'a move node must belong to one of the sets']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         moveNodeSetsDo: blk = ( |
+            | 
+            blk value: coalescedMoveNodes.
+            blk value: moveNodesThatMayBeCoalescable.
+            blk value: moveNodesThatWillNotBeCoalesced.
+            blk value: moveNodesThatCannotBeCoalesced.
+            blk value: moveNodesNotYetReadyForCoalescing.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: move node relations\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         moveNodesRelatedTo: v Do: blk = ( |
+             ns.
+            | 
+            ns: moveNodesByRelatedValue at: v IfAbsent: [^ self].
+            ns do: [|:n|
+              (moveNodesThatMayBeCoalescable includes: n) || [moveNodesNotYetReadyForCoalescing includes: n] ifTrue: [
+                blk value: n.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         numberOfAvailableRegisterLocations = ( |
+            | 
+            availableRegisterLocations size).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         putEachValueInTheAppropriateWorkingSet = ( |
+            | 
+            machineLevelAllocator allValues do: [|:v. s|
+              s: v hasLocation ifTrue: [
+                valuesThatAlreadyHaveALocation.
+              ] False: [|d|
+                d: (allValuesThatInterfereWith: v) countHowMany: [|:iv| iv hasLocation not].
+                setRemainingDegreeOf: v To: d.
+                case
+                  if: [d >= numberOfAvailableRegisterLocations] Then: [valuesThatCannotBeFactoredOutYet            ]
+                  If: [moveNodesByRelatedValue includesKey: v]  Then: [moveRelatedValuesThatHaveNotYetBeenCoalesced]
+                                                                Else: [valuesThatCanBeFactoredOut                  ].
+              ].
+              s add: v.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: interference info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         recordInterferenceBetween: u And: v = ( |
+             uivs.
+             vivs.
+            | 
+            u = v ifTrue: [^ self].
+            uivs: allValuesThatInterfereWith: u.
+            vivs: allValuesThatInterfereWith: v.
+            uivs add: v.
+            vivs add: u.
+
+            "There can be many values with the same preallocated location. If one of them
+             interferes with v, they all do."
+            u hasLocation ifTrue: [vivs addAll: preallocatedValuesByLocation at: u location].
+            v hasLocation ifTrue: [uivs addAll: preallocatedValuesByLocation at: v location].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: interference info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         recordPostCoalescenceInterferenceBetween: u And: v = ( |
+             uivs.
+             vivs.
+            | 
+            u = v ifTrue: [^ self].
+            uivs: allValuesThatInterfereWith: u.
+            vivs: allValuesThatInterfereWith: v.
+             (uivs includes: v) ifTrue: [[vivs includes: u] assert. ^ self].
+            [(vivs includes: u) not] assert.
+            uivs add: v.
+            vivs add: u.
+            (isNoLongerInterfering: v) || [v hasLocation] ifFalse: [setRemainingDegreeOf: u To: (remainingDegreeOf: u) succ].
+            (isNoLongerInterfering: u) || [u hasLocation] ifFalse: [setRemainingDegreeOf: v To: (remainingDegreeOf: v) succ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: degree\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         remainingDegreeOf: v = ( |
+            | 
+            remainingDegreeByValue at: v IfAbsentPut: 0).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: interference info\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         remainingValuesThatInterfereWith: v Do: blk = ( |
+            | 
+            (allValuesThatInterfereWith: v) do: [|:iv|
+              (isNoLongerInterfering: iv) ifFalse: [
+                blk value: iv.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: degree\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         setRemainingDegreeOf: v To: d = ( |
+            | 
+            remainingDegreeByValue at: v Put: d.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         shouldTryToCoalesceMoveNodes = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         tryToCoalesceAMoveNode = ( |
+             m.
+             u.
+             v.
+             x.
+             y.
+            | 
+            m: moveNodesThatMayBeCoalescable removeFirst.
+            x: aliasOf: m      sourceValue.
+            y: aliasOf: m destinationValue.
+            y hasLocation ifTrue: [u: y. v: x]
+                           False: [u: x. v: y].
+            "So if v hasLocation then u does too."
+
+            case
+              if: [(u = v) || [v hasLocation && [u location = v location]]] Then: [
+                coalescedMoveNodes add: m.
+                mightNotBeMoveRelatedAnymore: u.
+              ]
+              If: [v hasLocation || [(does: u InterfereWith: v) || [u hasLocation && [u location isConstant && [v definers anySatisfy: [|:d| d !== m]]]]]] Then: [
+                moveNodesThatCannotBeCoalesced add: m.
+                mightNotBeMoveRelatedAnymore: u.
+                mightNotBeMoveRelatedAnymore: v.
+              ]
+              If: [willNotCauseSpillsIfWeCoalesce: u With: v] Then: [
+                coalescedMoveNodes add: m.
+                combine: u With: v ForMove: m.
+                mightNotBeMoveRelatedAnymore: u.
+              ] Else: [
+                moveNodesNotYetReadyForCoalescing add: m.
+              ].
+
+            m).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: simplifying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         valueHasFewEnoughNeighboursNowSoWeCanFactorItOut: v = ( |
+            | 
+            enableMovesOf: v.
+            remainingValuesThatInterfereWith: v Do: [|:iv| enableMovesOf: v].
+
+            case
+              if: [v hasLocation] Then: [
+              ]
+              If: [valuesThatCannotBeFactoredOutYet includes: v] Then: [
+                valuesThatCannotBeFactoredOutYet remove: v.
+                (isMoveRelated: v) ifTrue: [moveRelatedValuesThatHaveNotYetBeenCoalesced add: v]
+                                    False: [valuesThatCanBeFactoredOut                   add: v].
+              ]
+              Else: [
+                error: 'huh?'
+              ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         valueSetContaining: v = ( |
+             itsInThisOne.
+            | 
+            valueSetsDo: [|:s|
+              (s includes: v) ifTrue: [
+                itsInThisOne ifNotNil: [error: 'a value should never be in two of these sets at once'].
+                itsInThisOne: s.
+              ].
+            ].
+            itsInThisOne ifNil: [error: 'a value must belong to one of the sets']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         valueSetsDo: blk = ( |
+            | 
+            blk value: valuesThatHaveBeenFactoredOut.
+            blk value: valuesThatCanBeFactoredOut.
+            blk value: moveRelatedValuesThatHaveNotYetBeenCoalesced.
+            blk value: valuesThatCannotBeFactoredOutYet.
+            blk value: aliasesForCoalescedValues keys.
+            blk value: valuesThatAlreadyHaveALocation.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         willNotCauseSpillsIfWeCoalesce: u With: v = ( |
+            | 
+            u hasLocation ifTrue: [willNotCauseSpillsIfWeCoalescePreallocated:    u With: v]
+                           False: [willNotCauseSpillsIfWeCoalesceNonPreallocated: u With: v]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         willNotCauseSpillsIfWeCoalesceNonPreallocated: u With: v = ( |
+             interferingValuesIfCoalesced.
+            | 
+            interferingValuesIfCoalesced: set copyRemoveAll.
+            remainingValuesThatInterfereWith: u Do: [|:iv| interferingValuesIfCoalesced add: iv].
+            remainingValuesThatInterfereWith: v Do: [|:iv| interferingValuesIfCoalesced add: iv].
+
+            (interferingValuesIfCoalesced copyFilteredBy: [|:iv| hasSignificantDegree: iv]) size < numberOfAvailableRegisterLocations).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         willNotCauseSpillsIfWeCoalescePreallocated: u With: v = ( |
+            | 
+            remainingValuesThatInterfereWith: v Do: [|:t|
+              (hasInsignificantDegree: t) || [t hasLocation || [does: u InterfereWith: t]] ifFalse: [^ false].
+            ].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
+        
+         preallocatedValuesByLocation <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
+        
+         remainingDegreeByValue <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         valuesThatAlreadyHaveALocation <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         valuesThatCanBeFactoredOut <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+        
+         valuesThatCannotBeFactoredOutYet <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (orderedSet copyRemoveAll)\x7fVisibility: private'
+        
+         valuesThatHaveBeenFactoredOut <- orderedSet copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         optimizationPolicies = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         abstract = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies abstract.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         maxMethodSizeForInlining = 9.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         compileFastCode = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies compileFastCode.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldInlineSlot: s For: rcvrValue Key: key = ( |
+            | 
+            s isMethod                                         ifFalse: [^ true ]. "Data slots are fine."
+            s contents codes size <= maxMethodSizeForInlining  ifFalse: [^ false]. "Just based on number of bytecodes for now."
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldNeverDoInlining = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         compileQuickly = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuickly' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies compileQuickly.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuickly' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuickly' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldNeverDoInlining = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         compileQuicklyButOptimizeKleinKernel = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies compileQuicklyButOptimizeKleinKernel.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         hardCodedSlotNamesToInlineDo: b = ( |
+            | 
+            b value: 'ifTrue:'.
+            b value: 'ifFalse:'.
+            b value: 'ifTrue:False:'.
+            b value: 'ifFalse:True:'.
+            b value: '+'.
+            b value: '-'.
+            b value: '*'.
+            b value: '/'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldInlineSlot: s For: rcvrValue Key: key = ( |
+            | 
+            s isMethod                                         ifFalse: [^ true ]. "Data slots are fine."
+            s contents codes size <= maxMethodSizeForInlining  ifFalse: [^ false]. "Just based on number of bytecodes for now."
+
+            hardCodedSlotNamesToInlineDo: [|:n| s name = n ifTrue: [^ true]].
+
+            "Otherwise, don't bother inlining; more important to keep compile times down."
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldNeverDoInlining = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          recordDefinersAndUsers = ( |
             | 
             startNode sourceNodesDo: [|:n| n recordDefinersAndUsers].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         resolveUnresolvedMoveNodes = ( |
-            | 
-            irNodeGenerator interpreterFinished.
             self).
         } | ) 
 
@@ -1617,6 +1871,20 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          selector = ( |
             | slot name).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: optimizing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sendNodesDo: blk = ( |
+            | 
+            "Could optimize this by keeping track of them as we generate them."
+            startNode sourceNodesDo: [|:n|
+              n isSend ifTrue: [
+                blk value: n.
+              ].
+            ].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {

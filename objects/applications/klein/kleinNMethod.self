@@ -186,14 +186,6 @@ For a      normal   send, this is 0 instead of nil because 0 is immediate, and s
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
          'Category: lookup\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
-         lookupSlotsInContext: c = ( |
-            | 
-            lookupSlotsUsing: c protoSlotFinder Self: c selfMirror Holder: c outermostMethodHolder).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
-         'Category: lookup\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
-        
          lookupSlotsUsing: protoSlotFinder Self: selfMir Holder: holderMir = ( |
             | 
             case
@@ -246,6 +238,12 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
+         'Category: allocated locations\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (vector)'
+        
+         constants <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
          'Category: allocated locations\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
         
          frame.
@@ -279,6 +277,18 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: constants\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addConstant: o = ( |
+            | 
+            constants findFirst: [|:c| o _Eq: c] IfPresent: [|:c. :i| i] IfAbsent: [| i |
+              i: constants size.
+              constants: constants copyAddLast: o.
+              i
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
          'Category: relocating\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
          buildRelocationInfoFrom: rels = ( |
@@ -296,6 +306,14 @@ SlotsToOmit: parent.
             | 
             [klein nmethod]. "browsing"
             'klein nmethod').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: constants\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         constantIndexForSPOffset: spo = ( |
+            | 
+            vmKit layouts smi decode: vmKit layouts float encode: spo).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
@@ -363,8 +381,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
          'Category: sp offsets\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
-         ifSPOffset: spo IsForARegisterThen: regBlk IsForAStackLocationThen: memBlk = ( |
+         ifSPOffset: spo IsForAConstantThen: conBlk IsForARegisterThen: regBlk IsForAStackLocationThen: memBlk = ( |
             | 
+            (reflect: spo) isReflecteeFloat ifTrue: [
+              ^ conBlk value: constantIndexForSPOffset: spo
+            ].
+
             spo < 0  "negative <-> register number, positive <-> stack offset"
               ifTrue: [ regBlk value: spo negate ]
                False: [ memBlk value: spo        ]).
@@ -382,11 +404,19 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: constants\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForConstantAt: index = ( |
+            | 
+            locations constant copyForOop: constants at: index).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          locations = ( |
             | 
-            vmKit location).
+            vmKit locations).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
@@ -444,8 +474,7 @@ SlotsToOmit: parent.
          'Category: scopes\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          scopeDesc = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( |
-             {} = 'Comment: Not yet the same as a scopeDesc in the Self VM, but
-I think it will eventually be. -- Adam, Apr. 2009\x7fModuleInfo: Creator: globals klein nmethod parent scopeDesc.
+             {} = 'ModuleInfo: Creator: globals klein nmethod parent scopeDesc.
 \x7fIsComplete: '.
             | ) .
         } | ) 
@@ -520,9 +549,7 @@ I think it will eventually be. -- Adam, Apr. 2009\x7fModuleInfo: Creator: global
         
          locationForIncomingReceiver = ( |
             | 
-            nmethod      ifSPOffset: incomingRcvrSPOffset
-                 IsForARegisterThen: [|:regNum| theVM myAssemblerSystem operands gprFor: regNum]
-            IsForAStackLocationThen: [|:offset| frame locationForStackOffset: offset]).
+            locationForOffset: incomingRcvrSPOffset).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
@@ -531,6 +558,7 @@ I think it will eventually be. -- Adam, Apr. 2009\x7fModuleInfo: Creator: global
          locationForOffset: i = ( |
             | 
             nmethod      ifSPOffset: i
+                 IsForAConstantThen: [|:index | nmethod locationForConstantAt: index]
                  IsForARegisterThen: [|:regNum| theVM myAssemblerSystem operands gprFor: regNum]
             IsForAStackLocationThen: [|:offset| frame locationForStackOffset: offset]).
         } | ) 
@@ -551,6 +579,14 @@ I think it will eventually be. -- Adam, Apr. 2009\x7fModuleInfo: Creator: global
          'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (vector)'
         
          slotSPOffsets <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
+         'Category: constants\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         spOffsetIndicatingConstantAt: index = ( |
+            | 
+            vmKit layouts float decode: vmKit layouts smi encode: index).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {

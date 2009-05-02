@@ -103,6 +103,66 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         compileSlot_stub = ( |
+             holderMir.
+             key.
+             rcvrMir.
+             sd.
+             ss.
+            | 
+            _NoMapTest.
+            _VariableArguments.
+
+            _Breakpoint: 'nmethod cache miss, about to try a dynamic lookup and compile'.
+
+            [aaaaa]. "Fix the duplication between here and selfVM tests compiling."
+
+            sd: _CallingSendDesc.
+            key: klein lookupKey copyForSelector: sd _SendDescSelector
+                                      LookupType: sd _SendDescLookupType
+                                       Delegatee: sd _SendDescDelegatee.
+
+            key isResend ifTrue: [_Breakpoint: 'Hmm. Do we have enough information to do this?'].
+
+            rcvrMir: _Mirror.
+
+            rcvrMir isReflecteeBlock ifTrue: [_Breakpoint: 'Not gonna work yet; gotta find the selfMir and enclosing scopes.'].
+
+            ss: key lookupSlotsUsing: rcvrMir slotFinder Self: rcvrMir Holder: holderMir.
+
+            ss ifNone: [_Breakpoint: 'lookup failure: no slot']
+                IfOne: [|:s. c. nm. map|
+                        c: theVM compilerPrototype.
+                        c: c copyForContext: (c prototypes compilationContext
+                                                         copyForSlot: s
+                                                                 Key: key
+                                                                Self: rcvrMir
+                                                            Receiver: rcvrMir
+                                                 LexicalParentScopes: vector)
+                                Architecture: theVM architecture
+                                      Oracle: oracleForEagerRelocationInsideKlein
+                                       Debug: true
+                                    Optimize: c prototypes optimizationPolicies compileQuickly.
+                        nm: c compileForcingNonLeafIfNecessary buildNMethod.
+
+                        "It would sure make me more comfortable to have
+                         a test case that demonstrates that this flushing
+                         stuff is actually working. -- Adam, 5/05"
+                        nm flushWhateverCachesAreNecessaryAfterModifyingMe.
+
+                        map: _Map.
+                        map installNewNMethod: nm.
+                        sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: map.
+                        _Breakpoint: 'just dynamically compiled something; about to retry the sendDesc'.
+                        sd _RetrySendDesc.
+                        _Breakpoint: 'should never reach here'.
+                       ]
+               IfMany: [_Breakpoint: 'lookup failure: found multiple slots']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (vector copySize: 1 FillingWith: \'nic\')\x7fVisibility: private'
         
          myCompilers <- vector copySize: 1 FillingWith: 'nic'.
@@ -708,13 +768,15 @@ See the LICENSE file for license information.
             __DefineLabel: 'found'.
 
             sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: map.
-            "_Breakpoint: 'hit: about to retry sendDesc'."
             sd _RetrySendDesc.
             _Breakpoint: 'should never reach here'.
 
             __DefineLabel: 'miss'.
-            _Breakpoint: 'miss, about to return selector'.
-            sel).
+
+            _Breakpoint: 'miss, about to backpatch to the compileSlot_stub'.
+            sd _BackpatchSendDescTo: _EntryAddressOfCompileSlotStub Map: map.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {

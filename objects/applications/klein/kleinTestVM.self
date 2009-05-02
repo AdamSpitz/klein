@@ -585,8 +585,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (('init')
-	& ('smallInt')) asSet) From: ( |
+         namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (collector copyFirst: ('init')) asSet) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent exportPolicy modulesToMap namesOfModulesWhoseSubmodulesShouldBeIncludedToo.
 \x7fIsComplete: '.
             | ) .

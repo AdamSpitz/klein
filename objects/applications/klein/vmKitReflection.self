@@ -1001,11 +1001,12 @@ See the LICENSE file for license information.
             | 
             s: (() _Mirror copyAt: 'doit' PutContents: m) slotAt: 'doit'.
 
-            c: myVM compilerPrototype
-                     copyForContext: (myVM compilerPrototype prototypes compilationContext copyForSlot: s)
-                       Architecture: myVM architecture
-                             Oracle: myVM image
-                              Debug: true.
+            c: myVM compilerPrototype.
+            c: c copyForContext: (c prototypes compilationContext copyForSlot: s)
+                   Architecture: myVM architecture
+                         Oracle: myVM image
+                          Debug: true
+                       Optimize: c prototypes optimizationPolicies compileQuickly.
 
             myVM setTheVMAndDo: [
               nm: c compileForcingNonLeafIfNecessary buildNMethod.

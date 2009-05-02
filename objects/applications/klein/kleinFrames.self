@@ -468,7 +468,8 @@ const fint SaveSelfNonVolRegs_frame_size = roundTo(linkage_area_end + 1
          'Category: sizing me & my parts\x7fCategory: reserving space during compilation\x7fModuleInfo: Module: kleinFrames InitialContents: FollowSlot\x7fVisibility: public'
         
          reserveSpaceForOutgoingRcvrAndArgs: howMany = ( |
-            | outgoingRcvrAndArgWordCount: outgoingRcvrAndArgWordCount max: howMany).
+            | 
+            outgoingRcvrAndArgWordCount: outgoingRcvrAndArgWordCount max: howMany).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'stackFrames' -> 'ppc' -> 'parent' -> () From: ( | {

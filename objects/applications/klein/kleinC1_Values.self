@@ -23,7 +23,7 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (set copyRemoveAll)'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (set copyRemoveAll)'
         
          definers <- set copyRemoveAll.
         } | ) 
@@ -35,15 +35,9 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (set copyRemoveAll)'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
         
-         interferingValues <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
-        
-         knownType.
+         knownPossibleValues.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
@@ -71,32 +65,13 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
-        
-         constantLocation = ( |
-             d.
-            | 
-            [aaa]. "This is kind of a hack, maybe. It's probably better to just
-                    make sure the locationAssigner always coalesces these moves.
-                    But for now let's try this, because it seems easy enough
-                    and I don't want to mess with the guts of the locationAssigner
-                    right now. -- Adam, Apr. 2009"
-            location isConstant ifTrue: [^ location].
-            definers size = 1 ifFalse: [error: 'not a constant'].
-            d: definers first.
-            d isMove ifFalse: [error: 'not a constant'].
-            d sourceValue constantLocation).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: copying & creating\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
         
          copy = ( |
             | 
-            ((resend.copy
-               interferingValues: interferingValues copy)
-                        definers: definers copy)
-                           users: users copy).
+            (resend.copy
+                  definers: definers copy)
+                     users: users copy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -120,7 +95,6 @@ See the LICENSE file for license information.
         
          initialize = ( |
             | 
-            interferingValues removeAll.
             self).
         } | ) 
 
@@ -128,6 +102,167 @@ See the LICENSE file for license information.
          'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          isPlaceholder = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         kindsOfPossibleValues = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleValues.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         clonedBlock = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleValues clonedBlock.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         blockLiteralValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleValues clonedBlock parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForLiteral: v = ( |
+            | 
+            copy blockLiteralValue: v).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exemplarMirrorIfFail: fb = ( |
+            | 
+            blockLiteralValue location exemplarMirrorIfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         couldBeAnything = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'couldBeAnything' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleValues couldBeAnything.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'couldBeAnything' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exemplarMirrorIfFail: fb = ( |
+            | 
+            fb value: 'could be anything').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'couldBeAnything' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         selfValue = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleValues selfValue.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleValues selfValue parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForAllocator: a = ( |
+            | 
+            copy sourceLevelAllocator: a).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exemplarMirrorIfFail: fb = ( |
+            | 
+            "Hack: For now, don't assume that we know the type if
+             we're compiling an outer method for a block, because
+             (as an optimization) we reuse those nmethods for all
+             other blocks. (See cachedBlockNMethodOIDs.) -- Adam, Apr. 2009"
+            sourceLevelAllocator context isOuterMethodForABlock ifTrue: [^ fb value: 'hack - block nmethods are reused for other blocks'].
+
+            sourceLevelAllocator isInlined not && [sourceLevelAllocator compiler noMapTest] ifTrue: [^ fb value: '_NoMapTest, so can\'t be sure of the receiver type'].
+
+            sourceLevelAllocator context selfMirror).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         sourceLevelAllocator.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         knownConstantValueIfFail: fb = ( |
+            | 
+            possibleValues
+               ifNone: [fb value: 'undefined']
+                IfOne: [|:loc| loc isConstant ifFalse: [fb value: 'not a constant']
+                                                 True: [loc oopValue]]
+               IfMany: [fb value: 'not a constant']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         knownTypeIfFail: fb = ( |
+             pvs.
+             type.
+            | 
+            pvs: possibleValues.
+            pvs isEmpty ifTrue: [^ fb value: 'undefined'].
+            pvs do: [|:pv. t. |
+              t: pv exemplarMirrorIfFail: [|:e| ^ fb value: e].
+              [aaaaa]. "This isn't quite right, it should be checking if the map is the same, not the mirror."
+              type ifNil: [type: t] IfNotNil: [type = t ifFalse: [^ fb value: 'different possible types']].
+            ].
+            type).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -145,7 +280,6 @@ See the LICENSE file for license information.
          location: loc = ( |
             | 
             [myLocation isNil] assert.
-            loc isRegister && [loc register number = 0] ifTrue: [halt].
             myLocation: loc).
         } | ) 
 
@@ -153,6 +287,55 @@ See the LICENSE file for license information.
          'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         possibleValues = ( |
+             pvs.
+            | 
+            pvs: list copyRemoveAll.
+            possibleValuesDo: [|:pv| pvs add: pv] AlreadySeen: set copyRemoveAll.
+            pvs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         possibleValues: pvs = ( |
+            | 
+            [knownPossibleValues isNil] assert.
+            knownPossibleValues: pvs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         possibleValuesDo: blk AlreadySeen: seen = ( |
+            | 
+            "Need the AlreadySeen set in case of loops." 
+            seen if: self IsPresentDo: [^ self] IfAbsentAddAndDo: [].
+
+            [aaaaa]. "Not sure this is the right way to do this."
+            knownPossibleValues ifNotNil: [knownPossibleValues do: blk. ^ self].
+
+            hasLocation && [location isConstant] ifTrue: [
+              blk value: location.
+            ] False: [
+              definers do: [|:n| n possibleValuesFor: self Do: blk AlreadySeen: seen].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot'
+        
+         slot: s = ( |
+            | 
+            [aaaaa].
+            "Do I actually need to store the slot?"
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -167,13 +350,7 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
-        
-         slot.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (set copyRemoveAll)'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (set copyRemoveAll)'
         
          users <- set copyRemoveAll.
         } | ) 

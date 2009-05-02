@@ -203,8 +203,9 @@ See the LICENSE file for license information.
                             LexicalParentScopes: lpss.
             c: c copyForContext: context
                    Architecture: arch
-                         Oracle: compilerPrototype oracleThatCannotDoEagerRelocation
-                          Debug: true.
+                         Oracle: c oracleThatCannotDoEagerRelocation
+                          Debug: true
+                       Optimize: c prototypes optimizationPolicies compileQuickly.
             c compileForcingNonLeafIfNecessary).
         } | ) 
 
@@ -3143,7 +3144,7 @@ SlotsToOmit: parent prototype.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTesterMorph' -> 'parent' -> () From: ( | {
          'Category: menuing\x7fModuleInfo: Module: kleinCompilerTester InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         defaultButtonHolder <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         defaultButtonHolder.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTesterMorph' -> 'parent' -> () From: ( | {

@@ -807,6 +807,7 @@ SlotsToOmit: parent.
          oopAtSPOffset: spo IfFail: fb = ( |
             | 
             klein nmethod ifSPOffset: spo
+                  IsForAConstantThen: [|:index | oopForConstantAt: index IfFail: fb]
                   IsForARegisterThen: [|:regNum| oopInRegister: (registerForNumber: regNum) IfFail: fb]
              IsForAStackLocationThen: [|:offset| oopAt: sp + offset IfFail: fb]).
         } | ) 
@@ -818,6 +819,18 @@ SlotsToOmit: parent.
             | 
             oopAtSPOffset: (spOffsetForSlotAt: n IfFail: [|:e| ^ fb value: e])
                    IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
+         'Category: accessing\x7fCategory: machine-level info\x7fCategory: constants\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopForConstantAt: index IfFail: fb = ( |
+             cm.
+             nmm.
+            | 
+            nmm: nmethodMirrorIfFail: [|:e| ^ fb value: e].
+            cm:  nmm constantAt: index IfFail: [|:e| ^ fb value: e].
+            cm reflectionPrimitives reflecteeOopIfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {

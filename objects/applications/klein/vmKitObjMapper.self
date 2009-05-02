@@ -2303,7 +2303,8 @@ SlotsToOmit: parent.
                      copyForContext: (klein compiler1 prototypes compilationContext copyForSlot: slot)
                        Architecture: 'ppc'
                              Oracle: klein compiler1 oracleThatCannotDoEagerRelocation
-                              Debug: true).
+                              Debug: true
+                           Optimize: klein compiler1 prototypes optimizationPolicies compileFastCode).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2329,7 +2330,8 @@ SlotsToOmit: parent.
                         copyForContext: context
                           Architecture: theVM architecture
                                 Oracle: objectMapper oracleForEagerRelocation
-                                 Debug: theVM exportPolicy shouldCompileInDebugMode).
+                                 Debug: theVM exportPolicy shouldCompileInDebugMode
+                              Optimize: theVM compilerPrototype prototypes optimizationPolicies compileQuicklyButOptimizeKleinKernel).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {

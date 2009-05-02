@@ -657,6 +657,7 @@ to just keep upping it by hand.
                          test if we ever call this module during normal
                          execution. -- Adam, 5/04"
 
+
             lens:                   lensForExecution. "lens gets munged during export"
             machineMemory: machineMemoryForExecution.
             _TheVM: self.
