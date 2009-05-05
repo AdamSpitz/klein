@@ -77,46 +77,59 @@ Hey, if I wanted to experiment with heap-allocated activations, so that I could 
 
 ----
 
+Does the leaf-method optimization have to be implemented using that backout-block thing? Can't we just keep going and then figure out at the end (maybe at the locationAssigner phase) whether we need a stack frame or not? Maybe we don't need to redo the whole compilation, just the locationAssigner.
+
+----
+
+Eventually I should start using basic blocks instead of doing control-flow analysis with individual IR nodes.
+
+----
+
 Inlining plan:
 
   - Inline other sends where we know the receiver type, not just self-sends.
   - In particular, inline block methods, so that we can eliminate the block.
-  - Inline methods containing blocks. (The problem is that the block needs to be customized for each type of enclosing nmethod, since the enclosing nmethod might put the uplevel values in different places.) How about I have each nmethod keep a vector of the blocks that it uses (and clone each one of them from the original block literal)? And then add a constant VM slot to every block, containing a pointer to its value nmethod (or maybe to the enclosing nmethod)? (See forReflecteeOf:AddAllMappedVMSlotsTo:Mapper:.) That'll make sure that each block has a different map. Then I've just gotta make sure each one gets the right nmethod in its nmethod cache.
+  - Inline methods containing blocks. (The problem is that the block needs to be customized for each type of enclosing nmethod, since the enclosing nmethod might put the uplevel values in different places.) How about I have each nmethod keep a vector of the blocks that it uses (and clone each one of them from the original block literal)? And then add a constant VM slot to every block, containing a pointer to its value nmethod (or maybe to the enclosing nmethod... no, to the *home scope* in the enclosing nmethod, because that's what I need to make NLRs work right!)? (See forReflecteeOf:AddAllMappedVMSlotsTo:Mapper:.) That'll make sure that each block has a different map. Then I've just gotta make sure each one gets the right nmethod in its nmethod cache.
   - Flesh out the list of stuff that needs to be pre-inlined to make the system ramp up quickly enough.
 
 ----
 
 The irNodeGenerator needs to know, when it comes across a send, whether it can inline that send or not. Which means it needs to know whether we know the type of the receiver or not.
 
-How can we know the type of the receiver? Well, if the rcvrValue is valueForSelf, that's cool. If not... then we need to find all the definers of the rcvrValue. We can do that by... wait, why can't we just do the thing where we go through each node and have it add itself to the "definers" of each value that it defines? Oh, because of move nodes?
+I think it's time to start using SSA form. Right now the compiler isn't smart enough to figure out which definitions of a particular value actually reach a particular use, so it can't inline any calls to blocks or assignable locals, because it assumes that the value could be either their real value or the 0/nil that it's initialized to.
 
-Bleh, hold on. I wanna get the move-node-coalescing thing working. That might solve a lot of this for me.
-
-OK, I'm a bit closer to having coalescing working, but it's not quite there yet. I don't think it's gonna solve the problem, though, so let's not worry about it yet.
-
-I need to either follow the data flow backwards from each use until I reach a def along every control-flow path... or I need to convert to SSA form or something. Is that right? How do I do that, exactly?
+So I need an algorithm to compute the dominator tree and dominance frontiers, and then I put in phi functions in all the dominance-frontier places, and then... what?
 
 ----
 
-OK! Now I've got a problem because the compiler isn't smart enough to know that the start-node's definition of the memoized-block value doesn't actually reach any of the uses of the block.
+How do I add the phi functions?
 
-SSA would fix this. Can I just create two separate values with the same location? Yeah, one that's defined by the start node and used by the block-literal node (and the return nodes?), and one that's defined by the block-literal node and used by whoever uses the block (well, I guess that means the move to the stack value) and the return nodes.
+Just add the things to the beginning of the basic block, right after the label node?
 
-Except... the locationAssigner has no way of knowing that they both need to be in the same location. Wait, why do they, again?
+Fine, but which variables does each BB need? Is that gonna be complicated to determine? Is it a major problem if I put in too many?
 
-The way block literals work is that we memoize them, so that we don't end up cloning the block more than once (which would be an error), and don't end up cloning it at all if it's not used (which would be inefficient). The block-literal node might see either 0 or the block, and so might the return nodes, but the move node that pushes the cloned block will only see the actual block.
+And am I gonna have to do some complicated thing to convert back out of SSA form?
 
-OK, so I need one of those phi functions! There are three values here: v1, v2, v3.
-  - v1 is defined by the start node and used by the phi node.
-  - v2 is defined by the block node and used by the move-to-a-stack-value node and by the phi node.
-  - v3 is defined by the phi node and used by the block node and the return nodes.
+Oh, here's a couple of algorithms in the Appel textbook for adding the phi functions and renaming the variables. And then I think to generate code I just do some moves along the incoming edges - shouldn't be too bad.
 
-So where does this phi node go, and how does it work? Well, it goes... um... before the block node? Hmm, and maybe there's a fourth one that goes before the return node?
+----
 
-Yeah, maybe. So there'd be a phi node immediately before the block-literal node. It... what does it do? Does it move v1 and v2 to v3? I don't get it, how does it know which one to move there?
+Blecch. Am I gonna have to redo the SSA-form conversion every time I inline a method?
 
-Hey, wait, couldn't I use the locationAssigner's alias mechanism?
+Or can I do the conversion just on the IR nodes for the inlined method? Hmm, maybe.
 
-Yeah, that's exactly what it's for.
+Two questions:
 
-Blecch, this isn't gonna work. I can't just put in a hack for the blocks - I'm gonna have this problem with locals, too. So let's do a general solution. But let's do it *after* I fix this inlining thing.
+  - If I inline the IR nodes for a method, and the inlined nodes are in SSA form, and the outer method's nodes are in SSA form, is the whole thing in SSA form?
+  - If I've already SSA'd the outer thing, will it be faster to SSA it the second time?
+
+----
+
+Back to the stuff I figured out on my walk. Gotta change the way I do inlining - generate the IR nodes for the inlined scope separately, then splice them in.
+
+Or at least just keep the BBs separate?
+
+OK. Let's try this:
+  - Just nil out the nodeToInsertAfter, currentBB, and currentBytecodeInterpreter. (I can get them all back from the send node that I'm inlining.)
+  - Call inlineSlot:Whatever:.
+  - Then splice in the results.

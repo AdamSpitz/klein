@@ -1244,7 +1244,7 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinPrims InitialConte
             | 
             compiler noSendsAllowed ifTrue: [
               breakpoint: message.
-            ] False: [|nlr. sel|
+            ] False: [|sel|
               setUpSendArguments: (fbReg
                                 & (locationForConstant: message canonicalize)
                                 & (locationForConstant:    name canonicalize)) asVector.
@@ -1252,8 +1252,7 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinPrims InitialConte
               [value: ''                With: '']. "browsing"
               [primitiveFailedError: '' Name: '']. "browsing"
               sel: ('IfFail:' isSuffixOf: node selector) ifTrue: 'value:With:' False: 'primitiveFailedError:Name:'.
-              nlr: genNormalCallSelector: sel LiveOopTracker: liveOopTracker copyForNode: node.
-              compiler nlrPoints add: nlr.
+              genNormalCallSelector: sel LiveOopTracker: liveOopTracker copyForNode: node.
 
               moveSendResultTo: dstReg.
             ]).
@@ -1503,9 +1502,9 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinPrims InitialConte
              fh.
              result.
             | 
-            fh: failureHandler copyFor: self Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
+            fh: failureHandler copyFor: codeGeneratorForFailureHandler Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
             result:  aBlock value: fh.
-            bindLabel: fh endLabel.
+            fh cg bindLabel: fh endLabel.
             result).
         } | ) 
 

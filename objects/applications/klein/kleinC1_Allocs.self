@@ -77,7 +77,7 @@ See the LICENSE file for license information.
         
          allocateIncomingAndPreallocatedLocations = ( |
             | 
-            compiler startNode controlFlowOrderDo: [|:n| allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations].
+            compiler nodesInControlFlowOrder do: [|:n| allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations].
             setNonVolatileRegSaveArea.
             topSourceLevelAllocator allocateIncomingAndPreallocatedLocations.
             self).
@@ -1035,7 +1035,6 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
               v: (preallocatedLocationForIncomingRcvrOrArgAt: i) ifNil: [newValue] IfNotNil: [|:loc| newValueWithLocation: loc].
               i = 0 ifFalse: [| s |
                 s: argSlots at: i pred.
-                v slot: s.
                 v addDescription: s key.
                 namedValues if: s key IsPresentDo: [error: 'hmm'] IfAbsentPut: [v] AndDo: [].
               ].
@@ -1051,22 +1050,9 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             | 
             localSlots do: [|:s. v|
               v: (preallocatedLocationForLocalSlot: s) ifNil: [newValue] IfNotNil: [|:loc| newValueWithLocation: loc].
-              v slot: s.
               v addDescription: s key.
               namedValues if: s key IsPresentDo: [error: 'hmm'] IfAbsentPut: [v] AndDo: [].
             ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initializeOutgoingResultValue = ( |
-            | 
-            valueForOutgoingResult:
-              isInlined ifTrue: [newValue]
-                         False: [newValueWithLocation: machineLevelAllocator locationForOutgoingResult].
-            valueForOutgoingResult addDescription: 'outgoing result'.
             self).
         } | ) 
 
@@ -1110,7 +1096,6 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
         
          initializeValues = ( |
             | 
-            initializeOutgoingResultValue.
             initializeIncomingRcvrAndArgValues.
             initializeLocalSlotValues.
             initializeValueForSelf.
@@ -1172,14 +1157,6 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
          locationForIncomingReceiver = ( |
             | 
             valueForIncomingReceiver location).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: outgoing result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         locationForOutgoingResult = ( |
-            | 
-            valueForOutgoingResult location).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
@@ -1256,6 +1233,18 @@ access parent allocator\'s loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialCon
             "Do we have any reason to keep track of all the values in this
              source-level allocator? -- Adam, Apr. 2009"
             machineLevelAllocator newValue).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
+         'Category: values for this scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         newValueForOutgoingResult = ( |
+             v.
+            | 
+            v: isInlined ifTrue: [newValue]
+                          False: [newValueWithLocation: machineLevelAllocator locationForOutgoingResult].
+            v addDescription: 'outgoing result'.
+            v).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
@@ -1406,19 +1395,13 @@ access parent allocator\'s loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialCon
         
          valueForSlot: s = ( |
             | 
-            namedValues at: s key IfAbsentPut: [(newValue slot: s) addDescription: s key]).
+            namedValues at: s key IfAbsentPut: [newValue addDescription: s key]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: public'
         
          stackValues <- list copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
-        
-         valueForOutgoingResult.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> () From: ( | {

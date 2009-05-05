@@ -329,16 +329,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot'
-        
-         slot: s = ( |
-            | 
-            [aaaaa].
-            "Do I actually need to store the slot?"
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: printing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          statePrintString = ( |

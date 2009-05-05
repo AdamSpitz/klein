@@ -645,6 +645,19 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
+         loopAddingNumbersFromZeroTo: n = ( |
+             i <- 0.
+             sum <- 0.
+            | 
+            (i _IntLE: n) ifFalse: [^ sum].
+            sum: sum _IntAdd: i.
+            i: i _IntAdd: 1.
+            _Restart).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
          methodForLiveMutation = ( |
             | 
             3 + 4).
@@ -1245,6 +1258,7 @@ SlotsToOmit: parent prototype safety.
             [] vmTests run.
             testOnNonLocalReturn.
             branchTester run.
+            testRestart.
             dataSlotInliningTester run.
             testMapsOfObjectLiterals.
             testControlFlowOrderCodeGeneration: true.
@@ -1391,6 +1405,15 @@ SlotsToOmit: parent prototype safety.
             | 
             blah: primitiveFailureTester _Blah.
             atPut: primitiveFailureTester _At: 3 Put: 4.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testRestart = ( |
+            | 
+            assert: (loopAddingNumbersFromZeroTo: 10) Is: 55.
             self).
         } | ) 
 

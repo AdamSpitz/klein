@@ -156,7 +156,6 @@ See the LICENSE file for license information.
              indexPastMe.
              isMessageSend.
              labelPastMe.
-             nlr.
              start.
             | 
             "see CodeGen::SendDesc"
@@ -186,12 +185,12 @@ See the LICENSE file for license information.
                                                                             a data32: 0. [todo nmln].
               a locationCounter: start + (cg oopSize *     selectorIndex).  cg assembleObject: key selector.
               a locationCounter: start + (cg oopSize *   lookupTypeIndex).  cg assembleObject: key lookupType.
-              a locationCounter: start + (cg oopSize *    nlrReturnIndex).  nlr: cg newLabel. a bDisp: nlr.
+              a locationCounter: start + (cg oopSize *    nlrReturnIndex).  a bDisp: aLiveOopTracker node labelToBranchToOnNLR.
               a locationCounter: start + (cg oopSize *    delegateeIndex).  cg assembleObject: key delegatee.
             ].
 
             a locationCounter:   start + (cg oopSize *       indexPastMe).
-            nlr).
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'ppc' -> () From: ( | {

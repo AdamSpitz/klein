@@ -265,6 +265,14 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         codeGeneratorForFailureHandler = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: comments\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          comment: msg = ( |
@@ -355,10 +363,8 @@ See the LICENSE file for license information.
          'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          genCallForNode: n = ( |
-             nlr.
             | 
-            nlr: genCallForKey: n lookupKey LiveOopTracker: liveOopTracker copyForNode: n.
-            compiler nlrPoints add: nlr.
+            genCallForKey: n lookupKey LiveOopTracker: liveOopTracker copyForNode: n.
             self).
         } | ) 
 
@@ -415,13 +421,13 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateCleanupForMemoizedBlocks = ( |
+         generateCleanupForMemoizedBlocks: node = ( |
              first <- bootstrap stub -> 'globals' -> 'true' -> ().
              zeroReg.
             | 
             zeroReg: r0.
 
-            machineLevelAllocator memoizedBlockValues do: [|:v|
+            node blockValuesToZap do: [|:v|
               first ifTrue: [
                 comment: 'zapping memoized blocks'. 
                 loadZeroIntoRegister: zeroReg.
@@ -444,13 +450,6 @@ See the LICENSE file for license information.
          'Category: primitives\x7fCategory: perform\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          generateDynamicPerformNode: n = ( |
-            | childMustImplement).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateEpilogue = ( |
             | childMustImplement).
         } | ) 
 
@@ -629,32 +628,6 @@ See the LICENSE file for license information.
          generateIfUnsigned: reg1 IsNotLessThan: reg2 ThenUnlikelyBranchTo: tooBig = ( |
             | 
             childMustImplement.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateInitializationForMemoizedBlocks = ( |
-             cmt <- bootstrap stub -> 'globals' -> 'false' -> ().
-             zeroReg.
-            | 
-            machineLevelAllocator memoizedBlockValues do: [|:v. loc|
-              cmt ifFalse: [comment: 'initializing memoized blocks'. cmt: true].
-
-              loc: v location.
-              loc isRegister ifTrue: [
-                loadZeroIntoRegister: loc.
-              ]
-              False: [
-                zeroReg ifNil: [
-                  zeroReg: allocateTemporaryRegister.
-                  loadZeroIntoRegister: zeroReg.
-                ].
-                moveRegister: zeroReg ToLocation: loc.
-              ]
-            ].
-            zeroReg ifNotNil: [freeTemporaryRegister: zeroReg].
             self).
         } | ) 
 
@@ -1346,10 +1319,8 @@ Returns an address into a bytes part masquerading as a small integer.
                                    OID: oidReg
                                  Space: spaceReg
                                   Into: dstReg
-                     IfOutOfMemoryThen: [| nlr |
-                                         setUpSendArguments: vector copyAddFirst: locationForConstant: vmKit garbageCollector.
-                                         nlr: genNormalCallSelector: 'scavenge' LiveOopTracker: liveOopTracker copyForNode: node.
-                                         compiler nlrPoints add: nlr.
+                     IfOutOfMemoryThen: [setUpSendArguments: vector copyAddFirst: locationForConstant: vmKit garbageCollector.
+                                         genNormalCallSelector: 'scavenge' LiveOopTracker: liveOopTracker copyForNode: node.
                                          branchToLabel: retryLabel]
                                   With: self.
             ].
@@ -1385,7 +1356,6 @@ Returns an address into a bytes part masquerading as a small integer.
          'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: blocks\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitive_OnNonLocalReturn_IfFail_: node = ( |
-             doneCleanupLabel.
              doneLabel.
              nlrLabel.
              nlrLabelForProtectBlock.
@@ -1398,7 +1368,10 @@ Returns an address into a bytes part masquerading as a small integer.
 
             comment: 'call orig block'.
             moveLocation: node rcvrLoc ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 0.
-            nlrLabel: genNormalCallSelector: 'value' LiveOopTracker: liveOopTracker copyForNode: node.
+            nlrLabel: newLabel.
+            node specialLabelToBranchToOnNLR: nlrLabel.
+            genNormalCallSelector: 'value' LiveOopTracker: liveOopTracker copyForNode: node.
+            node specialLabelToBranchToOnNLR: nil.
 
             comment: 'no NLR happened, so return the result of running the block'.
             moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: node resultLoc.
@@ -1415,7 +1388,10 @@ Returns an address into a bytes part masquerading as a small integer.
             moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 1.
             moveLocation: node arg1Value location                         ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 0.
 
-            nlrLabelForProtectBlock: genNormalCallSelector: 'value:' LiveOopTracker: liveOopTracker copyForNode: node.
+            nlrLabelForProtectBlock: newLabel.
+            node specialLabelToBranchToOnNLR: nlrLabelForProtectBlock.
+            genNormalCallSelector: 'value:' LiveOopTracker: liveOopTracker copyForNode: node.
+            node specialLabelToBranchToOnNLR: nil.
 
             bindLabel: nlrLabelForProtectBlock. "ignore protect block NLR"
 
@@ -1423,9 +1399,7 @@ Returns an address into a bytes part masquerading as a small integer.
             moveLocation: node homeScopeValue location ToLocation: machineLevelAllocator locationForIncomingNLRHomeScope.
 
             "Continue NLRing."
-            doneCleanupLabel: newLabel.
-            branchToLabel: doneCleanupLabel.
-            compiler nlrPoints add: doneCleanupLabel.
+            branchToLabel: node labelToBranchToOnNLR.
 
             bindLabel: doneLabel.
 
@@ -1433,20 +1407,9 @@ Returns an address into a bytes part masquerading as a small integer.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: control flow\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitive_RestartIfFail_: node = ( |
-            | 
-            [ _Restart           ]. "browsing"
-            [ _RestartIfFail: fb ]. "browsing"
-            genStackCheck.
-            genBranchTo: node destinationNode).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generatePrologue = ( |
+         generatePrologue: startNode = ( |
             | 
             childMustImplement).
         } | ) 
@@ -2465,7 +2428,7 @@ and may fail to compile otherwise.
         
          sourceLevelAllocator = ( |
             | 
-            [aaaaa]. "This'll need to change or disappear once we start inlining."
+            [aaaaa]. "This should really go away. I think it's not used much anymore. Just _ArgAt:?"
             machineLevelAllocator topSourceLevelAllocator).
         } | ) 
 
@@ -3061,17 +3024,17 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateEpilogue = ( |
+         generateEpilogue: node = ( |
             | 
-            generateEpilogueWordOffset: sendDesc normalReturnIndex).
+            generateEpilogue: node WordOffset: sendDesc normalReturnIndex).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateEpilogueWordOffset: wordOffset = ( |
+         generateEpilogue: node WordOffset: wordOffset = ( |
             | 
-            generateCleanupForMemoizedBlocks.
+            generateCleanupForMemoizedBlocks: node.
             restoreFrameAndReturn: wordOffset).
         } | ) 
 
@@ -3309,11 +3272,11 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateNLRFrom: aSourceLevelAllocator = ( |
+         generateNLR: node = ( |
             | 
             [compiler slot contents isReflecteeBlockMethod] assert.
-            moveLocation: aSourceLevelAllocator locationForOutgoingResult ToLocation: machineLevelAllocator locationForOutgoingResult.
-            generateEpilogueWordOffset: sendDesc nlrReturnIndex.
+            moveLocation: node outgoingResultValue location ToLocation: machineLevelAllocator locationForOutgoingResult.
+            generateEpilogue: node WordOffset: sendDesc nlrReturnIndex.
             self).
         } | ) 
 
@@ -3334,10 +3297,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateNLRPoints = ( |
+         generateNLRPoints: node = ( |
             | 
-            compiler nlrPoints isEmpty  ifTrue: [^ self].
-
             "We could be more clever about choosing which blocks
              must be zapped if there are no backwards branching
              bytecodes.  For now, all NLRs are handled the same.
@@ -3345,10 +3306,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
              epilogue code because they are identical.
              -- jb 8/03"
 
-            compiler nlrPoints do: [|:lbl| bindLabel: lbl].
-            comment: 'an NLR point'.
+            generateCleanupForMemoizedBlocks: node.
 
-            generateCleanupForMemoizedBlocks.
             generateIf: machineLevelAllocator locationForIncomingNLRHomeScope register
                 Equals: sp
                   Then: [ restoreFrameAndReturn: sendDesc normalReturnIndex ]
@@ -4120,7 +4079,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
   // may contain lookup parameters.
 \x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generatePrologue = ( |
+         generatePrologue: startNode = ( |
             | 
             generating: 'generateMethodStartInstruction' During: [generateMethodStartInstruction].
             generating: 'checkReceiverMap'               During: [checkReceiverMap].

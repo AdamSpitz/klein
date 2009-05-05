@@ -41,7 +41,7 @@ See the LICENSE file for license information.
         
          register = ( |
             | 
-            [aaaaa]. "For compatibility with the old register locations."
+            "For compatibility with the old register locations."
             self).
         } | ) 
 
