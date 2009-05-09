@@ -47,7 +47,13 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot'
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
+        
+         originalValueBeforeRenaming.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent.
@@ -331,12 +337,26 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: printing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
+         shortPrintString = ( |
+            | 
+            uniqueID printString).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
          statePrintString = ( |
              r <- ''.
             | 
-            description ifNotNil: [r: r & description & ' in ' ].
+            description ifNotNil: [r: r & description & '[' & uniqueID printString & '] in ' ].
             r: r & myLocation printString.
             r flatString).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
+        
+         uniqueID.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {

@@ -81,55 +81,26 @@ Does the leaf-method optimization have to be implemented using that backout-bloc
 
 ----
 
-Eventually I should start using basic blocks instead of doing control-flow analysis with individual IR nodes.
+blockLiteralsThatWillNotBePushed - shouldn't that be done in a different way now?
 
 ----
 
 Inlining plan:
 
-  - Inline other sends where we know the receiver type, not just self-sends.
-  - In particular, inline block methods, so that we can eliminate the block.
-  - Inline methods containing blocks. (The problem is that the block needs to be customized for each type of enclosing nmethod, since the enclosing nmethod might put the uplevel values in different places.) How about I have each nmethod keep a vector of the blocks that it uses (and clone each one of them from the original block literal)? And then add a constant VM slot to every block, containing a pointer to its value nmethod (or maybe to the enclosing nmethod... no, to the *home scope* in the enclosing nmethod, because that's what I need to make NLRs work right!)? (See forReflecteeOf:AddAllMappedVMSlotsTo:Mapper:.) That'll make sure that each block has a different map. Then I've just gotta make sure each one gets the right nmethod in its nmethod cache.
+  - Get the SSA stuff working, so we can inline other sends where we know the receiver type, not just self-sends.
+  - Kleinify blocks; make them include a constant VM slot pointing to their enclosing scopeDesc.
+  - Be able to inline block methods, so that we can eliminate the block.
+  - Be able to inline methods containing blocks. (The problem is that the block needs to be customized for each type of enclosing nmethod, since the enclosing nmethod might put the uplevel values in different places.) How about I have each nmethod keep a vector of the blocks that it uses (and clone each one of them from the original block literal)? And then add a constant VM slot to every block, containing a pointer to its value nmethod (or maybe to the enclosing nmethod... no, to the *home scope* in the enclosing nmethod, because that's what I need to make NLRs work right!)? (See forReflecteeOf:AddAllMappedVMSlotsTo:Mapper:.) That'll make sure that each block has a different map. Then I've just gotta make sure each one gets the right nmethod in its nmethod cache.
   - Flesh out the list of stuff that needs to be pre-inlined to make the system ramp up quickly enough.
 
 ----
 
-The irNodeGenerator needs to know, when it comes across a send, whether it can inline that send or not. Which means it needs to know whether we know the type of the receiver or not.
+Whoa. Holy crap. The sendMessage_stub balloons up from 656 IR nodes to over 7000 when I turn on SSA.
 
-I think it's time to start using SSA form. Right now the compiler isn't smart enough to figure out which definitions of a particular value actually reach a particular use, so it can't inline any calls to blocks or assignable locals, because it assumes that the value could be either their real value or the 0/nil that it's initialized to.
+I kinda like the "semi-pruned SSA" idea:   http://www.serc.iisc.ernet.in/cadl/courses/spe98-ssa.pdf
 
-So I need an algorithm to compute the dominator tree and dominance frontiers, and then I put in phi functions in all the dominance-frontier places, and then... what?
-
-----
-
-How do I add the phi functions?
-
-Just add the things to the beginning of the basic block, right after the label node?
-
-Fine, but which variables does each BB need? Is that gonna be complicated to determine? Is it a major problem if I put in too many?
-
-And am I gonna have to do some complicated thing to convert back out of SSA form?
-
-Oh, here's a couple of algorithms in the Appel textbook for adding the phi functions and renaming the variables. And then I think to generate code I just do some moves along the incoming edges - shouldn't be too bad.
+But only if it's actually true that a lot of variables are only used within the BB where they're defined. Might not be, considering that now every send ends the BB.
 
 ----
 
-Blecch. Am I gonna have to redo the SSA-form conversion every time I inline a method?
-
-Or can I do the conversion just on the IR nodes for the inlined method? Hmm, maybe.
-
-Two questions:
-
-  - If I inline the IR nodes for a method, and the inlined nodes are in SSA form, and the outer method's nodes are in SSA form, is the whole thing in SSA form?
-  - If I've already SSA'd the outer thing, will it be faster to SSA it the second time?
-
-----
-
-Back to the stuff I figured out on my walk. Gotta change the way I do inlining - generate the IR nodes for the inlined scope separately, then splice them in.
-
-Or at least just keep the BBs separate?
-
-OK. Let's try this:
-  - Just nil out the nodeToInsertAfter, currentBB, and currentBytecodeInterpreter. (I can get them all back from the send node that I'm inlining.)
-  - Call inlineSlot:Whatever:.
-  - Then splice in the results.
+findRcvrStackValue (etc.) don't work sometimes, if phi functions get inserted after the lastNodeBeforeSettingUpTheSend. Maybe I should store firstNodeSettingUpTheSend instead?

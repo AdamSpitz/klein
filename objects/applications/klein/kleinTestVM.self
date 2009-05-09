@@ -1249,6 +1249,7 @@ SlotsToOmit: parent prototype safety.
             | 
             testReturnValueOfLocalAssignment.
             testLeafMethodWithBrowsingTag.
+            testCallingBlocks.
             testMethodWithManyArguments.
             testIfTrueAndIfFalse.
             testInliningSimpleMethods.
@@ -1274,6 +1275,16 @@ SlotsToOmit: parent prototype safety.
             performTester run.
             _Breakpoint: 'done'.
             three).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testCallingBlocks = ( |
+            | 
+            assert: [53] value Is: 53.
+            assert: ([|:x| x _IntAdd: 7] value: 9) Is: 16.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {

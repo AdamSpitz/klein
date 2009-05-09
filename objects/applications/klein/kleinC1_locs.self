@@ -406,6 +406,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         statePrintString = ( |
+            | 
+            oopMirror name).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          tell: aCodeGenerator ToLoadMeToRegister: r = ( |

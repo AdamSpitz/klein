@@ -34,9 +34,9 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
+         'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
         
-         allValues <- set copyRemoveAll.
+         allValues <- list copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> () From: ( | {
@@ -173,6 +173,7 @@ See the LICENSE file for license information.
              v.
             | 
             v: compiler prototypes dataValue copyCompiler: compiler.
+            v uniqueID: allValues size.
             allValues add: v.
             v).
         } | ) 
@@ -1230,8 +1231,6 @@ access parent allocator\'s loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialCon
         
          newValue = ( |
             | 
-            "Do we have any reason to keep track of all the values in this
-             source-level allocator? -- Adam, Apr. 2009"
             machineLevelAllocator newValue).
         } | ) 
 

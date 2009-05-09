@@ -55,12 +55,6 @@ that it does not apply.  -- jb 8/03\x7fModuleInfo: Module: kleinCompiler1 Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         dominanceCalculator.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
          'Category: special complation modes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (false)'
         
          hasOnNonLocalReturn <- bootstrap stub -> 'globals' -> 'false' -> ().
@@ -79,15 +73,15 @@ that it does not apply.  -- jb 8/03\x7fModuleInfo: Module: kleinCompiler1 Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+         'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         machineLevelAllocator.
+         locationAssigner.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)'
+         'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
-         myReturnNode.
+         machineLevelAllocator.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
@@ -155,44 +149,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         addPhiFunctions = ( |
-             bbsNeedingPhiFunctionsByValue.
-             definedValuesByBB.
-             definingBBsByValue.
-            | 
-            definingBBsByValue: dictionary copyRemoveAll.
-            definedValuesByBB:  dictionary copyRemoveAll.
-            basicBlocks do: [|:bb. definedValues|
-              definedValues: definedValuesByBB at: bb IfAbsentPut: [set copyRemoveAll]. "We could also just cache this in the BB itself."
-
-              bb definedValuesDo: [|:v|
-                (definingBBsByValue at: v IfAbsentPut: [set copyRemoveAll]) add: bb.
-                definedValues add: v.
-              ].
-            ].
-            bbsNeedingPhiFunctionsByValue: dictionary copyRemoveAll.
-            definingBBsByValue do: [|:definingBBs. :v|
-              [definingBBs isEmpty] whileFalse: [| bb |
-                bb: definingBBs removeFirst.
-                (dominanceCalculator dominanceFrontierOf: bb) do: [|:frontierBB. bbsNeedingPhiFunctions|
-                  bbsNeedingPhiFunctions: bbsNeedingPhiFunctionsByValue at: v IfAbsentPut: [set copyRemoveAll].
-                  bbsNeedingPhiFunctions if: frontierBB IsPresentDo: [] IfAbsentAddAndDo: [
-                    frontierBB insertPhiFunction: prototypes irNodes phiFunction copyBC: frontierBB labelNode bc Value: v.
-                    ((definedValuesByBB at: frontierBB) includes: v) ifFalse: [
-                      "We just added a new definition (i.e. the phi function) to frontierBB, so
-                       we need to add phi functions to *its* dominance frontier."
-                      definingBBs add: frontierBB.
-                    ].
-                  ].
-                ].
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: relocators\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          addRelocator: or = ( |
@@ -215,7 +171,8 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          allocateLocations = ( |
             | 
-            (prototypes locationAssigner copyForCompiler: self) go).
+            locationAssigner: prototypes locationAssigner copyForCompiler: self.
+            locationAssigner go).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -244,18 +201,15 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          basicBlocks = ( |
             | 
-            basicBlocksInControlFlowReversePostOrder).
+            firstBB basicBlocksInControlFlowReversePostOrder).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: basic blocks\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          basicBlocksInControlFlowReversePostOrder = ( |
-             bbs.
             | 
-            bbs: list copyRemoveAll.
-            firstBasicBlock depthFirstControlFlowTraversalPreorderDo: [] PostorderDo: [|:bb| bbs addFirst: bb] AlreadyDid: set copyRemoveAll.
-            bbs).
+            firstBB basicBlocksInControlFlowReversePostOrder).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -266,15 +220,15 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
              nlrPointEps.
             | 
 
-            "Gotta do the nlrPointEpilogueBBs last, because sends don't actually include
+            "Hack! Gotta do the nlrPointEpilogueBBs last, because sends don't actually include
              a branch to their sourceSucc. Maybe they should, and then it should get
              optimized away in cases where the sourceSucc follows the send?"
 
             bbs: list copyRemoveAll.
             nlrPointEps: list copyRemoveAll.
 
-            basicBlocksInControlFlowReversePostOrder do: [|:bb|
-              bb branchNode isNLRPointEpilogue ifTrue: [
+            firstBB basicBlocksInControlFlowReversePostOrder do: [|:bb|
+              bb endNode isNLRPointEpilogue || [bb endNode isUnconditionalBranch && [bb endNode destinationNode basicBlock endNode isNLRPointEpilogue]] ifTrue: [
                 nlrPointEps addLast: bb.
               ] False: [
                 bbs addLast: bb.
@@ -307,22 +261,12 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             nm reusabilityConditions: reusabilityConditions.
             nm relocators: relocators.
             nm frame: frame copy.
-            nm topScope: startNode bc interpreter createScopeDescForNMethod: nm.
+            nm topScope: firstBB labelNode bc interpreter createScopeDescForNMethod: nm.
             [aaaaa]. "It's not really necessary for nmethods to have their own lookupKey slot anymore,
                       except maybe as an optimization - saves the cost of that extra load during the
                       sendMessage_stub. But that might not be important."
             nm lookupKey: nm topScope lookupKey.
             nm).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: control flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         calculateDominance = ( |
-            | 
-            dominanceCalculator: prototypes dominanceCalculator copyForCompiler: self.
-            dominanceCalculator go.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -367,9 +311,9 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          checkThatTheControlFlowLinksAreConsistent = ( |
             | 
-            basicBlocksInControlFlowReversePostOrder do: [|:bb|
-              bb controlFlowSuccs do: [|:succ| [succ controlFlowPreds includes: bb] assert].
-              bb controlFlowPreds do: [|:pred| [pred controlFlowSuccs includes: bb] assert].
+            firstBB basicBlocksInControlFlowReversePostOrder do: [|:bb|
+              bb controlFlowSuccsDo: [|:succ| [succ controlFlowPreds includes: bb] assert].
+              bb controlFlowPredsDo: [|:pred| [pred controlFlowSuccs includes: bb] assert].
             ].
             self).
         } | ) 
@@ -401,20 +345,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
               ^ compiler "necessary because we need to back out"
             ].
             compiler).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         convertToSSAForm = ( |
-            | 
-            [aaaaa]. "I'm feeling like things are a mess. Put
-                      this back in later."
-            true ifTrue: [^ self].
-
-            addPhiFunctions.
-            createNewValuesSoThatEachOneIsOnlyDefinedOnce.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -451,26 +381,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         createNewValuesSoThatEachOneIsOnlyDefinedOnce = ( |
-             mostRecentDefinitions.
-             renamedValues.
-            | 
-            renamedValues:         dictionary copyRemoveAll.
-            mostRecentDefinitions: dictionary copyRemoveAll.
-
-            machineLevelAllocator allValues do: [|:v|
-              renamedValues at: v Put: list copyRemoveAll add: v.
-              mostRecentDefinitions at: v Put: list copyRemoveAll add: v.
-            ].
-
-            renameValuesInBB: firstBasicBlock UsingRenamedValues: renamedValues MostRecentDefinitions: mostRecentDefinitions.
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          debug: bool = ( |
@@ -495,17 +405,28 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         displayDebugInformationIfDesired = ( |
+            | 
+            shouldDisplayDebugInformation ifFalse: [^ self].
+            printIRNodes.
+            halt.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          doCompile = ( |
             | 
             makeSureIRNodesAreBuilt.
-            calculateDominance.
-            convertToSSAForm.
             buildAndLinkValues.
             doInlining.
+            replacePhiFunctionsWithMoves.
             calculateValueLiveness.
             allocateLocations.
+            displayDebugInformationIfDesired.
             generateCode.
             self).
         } | ) 
@@ -533,8 +454,9 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
                 rcvrAndArgStackValues: n findRcvrAndArgStackValues.
                 resultStackValue:      n findResultStackValue.
                 n removeFromGraphInPreparationForInlining.
+                irNodeGenerator comment: 'inlining call to ', s name.
+                irNodeGenerator artificiallyInsertANewBasicBlock.
                 irNodeGenerator inlineSlot: s Key: key ReceiverType: rcvrMir RcvrAndArgs: rcvrAndArgStackValues Result: resultStackValue.
-                [n lastNodeBeforeSettingUpTheSend controlFlowSuccs isEmpty not] assert.
               ] Else: [].
             ].
             self).
@@ -543,7 +465,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: basic blocks\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         firstBasicBlock = ( |
+         firstBB = ( |
             | 
             irNodeGenerator firstBB).
         } | ) 
@@ -625,9 +547,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             irNodeGenerator ifNil: [
               irNodeGenerator: prototypes irNodeGenerator copyForCompiler: self.
 
-              irNodeGenerator currentBytecodeInterpreter prologue.
-              irNodeGenerator currentBytecodeInterpreter interpretSlot.
-              irNodeGenerator currentBytecodeInterpreter epilogue.
+              irNodeGenerator interpretCurrentSlot.
               irNodeGenerator endCurrentBasicBlock.
 
               irNodeGenerator currentBytecodeInterpreter fillInMissingIRNodesByBCI.
@@ -662,7 +582,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
              ns.
             | 
             ns: list copyRemoveAll.
-            firstBasicBlock depthFirstControlFlowTraversalPreorderDo: [|:bb| bb nodesDo: [|:n| ns addLast: n]] PostorderDo: [] AlreadyDid: set copyRemoveAll.
+            firstBB depthFirstControlFlowTraversalPreorderDo: [|:bb| bb nodesDo: [|:n| ns addLast: n]] PostorderDo: [] AlreadyDid: set copyRemoveAll.
             ns).
         } | ) 
 
@@ -673,7 +593,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
              ns.
             | 
             ns: list copyRemoveAll.
-            firstBasicBlock depthFirstControlFlowTraversalPreorderDo: [] PostorderDo: [|:bb| bb reverseNodesDo: [|:n| ns addLast: n]] AlreadyDid: set copyRemoveAll.
+            firstBB depthFirstControlFlowTraversalPreorderDo: [] PostorderDo: [|:bb| bb reverseNodesDo: [|:n| ns addLast: n]] AlreadyDid: set copyRemoveAll.
             ns).
         } | ) 
 
@@ -761,6 +681,22 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         printIRNodes = ( |
+            | 
+            "It'd be even cooler if we had a morph so we could
+             look at the real node objects."
+
+            ('IR nodes for ', machineLevelAllocator topSourceLevelAllocator slot name) printLine.
+            basicBlocksInControlFlowReversePostOrder do: [|:bb|
+              '' printLine.
+              bb nodesDo: [|:n| n commentString printLine].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: helper prototypes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          protoAllocatorForMyPlatform = ( |
@@ -804,19 +740,25 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+         'Category: dominance\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: public'
         
-         branchNode.
+         dominanceFrontier <- set copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         endNode.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
+         'Category: dominance\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
          immediateDominator.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: public'
+         'Category: dominance\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: public'
         
          immediatelyDominatedBBs <- set copyRemoveAll.
         } | ) 
@@ -837,12 +779,24 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
-         'Category: dominance\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         addDominatedNode: bb = ( |
+         appendMoveNode: moveNode = ( |
             | 
-            immediatelyDominatedBBs add: bb.
+            [endNode isUnconditionalBranch] assert.
+            moveNode insertAfter: endNode sourcePred.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         basicBlocksInControlFlowReversePostOrder = ( |
+             bbs.
+            | 
+            bbs: list copyRemoveAll.
+            depthFirstControlFlowTraversalPreorderDo: [] PostorderDo: [|:bb| bbs addFirst: bb] AlreadyDid: set copyRemoveAll.
+            bbs).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
@@ -851,9 +805,9 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
          checkInvariants = ( |
             | 
             [labelNode isLabel] assert.
-            [branchNode canFallThrough not] assert.
+            [endNode canFallThrough not] assert.
             [nodes asVector reverse = reverseNodes asVector] assert.
-            nodesDo: [|:n| [n canFallThrough || [n = branchNode]] assert].
+            nodesDo: [|:n| [n canFallThrough || [n = endNode]] assert].
             self).
         } | ) 
 
@@ -868,9 +822,30 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
          'Category: control-flow links\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         controlFlowSuccs = ( |
+         controlFlowPredsDo: blk = ( |
             | 
-            branchNode controlFlowSuccs copyMappedBy: [|:lbl| lbl basicBlock]).
+            labelNode controlFlowPredsDo: [|:n| blk value: n basicBlock].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         controlFlowSuccs = ( |
+             succs.
+            | 
+            succs: list copyRemoveAll.
+            controlFlowSuccsDo: [|:succ| succs add: succ].
+            succs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         controlFlowSuccsDo: blk = ( |
+            | 
+            endNode controlFlowSuccsDo: [|:lbl| blk value: lbl basicBlock].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
@@ -878,7 +853,9 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
         
          copy = ( |
             | 
-            resend.copy immediatelyDominatedBBs: immediatelyDominatedBBs copy).
+            (resend.copy
+              immediatelyDominatedBBs: immediatelyDominatedBBs copy)
+                    dominanceFrontier: dominanceFrontier copy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
@@ -898,6 +875,17 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
+         definedValues = ( |
+             vs.
+            | 
+            vs: set copyRemoveAll.
+            definedValuesDo: [|:v| vs add: v].
+            vs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
          definedValuesDo: blk = ( |
             | 
             nodesDo: [|:n| n definedValuesDo: blk].
@@ -911,7 +899,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
             | 
             done add: self.
             preBlk value: self.
-            controlFlowSuccs do: [|:bb|
+            controlFlowSuccsDo: [|:bb|
               (done includes: bb) ifFalse: [
                 bb depthFirstControlFlowTraversalPreorderDo: preBlk PostorderDo: postBlk AlreadyDid: done.
               ].
@@ -926,7 +914,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
          endWith: n = ( |
             | 
             [n canFallThrough not] assert.
-            branchNode: n.
+            endNode: n.
             n basicBlock: self.
             self).
         } | ) 
@@ -959,7 +947,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
             | 
             n: labelNode.
             [blk value: n.
-             n = branchNode ifTrue: [^ self].
+             n = endNode ifTrue: [^ self].
              n: n sourceSucc.
             ] loop).
         } | ) 
@@ -968,6 +956,42 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         phiFunctionsDo: blk = ( |
+             n.
+            | 
+            n: labelNode sourceSucc.
+            [n isPhiFunction] whileTrue: [
+              blk value: n.
+              n: n sourceSucc.
+            ].
+            n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         phiFunctionsVanishAndDo: blk = ( |
+             nodeAfter.
+            | 
+            nodeAfter: phiFunctionsDo: blk.
+            labelNode sourceSucc: nodeAfter.
+            nodeAfter sourcePred: labelNode.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: dominance\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         recordImmediateDominator: d = ( |
+            | 
+            immediateDominator: d.
+            d ifNotNil: [d immediatelyDominatedBBs add: self].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
@@ -987,7 +1011,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
          reverseNodesDo: blk = ( |
              n.
             | 
-            n: branchNode.
+            n: endNode.
             [blk value: n.
              n = labelNode ifTrue: [^ self].
              n: n sourcePred.
@@ -1003,6 +1027,54 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
             labelNode: lbl.
             lbl basicBlock: self.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         statePrintString = ( |
+            | 
+            "Put an L in front so that it's easier to search through
+             printouts for references to this BB."
+             'L', uniqueID printString).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         temporarilyUnhookFromSuccessorDuring: blk = ( |
+             brnch.
+             lbl.
+             r.
+            | 
+            brnch: endNode.
+            [brnch isUnconditionalBranch] assert.
+            [brnch sourceSucc = brnch destinationNode] assert.
+            lbl: brnch sourceSucc.
+            [lbl isLabel] assert.
+            brnch sourceSucc: nil.
+            brnch destinationNode: nil.
+            lbl controlFlowPreds remove: brnch.
+
+            r: blk value.
+
+            brnch sourceSucc: lbl.
+            brnch destinationNode: lbl.
+            brnch forgeControlFlowPredLinks.
+
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         uniqueID.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
+         'Comment: useful for debugging\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         whereDidIComeFrom.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
@@ -1157,12 +1229,6 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         compiler.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
          dominanceFrontiers.
         } | ) 
 
@@ -1213,7 +1279,7 @@ that we can improve performance later if necessary.
                   runner: p.
                   [runner == bDom] whileFalse: [| ri |
                     ri: indexOf: runner.
-                    (dominanceFrontiers at: ri) add: b.
+                    runner dominanceFrontier add: b.
                     runner: dominators at: ri.
                   ].
                 ].
@@ -1228,7 +1294,6 @@ that we can improve performance later if necessary.
          calculateDominatorTree = ( |
             | 
             iterateUntilConvergence.
-            recordDominanceInformationForEachNode.
             self).
         } | ) 
 
@@ -1257,17 +1322,9 @@ that we can improve performance later if necessary.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyForCompiler: c = ( |
+         copyStartingAt: n = ( |
             | 
-            copy compiler: c).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
-        
-         dominanceFrontierOf: n = ( |
-            | 
-            dominanceFrontiers at: indexOf: n).
+            copy startOfControlFlow: n).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> 'parent' -> () From: ( | {
@@ -1278,6 +1335,7 @@ that we can improve performance later if necessary.
             initialize.
             calculateDominatorTree.
             calculateDominanceFrontiers.
+            recordDominanceInformationForEachNode.
             self).
         } | ) 
 
@@ -1299,17 +1357,6 @@ that we can improve performance later if necessary.
             | 
             initializeListOfAllNodes.
             initializeDominatorsArray.
-            initializeDominanceFrontierSets.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> 'parent' -> () From: ( | {
-         'Category: initializing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initializeDominanceFrontierSets = ( |
-            | 
-            dominanceFrontiers: vector copySize: allNodes size.
-            dominanceFrontiers mapBy: [reflectiveIdentitySet copyRemoveAll].
             self).
         } | ) 
 
@@ -1331,7 +1378,7 @@ that we can improve performance later if necessary.
             "Go in reverse postorder. Is that necessary for
              correctness, or just for performance?"
 
-            allNodes: compiler basicBlocksInControlFlowReversePostOrder asVector.
+            allNodes: startOfControlFlow basicBlocksInControlFlowReversePostOrder asVector.
 
             indicesByNode: reflectiveIdentityDictionary copyRemoveAll.
             allNodes do: [|:n. :i| indicesByNode at: n Put: i].
@@ -1375,20 +1422,29 @@ that we can improve performance later if necessary.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> 'parent' -> () From: ( | {
-         'Category: calculating the dominator tree\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: recording results\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          recordDominanceInformationForEachNode = ( |
             | 
             [dominators first = allNodes first] assert.
             dominators at: 0 Put: nil.
 
-            dominators do: [|:d. :i. n|
-              [d isNotNil || [i = 0]] assert. "Only the root has no immediate dominator."
+            dominators doFirst: [
+              "Root does not need to be set - in fact, we don't want to overwrite any previous
+               dominator info we may have for it (if these are the BBs for an inlined scope)."
+            ] MiddleLast: [|:d. :i. n|
               n: allNodes at: i.
-              n immediateDominator: d.
-              d ifNotNil: [d addDominatedNode: n].
+              [d isNotNil] assert.
+              [n immediateDominator isNil] assert. "Haven't already calculated dominance for this guy."
+              n recordImmediateDominator: d.
             ].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dominanceCalculator' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         startOfControlFlow.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
@@ -1668,7 +1724,7 @@ that we can improve performance later if necessary.
             ] False: [
               valuesThatCannotBeFactoredOutYet remove: v.
             ].
-            aliasesForCoalescedValues at: v Put: u.
+            setAliasOf: v To: u.
             (moveNodesByRelatedValue at: u) addAll: moveNodesByRelatedValue at: v.
             remainingValuesThatInterfereWith: v Do: [|:t. wasInsignificantBefore|
               wasInsignificantBefore: hasInsignificantDegree: t.
@@ -1686,11 +1742,20 @@ that we can improve performance later if necessary.
               valuesThatCannotBeFactoredOutYet add: u.
             ].
 
-            "Combine their definers and users. I think this is kind of a hack - is there
-             a more elegant way? --Adam, Apr. 2009"
-            u definers addAll: v definers. u definers remove: m. v definers: u definers.
-            u users    addAll: v users.    u users    remove: m. v users:    u users.
+            combineUsersAndDefinersOf: u And: v ForMove: m.
 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         combineUsersAndDefinersOf: u And: v ForMove: m = ( |
+            | 
+            "I think this is kind of a hack - is there
+             a more elegant way? --Adam, Apr. 2009"
+            u definers addAll: v definers. v definers: u definers. m ifNotNil: [u definers remove: m].
+            u users    addAll: v users.    v users:    u users.    m ifNotNil: [u users    remove: m].
             self).
         } | ) 
 
@@ -1758,6 +1823,24 @@ that we can improve performance later if necessary.
                 If: [valuesThatCannotBeFactoredOutYet             isEmpty not] Then: [|v| v: chooseAValueToSpill.     debugMode ifTrue: [checkInvariants]]
                 Else: exit.
             ] loopExit.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         displayDebugInformationIfDesired = ( |
+            | 
+            "This doesn't really come out right - way too much info."
+            false && compiler shouldDisplayDebugInformation ifFalse: [^ self].
+
+            'locationAssigner info for ', compiler machineLevelAllocator topSourceLevelAllocator slot name.
+            machineLevelAllocator allValues do: [|:v. r <- '  '|
+              (v printString, ', interfering values:') printLine.
+              (allValuesThatInterfereWith: v) do: [|:iv| r: r & iv shortPrintString] SeparatedBy: [r: r & ', '].
+              r flatString printLine.
+            ].
+
             self).
         } | ) 
 
@@ -1848,6 +1931,7 @@ that we can improve performance later if necessary.
             | 
             determineAGoodOrderForAssigningLocations.
             assignLocations.
+            displayDebugInformationIfDesired.
             self).
         } | ) 
 
@@ -1881,6 +1965,7 @@ that we can improve performance later if necessary.
         
          initialize = ( |
             | 
+            valuesWhoseRenamingsNeedToBeColocated: compiler valuesWhoseRenamingsNeedToBeColocated.
             buildDictionaryOfPreallocatedValues.
             buildInterferenceInformation.
             availableRegisterLocations: machineLevelAllocator availableRegisterLocations.
@@ -1988,18 +2073,28 @@ that we can improve performance later if necessary.
         
          putEachValueInTheAppropriateWorkingSet = ( |
             | 
-            machineLevelAllocator allValues do: [|:v. s|
-              s: v hasLocation ifTrue: [
-                valuesThatAlreadyHaveALocation.
+            machineLevelAllocator allValues do: [|:v|
+              v hasLocation ifTrue: [
+                valuesThatAlreadyHaveALocation add: v.
               ] False: [|d|
-                d: (allValuesThatInterfereWith: v) countHowMany: [|:iv| iv hasLocation not].
-                setRemainingDegreeOf: v To: d.
-                case
-                  if: [d >= numberOfAvailableRegisterLocations] Then: [valuesThatCannotBeFactoredOutYet            ]
-                  If: [moveNodesByRelatedValue includesKey: v]  Then: [moveRelatedValuesThatHaveNotYetBeenCoalesced]
-                                                                Else: [valuesThatCanBeFactoredOut                  ].
+                v originalValueBeforeRenaming isNotNil && [valuesWhoseRenamingsNeedToBeColocated includes: v originalValueBeforeRenaming] ifTrue: [|ivs|
+                  setAliasOf: v To: v originalValueBeforeRenaming.
+                  ivs: allValuesThatInterfereWith: v originalValueBeforeRenaming.
+                  ivs addAll: allValuesThatInterfereWith: v.
+                  interferingValuesByValue at: v Put: ivs. "Just share the same set."
+                  ivs do: [|:iv|
+                    (allValuesThatInterfereWith: iv) add: v.
+                    (allValuesThatInterfereWith: iv) add: v originalValueBeforeRenaming. "OK, now I'm being paranoid. Clean this up."
+                  ].
+                ] False: [
+                  d: (allValuesThatInterfereWith: v) countHowMany: [|:iv| iv hasLocation not].
+                  setRemainingDegreeOf: v To: d.
+                  case
+                    if: [d >= numberOfAvailableRegisterLocations] Then: [valuesThatCannotBeFactoredOutYet             add: v]
+                    If: [moveNodesByRelatedValue includesKey: v]  Then: [moveRelatedValuesThatHaveNotYetBeenCoalesced add: v]
+                                                                  Else: [valuesThatCanBeFactoredOut                   add: v].
+                ].
               ].
-              s add: v.
             ].
             self).
         } | ) 
@@ -2062,6 +2157,16 @@ that we can improve performance later if necessary.
                 blk value: iv.
               ].
             ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> 'parent' -> () From: ( | {
+         'Category: coalescing moves\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         setAliasOf: v To: a = ( |
+            | 
+            v = a ifTrue: [halt].
+            aliasesForCoalescedValues at: v Put: a.
             self).
         } | ) 
 
@@ -2238,6 +2343,12 @@ that we can improve performance later if necessary.
          valuesThatHaveBeenFactoredOut <- orderedSet copyRemoveAll.
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigner' -> () From: ( | {
+         'Category: values\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         valuesWhoseRenamingsNeedToBeColocated.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -2383,41 +2494,15 @@ that we can improve performance later if necessary.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
-         renameValuesInBB: bb UsingRenamedValues: renamedValues MostRecentDefinitions: mostRecentDefinitions = ( |
-             redefinedValuesForThisBB.
+         replacePhiFunctionsWithMoves = ( |
             | 
-            redefinedValuesForThisBB: list copyRemoveAll.
-            bb nodesDo: [|:n|
-              n isPhiFunction ifFalse: [
-                n usedValuesDo: [|:v. mostRecentV|
-                  mostRecentV: (mostRecentDefinitions at: v) last.
-                  v = mostRecentV ifFalse: [
-                    n replaceUsedValue: v With: mostRecentV.
-                  ].
+            firstBB basicBlocksInControlFlowReversePostOrder do: [|:bb|
+              [bb immediateDominator isNil = (bb = firstBB)] assert.
+              bb phiFunctionsVanishAndDo: [|:phi|
+                phi sourceValues do: [|:sourceValue. :predBB|
+                  predBB appendMoveNode: irNodeGenerator newMoveNodeFrom: sourceValue To: phi destinationValue BC: predBB endNode bc.
                 ].
               ].
-              n definedValuesDo: [|:v. renamedV|
-                renamedV: machineLevelAllocator newValue.
-                renamedV description: v description, '[', (renamedValues at: v) size printString, ']'.
-                renamedV myLocation:  v myLocation.
-                (renamedValues         at: v) addLast: renamedV.
-                (mostRecentDefinitions at: v) addLast: renamedV.
-                redefinedValuesForThisBB      addLast: v.
-                n replaceDefinedValue: v With: renamedV.
-              ].
-            ].
-            bb controlFlowSuccs do: [|:succBB|
-              succBB phiFunctions do: [|:phi. v. mostRecentV|
-                v: phi mergedValues at: bb.
-                mostRecentV: (mostRecentDefinitions at: v) last.
-                phi replaceMergedValueFor: bb With: mostRecentV.
-              ].
-            ].
-            bb immediatelyDominatedBBs do: [|:dominatedBB|
-              renameValuesInBB: dominatedBB UsingRenamedValues: renamedValues MostRecentDefinitions: mostRecentDefinitions.
-            ].
-            redefinedValuesForThisBB do: [|:v|
-              (mostRecentDefinitions at: v) removeLast.
             ].
             self).
         } | ) 
@@ -2500,6 +2585,16 @@ that we can improve performance later if necessary.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         shouldDisplayDebugInformation = ( |
+            | 
+            "(selector = 'ifTrue:') && [context selfMirror = true asMirror]"
+            "selector = 'sendMessage_stub'"
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: method\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          slot = ( |
@@ -2508,20 +2603,31 @@ that we can improve performance later if necessary.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         startNode = ( |
-            | 
-            makeSureIRNodesAreBuilt.
-            firstBasicBlock labelNode).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          topSourceLevelAllocator = ( |
             | 
             machineLevelAllocator topSourceLevelAllocator).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: static single-assignment form\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valuesWhoseRenamingsNeedToBeColocated = ( |
+             vs.
+            | 
+            vs: set copyRemoveAll.
+            irNodeGenerator topBytecodeInterpreter allBytecodeInterpretersDo: [|:i. sla|
+              sla: i sourceLevelAllocator.
+              sla slot isMethod ifTrue: [
+                sla method allSlotsOnThisMethod do: [|:s|
+                  s isKleinSlotOffsetRecorded ifTrue: [
+                    vs add: sla valueForSlot: s.
+                  ].
+                ].
+              ].
+            ].
+            vs).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {

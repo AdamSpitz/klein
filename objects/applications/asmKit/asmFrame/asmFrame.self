@@ -427,12 +427,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'assembler' -> 'parent' -> 'label' -> () From: ( | {
-         'Comment: useful for debugging\x7fModuleInfo: Module: asmFrame InitialContents: InitializeToExpression: (\'\')'
-        
-         description <- ''.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'assembler' -> 'parent' -> 'label' -> () From: ( | {
          'ModuleInfo: Module: asmFrame InitialContents: InitializeToExpression: (false)\x7fVisibility: public'
         
          isResolved <- bootstrap stub -> 'globals' -> 'false' -> ().
@@ -586,6 +580,12 @@ See the LICENSE file for license information.
          'ModuleInfo: Module: asmFrame InitialContents: InitializeToExpression: (list copyRemoveAll)'
         
          unresolvedUses <- list copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'assembler' -> 'parent' -> 'label' -> () From: ( | {
+         'Comment: useful for debugging\x7fModuleInfo: Module: asmFrame InitialContents: InitializeToExpression: (\'\')'
+        
+         whereDidIComeFrom <- ''.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'assembler' -> 'parent' -> () From: ( | {

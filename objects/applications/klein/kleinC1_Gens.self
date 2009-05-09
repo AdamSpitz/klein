@@ -2874,22 +2874,21 @@ SlotsToOmit: parent.
         
          generateBlockLiteralNode: node = ( |
             | 
-            materializeSourceAndDest: node memoizedBlockLoc AndDo: [|:memoizedBlockReg|
-
-              generateExit: [|:alreadyNonZeroLabel|
-                generateIf: memoizedBlockReg IsNonZeroThenBranchTo: alreadyNonZeroLabel.
-
-                setUpSendArguments: (node blockProtoLoc & sp) asVector.
-
-                [cloneBlockHomeFrame_stub: fp].
-                sendDesc generateCallStubName: 'cloneBlockHomeFrame_stub:'
-                                    LookupKey: nil
-                               LiveOopTracker: (liveOopTracker copyForNode: node)
-                                         With: self.
-
-
-                moveSendResultTo: memoizedBlockReg.
+            generateIf: [|:notMemoizedYetLabel|
+              materializeSource: node incomingMemoizedBlockValue location AndDo: [|:incomingMemoizedBlockReg|
+                generateIf: incomingMemoizedBlockReg IsZeroThenBranchTo: notMemoizedYetLabel.
+                moveRegister: incomingMemoizedBlockReg ToLocation: node outgoingMemoizedBlockValue location.
               ].
+            ] Then: [
+              setUpSendArguments: (node blockProtoLoc & sp) asVector.
+
+              [cloneBlockHomeFrame_stub: fp].
+              sendDesc generateCallStubName: 'cloneBlockHomeFrame_stub:'
+                                  LookupKey: nil
+                             LiveOopTracker: (liveOopTracker copyForNode: node)
+                                       With: self.
+
+              moveSendResultTo: node outgoingMemoizedBlockValue location.
             ].
             self).
         } | ) 
@@ -3142,6 +3141,15 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             | 
             a cmpwiFrom: objReg With: zeroOop.
             branchNELikelyTo: trueFork).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: objReg IsZeroThenBranchTo: trueFork = ( |
+            | 
+            a cmpwiFrom: objReg With: zeroOop.
+            branchEQUnlikelyTo: trueFork).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
