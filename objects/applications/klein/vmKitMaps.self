@@ -384,6 +384,22 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: accessing reflectee\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         findReflecteeUsingOracle: oracle = ( |
+            | 
+            oracle exemplarForMap: self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: accessing reflectee\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         findVMKitMapUsingOracle: oracle = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
          'Category: slotDescs and basic info\x7fCategory: accessing scalar values\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
          for: mapOop AddressOfScalarValueAtIndex: i IfFail: fb = ( |
@@ -761,6 +777,14 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isReflecteeVMKitActivationMap = ( |
+            | 
+            isActivation).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
          'Category: importing objects (for mirror)\x7fCategory: testing slot type\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
          isSlotArgumentNamed: n IfAbsent: blk = ( |
@@ -1029,9 +1053,20 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
-         parentsDo: blk = ( |
+         parentSlotsDo: blk = ( |
             | 
             slotsSatisfying: [|:i| isParentAt: i] Do: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: iterating\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         parentsDo: blk = ( |
+            | 
+            parentSlotsDo: [|:n. :d. :a. :i|
+              blk value: slot copyForMap: self Index: i.
+            ].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
@@ -1039,7 +1074,7 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
         
          parentsOf: oop Do: blk = ( |
             | 
-            parentsDo: [|:n. :d. :a. :i|
+            parentSlotsDo: [|:n. :d. :a. :i|
               blk value:
                 contentsOfSlotWithType: (typeAt: i)
                         ContainingData: d
@@ -1086,6 +1121,204 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
          size = ( |
             | 
             (basicSize - scalarValueCount) / slotDescSize).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: accessing slots\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
+         slot = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda maps map parent slot.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMaps InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         holderMap.
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMaps InitialContents: InitializeToExpression: (0)\x7fVisibility: public'
+        
+         index <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda maps map parent slot parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         annotation = ( |
+            | 
+            holderMap annotationAt: index).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         category = ( |
+            | 
+            parsedAnnotation category).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         contents = ( |
+            | 
+            [isMapSlot] assert.
+            reflect: data).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForMap: m Index: i = ( |
+            | 
+            (copy holderMap: m) index: i).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         data = ( |
+            | 
+            holderMap dataAt: index).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exists = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         holder = ( |
+            | 
+            [aaaaaaa]. "Maybe this isn't a good idea."
+            holderMap).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isArgument = ( |
+            | 
+            vmKit slotType isArgumentSlot: type).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isAssignable = ( |
+            | 
+            vmKit slotType isAssignable: type).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isAssignment = ( |
+            | 
+            vmKit slotType isAssignmentSlot: type).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isMapSlot = ( |
+            | 
+            vmKit slotType isMapSlot: type).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isMethod = ( |
+            | 
+            isMapSlot && [contents isReflecteeMethod]).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isObjectSlot = ( |
+            | 
+            vmKit slotType isObjectSlot: type).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isParent = ( |
+            | 
+            vmKit slotType isParent: type).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         module = ( |
+            | 
+            parsedAnnotation moduleInfo module).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         name = ( |
+            | 
+            holderMap nameAt: index).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parsedAnnotation = ( |
+            | 
+            slotAnnotation parse: annotation).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         type = ( |
+            | 
+            holderMap typeAt: index).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
+         vmKit = ( |
+            | 
+            holderMap vmKit).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: accessing slots\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         slotAt: slotName IfAbsent: ab = ( |
+             i.
+            | 
+            i: indexOfSlotNamed: slotName IfAbsent: [^ ab value].
+            slot copyForMap: self Index: i).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
@@ -2128,6 +2361,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
          'Category: pretending to be a mirror\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
+         isReflecteeMethod = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
          lexicalParents = ( |
              r.
             | 
@@ -2596,6 +2835,17 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'slotsMapDeps') -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'blockMap') -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotName = ( |
+             n.
+            | 
+            n: nameAt: 1.
+            ['value' isPrefixOf: n] assert.
+            n).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps' -> () From: ( | {
@@ -3788,7 +4038,10 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          'Category: klein and yoda\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
          vmKitMapForConversion = ( |
-            | kleinAndYoda maps slotsMapDeps).
+            | 
+            isReflecteeKleinCompiledBlock ifTrue: [^ kleinAndYoda maps blockMap].
+
+            kleinAndYoda maps slotsMapDeps).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'smallInt' -> () From: ( | {

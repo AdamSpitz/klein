@@ -2278,6 +2278,12 @@ vmKitMirrorCache
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {
          'Category: klein and yoda\x7fCategory: testing\x7fModuleInfo: Module: vmKitReflection InitialContents: FollowSlot\x7fVisibility: public'
         
+         isReflecteeKleinCompiledBlock = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {
+         'Category: klein and yoda\x7fCategory: testing\x7fModuleInfo: Module: vmKitReflection InitialContents: FollowSlot\x7fVisibility: public'
+        
          isReflecteeKleinNMethod = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
@@ -2305,6 +2311,12 @@ vmKitMirrorCache
          'Category: klein and yoda\x7fCategory: testing\x7fModuleInfo: Module: vmKitReflection InitialContents: FollowSlot\x7fVisibility: public'
         
          isReflecteeVMKitActivationMap = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {
+         'Category: klein and yoda\x7fCategory: testing\x7fModuleInfo: Module: vmKitReflection InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isReflecteeVMKitMap = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {

@@ -1,6 +1,7 @@
  '$Revision: 30.64 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -129,11 +130,12 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
          isOkayToCompileMethodsForReflecteeOf: rMir = ( |
             | 
                 rMir isComplete
-            || [rMir isReflecteeBlock      "blocks  are not complete, but we want to compile block methods like assert:"
-            || [rMir isReflecteeVector     "vectors are not complete, but we want to compile vector methods"
+            || [rMir isReflecteeBlock               "blocks  are not complete, but we want to compile block methods like assert:"
+            || [rMir isReflecteeKleinCompiledBlock  
+            || [rMir isReflecteeVector              "vectors are not complete, but we want to compile vector methods"
             || [rMir isReflecteeByteVector
             || [(wellKnownIncompleteObjectsWithSlotsToCompile includes: rMir)
-            || [rMir isReflecteeEmptyBlock "when you type [], you don't get a real block" ]]]]]).
+            || [rMir isReflecteeEmptyBlock "when you type [], you don't get a real block" ]]]]]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
@@ -467,12 +469,13 @@ isSlotToBeMapped: policy. -- Adam, 3/04\x7fModuleInfo: Module: kleinExport Initi
         
          slotFinder = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> () ToBe: bootstrap addSlotsTo: (
              bootstrap remove: 'parent' From:
+             bootstrap remove: 'visited' From:
              traits mirrors abstractMirror slotFinder copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals kleinAndYoda virtualMachines abstractVM parent exportPolicy slotFinder.
 
 CopyDowns:
 traits mirrors abstractMirror slotFinder. copy 
-SlotsToOmit: parent.
+SlotsToOmit: parent visited.
 
 '.
             | ) .
@@ -485,6 +488,41 @@ SlotsToOmit: parent.
              {} = 'ModuleInfo: Creator: globals kleinAndYoda virtualMachines abstractVM parent exportPolicy slotFinder parent.
 '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> 'parent' -> () From: ( | {
+         'Category: finding slots\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
+        
+         comparisonTraitsThatCanCompareMapsAndMirrors = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> 'parent' -> 'comparisonTraitsThatCanCompareMapsAndMirrors' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda virtualMachines abstractVM parent exportPolicy slotFinder parent comparisonTraitsThatCanCompareMapsAndMirrors.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> 'parent' -> 'comparisonTraitsThatCanCompareMapsAndMirrors' -> () From: ( | {
+         'ModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hashElement: e = ( |
+            | 
+            e hash).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> 'parent' -> 'comparisonTraitsThatCanCompareMapsAndMirrors' -> () From: ( | {
+         'ModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
+        
+         is: e1 EqualTo: e2 = ( |
+            | 
+            "This seems like an awful hack. The problem is that we
+             sometimes (e.g. for compilation) do slot lookup starting
+             from a map rather than a mirror. -- Adam, May. 2009"
+
+            ((reflect: e1) isReflecteeVMKitMap = (reflect: e2) isReflecteeVMKitMap) && [e1 = e2]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> 'parent' -> 'comparisonTraitsThatCanCompareMapsAndMirrors' -> () From: ( | {
+         'ModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> 'parent' -> () From: ( | {
@@ -501,6 +539,12 @@ filtered out.\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7f
          'ModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> 'slotFinder' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'slotFinder' -> () From: ( | {
+         'ModuleInfo: Module: kleinExport InitialContents: InitializeToExpression: (customizableSet copy comparisonTraits: kleinAndYoda virtualMachines abstractVM exportPolicy slotFinder comparisonTraitsThatCanCompareMapsAndMirrors)\x7fVisibility: private'
+        
+         visited <- customizableSet copy comparisonTraits: kleinAndYoda virtualMachines abstractVM exportPolicy slotFinder comparisonTraitsThatCanCompareMapsAndMirrors.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {

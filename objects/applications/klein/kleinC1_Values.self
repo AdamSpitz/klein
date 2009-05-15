@@ -71,6 +71,17 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: copying & creating\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         beRenamingOf: v = ( |
+            | 
+            description: v description.
+            myLocation:  v myLocation.
+            originalValueBeforeRenaming: v originalValueBeforeRenaming ifNil: [v].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: copying & creating\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
         
          copy = ( |
@@ -154,9 +165,12 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         exemplarMirrorIfFail: fb = ( |
+         knownMapUsingOracle: oracle IfFail: fb = ( |
             | 
-            blockLiteralValue location exemplarMirrorIfFail: fb).
+            "Slight hack. The compiledBlock hasn't been mapped yet, so we can't get its map,
+             so we use the original block's map instead. It'll have the same valueSlot
+             anyway. -- Adam, May. 2009"
+            oracle mapForOriginalObject: blockLiteralValue location oopValue originalBlock_replaceThisSlotWithTheValueSlot).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'clonedBlock' -> 'parent' -> () From: ( | {
@@ -177,7 +191,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'couldBeAnything' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         exemplarMirrorIfFail: fb = ( |
+         knownMapUsingOracle: oracle IfFail: fb = ( |
             | 
             fb value: 'could be anything').
         } | ) 
@@ -217,7 +231,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         exemplarMirrorIfFail: fb = ( |
+         knownMapUsingOracle: oracle IfFail: fb = ( |
             | 
             "Hack: For now, don't assume that we know the type if
              we're compiling an outer method for a block, because
@@ -227,7 +241,7 @@ See the LICENSE file for license information.
 
             sourceLevelAllocator isInlined not && [sourceLevelAllocator compiler noMapTest] ifTrue: [^ fb value: '_NoMapTest, so can\'t be sure of the receiver type'].
 
-            sourceLevelAllocator context selfMirror).
+            sourceLevelAllocator context selfMap).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleValues' -> 'selfValue' -> 'parent' -> () From: ( | {
@@ -264,9 +278,8 @@ See the LICENSE file for license information.
             pvs: possibleValues.
             pvs isEmpty ifTrue: [^ fb value: 'undefined'].
             pvs do: [|:pv. t. |
-              t: pv exemplarMirrorIfFail: [|:e| ^ fb value: e].
-              [aaaaa]. "This isn't quite right, it should be checking if the map is the same, not the mirror."
-              type ifNil: [type: t] IfNotNil: [type = t ifFalse: [^ fb value: 'different possible types']].
+              t: pv knownMapUsingOracle: compiler oracleForEagerRelocation IfFail: [|:e| ^ fb value: e].
+              type ifNil: [type: t] IfNotNil: [type == t ifFalse: [^ fb value: 'different possible types']].
             ].
             type).
         } | ) 

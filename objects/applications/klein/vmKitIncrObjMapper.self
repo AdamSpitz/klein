@@ -1,6 +1,7 @@
  '$Revision: 30.7 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -108,11 +109,12 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: compiling nmethods\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         compileSlotsForReceiverMirror: rMir MapOID: rMapOID = ( |
+         compileSlotsForReceiverMirror: rMir Map: rMap MapOID: rMapOID = ( |
             | 
             image removeAnyNMethodsForMapOID: rMapOID. "so they don't get reused"
 
             resend.compileSlotsForReceiverMirror: rMir
+                                             Map: rMap
                                           MapOID: rMapOID).
         } | ) 
 

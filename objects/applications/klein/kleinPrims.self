@@ -108,6 +108,7 @@ See the LICENSE file for license information.
          compileSlot_stub = ( |
              holderMir.
              key.
+             rcvrMap.
              rcvrMir.
              sd.
              ss.
@@ -126,20 +127,21 @@ See the LICENSE file for license information.
 
             key isResend ifTrue: [_Breakpoint: 'Hmm. Do we have enough information to do this?'].
 
+            rcvrMap: _Map.
             rcvrMir: _Mirror.
 
-            rcvrMir isReflecteeBlock ifTrue: [_Breakpoint: 'Not gonna work yet; gotta find the selfMir and enclosing scopes.'].
+            rcvrMap isBlock ifTrue: [_Breakpoint: 'Not gonna work yet; gotta find the selfMir and enclosing scopes.'].
 
             ss: key lookupSlotsUsing: rcvrMir slotFinder Self: rcvrMir Holder: holderMir.
 
             ss ifNone: [_Breakpoint: 'lookup failure: no slot']
-                IfOne: [|:s. c. nm. map|
+                IfOne: [|:s. c. nm|
                         c: theVM compilerPrototype.
                         c: c copyForContext: (c prototypes compilationContext
                                                          copyForSlot: s
                                                                  Key: key
-                                                                Self: rcvrMir
-                                                            Receiver: rcvrMir
+                                                                Self: rcvrMap
+                                                            Receiver: rcvrMap
                                                  LexicalParentScopes: vector)
                                 Architecture: theVM architecture
                                       Oracle: oracleForEagerRelocationInsideKlein
@@ -152,9 +154,8 @@ See the LICENSE file for license information.
                          stuff is actually working. -- Adam, 5/05"
                         nm flushWhateverCachesAreNecessaryAfterModifyingMe.
 
-                        map: _Map.
-                        map installNewNMethod: nm.
-                        sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: map.
+                        rcvrMap installNewNMethod: nm.
+                        sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: rcvrMap.
                         _Breakpoint: 'just dynamically compiled something; about to retry the sendDesc'.
                         sd _RetrySendDesc.
                         _Breakpoint: 'should never reach here'.

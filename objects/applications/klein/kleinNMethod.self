@@ -10,6 +10,33 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> () From: ( | {
          'Category: object prototypes, formats & pieces\x7fCategory: prototypes\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
+         compiledBlock = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiledBlock.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot'
+        
+         originalBlock_replaceThisSlotWithTheValueSlot = bootstrap stub -> 'globals' -> 'nil' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'block' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         scopeDesc = bootstrap stub -> 'globals' -> 'nil' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> () From: ( | {
+         'Category: object prototypes, formats & pieces\x7fCategory: prototypes\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
          lookupKey = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein lookupKey.
 \x7fIsComplete: '.
@@ -256,7 +283,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Category: testing\x7fComment: for mapping; see kleinMapForConversion\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: testing\x7fComment: for mapping; see vmKitMapForConversion\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
          isKleinNMethod = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 

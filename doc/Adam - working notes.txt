@@ -103,4 +103,63 @@ But only if it's actually true that a lot of variables are only used within the 
 
 ----
 
-findRcvrStackValue (etc.) don't work sometimes, if phi functions get inserted after the lastNodeBeforeSettingUpTheSend. Maybe I should store firstNodeSettingUpTheSend instead?
+Hmm, it's running out of stack space during the SSA value-renaming thing, when it tries to compile that big long arithmetic (testSuccess?) method.
+
+Can't tell whether it's an infinite loop or just really long. I'd be kinda surprised if it was infinite, though.
+
+Oh, hey, looks like a big part of the problem is constructing the interference graph. Maybe it's time to use a more efficient data structure for that. Or do something different with the precolored values - seems like they're a big part of the problem. Yeah, don't mess with the data structures until I've fixed the algorithm.
+
+Why did I do that precolored thing? The idea was that if V interferes with a precolored value, it interferes with *every* precolored value with that color. Yes, OK, sure... but when is that ever relevant? What do we use the interference information for?
+
+Actually, maybe I could just use the alias mechanism? Treat the first precolored value (of a particular color) as the "real" one, and all the others as aliases. Then as long as we always do our interference checks using aliasOf:, we're fine. No?
+
+Blecch. I mean, yes, fine, it might work, but I really hate this algorithm. It's a big mess. Hacks on top of hacks.
+
+OK. It seems like my main problem is that I've got all these precolored values. I don't think I'm supposed to do that. Again, what if there was just one?
+
+----
+
+Working on the new linearScanLocationAssigner.
+
+latest problem: gotta do the alias thing.
+
+But to make it work right I'll have to set the live-intervals properly - it's gotta start at the start of the very first alias and end at the end of the very last one.
+
+----
+
+Let's talk out how this linearScanLocationAssigner is gonna work, get it really clear.
+
+  - To start with, I've got:
+    - allValues, all of which need to be assigned locations (though the unused ones can get any location they want and it doesn't really matter).
+    - some of the values already have a location assigned to them
+    - some of the values are aliases for other values, and need to be kept in the same location. (But they're still considered different *values* because the actual runtime value could be different.)
+  - Then:
+    - I determine the "live intervals" by finding the first place each value is defined and the last place it's used.
+      - (The live intervals for aliases have to be merged into a single one that encompasses all of them.)
+    - I run over the live intervals, keeping track of which intervals are live at the same time.
+      - I assign each of them a location as I go, chosen from the pool of available registers. (If there's none available I just spill it, or maybe spill a different one if I think that one will cost less to spill.)
+        - But to do that, I need to be sure that it's *OK* to spill that one - that that one wasn't a preallocated or aliased one.
+          - Now, the aliased ones should all have a single merged live range... but I still need to make sure, when I reassign it, that I reassign *all* of them. ***** I think I might not be doing that.
+          - And I'm not allowed to reassign a preallocated one at all. ***** Not sure I'm doing that properly, either.
+
+Maybe I shouldn't actually assign a location to the value objects as I go along - maybe I should hold the location inside the interval object, and then assign them to the values in a separate pass when I'm done. That'd let me keep track of the difference between preallocated and non-preallocated.
+
+----
+
+Aha! I get the bug. There are a bunch of unused and undefined values (presumably the ones that got renamed). The location assigner sees that the live interval is (maxSmallInt, -1) and thinks it's OK to assign it to the same location as whatever else it wants.
+
+So maybe the thing that inserts the moves shouldn't bother if the thing has no users or definers.
+
+----
+
+Screw this. Maybe I should go back to the graphColoring one. I think I just need to explicitly represent the equivalence classes - make sure that the interference graph never includes aliases, only the canonical one or the eqivalenceClass object or something.
+
+----
+
+Gotta fix the aaaaaaa's - at least the one about reusing the scopeDesc nmethod.
+
+----
+
+Whoa, I think it worked!
+
+Time to lift the ban on inlining methods containing blocks? And then later on inlining block methods.

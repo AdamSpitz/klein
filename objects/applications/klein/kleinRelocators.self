@@ -472,7 +472,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> () From: ( | {
          'ModuleInfo: Module: kleinRelocators InitialContents: InitializeToExpression: (nil)'
         
-         holderSelfObj.
+         holderMap.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> () From: ( | {
@@ -504,7 +504,7 @@ SlotsToOmit: parent.
             resend.addRelocationInfoTo: s.
             s add: baseReg.
             s add: dataReg.
-            s add: holderSelfObj.
+            s add: holderMap.
             s add: isLoad.
             s add: name.
             self).
@@ -533,12 +533,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'objectSlotOffset' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyOffset: off Slot: s DataReg: dr BaseReg: br IsLoad: isL = ( |
+         copyOffset: off SlotName: n HolderMap: map DataReg: dr BaseReg: br IsLoad: isL = ( |
             | 
             (((((
              copyOffset: off Object: -1)
-             holderSelfObj: s holder reflectee)
-             name: s name)
+             holderMap: map)
+             name: n)
              dataReg: dr)
              baseReg: br)
              isLoad: isL).
@@ -562,12 +562,8 @@ SlotsToOmit: parent.
          'Category: linearizing\x7fModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: private'
         
          initializeCompiledOop: oracle IfFail: fb = ( |
-             map.
-             objectOop.
             | 
-            objectOop:   oracle oopForOriginalObject: holderSelfObj  IfAbsent: [^ fb value].
-            map:         vmKit maps map importMapFor: objectOop      IfFail:   [^ fb value].
-            slotOffset:  map mapDataOopOfSlotNamed: dataSlotName     IfAbsent: [^ fb value].
+            slotOffset: holderMap mapDataOopOfSlotNamed: dataSlotName IfAbsent: [^ fb value].
             self).
         } | ) 
 
@@ -603,7 +599,7 @@ SlotsToOmit: parent.
             resend.reconstructFromRelocationInfo: s.
             baseReg:       s removeFirst.
             dataReg:       s removeFirst.
-            holderSelfObj: s removeFirst.
+            holderMap:     s removeFirst.
             isLoad:        s removeFirst.
             name:          s removeFirst.
             self).

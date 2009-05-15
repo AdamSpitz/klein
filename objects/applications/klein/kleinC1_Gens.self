@@ -1814,7 +1814,8 @@ Returns an address into a bytes part masquerading as a small integer.
               comment: 'Next instruction has its offset patched'.
               or: vmKit relocators objectSlotOffset
                     copyOffset: a locationCounter 
-                          Slot: slot
+                      SlotName: slot name
+                     HolderMap: (compiler mapOfHolderOfSlot: slot)
                        DataReg: dstReg
                        BaseReg: holderAddressReg
                         IsLoad: true.
@@ -2466,7 +2467,8 @@ and may fail to compile otherwise.
               comment: 'Next instruction has its offset patched'.
               or: vmKit relocators objectSlotOffset
                  copyOffset: a locationCounter 
-                       Slot: slot
+                   SlotName: slot name
+                  HolderMap: (compiler mapOfHolderOfSlot: slot)
                     DataReg: srcReg
                     BaseReg: holderAddressReg
                      IsLoad: false.
@@ -3214,7 +3216,11 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
 
             locs isEmpty ifTrue: [^ self].
             a liTo: r0 With: 0.
-            locs do: [|:loc| moveRegister: r0 ToLocation: loc].
+            locs do: [|:loc|
+              [aaaaaaa].
+              loc isRegister not && [loc lexicalLevel > 0] ifTrue: [halt].
+              moveRegister: r0 ToLocation: loc.
+            ].
             self).
         } | ) 
 
@@ -4319,7 +4325,9 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             loc isRegister && [(registerUsage isLocalNonVolRegister: loc) not] ifTrue: [^ false].
             loc locationTypeName = 'incomingMemoryArgument' ifTrue: [^ false].
             loc locationTypeName = 'outgoingMemoryArgument' ifTrue: [^ false].
-            [loc isRegister || [(loc locationTypeName = 'nonVolMemoryLocal') || [loc lexicalLevel > 0]]] assert. "Just a sanity check. What else could it be?"
+            loc isRegister ifTrue: [^ true].
+            [loc locationTypeName = 'nonVolMemoryLocal'] assert.
+            loc lexicalLevel > 0 ifTrue: [^ false].
             true).
         } | ) 
 

@@ -199,7 +199,7 @@ See the LICENSE file for license information.
             c: compilerPrototype.
             context: c prototypes compilationContext
                                     copyForSlot: aSlot
-                                           Self: asMirror
+                                           Self: myMap "won't work yet"
                             LexicalParentScopes: lpss.
             c: c copyForContext: context
                    Architecture: arch

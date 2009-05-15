@@ -69,7 +69,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          addInterferenceInformationToValuesWith: la = ( |
             | 
@@ -82,7 +82,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          areVolatilesVaporized = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
@@ -170,7 +170,18 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         definedValues = ( |
+             vs.
+            | 
+            vs: set copyRemoveAll.
+            definedValuesDo: [|:v| vs add: v].
+            vs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          definesValue: v = ( |
             | 
@@ -179,7 +190,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          doSpecialLivenessUpdating = ( |
             | 
@@ -243,7 +254,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          initializeLivenessInformation = ( |
             | 
@@ -370,7 +381,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          locationsThatNeedToBePreserved = ( |
              s.
@@ -404,7 +415,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          newValue = ( |
             | 
@@ -436,7 +447,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          recordDefinersAndUsers = ( |
             | 
@@ -446,7 +457,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          requiredNumberOfOutgoingRcvrAndArgLocations = ( |
             | 
@@ -469,7 +480,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          tell: aLocationAssigner ToRecordInterferenceBetweenDefinedValue: defV And: liveOutV = ( |
             | 
@@ -478,7 +489,17 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         unrecordDefinersAndUsers = ( |
+            | 
+            definedValuesDo: [|:v| v definers remove: self].
+               usedValuesDo: [|:v| v users    remove: self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          updateLivenessInformation = ( |
              changed.
@@ -495,7 +516,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          usedAndDefinedValuesDo: blk = ( |
             | 
@@ -505,7 +526,7 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          usedLocationsDo: b = ( |
             | 
@@ -514,7 +535,18 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         usedValues = ( |
+             vs.
+            | 
+            vs: set copyRemoveAll.
+            usedValuesDo: [|:v| vs add: v].
+            vs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          valuesThatAreInitiallyKnownToBeLiveDo: blk = ( |
             | 
@@ -749,17 +781,8 @@ SlotsToOmit: parent.
          'Category: inlining\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          findRcvrAndArgStackValues = ( |
-             n.
-             vs.
             | 
-            vs: list copyRemoveAll.
-            n: firstNodeSettingUpTheSend.
-            [n isMove] whileTrue: [
-              vs addLast: n sourceValue.
-              n: n sourceSucc.
-            ].
-            [n = self] assert.
-            vs).
+            nodesSettingUpTheSend copyMappedBy: [|:n| n sourceValue]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
@@ -855,6 +878,23 @@ SlotsToOmit: parent.
             vmKit lookupKey copyForSelector: sel
                                  LookupType: lt
                                   Delegatee: del).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nodesSettingUpTheSend = ( |
+             n.
+             ns.
+            | 
+            ns: list copyRemoveAll.
+            n: firstNodeSettingUpTheSend.
+            [n isMove] whileTrue: [
+              ns addLast: n.
+              n: n sourceSucc.
+            ].
+            [n = self] assert.
+            ns).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
@@ -964,6 +1004,10 @@ SlotsToOmit: parent.
 
             lastNodeBeforeSettingUpTheSend sourceSucc: nodeAfterSettingUpTheSendResult.
             nodeAfterSettingUpTheSendResult sourcePred: lastNodeBeforeSettingUpTheSend.
+
+            nodesSettingUpTheSend do: [|:n| n unrecordDefinersAndUsers].
+            lastNodeSettingUpTheSendResult unrecordDefinersAndUsers.
+            unrecordDefinersAndUsers.
 
             bb1 immediatelyDominatedBBs remove: bb2.
             bb2 immediatelyDominatedBBs do: [|:domBB| domBB recordImmediateDominator: bb1].

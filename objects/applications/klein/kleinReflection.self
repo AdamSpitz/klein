@@ -820,6 +820,15 @@ kleinProcess
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'slots' -> () From: ( | {
          'Category: klein and yoda\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: public'
         
+         isReflecteeKleinCompiledBlock = ( |
+            | 
+            (includesKey: 'originalBlock_replaceThisSlotWithTheValueSlot')
+             && [reflectee originalBlock_replaceThisSlotWithTheValueSlot isNotNil]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'slots' -> () From: ( | {
+         'Category: klein and yoda\x7fModuleInfo: Module: kleinReflection InitialContents: FollowSlot\x7fVisibility: public'
+        
          isReflecteeKleinOrYodaPrimitiveMirror = ( |
             | 
             (includesKey: 'isKleinOrYodaPrimitiveMirror') && [reflectee isKleinOrYodaPrimitiveMirror]).

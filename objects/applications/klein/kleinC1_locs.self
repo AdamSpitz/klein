@@ -359,14 +359,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
-        
-         exemplarMirrorIfFail: fb = ( |
-            | 
-            oopMirror).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          hash = ( |
@@ -377,6 +369,14 @@ SlotsToOmit: parent.
          'Category: testing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          isConstant = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         knownMapUsingOracle: oracle IfFail: fb = ( |
+            | 
+            oracle mapForOriginalObject: oopValue).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {

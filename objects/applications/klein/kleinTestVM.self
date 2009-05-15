@@ -620,7 +620,7 @@ to just keep upping it by hand.
             ].
 
             [value]. "browsing"
-            (s name = 'value') && [s holder = (reflect: defaultBehavior)] ifTrue: [^ true].
+            s name = 'value' ifTrue: [^ true].
 
             resend.shouldAlwaysMapSlotNoMatterWhatModuleItIsIn: s).
         } | ) 
