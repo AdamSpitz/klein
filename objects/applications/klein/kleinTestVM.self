@@ -547,7 +547,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         cachedAllNamesOfIncludedModules.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -569,11 +569,13 @@ to just keep upping it by hand.
 	& ('kleinRelocators')
 	& ('kleinTestVM')
 	& ('kleinVM')
+	& ('rootTraits')
 	& ('vmKitBase')
 	& ('vmKitGeneration')
 	& ('vmKitMemory')
 	& ('vmKitObjectLocator')
 	& ('vmKitOops')
+	& ('vmKitPrims')
 	& ('vmKitSpace')
 	& ('vmKitUniverse')
 	& ('vmKitVM')) asSet) From: ( |
@@ -585,7 +587,9 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (collector copyFirst: ('init')) asSet) From: ( |
+         namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (('init')
+	& ('languageTests')
+	& ('testSuite')) asSet) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent exportPolicy modulesToMap namesOfModulesWhoseSubmodulesShouldBeIncludedToo.
 \x7fIsComplete: '.
             | ) .
@@ -621,6 +625,12 @@ to just keep upping it by hand.
 
             [value]. "browsing"
             s name = 'value' ifTrue: [^ true].
+
+            "Don't want to include the whole defaultBehavior module, but
+             there are a few slots on the defaultBehavior object (like 
+             'value' and 'theVM') that need to get compiled and mapped."
+            [defaultBehavior]. "browsing"
+            s name = 'defaultBehavior' ifTrue: [^ true].
 
             resend.shouldAlwaysMapSlotNoMatterWhatModuleItIsIn: s).
         } | ) 
@@ -1165,9 +1175,15 @@ SlotsToOmit: parent prototype safety.
              j <- 1.
             | 
             0 __BranchIfTrue: (i _Eq: 1) To: 'end'.
-            j: (compile_me: i _IntAdd: -1) _IntMul: i.
+            j: (recursiveFactorial: i _IntAdd: -1) _IntMul: i.
             0 __DefineLabel: 'end'.
             j).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         resendingTests = bootstrap stub -> 'globals' -> 'tests' -> 'resending' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1256,10 +1272,12 @@ SlotsToOmit: parent prototype safety.
             tryingToReplicateInliningBug run.
             testPrimitiveFailure.
             testFixAndContinue: 10 With: 11 And: 6.
-            [] vmTests run.
+            [pleh] vmTests run.
             testOnNonLocalReturn.
             branchTester run.
             testRestart.
+            assert: (recursiveFactorial: 10) Is: 3628800.
+            resendingTests run.
             dataSlotInliningTester run.
             testMapsOfObjectLiterals.
             testControlFlowOrderCodeGeneration: true.
@@ -1283,6 +1301,7 @@ SlotsToOmit: parent prototype safety.
          testCallingBlocks = ( |
             | 
             assert: [53] value Is: 53.
+            assert: [19] value Is: 19.
             assert: ([|:x| x _IntAdd: 7] value: 9) Is: 16.
             self).
         } | ) 

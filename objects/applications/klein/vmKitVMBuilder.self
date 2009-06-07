@@ -194,7 +194,7 @@ Maps objects and compiles essential nmethods.\x7fModuleInfo: Module: vmKitVMBuil
             statusReporter show: 'compiling nmethods and mapping objects...'
                           While: [
                                     mapper: vmToBuild vmKit objectMapper1 
-                                              copyPolicy: vmToBuild exportPolicy
+                                               copyForVM: vmToBuild
                                                 ReportTo: statusReporter.
                                     mapper expectedNumberOfObjects: vmToBuild expectedNumberOfObjects.
                                     objectsOracle: mapper mapObjectsKeepingStatistics.

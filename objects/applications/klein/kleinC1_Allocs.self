@@ -42,12 +42,6 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedValueForNLRHomeScope.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
          compiler.
         } | ) 
 
@@ -94,7 +88,8 @@ See the LICENSE file for license information.
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          backoutBlock = ( |
-            | compiler backoutBlock).
+            | 
+            compiler backoutBlock).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -245,10 +240,15 @@ See the LICENSE file for license information.
         
          valueForNLRHomeScope = ( |
             | 
-            cachedValueForNLRHomeScope ifNil: [
-              cachedValueForNLRHomeScope: (newValueWithLocation: locationForOutgoingNLRHomeScope) addDescription: 'NLR home scope'.
-              cachedValueForNLRHomeScope
-            ]).
+            (newValueWithLocation: locationForOutgoingNLRHomeScope) addDescription: 'NLR home scope').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: nlr home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForNLRHomeScopeDesc = ( |
+            | 
+            (newValueWithLocation: locationForOutgoingNLRHomeScopeDesc) addDescription: 'NLR home scopeDesc').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -415,10 +415,9 @@ registers, then we back out of the leaf method
 optimization and try again without it.  -- jb 8/03\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          lastVolatileRegisterThatWasActuallyAssigned: r = ( |
-             index.
             | 
             [isLeafMethod] assert.
-            index: registerUsage indexOfOutgoingArgumentRegister: r IfNoSuchIndex: [
+            registerUsage indexOfOutgoingArgumentRegister: r IfNoSuchIndex: [
               backoutBlock value: 'used too many volatile registers'.
             ].
             self).
@@ -443,6 +442,14 @@ optimization and try again without it.  -- jb 8/03\x7fModuleInfo: Module: kleinC
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: general stuff\x7fCategory: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForIncomingNLRHomeScopeDesc = ( |
+            | 
+            locationForOutgoingNLRHomeScopeDesc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: general stuff\x7fCategory: locations\x7fCategory: message send result\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingResult = ( |
@@ -455,6 +462,14 @@ optimization and try again without it.  -- jb 8/03\x7fModuleInfo: Module: kleinC
          locationForOutgoingNLRHomeScope = ( |
             | 
             locationForVolatileRcvrOrArgAt: 1).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: general stuff\x7fCategory: locations\x7fCategory: non-local return home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         locationForOutgoingNLRHomeScopeDesc = ( |
+            | 
+            locationForVolatileRcvrOrArgAt: 2).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -1070,11 +1085,17 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
          initializeUplevelValues = ( |
             | 
             "Might as well set the locations right here, since we know them."
-            lexicalParentScopes reverseDo: [|:s. :i|
-              s slotSPOffsets with: s method slotNamesWithSPOffsetRecorded Do: [|:offset. :name|
-                namedValues at: name IfAbsentPut: [| loc |
-                  loc: locationForUplevel: lexicalParentScopes size - i AccessTo: s locationForOffset: offset.
-                  (newValueWithLocation: loc) addDescription: name
+            context lexicalParentScopesReverseDo: [|:s. :ll. names|
+              names: (irNodeGenerator ifNotNil: [|:irg| irg bytecodeInterpreterWithScope: context outermostScope]) ifNil: [
+                s slotSPOffsets with: s method slotNamesWithSPOffsetRecorded Do: [|:offset. :name|
+                  namedValues at: name IfAbsentPut: [| loc |
+                    loc: locationForUplevel: ll AccessTo: s locationForOffset: offset.
+                    (newValueWithLocation: loc) addDescription: name
+                  ].
+                ].
+              ] IfNotNil: [|:i|
+                i sourceLevelAllocator namedValues do: [|:v. :n|
+                  namedValues at: n IfAbsentPut: v.
                 ].
               ].
             ].
@@ -1085,16 +1106,28 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
          'Category: initializing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
         
          initializeValueForSelf = ( |
+             valueAlreadyExisted <- bootstrap stub -> 'globals' -> 'false' -> ().
             | 
-            valueForSelf:
-              lexicalParentScopes isEmpty
-                ifTrue: [valueForIncomingReceiver]
-                 False: [newValueWithLocation:
-                                         locationForUplevel: lexicalParentCount
-                                                   AccessTo: context outermostScope locationForIncomingReceiver].
-            valueForSelf addDescription: 'self'.
 
-            valueForSelf possibleValues: vector copyAddFirst: valueForSelf kindsOfPossibleValues selfValue copyForAllocator: self.
+            valueForSelf:
+              context isForABlockMethod
+                ifFalse: [valueForIncomingReceiver]
+                   True: [(irNodeGenerator ifNotNil: [|:irg| irg bytecodeInterpreterWithScope: context outermostScope]) ifNil: [
+                            "Outermost scope is not part of this nmethod, so it will already know its locationForIncomingReceiver."
+                            newValueWithLocation:
+                                         locationForUplevel: lexicalParentCount
+                                                   AccessTo: context outermostScope locationForIncomingReceiver
+                          ] IfNotNil: [|:i|
+                            "Outermost scope is part of this nmethod, so just use the existing valueForSelf."
+                            valueAlreadyExisted: true.
+                            i sourceLevelAllocator valueForSelf.
+                          ]
+                         ].
+
+            valueAlreadyExisted ifFalse: [
+              valueForSelf addDescription: 'self'.
+              valueForSelf possibleValues: vector copyAddFirst: valueForSelf kindsOfPossibleTypes selfValue copyForAllocator: self.
+            ].
 
             self).
         } | ) 
@@ -1112,6 +1145,14 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         irNodeGenerator = ( |
+            | 
+            compiler irNodeGenerator).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          isInlined = ( |
@@ -1125,14 +1166,6 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
          lexicalParentCount = ( |
             | 
             context lexicalParentCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
-        
-         lexicalParentScopes = ( |
-            | 
-            context lexicalParentScopes).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {

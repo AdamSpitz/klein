@@ -211,7 +211,7 @@ SlotsToOmit: parent.
          createBufferMemoryInterface = ( |
             | 
             createBufferMemoryInterfaceUsingPrototype:
-              theVM vmKit growingBufferMemoryInterface).
+              theVM vmKit memoryInterfaces growingBuffer).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'universe' -> 'parent' -> () From: ( | {
@@ -226,10 +226,10 @@ SlotsToOmit: parent.
             new:  newGeneration        createBufferMemoryInterfaceUsingPrototype: miProto.
             old:  oldGeneration        createBufferMemoryInterfaceUsingPrototype: miProto.
 
-            theVM vmKit compositeMemoryInterface
+            theVM vmKit memoryInterfaces composite
               copyForLowMemory: new
                     HighMemory:
-                       theVM vmKit compositeMemoryInterface
+                       theVM vmKit memoryInterfaces composite
                          copyForLowMemory: scav
                                HighMemory: old).
         } | ) 

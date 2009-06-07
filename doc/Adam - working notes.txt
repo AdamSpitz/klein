@@ -1,11 +1,3 @@
-Current goal:
-
-  - Maybe some simple compiler optimizations.
-
-Bugs to fix:
-
-  - Why does the UI crash after the "get a mirror on self" thing?
-
 What compiler optimizations could I try first?
 
   - The most important ones, I'm guessing, will be the ones that help us avoid block cloning. That's causing us a lot of grief, with contorting the GC code and a lot of extra time spent in GC and stuff. So I think we're gonna want to:
@@ -27,49 +19,18 @@ Cleanups to do:
 
 ----
 
-Dave's comments:
-
-  - The most important optimization is inlining. It's a big one (and don't forget that it affects the debugger), but after that the regular optimization stuff is less important. (It can be addictive, though, so be careful not get sucked into doing just one more optimization.)
-  - If I'm looking to port something to the iPhone, I might want to try the real Self VM, scary as it is.
-
-
-----
-
-For inlining, I think I need to:
-  - Find the place where the compiler generates IR nodes for a send, and make sure the compiler knows when it knows the type of the receiver.
-  - Think of a simple heuristic for deciding when to inline. Maybe "if it's a data slot or if the method is small", for now.
-  - Find the places where the compiler creates IR nodes referring to the receiver or arguments or locals. Make sure they don't just do it by name, and then indirect them through a currentScope thing or something.
-
-----
-
 There's gotta be a way to avoid having to pull in the whole object table every time anything changes in it. Why not just pull in the parts we're accessing?
 
 ----
 
-Remember to clean up the aaaaa things.
+Remember to clean up the aaaaa and aaaaaaa things.
 
 ----
 
 Stuff I want to do:
 
-  - In the allocator, maybe initialize it right away with a vector of all 32 precolored register values. Then use those in the locationAssigner. (I think that's what the textbook wants me to do; maybe it makes a difference?)
   - Turn the miniVM into a really good test of the basic VM's capabilities. And unify that stuff with the midiVM/selfVM tests AND with the Self "tests" object.
   - Fix the compilerTester. Right, right - I broke it, made it require the compilationRequester.
-
-----
-
-http://selflanguage.org/_static/published/dynamic-deoptimization.pdf
-
-So it looks like the deal is:
-
-  - The compiler has to create scopeDesc information describing how the virtual stack frames are laid out within the physical stack frame.
-  - Just to display the stack, no deoptimization is necessary - the debugger just has to pretend that the source-level stack frames are there (which it can do because of the scopeDesc info).
-  - To deoptimize the topmost activation, just save a copy of the physical frame, pop it off, and then use the scopeDesc info to recreate source-level ones.
-  - To deoptimize an activation in the middle of the stack, just wait for the stack to unwind back to that point and then deoptimize it. (Do that by making the return PC actually be to a procedure that'll deoptimize the thing.)
-  - Need to have unoptimized nmethods either created on-the-fly or lying around, so that we can switch the PC into the right place in the unoptimized one and continue execution.
-  - Use interrupt points (sends and backward branches) to interrupt a process. (They happen frequently, so there shouldn't be any major delay when you open up a debugger on a running process.) That way we can do source-level single-stepping by deoptimizing and then just setting the interrupt register. In between interrupt points, you can do any optimizations that won't wreck the ability to reconstruct the stack info at the next interrupt point.
-
-That doesn't look so scary. And since we don't have source-level single-stepping or runtime changes yet anyway, I won't be breaking anything if I just implement inlining and make sure that the debugger can display stuff right. Cool!
 
 ----
 
@@ -81,85 +42,41 @@ Does the leaf-method optimization have to be implemented using that backout-bloc
 
 ----
 
-blockLiteralsThatWillNotBePushed - shouldn't that be done in a different way now?
+I hope it's not compiling methods for regular blocks (as opposed to compiledBlocks).
 
 ----
 
 Inlining plan:
 
-  - Get the SSA stuff working, so we can inline other sends where we know the receiver type, not just self-sends.
-  - Kleinify blocks; make them include a constant VM slot pointing to their enclosing scopeDesc.
-  - Be able to inline block methods, so that we can eliminate the block.
-  - Be able to inline methods containing blocks. (The problem is that the block needs to be customized for each type of enclosing nmethod, since the enclosing nmethod might put the uplevel values in different places.) How about I have each nmethod keep a vector of the blocks that it uses (and clone each one of them from the original block literal)? And then add a constant VM slot to every block, containing a pointer to its value nmethod (or maybe to the enclosing nmethod... no, to the *home scope* in the enclosing nmethod, because that's what I need to make NLRs work right!)? (See forReflecteeOf:AddAllMappedVMSlotsTo:Mapper:.) That'll make sure that each block has a different map. Then I've just gotta make sure each one gets the right nmethod in its nmethod cache.
+  - Fix the bug in the source-level UI with inlined blocks.
   - Flesh out the list of stuff that needs to be pre-inlined to make the system ramp up quickly enough.
 
 ----
 
-Whoa. Holy crap. The sendMessage_stub balloons up from 656 IR nodes to over 7000 when I turn on SSA.
+Whoa look at these nmethods we're compiling:
+7129@a mirrors canonicalString(on 'compiledBlock!!!')@'parent'
+7129@a mirrors canonicalString(on 'compiledBlock!!!')@'scopeDesc'
+7129@a mirrors canonicalString(on 'compiledBlock!!!')@'originalBlock_replaceThisSlotWithTheValueSlot'
 
-I kinda like the "semi-pruned SSA" idea:   http://www.serc.iisc.ernet.in/cadl/courses/spe98-ssa.pdf
+'Cause they've all got different maps. But... shouldn't the 'parent' nmethods be reusable? Oh - no, because they're really different slots, and the things are cached by slot and key, I think. Could I cache them by contents and key? No, not quite.
 
-But only if it's actually true that a lot of variables are only used within the BB where they're defined. Might not be, considering that now every send ends the BB.
 
-----
+Also, is there anything I can do to make it cheaper to produce an nmethod for a constant slot? Right now, each nmethod for a constant slot costs:
 
-Hmm, it's running out of stack space during the SSA value-renaming thing, when it tries to compile that big long arithmetic (testSuccess?) method.
-
-Can't tell whether it's an infinite loop or just really long. I'd be kinda surprised if it was infinite, though.
-
-Oh, hey, looks like a big part of the problem is constructing the interference graph. Maybe it's time to use a more efficient data structure for that. Or do something different with the precolored values - seems like they're a big part of the problem. Yeah, don't mess with the data structures until I've fixed the algorithm.
-
-Why did I do that precolored thing? The idea was that if V interferes with a precolored value, it interferes with *every* precolored value with that color. Yes, OK, sure... but when is that ever relevant? What do we use the interference information for?
-
-Actually, maybe I could just use the alias mechanism? Treat the first precolored value (of a particular color) as the "real" one, and all the others as aliases. Then as long as we always do our interference checks using aliasOf:, we're fine. No?
-
-Blecch. I mean, yes, fine, it might work, but I really hate this algorithm. It's a big mess. Hacks on top of hacks.
-
-OK. It seems like my main problem is that I've got all these precolored values. I don't think I'm supposed to do that. Again, what if there was just one?
+  - Objects:
+    - the nmethod itself
+    - relocationInfo (which is of size 19 - the smiMap, the floatMap, the branch to the sendMessage_stub, and a loadAddress for the constant)
+    - topScope
+      - lookupKey
 
 ----
 
-Working on the new linearScanLocationAssigner.
+It's not cloning the block! Hooray! But now I've got this bug where the source-level UI crashes when inlined blocks are involved.
 
-latest problem: gotta do the alias thing.
-
-But to make it work right I'll have to set the live-intervals properly - it's gotta start at the start of the very first alias and end at the end of the very last one.
+I've got a klein mirrors blockMethodActivation that gives me an error when I call lexicalParent on it.
 
 ----
 
-Let's talk out how this linearScanLocationAssigner is gonna work, get it really clear.
+Latest bug: see the picture.
 
-  - To start with, I've got:
-    - allValues, all of which need to be assigned locations (though the unused ones can get any location they want and it doesn't really matter).
-    - some of the values already have a location assigned to them
-    - some of the values are aliases for other values, and need to be kept in the same location. (But they're still considered different *values* because the actual runtime value could be different.)
-  - Then:
-    - I determine the "live intervals" by finding the first place each value is defined and the last place it's used.
-      - (The live intervals for aliases have to be merged into a single one that encompasses all of them.)
-    - I run over the live intervals, keeping track of which intervals are live at the same time.
-      - I assign each of them a location as I go, chosen from the pool of available registers. (If there's none available I just spill it, or maybe spill a different one if I think that one will cost less to spill.)
-        - But to do that, I need to be sure that it's *OK* to spill that one - that that one wasn't a preallocated or aliased one.
-          - Now, the aliased ones should all have a single merged live range... but I still need to make sure, when I reassign it, that I reassign *all* of them. ***** I think I might not be doing that.
-          - And I'm not allowed to reassign a preallocated one at all. ***** Not sure I'm doing that properly, either.
-
-Maybe I shouldn't actually assign a location to the value objects as I go along - maybe I should hold the location inside the interval object, and then assign them to the values in a separate pass when I'm done. That'd let me keep track of the difference between preallocated and non-preallocated.
-
-----
-
-Aha! I get the bug. There are a bunch of unused and undefined values (presumably the ones that got renamed). The location assigner sees that the live interval is (maxSmallInt, -1) and thinks it's OK to assign it to the same location as whatever else it wants.
-
-So maybe the thing that inserts the moves shouldn't bother if the thing has no users or definers.
-
-----
-
-Screw this. Maybe I should go back to the graphColoring one. I think I just need to explicitly represent the equivalence classes - make sure that the interference graph never includes aliases, only the canonical one or the eqivalenceClass object or something.
-
-----
-
-Gotta fix the aaaaaaa's - at least the one about reusing the scopeDesc nmethod.
-
-----
-
-Whoa, I think it worked!
-
-Time to lift the ban on inlining methods containing blocks? And then later on inlining block methods.
+With or without inlining, it looks like string canonicalization is broken. (Probably a symptom of some more fundamental problem.)

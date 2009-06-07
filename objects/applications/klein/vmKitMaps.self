@@ -779,6 +779,14 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
          'Category: pretending to be a mirror\x7fCategory: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
+         isReflecteeMethod = ( |
+            | 
+            isReflecteeVMKitActivationMap).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {
+         'Category: pretending to be a mirror\x7fCategory: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
          isReflecteeVMKitActivationMap = ( |
             | 
             isActivation).
@@ -1154,6 +1162,16 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         = s = ( |
+            | 
+            "Hmm. I hope we don't have to be able to compare
+             against normal slots."
+            (holderMap == s holderMap) && [index = s index]).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
          annotation = ( |
@@ -1201,11 +1219,20 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hash = ( |
+            | 
+            holderMap identityHash ^^ index hash).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
          holder = ( |
             | 
-            [aaaaaaa]. "Maybe this isn't a good idea."
+            "Maybe this isn't a good idea. But it seems to work OK - maps mostly
+             don't have too much trouble pretending to be mirrors. -- Adam, May 2009"
             holderMap).
         } | ) 
 
@@ -2356,12 +2383,6 @@ SlotsToOmit: parent.
          'Category: testing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
          isMethodLike = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
-         'Category: pretending to be a mirror\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isReflecteeMethod = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
@@ -3921,6 +3942,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
          subpartNames <- 'vmKitMapImporting
+vmKitNMethodCache
 '.
         } | ) 
 
@@ -4090,6 +4112,7 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
  '-- Sub parts'
 
  bootstrap read: 'vmKitMapImporting' From: 'applications/klein'
+ bootstrap read: 'vmKitNMethodCache' From: 'applications/klein'
 
 
 

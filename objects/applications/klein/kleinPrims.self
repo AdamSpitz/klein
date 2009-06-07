@@ -142,7 +142,7 @@ See the LICENSE file for license information.
                                                                  Key: key
                                                                 Self: rcvrMap
                                                             Receiver: rcvrMap
-                                                 LexicalParentScopes: vector)
+                                                  LexicalParentScope: nil)
                                 Architecture: theVM architecture
                                       Oracle: oracleForEagerRelocationInsideKlein
                                        Debug: true

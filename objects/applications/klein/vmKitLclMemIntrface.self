@@ -7,32 +7,32 @@ See the LICENSE file for license information.
 
  '-- Module body'
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
-         'Category: memory interfaces\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> () From: ( | {
+         'ModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
-         localMemoryInterface = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> () ToBe: bootstrap addSlotsTo: (
+         local = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> () ToBe: bootstrap addSlotsTo: (
              bootstrap remove: 'parent' From:
-             globals kleinAndYoda abstractMemoryInterface copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda localMemoryInterface.
+             globals kleinAndYoda memoryInterfaces abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda memoryInterfaces local.
 
 CopyDowns:
-globals kleinAndYoda abstractMemoryInterface. copy 
+globals kleinAndYoda memoryInterfaces abstract. copy 
 SlotsToOmit: parent.
 
 \x7fIsComplete: '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> () From: ( | {
          'ModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda localMemoryInterface parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda memoryInterfaces local parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: addr PutOop: oop IfFail: fb = ( |
@@ -40,7 +40,7 @@ SlotsToOmit: parent.
             oop _UnsafePutOopAtAddress: addr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          atOffset: wordOffset From: baseAddr PutMarkWithValue: mv IfFail: fb = ( |
@@ -48,7 +48,7 @@ SlotsToOmit: parent.
             mv _UnsafePutMarkValueAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          atOffset: wordOffset From: baseAddr PutOop: oop IfFail: fb = ( |
@@ -56,7 +56,7 @@ SlotsToOmit: parent.
             oop _UnsafePutOopAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          isMarkAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
@@ -64,7 +64,7 @@ SlotsToOmit: parent.
             _UnsafeIsMarkAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          markValueAt: addr IfFail: fb = ( |
@@ -72,7 +72,7 @@ SlotsToOmit: parent.
             addr _UnsafeMarkValueAtAddressIfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAt: addr IfFail: fb = ( |
@@ -80,7 +80,7 @@ SlotsToOmit: parent.
             _UnsafeObjectForOopAtAddress: addr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
@@ -88,13 +88,13 @@ SlotsToOmit: parent.
             _UnsafeObjectForOopAtOffset: wordOffset FromAddress: baseAddr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> ().
+         parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> 'parent' -> () From: ( | {
          'Category: tags\x7fModuleInfo: Module: vmKitLclMemIntrface InitialContents: FollowSlot\x7fVisibility: public'
         
          tagAt: addr IfFail: fb = ( |

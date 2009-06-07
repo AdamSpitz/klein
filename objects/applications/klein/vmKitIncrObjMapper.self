@@ -30,12 +30,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
-        
-         immediateExemplarsToCompile <- set copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fComment: Optimization: If the new object is the same size as the old object
 (which happens often - any time we make a change that only affects
 the object\'s map, like adding a constant slot or editing a method),
@@ -107,34 +101,14 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
-         'Category: mapping objects\x7fCategory: compiling nmethods\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         compileSlotsForReceiverMirror: rMir Map: rMap MapOID: rMapOID = ( |
-            | 
-            image removeAnyNMethodsForMapOID: rMapOID. "so they don't get reused"
-
-            resend.compileSlotsForReceiverMirror: rMir
-                                             Map: rMap
-                                          MapOID: rMapOID).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         copy = ( |
-            | 
-            resend.copy immediateExemplarsToCompile: immediateExemplarsToCompile copy).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyPolicy: p ObjectLocator: ol ReportTo: reporter ObjectThatWasDefined: definee = ( |
+         copyForVM: aVM ReportTo: reporter ObjectThatWasDefined: definee = ( |
              r.
             | 
             r: copy.
-            r policy: p.
-            r copyOfOldObjectLocator: ol copy.
+            r myVM: aVM.
+            r copyOfOldObjectLocator: aVM objectLocator copy.
             r objectsOracle oldOopForObjectThatWasDefined: theVM image oopForOriginalObject: definee.
             r objectsOracle ensureOIDVectorsHaveSizeAtLeast: r objectsOracle addressesByOID size.
             r statusReporter: reporter.
@@ -165,21 +139,6 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
          desiredStartingSizeForObjectTable: t = ( |
             | 
             t size).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
-         'Category: mapping objects\x7fCategory: compiling nmethods\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         exemplarOIDsToCompile = ( |
-             r.
-            | 
-            r: set copyRemoveAll.
-            mapsAffectedByChange do: [|:m|
-              m isImmediate ifTrue: [immediateExemplarsToCompile add: m myLayout exemplar]
-                             False: [r add: image objectsOracle exemplarOIDForMap: m].
-            ].
-            objectsOracle newExemplarOIDsDo: [|:oid| r add: oid].
-            r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
@@ -216,6 +175,15 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
          initializeCanonicalizedStrings = ( |
             | 
             canonicalizedStrings: theVM universe canonicalizedStrings copy.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
+         'Category: mapping objects\x7fCategory: compiling nmethods\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initializeExemplarMirrorsLeftToCompile = ( |
+            | 
+            mapsAffectedByChange do: [|:m| exemplarMirrorsLeftToCompile addFirst: reflect: image objectsOracle exemplarForMap: m].
             self).
         } | ) 
 
@@ -302,6 +270,16 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
+         'Category: mapping objects\x7fCategory: compiling nmethods\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         requestCompilationForReceiverMirror: rMir Map: rMap MapOID: rMapOID = ( |
+            | 
+            image removeAnyNMethodsForMapOID: rMapOID. "so they don't get reused"
+
+            resend.requestCompilationForReceiverMirror: rMir Map: rMap MapOID: rMapOID).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          setNMethodTableForUniverse: u To: nmethods = ( |
@@ -320,14 +298,6 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
          shouldAlwaysReassembleRelocatorsForObject: o = ( |
             | 
             isSameSize not && [o _Eq: objectThatWasDefined]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
-         'Category: mapping objects\x7fCategory: compiling nmethods\x7fCategory: immediates\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         shouldCompileSlotsForImmediateExemplar: immediateExemplar = ( |
-            | 
-            immediateExemplarsToCompile includes: immediateExemplar).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {

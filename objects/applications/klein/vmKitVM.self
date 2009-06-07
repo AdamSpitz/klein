@@ -124,6 +124,12 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVM InitialContents: InitializeToExpression: (nil)'
+        
+         aaa.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> () From: ( | {
          'Category: \"global\" state\x7fModuleInfo: Module: vmKitVM InitialContents: InitializeToExpression: (\'\')\x7fVisibility: public'
         
          architecture <- ''.
@@ -417,7 +423,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
          'Category: mapped\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         machineMemoryForExecution = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localMemoryInterface' -> ().
+         machineMemoryForExecution = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'local' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
@@ -594,7 +600,7 @@ to just keep upping it by hand.
          pointMemoryInterfaceTo: aForeignProcess = ( |
             | 
             machineMemory: 
-              vmKit foreignProcessMemoryInterface 
+              vmKit memoryInterfaces foreignProcess
                 copyForForeignProcess: aForeignProcess.
             self).
         } | ) 

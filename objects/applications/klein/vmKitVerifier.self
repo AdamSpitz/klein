@@ -7,32 +7,6 @@ See the LICENSE file for license information.
 
  '-- Module body'
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'bufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         verifyThatIEqual: aMemoryInterface = ( |
-            | 
-            userQuery show: 'verifying bytes at ', start printString  While: [
-              buffer = (aMemoryInterface bytesAt: start Size: buffer size) ifFalse: raiseError.
-
-              (aMemoryInterface bytesAt: start + buffer size Size: size - buffer size) do: [|:b|
-                b = 0 ifFalse: raiseError.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'compositeMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         verifyThatIEqual: aMemoryInterface = ( |
-            | 
-            userQuery show:  'verifying memory interface copy'  While: [
-              memoryInterfacesDo: [|:mi| mi verifyThatIEqual: aMemoryInterface].
-            ].
-            self).
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcessModel' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -63,272 +37,6 @@ See the LICENSE file for license information.
          verifyWith: aVerifier = ( |
             | 
             spacesDo: [|:sp. :name| sp verifySpaceNamed: name With: aVerifier].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
-         'Category: memory interfaces\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         growableWordBufferMemoryInterface = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'lowBuffer' From:
-             bootstrap remove: 'parent' From:
-             globals kleinAndYoda growingBufferMemoryInterface copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda growableWordBufferMemoryInterface.
-
-CopyDowns:
-globals kleinAndYoda growingBufferMemoryInterface. copy 
-SlotsToOmit: lowBuffer parent.
-
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> () From: ( | {
-         'Category: buffers that grow\x7fCategory: low\x7fModuleInfo: Module: vmKitVerifier InitialContents: InitializeToExpression: (vector)\x7fVisibility: private'
-        
-         lowOopBuffer <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda growableWordBufferMemoryInterface parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: single bytes\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         at: i PutByte: b IfFail: fb = ( |
-             m.
-             o.
-             x.
-            | 
-            i < lowEnd  ifFalse: [^ resend.at: i PutByte: b IfFail: fb].
-            x: i % oopSize.
-            m: 255 << (x * 8).
-            at: i - x PutOop: (oopAt: i - x IfFail: [|:e| ^ fb value: e]) || (b << (x * 8))).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: byte vectors\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         at: i PutBytes: bv IfFail: fb = ( |
-             bi <- 0.
-             n.
-             wi <- 0.
-            | 
-
-            (i + bv size) <= lowEnd
-              ifFalse: [ ^ resend.at: i PutBytes: bv IfFail: fb ].
-
-            n: bv size.
-            [bi < n] whileTrue: [
-              lowOopBuffer at: wi Put: 
-                 wordFrom: bv AtIndex: bi IfFail: raiseError.
-              bi: bi + oopSize.
-              wi: wi succ.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: single words\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         at: i PutWord: w IfFail: fb = ( |
-            | 
-            i < lowEnd ifFalse: [^ resend.at: i PutWord: w IfFail: fb ].
-            lowOopBuffer at: i / oopSize Put: w.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: single bytes\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         byteAt: i IfFail: fb = ( |
-             o.
-             x.
-            | 
-            i < lowEnd ifFalse: [^ resend.byteAt: i IfFail: fb].
-            x: i % oopSize.
-            o: oopAt: i - x IfFail: [|:e| ^ fb value: e].
-            (o >> ((3 - x) * 8)) && 255).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: byte vectors\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         bytesAt: i Size: n IfFail: fb = ( |
-             r.
-             startOfCopy.
-            | 
-            (i + n) <= lowEnd
-              ifFalse: [ ^ resend.bytesAt: i Size: n IfFail: fb ].
-
-            r: byteVector copySize: n.
-
-            startOfCopy: i - lowStart.
-            startOfCopy  upTo:  startOfCopy + n  By:  oopSize  Do: [
-              |:byteIndex. oop|
-              oop: lowOopBuffer at: byteIndex / oopSize.
-              theVM myAssemblerSystem
-                store: oop AsByteVectorInto: r 
-                                         At: byteIndex - startOfCopy
-                                     IfFail: ["if n is not an exact multiple of 4, will run off the end of r"].
-            ].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: copying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForSpace: space = ( |
-             c.
-            | 
-            c:  copyAt: space bottom  Size: space sizeOfEntireRegion.
-            c initializeFromVM: theVM Space: space.
-            c).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: private stuff\x7fCategory: growing\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
-        
-         growLowTo: n = ( |
-            | 
-            lowOopBuffer: lowOopBuffer copySize: (newSizeFor: lowOopBuffer ToGrowTo: n OtherBuffer: highBuffer) / oopSize.
-            lowEnd: lowStart + (lowOopBuffer size / oopSize).
-            updateMidpoint).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: copying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initializeFromVM: aVM Space: s = ( |
-             bytes.
-             bytesSize.
-             objs.
-             oopsSize.
-             verifyAfterCopy = bootstrap stub -> 'globals' -> 'false' -> ().
-            | 
-
-            "grow"
-             oopsSize: s sizeOfAllocatedOopsRegion.
-            bytesSize: s sizeOfAllocatedBytesRegion.
-
-            lowOopBuffer: lowOopBuffer copySize:  oopsSize / oopSize.
-              highBuffer:   highBuffer copySize: bytesSize.
-
-            lowEnd:    lowStart +  oopsSize.
-            highStart: highEnd  - bytesSize.
-
-            objs:  aVM machineMemory bytesBypassingCacheAt: s objsBottom  Size:  oopsSize.
-            bytes: aVM machineMemory bytesBypassingCacheAt: s bytesBottom Size: bytesSize.
-
-            at: s objsBottom  PutBytes: objs.
-            at: s bytesBottom PutBytes: bytes.
-
-            verifyAfterCopy ifTrue: [
-              verifyThatIEqual: aVM machineMemory.
-              halt: 'if this works turn off the verification'.
-            ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot'
-        
-         lowBuffer = bootstrap stub -> 'globals' -> 'byteVector' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: private stuff\x7fCategory: growing\x7fCategory: helpers\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
-        
-         newSizeFor: buf ToGrowTo: n OtherBuffer: other = ( |
-             s1.
-             s2.
-            | 
-            s1: buf size.
-            s2: other size.
-            lowOopBuffer = buf ifTrue: [s1: s1 * oopSize].
-            lowOopBuffer = n   ifTrue: [s2: s2 * oopSize].
-
-            [todo robustification].
-            "can potentially run out of space if other has grown too much
-             and we need the space for this one -- dmu 1/05"
-            "If we kept track of the lowest address we've seen accessed in the
-             high buffer, and vice-versa in the low buffer, we could trim them back
-             if we need to."
-            "The failure happens in " [updateMidpoint].
-            s1 - s2 min: n + minGrowth max: s2 double).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: single words\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
-        
-         oopAtIndex: i IfFail: fb = ( |
-            | 
-            lowOopBuffer at: i / oopSize IfAbsent: [fb value: 'absent']).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: testing\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         optimizesWordAccesses = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growingBufferMemoryInterface' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: tags\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         tagAtIndex: i = ( |
-            | 
-            vmKit tag tagOfOop: oopAtIndex: i IfFail: raiseError).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growableWordBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: public interface\x7fCategory: single words\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         wordAt: i IfFail: fb = ( |
-            | 
-            i < lowEnd ifTrue: [ oopAt:         i IfFail: fb ]
-                        False: [ resend.wordAt: i IfFail: fb ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'growingBufferMemoryInterface' -> 'parent' -> () From: ( | {
-         'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
-        
-         verifyThatIEqual: aMemoryInterface = ( |
-             nh.
-             nl.
-            | 
-            nl:  lowEnd -  lowStart.
-            nh: highEnd - highStart.
-
-            userQuery show: 'verifying memory interface copy'  While: [
-              userQuery show: 'verifying low words'  While: [
-                lowStart upTo: lowEnd By: oopSize Do: [|:i|
-                  (oopAt: i) = (aMemoryInterface oopAt: i) ifFalse: raiseError.
-                ].
-              ].
-              userQuery show: 'verifying high bytes'  While: [
-                                    (bytesAt: highStart Size: nh)
-                =  (aMemoryInterface bytesAt: highStart Size: nh)
-                  ifFalse: raiseError.
-              ].    
-              userQuery show: 'verifying low bytes'  While: [
-                                    (bytesAt: lowStart Size: nl)
-                =  (aMemoryInterface bytesAt: lowStart Size: nl)
-                 ifFalse: raiseError.
-              ].
-            ].
             self).
         } | ) 
 
@@ -730,6 +438,314 @@ SlotsToOmit: lowBuffer parent.
             resend.verifyObject: o UpTo: nextIndex With: aVerifier).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'buffer' -> 'parent' -> () From: ( | {
+         'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         verifyThatIEqual: aMemoryInterface = ( |
+            | 
+            userQuery show: 'verifying bytes at ', start printString  While: [
+              buffer = (aMemoryInterface bytesAt: start Size: buffer size) ifFalse: raiseError.
+
+              (aMemoryInterface bytesAt: start + buffer size Size: size - buffer size) do: [|:b|
+                b = 0 ifFalse: raiseError.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'composite' -> 'parent' -> () From: ( | {
+         'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         verifyThatIEqual: aMemoryInterface = ( |
+            | 
+            userQuery show:  'verifying memory interface copy'  While: [
+              memoryInterfacesDo: [|:mi| mi verifyThatIEqual: aMemoryInterface].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingBuffer' -> 'parent' -> () From: ( | {
+         'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         verifyThatIEqual: aMemoryInterface = ( |
+             nh.
+             nl.
+            | 
+            nl:  lowEnd -  lowStart.
+            nh: highEnd - highStart.
+
+            userQuery show: 'verifying memory interface copy'  While: [
+              userQuery show: 'verifying low words'  While: [
+                lowStart upTo: lowEnd By: oopSize Do: [|:i|
+                  (oopAt: i) = (aMemoryInterface oopAt: i) ifFalse: raiseError.
+                ].
+              ].
+              userQuery show: 'verifying high bytes'  While: [
+                                    (bytesAt: highStart Size: nh)
+                =  (aMemoryInterface bytesAt: highStart Size: nh)
+                  ifFalse: raiseError.
+              ].    
+              userQuery show: 'verifying low bytes'  While: [
+                                    (bytesAt: lowStart Size: nl)
+                =  (aMemoryInterface bytesAt: lowStart Size: nl)
+                 ifFalse: raiseError.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         growingWordBuffer = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'lowBuffer' From:
+             bootstrap remove: 'parent' From:
+             globals kleinAndYoda memoryInterfaces growingBuffer copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda memoryInterfaces growingWordBuffer.
+
+CopyDowns:
+globals kleinAndYoda memoryInterfaces growingBuffer. copy 
+SlotsToOmit: lowBuffer parent.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> () From: ( | {
+         'Category: buffers that grow\x7fCategory: low\x7fModuleInfo: Module: vmKitVerifier InitialContents: InitializeToExpression: (vector)\x7fVisibility: private'
+        
+         lowOopBuffer <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda memoryInterfaces growingWordBuffer parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: single bytes\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         at: i PutByte: b IfFail: fb = ( |
+             m.
+             o.
+             x.
+            | 
+            i < lowEnd  ifFalse: [^ resend.at: i PutByte: b IfFail: fb].
+            x: i % oopSize.
+            m: 255 << (x * 8).
+            at: i - x PutOop: (oopAt: i - x IfFail: [|:e| ^ fb value: e]) || (b << (x * 8))).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: byte vectors\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         at: i PutBytes: bv IfFail: fb = ( |
+             bi <- 0.
+             n.
+             wi <- 0.
+            | 
+
+            (i + bv size) <= lowEnd
+              ifFalse: [ ^ resend.at: i PutBytes: bv IfFail: fb ].
+
+            n: bv size.
+            [bi < n] whileTrue: [
+              lowOopBuffer at: wi Put: 
+                 wordFrom: bv AtIndex: bi IfFail: raiseError.
+              bi: bi + oopSize.
+              wi: wi succ.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: single words\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         at: i PutWord: w IfFail: fb = ( |
+            | 
+            i < lowEnd ifFalse: [^ resend.at: i PutWord: w IfFail: fb ].
+            lowOopBuffer at: i / oopSize Put: w.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: single bytes\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         byteAt: i IfFail: fb = ( |
+             o.
+             x.
+            | 
+            i < lowEnd ifFalse: [^ resend.byteAt: i IfFail: fb].
+            x: i % oopSize.
+            o: oopAt: i - x IfFail: [|:e| ^ fb value: e].
+            (o >> ((3 - x) * 8)) && 255).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: byte vectors\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         bytesAt: i Size: n IfFail: fb = ( |
+             r.
+             startOfCopy.
+            | 
+            (i + n) <= lowEnd
+              ifFalse: [ ^ resend.bytesAt: i Size: n IfFail: fb ].
+
+            r: byteVector copySize: n.
+
+            startOfCopy: i - lowStart.
+            startOfCopy  upTo:  startOfCopy + n  By:  oopSize  Do: [
+              |:byteIndex. oop|
+              oop: lowOopBuffer at: byteIndex / oopSize.
+              theVM myAssemblerSystem
+                store: oop AsByteVectorInto: r 
+                                         At: byteIndex - startOfCopy
+                                     IfFail: ["if n is not an exact multiple of 4, will run off the end of r"].
+            ].
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: private stuff\x7fCategory: growing\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         changeSizeOfLowBufferTo: n = ( |
+            | 
+            lowOopBuffer: lowOopBuffer copySize: n / oopSize.
+            lowEnd: lowStart + (lowOopBuffer size / oopSize).
+            updateMidpoint).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: copying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForSpace: space = ( |
+             c.
+            | 
+            c:  copyAt: space bottom  Size: space sizeOfEntireRegion.
+            c initializeFromVM: theVM Space: space.
+            c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: private stuff\x7fCategory: growing\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         growLowTo: n = ( |
+            | 
+            changeSizeOfLowBufferTo: newSizeFor: lowOopBuffer ToGrowTo: n OtherBuffer: highBuffer).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: copying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initializeFromVM: aVM Space: s = ( |
+             bytes.
+             bytesSize.
+             objs.
+             oopsSize.
+             verifyAfterCopy = bootstrap stub -> 'globals' -> 'false' -> ().
+            | 
+
+            "grow"
+             oopsSize: s sizeOfAllocatedOopsRegion.
+            bytesSize: s sizeOfAllocatedBytesRegion.
+
+            lowOopBuffer: lowOopBuffer copySize:  oopsSize / oopSize.
+              highBuffer:   highBuffer copySize: bytesSize.
+
+            lowEnd:    lowStart +  oopsSize.
+            highStart: highEnd  - bytesSize.
+
+            objs:  aVM machineMemory bytesBypassingCacheAt: s objsBottom  Size:  oopsSize.
+            bytes: aVM machineMemory bytesBypassingCacheAt: s bytesBottom Size: bytesSize.
+
+            at: s objsBottom  PutBytes: objs.
+            at: s bytesBottom PutBytes: bytes.
+
+            verifyAfterCopy ifTrue: [
+              verifyThatIEqual: aVM machineMemory.
+              halt: 'if this works turn off the verification'.
+            ].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot'
+        
+         lowBuffer = bootstrap stub -> 'globals' -> 'byteVector' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: private stuff\x7fCategory: growing\x7fCategory: helpers\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         newSizeFor: buf ToGrowTo: n OtherBuffer: other = ( |
+             s1.
+             s2.
+            | 
+            s1: buf size.
+            s2: other size.
+            lowOopBuffer = buf ifTrue: [s1: s1 * oopSize].
+            lowOopBuffer = n   ifTrue: [s2: s2 * oopSize].
+
+            [todo robustification].
+            "can potentially run out of space if other has grown too much
+             and we need the space for this one -- dmu 1/05"
+            "If we kept track of the lowest address we've seen accessed in the
+             high buffer, and vice-versa in the low buffer, we could trim them back
+             if we need to."
+            "The failure happens in " [updateMidpoint].
+            s1 - s2 min: n + minGrowth max: s2 double).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: single words\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         oopAtIndex: i IfFail: fb = ( |
+            | 
+            lowOopBuffer at: i / oopSize IfAbsent: [fb value: 'absent']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: testing\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         optimizesWordAccesses = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingBuffer' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: tags\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         tagAtIndex: i = ( |
+            | 
+            vmKit tag tagOfOop: oopAtIndex: i IfFail: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         totalByteSizeOfBuffers = ( |
+            | 
+            (lowOopBuffer size * oopSize) + highBuffer size).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'growingWordBuffer' -> 'parent' -> () From: ( | {
+         'Category: public interface\x7fCategory: single words\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
+        
+         wordAt: i IfFail: fb = ( |
+            | 
+            i < lowEnd ifTrue: [ oopAt:         i IfFail: fb ]
+                        False: [ resend.wordAt: i IfFail: fb ]).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'segregatedSpaceMixin' -> () From: ( | {
          'Category: verifying\x7fModuleInfo: Module: vmKitVerifier InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -1121,7 +1137,7 @@ SlotsToOmit: parent.
             importHeapInformationFrom: oldVM image mirrorOnTheVM.
             setTheVMAndDo: [
               machineMemory: universe createBufferMemoryInterfaceUsingPrototype:
-                                          vmKit growableWordBufferMemoryInterface.
+                                          vmKit memoryInterfaces growingWordBuffer.
             ].
             self).
         } | ) 

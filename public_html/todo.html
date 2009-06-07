@@ -27,9 +27,9 @@
 <p>There is a lot of stuff that would need to be done before Klein could be a useful VM for the Self language:</p>
 
 <ul>
-  <li>Garbage collection. We expect this to be trickier in Klein than in a normal VM, because of Klein's metacircularity. (For example, what if the GC runs out of memory during a collection? What if the GC moves its own code out from under itself?)</li>
+  <li>Garbage collection. We expect this to be trickier in Klein than in a normal VM, because of Klein's metacircularity. (For example, what if the GC runs out of memory during a collection? What if the GC moves its own code out from under itself?) An extremely-rudimentary collector exists, and passes the first couple of test cases, but it's just a simple scavenger - it needs to be fleshed out into a full generational collector.</li>
   <li>A lot of primitives (graphics, etc.).
-  <li>Performance. We've put almost no effort at all into making Klein run efficiently; at present, it's hideously inefficient (in both time and space). The compiler produces very slow code, and we haven't even begun to implement any Self-style dynamic optimization tricks.</li>
+  <li>Performance. We've put almost no effort at all into making Klein run efficiently; at present, it's hideously inefficient (in both time and space). Some work has been done on an inlining compiler, but it's not completely working yet, and we haven't even begun to implement the rest of Self's <a href="http://selflanguage.org/documentation/published/index.html#implementation">cool optimization tricks</a>.</li>
   <li>We haven't implemented dependencies yet (which is fine for now because we haven't implemented recompilation either).</li>
   <li>Source-level single-stepping in the debugger. (There is a sometimes-useful approximation implemented now, but not proper source-level single-stepping.)</li>
   <li>Porting the assembler and compiler (so far there's only a PowerPC and SPARC assembler, and only a PowerPC compiler).</li>

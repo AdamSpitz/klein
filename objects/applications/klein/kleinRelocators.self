@@ -272,6 +272,39 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> () From: ( | {
+         'Category: flattening\x7fModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: public'
+        
+         flattenedVector = bootstrap define: ((bootstrap stub -> 'globals' -> 'klein' -> 'relocators') \/-> 'flattenedVector') -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals vector copy ) From: bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'klein' -> 'relocators') \/-> 'flattenedVector') -> () From: ( |
+             {} = 'Comment: We used to use regular vectors for these, but
+this way they show up separately when we do a
+breakdown of the objects in the image.\x7fModuleInfo: Creator: globals klein relocators flattenedVector.
+
+CopyDowns:
+globals vector. copy 
+SlotsToOmit: parent.
+
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein' -> 'relocators') \/-> 'flattenedVector') -> () From: ( | {
+         'ModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'klein' -> 'relocators') \/-> 'flattenedVector') -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein relocators flattenedVector parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein' -> 'relocators') \/-> 'flattenedVector') -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'vector' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> () From: ( | {
          'Category: eager relocation\x7fComment: Things to remove if we take this out (as well as
 all the calls to this method, of course):
   cachedKleinPrimitivesNMethods
@@ -656,13 +689,14 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinRelocators InitialContents: FollowSlot\x7fVisibility: public'
         
          stub = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'stub' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'originalObject' From:
              bootstrap remove: 'parent' From:
              globals klein relocators loadAddress copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'relocators' -> 'stub' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein relocators stub.
 
 CopyDowns:
 globals klein relocators loadAddress. copy 
-SlotsToOmit: parent.
+SlotsToOmit: originalObject parent.
 
 \x7fIsComplete: '.
             | ) .
@@ -688,7 +722,9 @@ SlotsToOmit: parent.
         
          addRelocationInfoTo: s = ( |
             | 
-            resend.addRelocationInfoTo: s.
+            s add: prototype.
+            s add: offset.
+            s add: dstReg.
             s add: methodName.
             self).
         } | ) 
@@ -698,6 +734,7 @@ SlotsToOmit: parent.
         
          assemblePlaceholderInstructionsWith: cg = ( |
             | 
+            [aaaaaaa]. "Wait, how does eager relocation work? Does it?"
             cg a loadAddressTo: dstReg
                           From: initialAddress.
             self).
@@ -763,7 +800,8 @@ So, just store the nmethod name until the oop is needed.
         
          reconstructFromRelocationInfo: s = ( |
             | 
-            resend.reconstructFromRelocationInfo: s.
+                offset: s removeFirst.
+                dstReg: s removeFirst.
             methodName: s removeFirst.
             self).
         } | ) 

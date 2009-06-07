@@ -215,10 +215,18 @@ For a      normal   send, this is 0 instead of nil because 0 is immediate, and s
         
          lookupSlotsUsing: protoSlotFinder Self: selfMir Holder: holderMir = ( |
             | 
+            lookupSlotsUsing: protoSlotFinder Self: selfMir Holder: holderMir IfAssignableParentSlot: []).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
+         'Category: lookup\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         lookupSlotsUsing: protoSlotFinder Self: selfMir Holder: holderMir IfAssignableParentSlot: blk = ( |
+            | 
             case
-              if: [isUndirectedResend] Then: [(protoSlotFinder copyForMirror:  holderMir                             Selector: selector) findSlotsInParents]
-              If: [  isDirectedResend] Then: [(protoSlotFinder copyForMirror: (holderMir slotAt: delegatee) contents Selector: selector) findSlots         ]
-                                       Else: [(protoSlotFinder copyForMirror:    selfMir                             Selector: selector) findSlots         ]).
+              if: [isUndirectedResend] Then: [((protoSlotFinder copyForMirror:  holderMir                             Selector: selector) assignableParentBlock: blk) findSlotsInParents]
+              If: [  isDirectedResend] Then: [((protoSlotFinder copyForMirror: (holderMir slotAt: delegatee) contents Selector: selector) assignableParentBlock: blk) findSlots         ]
+                                       Else: [((protoSlotFinder copyForMirror:    selfMir                             Selector: selector) assignableParentBlock: blk) findSlots         ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> 'parent' -> () From: ( | {
@@ -323,7 +331,7 @@ SlotsToOmit: parent.
             | 
             info: info copyRemoveAll.
             rels do: [|:r| r addRelocationInfoTo: info].
-            info asVector).
+            vmKit relocators flattenedVector copyContaining: info).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> () From: ( | {
@@ -533,6 +541,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
          'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
         
+         lexicalParentScope.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
          lookupKey.
         } | ) 
 
@@ -572,6 +586,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isInlined = ( |
+            | 
+            inliningScope isNotNil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
         
          locationForIncomingReceiver = ( |
@@ -584,7 +606,8 @@ SlotsToOmit: parent.
         
          locationForOffset: i = ( |
             | 
-            nmethod      ifSPOffset: i
+            klein nmethod
+                         ifSPOffset: i
                  IsForAConstantThen: [|:index | nmethod locationForConstantAt: index]
                  IsForARegisterThen: [|:regNum| theVM myAssemblerSystem operands gprFor: regNum]
             IsForAStackLocationThen: [|:offset| frame locationForStackOffset: offset]).
@@ -594,6 +617,39 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         pcOffsetVector = bootstrap define: ((bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent') \/-> 'pcOffsetVector') -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals vector copy ) From: bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent') \/-> 'pcOffsetVector') -> () From: ( |
+             {} = 'Comment: We used to use regular vectors for these, but
+this way they show up separately when we do a
+breakdown of the objects in the image.\x7fModuleInfo: Creator: globals klein nmethod parent scopeDesc parent pcOffsetVector.
+
+CopyDowns:
+globals vector. copy 
+SlotsToOmit: parent.
+
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent') \/-> 'pcOffsetVector') -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent') \/-> 'pcOffsetVector') -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein nmethod parent scopeDesc parent pcOffsetVector parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent') \/-> 'pcOffsetVector') -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'vector' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {

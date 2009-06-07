@@ -1226,6 +1226,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
             | 
             "We're maintaining the invariant that all blocks are the same size."
             "Use the primitive so as not to clone any blocks. -- Adam, 7/06"
+
                      lastField fixedIndexAfterMe
             _IntAdd: theVM exportPolicy shouldBlockValueSlotsBeObjectSlots asInteger).
         } | ) 

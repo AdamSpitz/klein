@@ -1377,7 +1377,7 @@ to use statics in the platform-specific disassembler classes. -- dmu 6/02 \x7fMo
 
             "This goes really slowly if the incremental updater is
              listening for every define. -- Adam, 11/04"
-            klein incrementalUpdater dontListenDuring: [
+            vmKit incrementalUpdater dontListenDuring: [
               generators do: [|:g. t| 
                   ('--- ', g asString , ': ---') printLine.
                   t: [(g copyForAssemblerSystem: self) generateAll] time.
@@ -2988,6 +2988,14 @@ SlotsToOmit: parent.
             userQuery show: 'Comparing internal to external binaries...' While: [checkExternalGoodiesResult].
             userQuery show: 'Disassembling and checking legal ones...'   While: [disassembleAndCheckGoodies].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: asmFrame InitialContents: FollowSlot\x7fVisibility: private'
+        
+         vmKit = ( |
+            | 
+            klein).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

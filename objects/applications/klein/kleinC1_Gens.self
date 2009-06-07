@@ -1269,7 +1269,7 @@ Returns an address into a bytes part masquerading as a small integer.
             | 
             [_ArgAt: 0           ]. "browsing"
             [_ArgAt: 0 IfFail: fb]. "browsing"
-            index: node rcvrOrArgOopValueForConstantLocAt: 1.
+            index: node rcvrOrArgOopValueForConstantLocAt: 1 IfFail: raiseError.
             moveLocation: (sourceLevelAllocator valueForIncomingRcvrOrArgAt: index) location
               ToLocation: node resultLoc.
             self).
@@ -1295,7 +1295,7 @@ Returns an address into a bytes part masquerading as a small integer.
             | 
             [_Breakpoint: 'comment'           ]. "browsing"
             [_Breakpoint: 'comment' IfFail: fb]. "browsing"
-            cmt: node rcvrOrArgOopValueForConstantLocAt: 1.
+            cmt: node rcvrOrArgOopValueForConstantLocAt: 1 IfFail: 'non-constant breakpoint message'.
             moveLocation: node rcvrLoc ToLocation: node resultLoc.
             breakpoint: '_Breakpoint: ', cmt.
             self).
@@ -1339,8 +1339,8 @@ Returns an address into a bytes part masquerading as a small integer.
             [_In: target WhichIsOfType: 'blah' Get: 'parent'           ]. "browsing"
             [_In: target WhichIsOfType: 'blah' Get: 'parent' IfFail: fb]. "browsing"
 
-            prototype:      node rcvrOrArgOopValueForConstantLocAt: 2.
-            dataSlotName:   node rcvrOrArgOopValueForConstantLocAt: 3.
+            prototype:      node rcvrOrArgOopValueForConstantLocAt: 2 IfFail: raiseError.
+            dataSlotName:   node rcvrOrArgOopValueForConstantLocAt: 3 IfFail: raiseError.
             map: (reflect: prototype) vmKitMapForConversion.
             comment: ['accessing slot named ', dataSlotName, ' on an object with map type ', map mapType].
 
@@ -1382,7 +1382,8 @@ Returns an address into a bytes part masquerading as a small integer.
             bindLabel: nlrLabel.
 
             comment: 'save orig NLR data in a safe place'.
-            moveLocation: machineLevelAllocator locationForIncomingNLRHomeScope ToLocation: node homeScopeValue location.
+            moveLocation: machineLevelAllocator locationForIncomingNLRHomeScope     ToLocation: node homeScopeValue     location.
+            moveLocation: machineLevelAllocator locationForIncomingNLRHomeScopeDesc ToLocation: node homeScopeDescValue location.
 
             comment: 'call protect block'.
             moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 1.
@@ -1396,7 +1397,8 @@ Returns an address into a bytes part masquerading as a small integer.
             bindLabel: nlrLabelForProtectBlock. "ignore protect block NLR"
 
             comment: 'resume orig NLR'.
-            moveLocation: node homeScopeValue location ToLocation: machineLevelAllocator locationForIncomingNLRHomeScope.
+            moveLocation: node homeScopeValue     location ToLocation: machineLevelAllocator locationForIncomingNLRHomeScope.
+            moveLocation: node homeScopeDescValue location ToLocation: machineLevelAllocator locationForIncomingNLRHomeScopeDesc.
 
             "Continue NLRing."
             branchToLabel: node labelToBranchToOnNLR.
@@ -3036,6 +3038,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          generateEpilogue: node WordOffset: wordOffset = ( |
             | 
             generateCleanupForMemoizedBlocks: node.
+            [node sourceLevelAllocator isInlined not] assert.
             restoreFrameAndReturn: wordOffset).
         } | ) 
 
@@ -3216,11 +3219,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
 
             locs isEmpty ifTrue: [^ self].
             a liTo: r0 With: 0.
-            locs do: [|:loc|
-              [aaaaaaa].
-              loc isRegister not && [loc lexicalLevel > 0] ifTrue: [halt].
-              moveRegister: r0 ToLocation: loc.
-            ].
+            locs do: [|:loc| moveRegister: r0 ToLocation: loc].
             self).
         } | ) 
 
@@ -3288,20 +3287,26 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generateNLR: node = ( |
             | 
-            [compiler slot contents isReflecteeBlockMethod] assert.
+            [node sourceLevelAllocator context slot contents isReflecteeBlockMethod] assert.
             moveLocation: node outgoingResultValue location ToLocation: machineLevelAllocator locationForOutgoingResult.
-            generateEpilogue: node WordOffset: sendDesc nlrReturnIndex.
+            node sourceLevelAllocator isInlined ifFalse: [
+              generateEpilogue: node WordOffset: sendDesc nlrReturnIndex.
+            ] True: [
+              genBranchTo: node nodeToBranchToOnNLR.
+            ].
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateNLRHomeScopeOf: aSourceLevelAllocator Into: dstLoc = ( |
+         generateNLRHomeScopeFor: node Into: dstLoc = ( |
+             sla.
             | 
-            [compiler slot contents isReflecteeBlockMethod] assert.
+            [node sourceLevelAllocator context slot contents isReflecteeBlockMethod] assert.
 
-            withStackPointerForLexicalLevel: aSourceLevelAllocator lexicalParentCount StartingFrom: aSourceLevelAllocator Do: [|:sp|
+            sla: node sourceLevelAllocator.
+            withStackPointerForLexicalLevel: sla lexicalParentCount StartingFrom: sla ReceiverValue: node blockReceiverValue Do: [|:sp|
               moveRegister: sp ToLocation: dstLoc.
             ].
 
@@ -3311,7 +3316,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateNLRPoints: node = ( |
+         generateNLRPointEpilogue: node = ( |
             | 
             "We could be more clever about choosing which blocks
              must be zapped if there are no backwards branching
@@ -3320,12 +3325,41 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
              epilogue code because they are identical.
              -- jb 8/03"
 
+            [aaaaaaa]. "Do we need to do the zapping if this scope is inlined?"
             generateCleanupForMemoizedBlocks: node.
 
-            generateIf: machineLevelAllocator locationForIncomingNLRHomeScope register
-                Equals: sp
-                  Then: [ restoreFrameAndReturn: sendDesc normalReturnIndex ]
-                  Else: [ restoreFrameAndReturn: sendDesc    nlrReturnIndex ]).
+            node sourceLevelAllocator context isForABlockMethod ifTrue: [
+              "Optimization: block methods can't be the home scope of an NLR, so no point doing the checks."
+              node sourceLevelAllocator isInlined ifFalse: [
+                restoreFrameAndReturn: sendDesc nlrReturnIndex
+              ] True: [
+                genBranchTo: node nodeToBranchToOnNLR.
+              ].
+              ^ self
+            ].
+
+            generateIf: [|:trueFork|
+              generateIf: machineLevelAllocator locationForIncomingNLRHomeScope DoesNotEqual: sp ThenBranchTo: trueFork.
+
+              [aaaaaaa]. "Possible optimization: this check isn't necessary if the topScope has no inlinedScopes, right?"
+              withTemporaryRegisterDo: [|:scopeDescReg|
+                loadOop: node interpreter scopeDesc IntoRegister: scopeDescReg.
+                generateIf: machineLevelAllocator locationForIncomingNLRHomeScopeDesc DoesNotEqual: scopeDescReg ThenBranchTo: trueFork.
+              ].
+            ] Then: [
+              node sourceLevelAllocator isInlined ifFalse: [
+                restoreFrameAndReturn: sendDesc nlrReturnIndex
+              ] True: [
+                [aaaaaaa]. halt.
+              ].
+            ] Else: [
+              node sourceLevelAllocator isInlined ifFalse: [
+                restoreFrameAndReturn: sendDesc normalReturnIndex
+              ] True: [
+                [aaaaaaa]. halt. "Just gotta maybe move the result value to the right place (or is it there already?)
+                                  and then branch to the end of the scope."
+              ]
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -4489,8 +4523,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          restoreFrame: wordOffset = ( |
             | 
             withTemporaryRegisterDo: [|:tr|
-              a laTo: sp Disp: frame callersSPOffset * oopSize Base: sp. "reset sp"
-              a lwzTo: tr Disp: frame savedPCOffset * oopSize Base: sp. "get return link"
+              a  laTo: sp Disp: frame callersSPOffset * oopSize Base: sp. "reset sp"
+              a lwzTo: tr Disp: frame   savedPCOffset * oopSize Base: sp. "get return link"
               a lmwTo: firstNonVolRegisterToSave Disp: nonVolRegSaveAreaOffset Base: sp.
               addiToLRFrom: tr With: wordOffset
             ].
@@ -4665,34 +4699,38 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: frame pointer\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         withStackPointerForLexicalLevel: ll StartingFrom: aSourceLevelAllocator Do: blk = ( |
+         withStackPointerForLexicalLevel: ll StartingFrom: aSourceLevelAllocator ReceiverValue: rcvrValue Do: blk = ( |
              f.
-             lps.
-             lpss.
+             spReg.
             | 
             f: aSourceLevelAllocator machineLevelAllocator frame.
-            ll = 0 ifTrue: [^ blk value: sp With: f].
+            spReg: sp.
 
-            lpss: aSourceLevelAllocator lexicalParentScopes.
-            withTemporaryRegisterDo: [|:ancestorSP|
-              ll do: [|:i. blockReg|
-                "Incoming receiver is the block"
+            ll = 0 ifTrue: [^ blk value: spReg With: f].
 
-                blockReg: i = 0 ifTrue: [
-                  aSourceLevelAllocator locationForIncomingReceiver register
-                ] False: [| uplevelRcvrLoc |
-                  uplevelRcvrLoc: aSourceLevelAllocator locationForUplevel: i AccessTo: lps locationForIncomingReceiver.
-                  uplevelRcvrLoc tell: self ToLoadMeFromFrame: f AtSP: ancestorSP ToRegister: ancestorSP.
-                  ancestorSP
+            withTemporaryRegisterDo: [|:ancestorSP. lps. nm. rcvrLoc |
+              lps: aSourceLevelAllocator context.
+              ll do: [|:i|
+                lps lexicalParentScope nmethod == nm ifFalse: [| rcvrReg |
+                  rcvrLoc: i = 0 ifTrue: [rcvrValue location]
+                                  False: [aSourceLevelAllocator locationForUplevel: i AccessTo: lps locationForIncomingReceiver].
+                  rcvrLoc isRegister ifTrue: [
+                    rcvrReg: rcvrLoc.
+                  ] False: [
+                    rcvrReg: ancestorSP.
+                    rcvrLoc tell: self ToLoadMeFromFrame: f AtSP: ancestorSP ToRegister: rcvrReg.
+                  ].
+                  "Incoming receiver is the block"
+                  layouts block generateHomeFramePointerOf: rcvrReg Into: ancestorSP With: self.
+                  spReg: ancestorSP.
                 ].
 
-                [todo assertion]. "Might be a good idea to check that we actually have a block"
-                layouts block generateHomeFramePointerOf: blockReg Into: ancestorSP With: self.
-                lps: lpss at: lpss size - i succ.
-                f: lps frame.
+                lps: lps lexicalParentScope.
+                nm: lps nmethod.
+                nm ifNotNil: [f: nm frame].
               ].
 
-              blk value: ancestorSP With: f.
+              blk value: spReg With: f.
             ]).
         } | ) 
 
@@ -4701,7 +4739,10 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          withStackPointerForMemoryLocation: loc Do: blk = ( |
             | 
-            withStackPointerForLexicalLevel: loc lexicalLevel StartingFrom: loc accessingSourceLevelAllocator Do: blk).
+            withStackPointerForLexicalLevel: loc lexicalLevel
+                               StartingFrom: loc accessingSourceLevelAllocator
+                              ReceiverValue: loc accessingSourceLevelAllocator valueForIncomingReceiver
+                                         Do: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {

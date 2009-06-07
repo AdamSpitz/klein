@@ -10,10 +10,19 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
          'Category: memory interfaces\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
-         abstractMemoryInterface = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> () ToBe: bootstrap addSlotsTo: (
+         memoryInterfaces = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda memoryInterfaces.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: private'
+        
+         abstract = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> () ToBe: bootstrap addSlotsTo: (
              bootstrap remove: 'parent' From:
-             globals kleinAndYoda base copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda abstractMemoryInterface.
+             globals kleinAndYoda base copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda memoryInterfaces abstract.
 
 CopyDowns:
 globals kleinAndYoda base. copy 
@@ -23,18 +32,18 @@ SlotsToOmit: parent.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> () From: ( | {
-         'ModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( |
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( |
              {} = 'Comment: Provides an abstract interface to a RAM-like storage
 mechanism.  Intended for use with polymorphic code
-parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals kleinAndYoda abstractMemoryInterface parent.
+parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals kleinAndYoda memoryInterfaces abstract parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: caching\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          allowInfiniteSlopDuring: blk = ( |
@@ -42,35 +51,35 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             blk value).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single bytes\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: i PutByte: b = ( |
             | at: i PutByte: b IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single bytes\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: i PutByte: b IfFail: fb = ( |
             | at: i PutBytes: (byteVector copyAddFirst: b) IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: byte vectors\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: i PutBytes: bv = ( |
             | at: i PutBytes: bv IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: byte vectors\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: i PutBytes: bv IfFail: fb = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: addr PutOop: oop = ( |
@@ -78,7 +87,7 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             at: addr PutOop: oop IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: addr PutOop: oop IfFail: fb = ( |
@@ -86,7 +95,7 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             at: addr PutWord: oop IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single words\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: i PutWord: w = ( |
@@ -94,7 +103,7 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             at: i PutWord: w IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single words\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          at: i PutWord: w IfFail: fb = ( |
@@ -104,7 +113,7 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          atOffset: wordOffset From: baseAddr PutMarkWithValue: mv IfFail: fb = ( |
@@ -112,7 +121,7 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             atOffset: wordOffset From: baseAddr PutOop: (layouts mark encode: mv) IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          atOffset: wordOffset From: baseAddr PutOop: oop IfFail: fb = ( |
@@ -120,13 +129,13 @@ parameterized on storage class, such as lenses.\x7fModuleInfo: Creator: globals 
             at: baseAddr + (wordOffset * oopSize) PutOop: oop IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: private'
         
          base* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'base' -> 'parent' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: finding beginnings of objects\x7fComment: Is not guaranteed to work if addr points to the middle of the
 bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -140,35 +149,35 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             a).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single bytes\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          byteAt: i = ( |
             | byteAt: i IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single bytes\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          byteAt: i IfFail: fb = ( |
             | (bytesAt: i Size: 1 IfFail: [|:e| ^ fb value: e]) first).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: byte vectors\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          bytesAt: i Size: n = ( |
             | bytesAt: i Size: n IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: byte vectors\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          bytesAt: i Size: n IfFail: fb = ( |
             | childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: byte vectors\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          bytesBypassingCacheAt: i Size: n = ( |
@@ -176,7 +185,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             bytesBypassingCacheAt: i Size: n IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: byte vectors\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          bytesBypassingCacheAt: i Size: n IfFail: fb = ( |
@@ -184,7 +193,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             bytesAt: i Size: n IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single words\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          copyWordAtOffset: wordOffset From: srcBaseAddr ToSameOffsetFrom: dstBaseAddr IfFail: fb = ( |
@@ -200,7 +209,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: tags\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          ifOopAt: addr IsObject: objBlk IsMark: markValueBlk = ( |
@@ -208,7 +217,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             ifOopAt: addr IsObject: objBlk IsMark: markValueBlk IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: tags\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          ifOopAt: addr IsObject: objBlk IsMark: markValueBlk IfFail: fb = ( |
@@ -226,7 +235,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             r).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: caching\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          invalidateCaches = ( |
@@ -234,14 +243,14 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: caching\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          invalidateObsoleteCachedItemsIn: cachingWobulator = ( |
             | self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          isForForeignProcess = ( |
@@ -253,7 +262,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             false).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          isMarkAtOffset: wordOffset From: baseAddr = ( |
@@ -261,7 +270,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             isMarkAtOffset: wordOffset From: baseAddr IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          isMarkAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
@@ -269,7 +278,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             ifOopAt: baseAddr + (wordOffset * oopSize) IsObject: false IsMark: true IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: marks\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          markValueAt: addr IfFail: fb = ( |
@@ -277,14 +286,14 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             layouts mark valueOf:  oopAt: addr IfFail: [|:e| ^ fb value: e]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: caching\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          mustAllowSlopDuring: blk = ( |
             | blk value).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAt: addr = ( |
@@ -292,7 +301,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             oopAt: addr IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAt: addr IfFail: fb = ( |
@@ -300,7 +309,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             wordAt: addr IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAtOffset: wordOffset From: baseAddr = ( |
@@ -308,7 +317,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             oopAtOffset: wordOffset From: baseAddr IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single oops\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          oopAtOffset: wordOffset From: baseAddr IfFail: fb = ( |
@@ -316,13 +325,13 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             oopAt: baseAddr + (wordOffset * oopSize) IfFail: fb).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          optimizesWordAccesses = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: tags\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          tagAt: addr = ( |
@@ -330,7 +339,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             tagAt: addr IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: tags\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          tagAt: addr IfFail: fb = ( |
@@ -339,14 +348,14 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             vmKit tag tagOfOop: byteAt: addr + 3 IfFail: [|:e| ^ fb value: e]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single words\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          wordAt: i = ( |
             | wordAt: i IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: single words\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          wordAt: i IfFail: fb = ( |
@@ -356,7 +365,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             childMustImplement).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: iterating by word\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          wordsAt: addr Size: n Do: blk = ( |
@@ -364,7 +373,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             wordsAt: addr Size: n Do: blk IfFail: raiseError).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: iterating by word\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          wordsAt: addr Size: n Do: blk IfFail: fb = ( |
@@ -376,7 +385,7 @@ bytes part of a byteVector. -- Adam, 4/06\x7fModuleInfo: Module: vmKitMemInterfa
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractMemoryInterface' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryInterfaces' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: downloading\x7fModuleInfo: Module: vmKitMemInterface InitialContents: FollowSlot\x7fVisibility: public'
         
          writeAllPiecesTo: aForeignProcess IfFail: fb = ( |

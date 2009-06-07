@@ -25,6 +25,12 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (false)'
+        
+         hasBeenRemoved <- bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> () From: ( | {
          'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
         
          incomingLiveValues.
@@ -201,31 +207,6 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         forgeControlFlowLinksUntil: end AlreadySeen: seen = ( |
-             leftToDo.
-            | 
-            "Do this iteratively because I think we overflowed the stack
-             doing it recursively on a particularly long method."
-            leftToDo: list copyRemoveAll.
-            leftToDo add: self.
-            [leftToDo isEmpty] whileFalse: [| n |
-              n: leftToDo removeFirst.
-              n forgeControlFlowPredLinks.
-              seen add: n.
-              n == end ifFalse: [
-                n controlFlowSuccsDo: [|:succ|
-                  (seen includes: succ) ifFalse: [
-                    leftToDo addFirst: succ.
-                  ].
-                ].
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
          forgeControlFlowPredLinks = ( |
             | 
             "Must be overridden for nodes that branch somewhere
@@ -242,7 +223,17 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
             n: nodeName.
             bindLabel.
             codeGenerator generating: n, ' addComment'           During: [addComment          ].
-            codeGenerator generating: n, ' generateSpecificCode' During: [generateSpecificCode].
+            codeGenerator generating: n, ' generateSpecificCode' During: [
+              hasBeenRemoved ifTrue: [
+                codeGenerator generateExit: [|:exitFork|
+                  codeGenerator comment: 'REMOVED NODE:'.
+                  codeGenerator branchToLabel: exitFork.
+                  generateSpecificCode.
+                ].
+              ] False: [
+                generateSpecificCode.
+              ].
+            ].
             self).
         } | ) 
 
@@ -451,8 +442,21 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         
          recordDefinersAndUsers = ( |
             | 
-            definedValuesDo: [|:v| v definers add: self].
-               usedValuesDo: [|:v| v users    add: self].
+                 definedValuesDo: [|:v| v definers    add: self].
+            stronglyUsedValuesDo: [|:v| v strongUsers add: self].
+              weaklyUsedValuesDo: [|:v| v weakUsers   add: self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: removing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         remove = ( |
+            | 
+            [aaaaaaa]. "Do I want to actually remove it from the chain or not?"
+            hasBeenRemoved: true.
+            sourcePred sourceSucc: sourceSucc.
+            sourceSucc sourcePred: sourcePred.
             self).
         } | ) 
 
@@ -493,8 +497,36 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         
          unrecordDefinersAndUsers = ( |
             | 
-            definedValuesDo: [|:v| v definers remove: self].
-               usedValuesDo: [|:v| v users    remove: self].
+                 definedValuesDo: [|:v| v definers    remove: self].
+            stronglyUsedValuesDo: [|:v| v strongUsers remove: self].
+              weaklyUsedValuesDo: [|:v| v weakUsers   remove: self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         until: end Do: blk = ( |
+             leftToDo.
+             seen.
+            | 
+            "Do this iteratively because I think we overflowed the stack
+             doing it recursively on a particularly long method."
+            seen:      set copyRemoveAll.
+            leftToDo: list copyRemoveAll.
+            leftToDo add: self.
+            [leftToDo isEmpty] whileFalse: [| n |
+              n: leftToDo removeFirst.
+              blk value: n.
+              seen add: n.
+              n == end ifFalse: [
+                n controlFlowSuccsDo: [|:succ|
+                  (seen includes: succ) ifFalse: [
+                    leftToDo addFirst: succ.
+                  ].
+                ].
+              ].
+            ].
             self).
         } | ) 
 
@@ -546,6 +578,16 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         usedValuesDo: blk = ( |
+            | 
+            stronglyUsedValuesDo: blk.
+              weaklyUsedValuesDo: blk.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          valuesThatAreInitiallyKnownToBeLiveDo: blk = ( |
@@ -560,6 +602,16 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
          vmKit = ( |
             | 
             compiler vmKit).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         weaklyUsedValuesDo: blk = ( |
+            | 
+            "Override this for nodes (like ones that do block zapping) that use a value
+             but shouldn't keep the value alive if it has no other uses."
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> () From: ( | {
@@ -811,6 +863,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          initialize = ( |
@@ -912,7 +972,7 @@ SlotsToOmit: parent.
 
             "Later on we could start making particular kinds of primitives
              a bit smarter about this."
-            blk value: v kindsOfPossibleValues couldBeAnything).
+            blk value: v kindsOfPossibleTypes couldBeAnything).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
@@ -960,19 +1020,19 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: receiver and arguments\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         rcvrOrArgOopValueForConstantLocAt: i = ( |
+         rcvrOrArgOopValueForConstantLocAt: i IfFail: fb = ( |
             | 
-            (rcvrOrArgValueAt: i) knownConstantValueIfFail: raiseError).
+            (rcvrOrArgValueAt: i) knownConstantValueIfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: receiver and arguments\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         rcvrOrArgSmiAt: i = ( |
+         rcvrOrArgSmiAt: i IfFail: fb = ( |
              oop.
             | 
-            oop: rcvrOrArgOopValueForConstantLocAt: i.
-            (reflect: oop) isReflecteeInteger ifFalse: [error: 'must be integer'].
+            oop: rcvrOrArgOopValueForConstantLocAt: i IfFail: [|:e| ^ fb value: e].
+            (reflect: oop) isReflecteeInteger ifFalse: [^ fb value: 'must be integer'].
             oop).
         } | ) 
 
@@ -991,13 +1051,15 @@ SlotsToOmit: parent.
              bb1.
              bb2.
              lastNodeBeforeSettingUpTheSend.
+             nlrBB.
              nodeAfterSettingUpTheSendResult.
             | 
             lastNodeBeforeSettingUpTheSend:  firstNodeSettingUpTheSend      sourcePred.
             nodeAfterSettingUpTheSendResult: lastNodeSettingUpTheSendResult sourceSucc.
 
-            bb1: lastNodeBeforeSettingUpTheSend basicBlock.
-            bb2: lastNodeSettingUpTheSendResult basicBlock.
+            bb1:   lastNodeBeforeSettingUpTheSend basicBlock.
+            bb2:   lastNodeSettingUpTheSendResult basicBlock.
+            nlrBB: nodeToBranchToOnNLR            basicBlock.
             [bb2 controlFlowPreds size  = 1  ] assert.
             [bb2 controlFlowPreds first = bb1] assert.
             [bb2 immediateDominator     = bb1] assert.
@@ -1013,8 +1075,24 @@ SlotsToOmit: parent.
             bb2 immediatelyDominatedBBs do: [|:domBB| domBB recordImmediateDominator: bb1].
             bb1 endWith: bb2 endNode.
 
+            nodeToBranchToOnNLR controlFlowPreds remove: self.
+            nlrBB immediateDominator immediatelyDominatedBBs remove: nlrBB.
+            nlrBB recordImmediateDominator: nil.
+
             irNodeGenerator setInsertionPoint: lastNodeBeforeSettingUpTheSend.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceControlFlowSucc: labelNode With: newLabelNode IfSucceed: sb IfFail: fb = ( |
+            | 
+            case
+              if: [labelNode = nodeToBranchToOnNLR] Then: [nodeToBranchToOnNLR: newLabelNode. sb value]
+              If: [labelNode =          sourceSucc] Then: [fb value: 'hmm, we could do this, but we would have to make the
+                                                                      generated code explicitly branch to the next node']
+              Else: [error: 'what node is that?']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
@@ -1076,7 +1154,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             rcvrAndArgValuesToMoveTo do: blk.
             self).
@@ -1293,16 +1371,19 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractReturn' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             blk value: outgoingResultValue.
-
             valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks do: blk.
+            self).
+        } | ) 
 
-            willZapMemoizedBlocks ifTrue: [
-              blockValuesToZap do: blk.
-            ].
-
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractReturn' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         weaklyUsedValuesDo: blk = ( |
+            | 
+            willZapMemoizedBlocks ifTrue: [blockValuesToZap do: blk].
             self).
         } | ) 
 
@@ -1389,6 +1470,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         blockProtoMirror = ( |
+            | 
+            reflect: blockProto).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          copyBC: aBC Literal: lit Memoized: m = ( |
@@ -1415,6 +1504,19 @@ SlotsToOmit: parent.
             | 
             codeGenerator generateBlockLiteralNode: self.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            case
+              if: [v = resultValueForCloneStub             ] Then: [^ false] "this node uses it"
+              If: [v = aaa_tempValue                       ] Then: [^ false] "this node uses it"
+              If: [rcvrAndArgValuesForCloneStub includes: v] Then: [^ false] "this node uses it"
+              If: [v = outgoingMemoizedBlockValue          ] Then: [^ true]
+              Else: [error: 'what value is that?']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
@@ -1473,7 +1575,7 @@ SlotsToOmit: parent.
          possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             case
-              if: v == outgoingMemoizedBlockValue Then: [blk value: v kindsOfPossibleValues clonedBlock copyForLiteral: sourceValue]
+              if: v == outgoingMemoizedBlockValue Then: [blk value: v kindsOfPossibleTypes clonedBlock copyForLiteral: sourceValue]
               Else: [halt] "what is it?").
         } | ) 
 
@@ -1484,6 +1586,17 @@ SlotsToOmit: parent.
             | 
             "receiver and arg for the call to" [cloneBlockHomeFrame_stub: 0].
             2).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
+         'Category: removing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         remove = ( |
+            | 
+            resend.remove.
+             sourceLevelAllocator memoizedBlockValues removeKey: blockProtoMirror.
+            machineLevelAllocator memoizedBlockValues removeKey: blockProtoMirror.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
@@ -1526,7 +1639,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             blk value: incomingMemoizedBlockValue.
             blk value: sourceValue.
@@ -1626,9 +1739,8 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'breakpoint' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
-            | 
-            self).
+         stronglyUsedValuesDo: blk = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'breakpoint' -> () From: ( | {
@@ -1708,9 +1820,8 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'comment' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
-            | 
-            self).
+         stronglyUsedValuesDo: blk = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -1814,6 +1925,17 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'conditionalBranch' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceControlFlowSucc: labelNode With: newLabelNode IfSucceed: sb IfFail: fb = ( |
+            | 
+            case
+              if: [labelNode =  trueForkNode] Then: [ trueForkNode: newLabelNode. sb value]
+              If: [labelNode = falseForkNode] Then: [falseForkNode: newLabelNode. sb value]
+              Else: [error: 'what node is that?']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'conditionalBranch' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          replaceUsedValue: v With: newV = ( |
@@ -1841,7 +1963,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'conditionalBranch' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             blk value: objValue1.
             blk value: objValue2.
@@ -1972,6 +2094,15 @@ SlotsToOmit: holderValue parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'constantDataSlotAccess' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            [v = dataValue] assert.
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'constantDataSlotAccess' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccessOrAssignment' -> 'parent' -> ().
@@ -2010,7 +2141,7 @@ SlotsToOmit: holderValue parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'constantDataSlotAccess' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             self).
         } | ) 
@@ -2062,6 +2193,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccess' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            [v = dataValue] assert.
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccess' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccessOrAssignment' -> 'parent' -> ().
@@ -2074,7 +2214,7 @@ SlotsToOmit: parent.
             | 
             [v == dataValue] assert.
 
-            blk value: v kindsOfPossibleValues couldBeAnything).
+            blk value: v kindsOfPossibleTypes couldBeAnything).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccess' -> 'parent' -> () From: ( | {
@@ -2110,7 +2250,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccess' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             blk value: holderValue.
             self).
@@ -2190,7 +2330,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAssignment' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             blk value: holderValue.
             blk value: dataValue.
@@ -2248,9 +2388,8 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'interruptPoint' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
-            | 
-            self).
+         stronglyUsedValuesDo: blk = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -2390,9 +2529,8 @@ SlotsToOmit: parent sourcePred.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'label' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
-            | 
-            self).
+         stronglyUsedValuesDo: blk = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -2540,6 +2678,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'move' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            [v = destinationValue] assert.
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'move' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          isMove = bootstrap stub -> 'globals' -> 'true' -> ().
@@ -2594,19 +2741,19 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'move' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         tell: aLocationAssigner ToRecordInterferenceBetweenDefinedValue: defV And: liveOutV = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
-            sourceValue = liveOutV ifTrue: [^ self].
-            resend.tell: aLocationAssigner ToRecordInterferenceBetweenDefinedValue: defV And: liveOutV).
+            blk value: sourceValue.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'move' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         tell: aLocationAssigner ToRecordInterferenceBetweenDefinedValue: defV And: liveOutV = ( |
             | 
-            blk value: sourceValue.
-            self).
+            sourceValue = liveOutV ifTrue: [^ self].
+            resend.tell: aLocationAssigner ToRecordInterferenceBetweenDefinedValue: defV And: liveOutV).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'move' -> 'parent' -> () From: ( | {
@@ -2643,6 +2790,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
         
+         blockReceiverValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
          destinationValue.
         } | ) 
 
@@ -2658,8 +2811,9 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyBC: aBC Destination: dst = ( |
-            | (copyBC: aBC) destinationValue: dst).
+         copyBC: aBC Receiver: r Destination: dst = ( |
+            | 
+            ((copyBC: aBC) blockReceiverValue: r) destinationValue: dst).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> 'parent' -> () From: ( | {
@@ -2676,8 +2830,17 @@ SlotsToOmit: parent.
         
          generateSpecificCode = ( |
             | 
-            codeGenerator generateNLRHomeScopeOf: sourceLevelAllocator Into: destinationValue location.
+            codeGenerator generateNLRHomeScopeFor: self Into: destinationValue location.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            [v = destinationValue] assert.
+            true).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> 'parent' -> () From: ( | {
@@ -2697,11 +2860,21 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceUsedValue: v With: newV = ( |
+            | 
+            case
+              if: [v = blockReceiverValue] Then: [blockReceiverValue: newV]
+              Else: [error: 'what value is that?']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrHomeScope' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
-            blk value: sourceLevelAllocator valueForIncomingReceiver.
+            blk value: blockReceiverValue.
             self).
         } | ) 
 
@@ -2734,6 +2907,12 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
+         'Category: control flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         nodeToBranchToOnNLR.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( |
@@ -2760,6 +2939,17 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         controlFlowSuccsDo: blk = ( |
+            | 
+            sourceLevelAllocator isInlined ifTrue: [
+              blk value: nodeToBranchToOnNLR.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          copyBC: aBC = ( |
@@ -2776,11 +2966,20 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forgeControlFlowPredLinks = ( |
+            | 
+            controlFlowSuccsDo: [|:n| n controlFlowPreds add: self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          generateSpecificCode = ( |
             | 
-            codeGenerator generateNLRPoints: self.
+            codeGenerator generateNLRPointEpilogue: self.
             self).
         } | ) 
 
@@ -2789,6 +2988,7 @@ SlotsToOmit: parent.
         
          initialize = ( |
             | 
+            nodeToBranchToOnNLR: interpreter nodeToBranchToOnNLR.
             self).
         } | ) 
 
@@ -2805,6 +3005,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceControlFlowSucc: labelNode With: newLabelNode IfSucceed: sb IfFail: fb = ( |
+            | 
+            case
+              if: [labelNode = nodeToBranchToOnNLR] Then: [nodeToBranchToOnNLR: newLabelNode. sb value]
+              Else: [error: 'what node is that?']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          replaceUsedValue: v With: newV = ( |
@@ -2817,7 +3027,15 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         weaklyUsedValuesDo: blk = ( |
             | 
             blockValuesToZap do: blk.
             self).
@@ -2840,6 +3058,18 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         framePointerValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
+         'Category: control flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         nodeToBranchToOnNLR.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( |
@@ -2855,15 +3085,49 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         controlFlowSuccsDo: blk = ( |
+            | 
+            sourceLevelAllocator isInlined ifTrue: [
+              blk value: nodeToBranchToOnNLR.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyBC: aBC Result: r FramePointer: fp ScopeDesc: sd = ( |
+            | 
+            ((((copyBC: aBC) outgoingResultValue: r) framePointerValue: fp) scopeDescValue: sd) initialize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         forgeControlFlowPredLinks = ( |
+            | 
+            controlFlowSuccsDo: [|:n| n controlFlowPreds add: self].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          generateSpecificCode = ( |
             | 
             codeGenerator generateNLR: self.
-            "normally the finish node would generateNLRPoints.
-             But this node has no control flow successor, so the finish node
-             will never generate code. -- dmu 5/04"
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initialize = ( |
+            | 
+            nodeToBranchToOnNLR: interpreter nodeToBranchToOnNLR.
+            resend.initialize).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
@@ -2879,9 +3143,46 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceControlFlowSucc: labelNode With: newLabelNode IfSucceed: sb IfFail: fb = ( |
+            | 
+            case
+              if: [labelNode = nodeToBranchToOnNLR] Then: [nodeToBranchToOnNLR: newLabelNode. sb value]
+              Else: [error: 'what node is that?']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceUsedValue: v With: newV = ( |
+            | 
+            case
+              if: [v = framePointerValue] Then: [framePointerValue: newV]
+              If: [v =    scopeDescValue] Then: [   scopeDescValue: newV]
+              Else: [resend.replaceUsedValue: v With: newV]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         stronglyUsedValuesDo: blk = ( |
+            | 
+            blk value: framePointerValue.
+            blk value: scopeDescValue.
+            resend.stronglyUsedValuesDo: blk).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          willZapMemoizedBlocks = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         scopeDescValue.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -3012,6 +3313,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'onNonLocalReturnPrimitive' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
         
+         homeScopeDescValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'onNonLocalReturnPrimitive' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
          homeScopeValue.
         } | ) 
 
@@ -3034,7 +3341,11 @@ SlotsToOmit: parent.
                       primitive translate to lower-level IR nodes. But for now,
                       gotta make sure the homeScopeValue isn't allocated to the
                       same register as the rcvr and arg values. -- Adam, Apr. 2009"
-            rcvrAndArgValuesToMoveTo do: [|:v| tell: la ToRecordInterferenceBetweenDefinedValue: homeScopeValue And: v].
+            tell: la ToRecordInterferenceBetweenDefinedValue: homeScopeValue And: homeScopeDescValue.
+            rcvrAndArgValuesToMoveTo do: [|:v|
+              tell: la ToRecordInterferenceBetweenDefinedValue: homeScopeValue     And: v.
+              tell: la ToRecordInterferenceBetweenDefinedValue: homeScopeDescValue And: v.
+            ].
             self).
         } | ) 
 
@@ -3044,6 +3355,7 @@ SlotsToOmit: parent.
          definedValuesDo: blk = ( |
             | 
             blk value: homeScopeValue.
+            blk value: homeScopeDescValue.
             resend.definedValuesDo: blk).
         } | ) 
 
@@ -3052,7 +3364,8 @@ SlotsToOmit: parent.
         
          initialize = ( |
             | 
-            homeScopeValue: newValue.
+            homeScopeValue:     newValue.
+            homeScopeDescValue: newValue.
             resend.initialize).
         } | ) 
 
@@ -3084,7 +3397,8 @@ SlotsToOmit: parent.
          replaceDefinedValue: v With: newV = ( |
             | 
             case
-              if: [v = homeScopeValue] Then: [homeScopeValue: newV]
+              if: [v = homeScopeValue    ] Then: [homeScopeValue:     newV]
+              If: [v = homeScopeDescValue] Then: [homeScopeDescValue: newV]
               Else: [resend.replaceDefinedValue: v With: newV]).
         } | ) 
 
@@ -3354,11 +3668,11 @@ selector is patched at runtime (see generateDynamicPerformNode:).\x7fModuleInfo:
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'performPrimitive' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             blk value: selectorValue.
             blk value: delegateeValue.
-            resend.usedValuesDo: blk).
+            resend.stronglyUsedValuesDo: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'performPrimitive' -> () From: ( | {
@@ -3443,6 +3757,15 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            [v = destinationValue] assert.
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          initialize = ( |
@@ -3515,7 +3838,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
+         stronglyUsedValuesDo: blk = ( |
             | 
             sourceValues do: blk.
             self).
@@ -3696,6 +4019,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'start' -> 'parent' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hasNoSideEffectsOtherThanDefining: v = ( |
+            | 
+            false).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'start' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> ().
@@ -3724,9 +4055,8 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'start' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
-            | 
-            self).
+         stronglyUsedValuesDo: blk = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -3814,7 +4144,7 @@ SlotsToOmit: parent.
         
          systemCallNumber = ( |
             | 
-            rcvrOrArgSmiAt: argIndexOfSystemCallNumber).
+            rcvrOrArgSmiAt: argIndexOfSystemCallNumber IfFail: raiseError).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -3887,6 +4217,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'unconditionalBranch' -> 'parent' -> () From: ( | {
+         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         replaceControlFlowSucc: labelNode With: newLabelNode IfSucceed: sb IfFail: fb = ( |
+            | 
+            case
+              if: [labelNode = destinationNode] Then: [destinationNode: newLabelNode. sb value]
+              Else: [error: 'what node is that?']).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'unconditionalBranch' -> 'parent' -> () From: ( | {
          'Category: printing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          statePrintString = ( |
@@ -3897,9 +4237,8 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'unconditionalBranch' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         usedValuesDo: blk = ( |
-            | 
-            self).
+         stronglyUsedValuesDo: blk = ( |
+            | self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

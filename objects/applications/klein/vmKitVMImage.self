@@ -24,6 +24,327 @@ See the LICENSE file for license information.
             r).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( |
+             {} = 'Comment: This object mostly exists because I was afraid of getting confused
+about when I was talking about bytes and when I was talking about
+words. I wanted something like a number, but whose printString
+would say \'words\' so that I\'d never forget that I was talking about
+words, not bytes.
+It\'d be neat if someday this turned into a more general-purpose
+\"units\" object. -- Adam, 11/05\x7fModuleInfo: Creator: globals kleinAndYoda objectsOracle parent trackingObjects objectSize parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         + other = ( |
+            | 
+            arithmeticWith: other Do: [|:a. :b| a + b]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         - other = ( |
+            | 
+            arithmeticWith: other Do: [|:a. :b| a - b]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         / n = ( |
+            | 
+            copyWords: wordCount / n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         /~ n = ( |
+            | 
+            copyWords: wordCount /~ n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         < other = ( |
+            | 
+            wordCount < other wordCount).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         = other = ( |
+            | 
+            wordCount = other wordCount).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         arithmeticWith: other Do: aBlock = ( |
+            | 
+            copyWords: aBlock value: wordCount With: other wordCount).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         byteCount = ( |
+            | 
+            wordCount * bytesPerWord).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         bytesPerWord = 4.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyWords: n = ( |
+            | 
+            copy wordCount: n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hash = ( |
+            | 
+            wordCount hash).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         ordered* = bootstrap stub -> 'mixins' -> 'ordered' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         statePrintString = ( |
+            | 
+            wordCount printString, ' words').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (0)\x7fVisibility: public'
+        
+         wordCount <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         kleinifiedMirror.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         oop.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         originalMirror.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectsOracle parent trackingObjects objectStat parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForOop: o OriginalMirror: m KleinifiedMirror: km Size: s = ( |
+            | 
+            (((copy oop: o) originalMirror: m) kleinifiedMirror: km) size: s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         kleinifiedObject = ( |
+            | 
+            kleinifiedMirror reflectee).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         originalObject = ( |
+            | 
+            originalMirror reflectee).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         size.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         myImage.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
+        
+         objectStats <- list copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectsOracle parent trackingObjects typeStat parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         averageSize = ( |
+            | 
+            size /~ objectCount).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         copy = ( |
+            | 
+            resend.copy objectStats: objectStats copy).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForType: t Image: im = ( |
+            | 
+            (copy type: t) myImage: im).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         example = ( |
+            | 
+            objectStats first).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         largestExample = ( |
+             r.
+            | 
+            r: objectStats first.
+            objectStats do: [|:os| os size > r size ifTrue: [r: os]].
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mapOops = ( |
+            | 
+            myImage myVM setTheVMAndDo: [
+              objectStats copyMappedBy: [|:os| kleinAndYoda layouts object mapOf: os oop]
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         objectCount = ( |
+            | 
+            objectStats size).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: prototypes\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         objectSize = ( |
+            | 
+            [todo units]. "This is ridiculous. objectSize should be
+                           some real units thing out in globals."
+            myImage objectSize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         originalObjects = ( |
+            | 
+            objectStats copyMappedBy: [|:os| os originalMirror reflectee]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         size = ( |
+             r.
+            | 
+            r: objectSize copyWords: 0.
+            objectStats do: [|:os| r: r + os size].
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> 'parent' -> () From: ( | {
+         'Category: printing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
+        
+         summaryString = ( |
+            | 
+            type printString, ': ', size statePrintString, ', ', objectCount printString, ' instances').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> () From: ( | {
+         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         type.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
          'Category: building VMs\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -89,81 +410,6 @@ See the LICENSE file for license information.
             | 
             definePropagationSema signal.
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         breakDownNMethodsByHolder = ( |
-             holders.
-            | 
-            holders: list copyRemoveAll.
-            nmethodsDo: [|:nm. holder|
-              holder: reflect: nm methodHolder.
-              holder isReflecteeBlock ifTrue: [holder: 'block!!!' asMirror].
-              holders add: holder.
-            ].
-            sortedOccurrenceCountsFor: holders).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         breakDownNMethodsBySlotType = ( |
-             accs.
-             meths.
-             muts.
-             rest.
-            | 
-            rest: list copyRemoveAll.
-            meths: list copyRemoveAll.
-            accs: list copyRemoveAll.
-            muts: list copyRemoveAll.
-            nmethodsDo: [|:nm. s|
-              s:  (reflect: nm methodHolder) at: nm lookupKey selector.
-              case
-                if: [s isAssignable] Then: [accs add: nm]
-                If: [s isAssignment] Then: [muts add: nm]
-                If: [s isMethod    ] Then: [meths add: nm]
-                                     Else: [rest add: nm].
-            ].
-            (accs & muts & meths & rest) asVector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         breakDownObjectsBy: blk = ( |
-             r.
-            | 
-            r: dictionary copyRemoveAll.
-            myVM setTheVMAndDo: [
-              objectsOracle ensureAddressesByOIDIsUpdated.
-              objectsOracle oopsAndAddressesAndOriginalMirrorsAndKleinifiedMirrorsAndOIDsDo: [|:oop. :addr. :mir. :kMir. :oid. size. t. ts. os|
-                t: blk value: oop With: mir With: kMir With: oid.
-                size: objectSize copyWords: mir vmKitMapForConversion myLayout wordSizeOf: oop.
-                ts: r at: t IfAbsentPut: [typeStat copyForType: t Image: self].
-                ts objectStats add: objectStat copyForOop: oop OriginalMirror: mir KleinifiedMirror: kMir Size: size.
-              ].
-            ].
-            [typeStat size]. "browsing"
-            (r asVector copySortBySelector: 'size') reverse).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         breakDownObjectsByMap = ( |
-            | 
-            breakDownObjectsBy: [|:oop| vmKit layouts object mapOf: oop]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         breakDownObjectsBySelfPrototype = ( |
-            | 
-            breakDownObjectsBy: [|:oop. :mir. :kMir| selfPrototypeOf: kMir]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
@@ -347,8 +593,7 @@ See the LICENSE file for license information.
               myVM importHeapInformationFrom: mirrorOnTheVM.
 
               mapper: vmKit incrementalObjectMapper1
-                                       copyPolicy: myVM exportPolicy
-                                    ObjectLocator: myVM objectLocator
+                                        copyForVM: myVM
                                          ReportTo: statusReporter
                              ObjectThatWasDefined: newObj.
 
@@ -470,22 +715,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         invocationCounts = ( |
-            | 
-            myVM setTheVMAndDo: [| r |
-              r: list copyRemoveAll.
-              nmethodsDo: [|:nm. nmOop. map|
-                nmOop: oopForOriginalObject: nm.
-                map:  vmKit maps nmethodMap importMapFor: nmOop IfFail: raiseError.
-                r add: nm @ (map contentsOfSlotNamed: 'invocationCount' In: nmOop IfFail: raiseError).
-              ].
-              r
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
          'Category: incrementally updating\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
         
          isProfilingEnabled = bootstrap stub -> 'globals' -> 'false' -> ().
@@ -556,240 +785,6 @@ entry point of the start method with parameters. -- jb 5/03\x7fModuleInfo: Modul
          mirrorOnTheVMWhichHasNotMoved = ( |
             | 
             myVM noncachingMirrorFor: oopForTheVM).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         moduleSizes = ( |
-             d.
-             r.
-            | 
-            d: dictionary copyRemoveAll.
-            wellKnownSlotsDo: [|:s| (d at: s module IfAbsentPut: [list copyRemoveAll]) add: s].
-            d: d copyMappedBy: [|:ss| (ss copyMappedBy: [|:s| myVM exportPolicy estimatedSizeOfSlot: s AssumingOopSizeIs: 2]) sum].
-            r: list copyRemoveAll.
-            d do: [|:size. :mName|
-              r add: size @ mName.
-            ].
-            (r asVector copySortBySelector: 'x') reverse).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: tracking nmethods\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         nmethodsDo: blk = ( |
-            | 
-            objectsOracle nmethodsDo: blk.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fCategory: prototypes\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectSize = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda vmImage parent objectSize.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( |
-             {} = 'Comment: This object mostly exists because I was afraid of getting confused
-about when I was talking about bytes and when I was talking about
-words. I wanted something like a number, but whose printString
-would say \'words\' so that I\'d never forget that I was talking about
-words, not bytes.
-It\'d be neat if someday this turned into a more general-purpose
-\"units\" object. -- Adam, 11/05\x7fModuleInfo: Creator: globals kleinAndYoda vmImage parent objectSize parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         + other = ( |
-            | 
-            arithmeticWith: other Do: [|:a. :b| a + b]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         - other = ( |
-            | 
-            arithmeticWith: other Do: [|:a. :b| a - b]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         / n = ( |
-            | 
-            copyWords: wordCount / n).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         /~ n = ( |
-            | 
-            copyWords: wordCount /~ n).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         < other = ( |
-            | 
-            wordCount < other wordCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         = other = ( |
-            | 
-            wordCount = other wordCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: arithmetic\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         arithmeticWith: other Do: aBlock = ( |
-            | 
-            copyWords: aBlock value: wordCount With: other wordCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         byteCount = ( |
-            | 
-            wordCount * bytesPerWord).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         bytesPerWord = 4.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyWords: n = ( |
-            | 
-            copy wordCount: n).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: comparing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         hash = ( |
-            | 
-            wordCount hash).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         ordered* = bootstrap stub -> 'mixins' -> 'ordered' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> 'parent' -> () From: ( | {
-         'Category: printing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         statePrintString = ( |
-            | 
-            wordCount printString, ' words').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectSize' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (0)\x7fVisibility: public'
-        
-         wordCount <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fCategory: prototypes\x7fComment: This is a terrible name for this object. -- Adam, 10/05\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectStat = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda vmImage parent objectStat.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         kleinifiedMirror.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         oop.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         originalMirror.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda vmImage parent objectStat parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForOop: o OriginalMirror: m KleinifiedMirror: km Size: s = ( |
-            | 
-            (((copy oop: o) originalMirror: m) kleinifiedMirror: km) size: s).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         kleinifiedObject = ( |
-            | 
-            kleinifiedMirror reflectee).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         originalObject = ( |
-            | 
-            originalMirror reflectee).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'objectStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         size.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
@@ -875,23 +870,6 @@ It\'d be neat if someday this turned into a more general-purpose
               ' - System time   : ', (launchingTimes systemTime / 1000) printString, ' s\n'
             ).
             s printLine.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         printModuleSizes = ( |
-             r.
-             totalSize <- 0.
-            | 
-            r: list copyRemoveAll.
-            moduleSizes do: [|:size. :mName|
-              totalSize: totalSize + size.
-              r add: size @ mName.
-            ].
-            (totalSize printString, ' in total') printLine.
-            (r copySortBySelector: 'x') reverseDo: [|:p| ((p x printString padOnLeft: totalSize printString size), ': ', p y) printLine].
             self).
         } | ) 
 
@@ -1038,265 +1016,9 @@ Fixup the oops. -- dmu 3/04\x7fModuleInfo: Module: vmKitVMImage InitialContents:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         selectorsSent = ( |
-             r.
-            | 
-            r: set copyRemoveAll.
-            objectsOracle methodMirrorsAllowingDuplicates do: [|:m|
-              m literalsDo: [|:lit|
-                (reflect: lit) isReflecteeString ifTrue: [
-                  r add: lit.
-                ].
-              ].
-            ].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         selfPrototypeOf: m = ( |
-            | 
-            m prototypeIfPresent: [|:p| p]
-                        IfAbsent: [case
-                                          if: [m isReflecteeBlockMethod] Then: [mirrors blockMethod ]
-                                          If: [m isReflecteeMethod     ] Then: [mirrors method      ]
-                                          If: [m isReflecteeBlock      ] Then: [mirrors block       ]
-                                          If: [m isReflecteeString     ] Then: [reflect: ''         ]
-                                          If: [m isReflecteeVector     ] Then: [reflect: vector     ]
-                                        Else:                                  [reflect: ()         ]]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         sortedCodeSizeStats = ( |
-            | 
-            (objectsOracle codeSizeStatistics copyMappedBy: [|:codeSize. :kindOfGeneration| codeSize @ kindOfGeneration])
-               asVector copySortBy: (| element: a Precedes: b = (a x > b x) |)).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         sortedOccurrenceCountsFor: aCollection = ( |
-             occurrences.
-            | 
-            occurrences: list copyRemoveAll.
-            aCollection occurrencesOfEachElement do: [|:n. :p| occurrences add: n @ p].
-            occurrences asVector copySortBy: (| element: a Precedes: b = (a x > b x) |)).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         statisticsMethodNames = ( |
-            | 
-            ( [breakDownObjectsByMap]
-            & [breakDownObjectsBySelfPrototype]
-            & [moduleSizes]
-            & [breakDownNMethodsByHolder]
-            & [breakDownNMethodsBySlotType]
-            & [sortedCodeSizeStats]
-            & [unsentSlotsByHolder]
-            ) asVector copyMappedBy: [|:b| b asMirror methodSource]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
         
          trackingObjectsInMyOracle* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fCategory: prototypes\x7fComment: This is a terrible name for this object. -- Adam, 10/05\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         typeStat = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda vmImage parent typeStat.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         myImage.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
-        
-         objectStats <- list copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda vmImage parent typeStat parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         averageSize = ( |
-            | 
-            size /~ objectCount).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         copy = ( |
-            | 
-            resend.copy objectStats: objectStats copy).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForType: t Image: im = ( |
-            | 
-            (copy type: t) myImage: im).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         example = ( |
-            | 
-            objectStats first).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         largestExample = ( |
-             r.
-            | 
-            r: objectStats first.
-            objectStats do: [|:os| os size > r size ifTrue: [r: os]].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         mapOops = ( |
-            | 
-            myImage myVM setTheVMAndDo: [
-              objectStats copyMappedBy: [|:os| kleinAndYoda layouts object mapOf: os oop]
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         objectCount = ( |
-            | 
-            objectStats size).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: prototypes\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectSize = ( |
-            | 
-            [todo units]. "This is ridiculous. objectSize should be
-                           some real units thing out in globals."
-            myImage objectSize).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         originalObjects = ( |
-            | 
-            objectStats copyMappedBy: [|:os| os originalMirror reflectee]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         size = ( |
-             r.
-            | 
-            r: objectSize copyWords: 0.
-            objectStats do: [|:os| r: r + os size].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> 'parent' -> () From: ( | {
-         'Category: printing\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         summaryString = ( |
-            | 
-            type printString, ': ', size statePrintString, ', ', objectCount printString, ' instances').
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> 'typeStat' -> () From: ( | {
-         'ModuleInfo: Module: vmKitVMImage InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         type.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         uninvokedNMethods = ( |
-            | 
-            (invocationCounts copyFilteredBy: [|:p| p y = 0]) copyMappedBy: [|:p| p x]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         uninvokedNMethodsByHolder = ( |
-             d.
-            | 
-            d: dictionary copyRemoveAll.
-            uninvokedNMethods do: [|:nm| (d at: (reflect: nm methodHolder) IfAbsentPut: [list copyRemoveAll]) add: nm].
-            d).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         unsentSlots = ( |
-             r.
-             sels.
-            | 
-            r: list copyRemoveAll.
-            sels: selectorsSent asSet.
-            wellKnownSlotsDo: [|:s| (sels includes: s name) ifFalse: [r add: s]].
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: public'
-        
-         unsentSlotsByHolder = ( |
-             d.
-             r.
-            | 
-            d: dictionary copyRemoveAll.
-            unsentSlots do: [|:s|
-              (d at: s holder IfAbsentPut: [list copyRemoveAll]) add: s.
-            ].
-
-            r: list copyRemoveAll.
-            d do: [|:ss. :m| r add: (ss copyMappedBy: [|:s| s name]) asVector copySort @ m].
-            r asVector copySortBy: (| element: a Precedes: b = (a x size > b x size) |)).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
@@ -1337,31 +1059,6 @@ Fixup the oops. -- dmu 3/04\x7fModuleInfo: Module: vmKitVMImage InitialContents:
             | 
             times delay: 100. "give it a chance to start"
             definePropagationSema protect: [].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: vmKitVMImage InitialContents: FollowSlot\x7fVisibility: private'
-        
-         wellKnownSlotsDo: aBlock = ( |
-            | 
-            myVM setTheVMAndDo: [
-              myVM exportPolicy invalidateCachedModuleNameLists.
-              myVM exportPolicy modulesToMap allNamesOfIncludedModules do: [|:mName. m|
-                mName isEmpty ifFalse: [
-                  m: mName sendTo: modules.
-                  m slots do: [|:s|
-                    [|:exit. kleinMir. oop|
-                      oop:  oopForOriginalMirror: s holder IfAbsent: exit.
-                      kleinMir: myVM mirrorFor: oop.
-                      (kleinMir includesKey: s name) ifTrue: [
-                        aBlock value: s.
-                      ].
-                    ] exit.
-                  ].
-                ].
-              ].
-            ].
             self).
         } | ) 
 

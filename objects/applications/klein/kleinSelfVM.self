@@ -68,7 +68,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules.
+         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -138,9 +138,11 @@ to just keep upping it by hand.
         
          namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (('block')
 	& ('integer')
+	& ('languageTests')
 	& ('scheduler')
 	& ('setAndDictionary')
 	& ('smallInt')
+	& ('testSuite')
 	& ('vmKitBase')
 	& ('vmKitCardTable')
 	& ('vmKitGC')
@@ -2109,34 +2111,14 @@ SlotsToOmit: parent.
             assert: [((testObjMir at: 'parentA') contents at: 'ambiguous') contents reflectee = 3].
             assert: [((testObjMir at: 'parentB') contents at: 'ambiguous') contents reflectee = 4].
 
-            sf: testObjMir slotFinder copyForMirror: testObjMir Selector: 'ambiguous'.
-            result: set copyRemoveAll.
-            sf findSlotsIn: (testObjMir at: 'parentA') contents AndAddResultsTo: result.
-            assert: result size Is: 1.
+            sf: testObjMir slotFinder copyForMirror: (testObjMir at: 'parentA') contents Selector: 'ambiguous'.
+            assert: sf findSlots size Is: 1.
+
+            sf: testObjMir slotFinder copyForMirror: (testObjMir at: 'parentB') contents Selector: 'ambiguous'.
+            assert: sf findSlots size Is: 1.
 
             sf: testObjMir slotFinder copyForMirror: testObjMir Selector: 'ambiguous'.
-            result: set copyRemoveAll.
-            sf findSlotsIn: (testObjMir at: 'parentB') contents AndAddResultsTo: result.
-            assert: result size Is: 1.
-
-            sf: testObjMir slotFinder copyForMirror: testObjMir Selector: 'ambiguous'.
-            result: set copyRemoveAll.
-            sf findSlotsIn: (testObjMir at: 'parent' ) contents AndAddResultsTo: result.
-            sf findSlotsIn: (testObjMir at: 'parentA') contents AndAddResultsTo: result.
-            sf findSlotsIn: (testObjMir at: 'parentB') contents AndAddResultsTo: result.
-            assert: result size Is: 2.
-
-            sf: testObjMir slotFinder copyForMirror: testObjMir Selector: 'ambiguous'.
-            result: set copyRemoveAll.
-            testObjMir parentsDo: [|:parentSlot. oldSize|
-              sf findSlotsIn: parentSlot contents AndAddResultsTo: result.
-            ].
-            assert: result size Is: 2.
-
-            sf: testObjMir slotFinder copyForMirror: testObjMir Selector: 'ambiguous'.
-            result: set copyRemoveAll.
-            sf findSlotsInParentsOf: testObjMir AndAddResultsTo: result.
-            assert: result size Is: 2.
+            assert: sf findSlotsInParents size Is: 2.
 
             slots: (testObjMir lookupKey: 'ambiguous') asList.
             assert: slots size Is: 2.
@@ -2271,7 +2253,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
@@ -2885,712 +2867,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
          'Category: test cases\x7fCategory: automated\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
         
-         resending = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             globals klein virtualMachines midiVM parent tests abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending.
-
-CopyDowns:
-globals klein virtualMachines midiVM parent tests abstract. copy 
-SlotsToOmit: parent.
-
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectThatInheritsTheSameMethodThatDoesAResend1 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResend1' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectThatInheritsTheSameMethodThatDoesAResend1.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectThatInheritsTheSameMethodThatDoesAResendParent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectThatInheritsTheSameMethodThatDoesAResendParent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResend1' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectThatInheritsTheSameMethodThatDoesAResend2 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResend2' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectThatInheritsTheSameMethodThatDoesAResend2.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResend2' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         aardvark = ( |
-            | [resend.aardvark] value).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectThatInheritsTheSameMethodThatDoesAResendParent parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         aardvark = ( |
-            | 
-            4).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectThatInheritsTheSameMethodThatDoesAResendParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectWithMultipleParents = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         a = ( |
-            | resend.b + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (-1)'
-        
-         b <- -1.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         c = ( |
-            | resend.c + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         d = ( |
-            | parentA.d + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         e = ( |
-            | parentB.e + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         f = ( |
-            | parentA.f + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         g = ( |
-            | 
-            parentA.g + parentB.g + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         h = ( |
-            | 
-            true ifTrue: [[parentB.h + 1] value] False: [-40]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         i = ( |
-            | notAParent.i + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         j = ( |
-            | 
-            parentA.j + parentB.j + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         notAParent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'notAParent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents notAParent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'notAParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         i = 60.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parentA* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents parentA.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         b = ( |
-            | 
-            0).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         d = 10.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         e = -20.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         f = ( |
-            | 
-            parentA.f + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         h = -50.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         j = ( |
-            | resend.j).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parentA* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> 'parentA' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents parentA parentA.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         f = ( |
-            | 30).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         j = ( |
-            | 72).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         sharedGrandparent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents sharedGrandparent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentA' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         sharedParent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parentB* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents parentB.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         e = ( |
-            | 20).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         f = ( |
-            | -30).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (50)'
-        
-         h <- 50.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         j = ( |
-            | resend.j).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parentB* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> 'parentB' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithMultipleParents parentB parentB.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         j = ( |
-            | 73).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'parentB' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         sharedParent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         c = 10.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         d = ( |
-            | -10).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         f = ( |
-            | 
-            -35).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         g = ( |
-            | 40).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithMultipleParents' -> 'sharedGrandparent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         objectWithSingleParent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithSingleParent.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         a = ( |
-            | resend.a + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         b = ( |
-            | resend.b + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         d = ( |
-            | 
-            resend.e + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (-30)'
-        
-         e <- -30.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         g = -40.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         h = ( |
-            | resend.h + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         i = ( |
-            | 
-            true ifTrue: [[[[resend.i + 1] value] value] value] False: [-60]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithSingleParent parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         a = ( |
-            | 
-            0).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         c = ( |
-            | resend.c + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         d = -30.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         e = 30.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         f = ( |
-            | resend.g + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         g = -45.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         h = ( |
-            | resend.h + 1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         i = 60.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending objectWithSingleParent parent parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         a = ( |
-            | 
-            -1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         b = 10.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (20)'
-        
-         c <- 20.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         g = ( |
-            | 40).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         h = ( |
-            | 50).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'objectWithSingleParent' -> 'parent' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests resending parent.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'abstract' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         run = ( |
-            | 
-            testSimpleResend.
-            testResendToGrandparent.
-            testResendingMethodInParent.
-            testResendingDifferentSelector.
-            testResendingDifferentSelectorWithMethodInParent.
-            testResendChain.
-            testResendInsideBlocks.
-            testUndirectedResendWithMultipleParents.
-            testUndirectedResendToGrandparentThatCanBeReachedThroughTwoPaths.
-            testUndirectedResendToTwoDifferentGrandparents.
-
-            testDirectedResend1.
-            testDirectedResend2.
-            testDirectedResendChain.
-            testDirectedResendToGrandparent.
-            testDirectedResendInsideBlock.
-            testDirectedResendToANonParent.
-
-            testTwoObjectsInheritingTheSameMethodThatDoesAResend.
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testDirectedResend1 = ( |
-            | 
-            assert: [objectWithMultipleParents d = 11]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testDirectedResend2 = ( |
-            | 
-            assert: [objectWithMultipleParents e = 21]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testDirectedResendChain = ( |
-            | 
-            assert: [objectWithMultipleParents f = 32]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testDirectedResendInsideBlock = ( |
-            | 
-            assert: [objectWithMultipleParents h = 51]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testDirectedResendToANonParent = ( |
-            | 
-            assert: [objectWithMultipleParents i = 61]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testDirectedResendToGrandparent = ( |
-            | 
-            assert: [objectWithMultipleParents g = 81]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testResendChain = ( |
-            | 
-            assert: [objectWithSingleParent h = 52]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testResendInsideBlocks = ( |
-            | 
-            assert: [objectWithSingleParent i = 61]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testResendToGrandparent = ( |
-            | 
-            assert: [objectWithSingleParent b = 11]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testResendingDifferentSelector = ( |
-            | 
-            assert: [objectWithSingleParent d = 31]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testResendingDifferentSelectorWithMethodInParent = ( |
-            | 
-            assert: [objectWithSingleParent f = 41]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testResendingMethodInParent = ( |
-            | 
-            assert: [objectWithSingleParent c = 21]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testSimpleResend = ( |
-            | 
-            assert: [objectWithSingleParent a = 1]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testTwoObjectsInheritingTheSameMethodThatDoesAResend = ( |
-            | 
-            assert: objectThatInheritsTheSameMethodThatDoesAResend1 aardvark Is: 4.
-            assert: objectThatInheritsTheSameMethodThatDoesAResend2 aardvark Is: 4.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testUndirectedResendToGrandparentThatCanBeReachedThroughTwoPaths = ( |
-            | 
-            assert: [objectWithMultipleParents c = 11]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testUndirectedResendToTwoDifferentGrandparents = ( |
-            | 
-            assert: [objectWithMultipleParents j = 146]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'resending' -> () From: ( | {
-         'Category: resend tests\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         testUndirectedResendWithMultipleParents = ( |
-            | 
-            assert: [objectWithMultipleParents a = 1]).
+         resending = bootstrap stub -> 'globals' -> 'tests' -> 'resending' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
@@ -4195,10 +3472,12 @@ to just keep upping it by hand.
 	& ('kleinBytecodes')
 	& ('kleinCompiler1')
 	& ('kleinReflection')
+	& ('languageTests')
 	& ('mirror')
 	& ('scheduler')
 	& ('setAndDictionary')
 	& ('smallInt')
+	& ('testSuite')
 	& ('vmKitBase')
 	& ('vmKitCardTable')
 	& ('vmKitGC')
@@ -4269,33 +3548,34 @@ select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: M
 	& (reflect: assemblerSystems ppc generators)
 	& (reflect: klein compiler1 prototypes irNodeGenerator comparisons)
 	& (reflect: assemblerSystems ppc gprs)
+	& (reflect: klein compiler1 prototypes dataValue kindsOfPossibleTypes)
 	& (reflect: assemblerSystems ppc instructionTemplates)
 	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
 	& (reflect: globals)
 	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
 	& (reflect: assemblerSystems ppc sprs)
-	& (reflect: klein relocators)
 	& (reflect: assemblerSystems framework)
 	& (reflect: traits block)
 	& (reflect: klein compiler1 prototypes machineLevelAllocators)
+	& (reflect: klein compiler1 prototypes locationAssigners)
 	& (reflect: kleinAndYoda maps)
 	& (reflect: traits slots)
 	& (reflect: klein compiler1 prototypes codeGenerators)
 	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
 	& (reflect: klein locations)
 	& (reflect: traits abstractSet values)
-	& (reflect: klein compiler1 prototypes dataValue kindsOfPossibleValues)
 	& (reflect: traits collection ascendingOrder)
 	& (reflect: kleinAndYoda lookupType)
 	& (reflect: slots)
+	& (reflect: klein relocators)
 	& (reflect: klein virtualMachines)
 	& (reflect: klein compiler1 prototypes irNodes)
-	& (reflect: scheduler)
+	& (reflect: assemblerSystems ppc fields)
 	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
 	& (reflect: assemblerSystems ppc crBits)
 	& (reflect: kleinAndYoda)
+	& (reflect: scheduler)
 	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
-	& (reflect: assemblerSystems ppc fields)
 	& (reflect: traits)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 

@@ -265,7 +265,7 @@ See the LICENSE file for license information.
              t.
             | 
 
-            "A bit of duplication with" [fillInObjectAt: 0 OID: 0 AndCreateMapForReflecteeOf: m Mapper: mapper].
+            "A bit of duplication with" [fillInObjectAt: 0 OID: 0 AndCreateMapOfType: self ForReflecteeOf: m].
 
             "Ensure that the method's annotation and slot annotations are parsed."
             m annotation. m do: [|:s| s annotation].
@@ -273,6 +273,7 @@ See the LICENSE file for license information.
             slots:       slotsToMapForReflecteeOf: m Mapper: mapper.
             slotsByName: dictionary copyRemoveAll.
             slots do: [|:s| slotsByName at: s kleinAndYodaSlotName Put: s].
+            [slots size = slotsByName size] assert.
 
             map: copySize: slots size.
             mapper initializeMap: map ForReflecteeOf: m Slots: slots.
@@ -451,49 +452,6 @@ SlotsToOmit: parent parent:.
          fakeSlotToAddFor: aFakeSlot = ( |
             | 
             aFakeSlot).
-        } | ) 
-
- bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'slotsMap') -> 'parent' -> () From: ( | {
-         'Category: mapping objects (for export)\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         fillInObjectAt: oop OID: oid AndCreateMapForReflecteeOf: m Mapper: mapper = ( |
-             map.
-             slots.
-             slotsByName.
-            | 
-
-            "A bit of duplication with" [kleinifyReflecteeOf: m Mapper: mapper].
-
-            slots:  slotsToMapForReflecteeOf: m Mapper: mapper.
-
-            slotsByName: dictionary copyRemoveAll.
-            slots do: [|:s| slotsByName at: s kleinAndYodaSlotName Put: s].
-
-            map:  copySize: slots size.
-
-            map initializeForReflecteeOf: m Slots: slots Mapper: mapper.
-
-            mapper allocateMap: map ForOID: oid AndDo: [|:canonicalMap. :canonicalMapOop|
-              myLayout             for: oop
-                                   OID: oid
-                              UsingMap: canonicalMap
-                             AndMapOop: canonicalMapOop
-                       AdjustMarkValue: layouts mark defaultMarkValue
-              AndFillInHeaderFieldsFor: m
-                                Mapper: mapper.
-            ].
-
-            map objectSlotsDo: [|:slotName. :slotOffset. slot. contentsObj. contentsOop|
-              slot:         slotsByName at: slotName.
-              contentsObj:  mapper policy initialContentsOfSlot: slot.
-              contentsOop:  mapper allocateObject: contentsObj.
-
-              myLayout for: oop At: slotOffset Put: contentsOop.
-            ].
-
-            map ifNeededFillInIndexableSlotsFor: m In: oop Mapper: mapper.
-
-            oop).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'slotsMap') -> 'parent' -> () From: ( | {
@@ -729,12 +687,6 @@ SlotsToOmit: parent parent:.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (reflectiveIdentityDictionary copyRemoveAll)\x7fVisibility: private'
-        
-         blockLiteralsThatWillNotBePushedByNMethodOID <- reflectiveIdentityDictionary copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: cache stats\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          blockNMethodHits <- 0.
@@ -750,15 +702,6 @@ SlotsToOmit: parent parent:.
          'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: cache stats\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          blockOuterMethodProbes <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fCategory: block nmethods\x7fComment: nmethods compiled for block objects, keyed by lookupKey.
-Every block\'s nmethod cache includes all of these nmethods
-except one (the one that\'s overridden by that block\'s
-valueSlot). -- Adam, 3/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
-        
-         cachedBlockNMethodOIDs <- dictionary copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
@@ -786,12 +729,6 @@ valueSlot). -- Adam, 3/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
-        
-         cachedSlotsToCompileByReceiverMirror <- dictionary copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)'
         
          canonicalizedStrings.
@@ -810,6 +747,18 @@ valueSlot). -- Adam, 3/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
+         'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
+        
+         compilationRequestersThatHaveJustRun <- list copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
+         'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
+        
+         compilationRequestersToRun <- list copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: times\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          compilationTime <- 0.
@@ -822,22 +771,9 @@ valueSlot). -- Adam, 3/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents:
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fComment: It\'s expensive to go through the whole process of figuring
-out which slots to compile, so when we see a map we\'ve
-already compiled, don\'t bother going through it again.
--- Adam, 12/04 (this cache has been here since long before
-                12/04, but I\'m going through and making
-                sure all the caches make sense)
-
-I don\'t see why we still need this, now that the one-pass Cheney
-mapper compiles based on the exemplars dictionary.
-But, I\'ll use it as an assertion check.
-(Nice comment, Adam.)
-
-Was: mappedMapsThatHaveBeenCompiled
- -- dmu 2/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (vector)\x7fVisibility: private'
+         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
         
-         compiledReceiverMirrorsByMapOID <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+         compiledBlocksByNMethodOID <- dictionary copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
@@ -856,6 +792,12 @@ Was: mappedMapsThatHaveBeenCompiled
          'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: cache stats\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          eagerNMethodOopAssignmentOptimismNotJustified <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
+         'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
+        
+         exemplarMirrorsLeftToCompile <- list copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
@@ -901,18 +843,6 @@ Was: mappedMapsThatHaveBeenCompiled
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fCategory: block nmethods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (false)\x7fVisibility: private'
-        
-         foundFirstBlock <- bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fCategory: block nmethods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (false)\x7fVisibility: private'
-        
-         foundSecondBlock <- bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fCategory: compilation stats\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (false)\x7fVisibility: private'
         
          isInCompilationPhase <- bootstrap stub -> 'globals' -> 'false' -> ().
@@ -928,6 +858,12 @@ Was: mappedMapsThatHaveBeenCompiled
          'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
         
          kleinPrimitiveMirrorOops <- set copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
+         'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         myVM.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
@@ -1026,57 +962,6 @@ Was: mappedMapsThatHaveBeenCompiled
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: mapping objects\x7fCategory: allocating\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         allocateContentsOfSlotsToCompile = ( |
-             alreadyFoundOneBlock <- bootstrap stub -> 'globals' -> 'false' -> ().
-             alreadyFoundTwoBlocks <- bootstrap stub -> 'globals' -> 'false' -> ().
-             valueSlotNameOfFirstBlock.
-            | 
-
-            [todo cleanup someone]. "This code is needed for methods (like theVM in the miniVM) that are
-             compiled but not reached by the mapping algorithm. I think the reason why some methods
-             aren't reached by the mapping algorithm is because they're inherited through parent slots
-             that aren't mapped. So, for example, in the miniVM, the theVM slot is inherited
-             (in anything that descends from the lobby) through the defaultBehavior slot, but
-             the defaultBehavior slot isn't mapped. We still compile it, though, because we're
-             getting our list of slots to compile (see slotsToCompileForReceiver:) by getting a
-             list of all the slots on the *Self object* (not the Klein object) and then compiling
-             the ones specified by the exportPolicy. So first, we should probably be getting the
-             list of slots from the Klein object, not the Self object. And second, we should
-             probably make sure that all the methods we compile are inherited through parent
-             slots that are mapped. -- Adam, 6/05"
-
-            [todo cleanup adam]. "This is really messy and duplicates the block-optimization thingy elsewhere."
-
-            exemplarMirrorsToCompileByMapOIDDo: [|:exemplarMir. :map. :mapOID|
-              [|:exit|
-                map isBlock ifTrue: [
-                  "Optimization: Don't bother going over every single block - there are a lot of
-                   them, and it's unnecessary, because all blocks inherit the same slots, except
-                   for the value slots (and those will definitely be allocated through the
-                   regular mapping phase). -- Adam, 6/05"
-                  alreadyFoundOneBlock ifFalse: [
-                    valueSlotNameOfFirstBlock: map valueSlotName.
-                    alreadyFoundOneBlock: true.
-                  ] True: [
-                    alreadyFoundTwoBlocks || [map valueSlotName = valueSlotNameOfFirstBlock] ifFalse: [
-                      alreadyFoundTwoBlocks: true.
-                    ] True: exit.
-                  ].
-                ].
-                (slotsToCompileForReceiver: exemplarMir) do: [|:s|
-                  (shouldCompileSlotNamed: s name) ifTrue: [
-                    allocateObjectForReflecteeOf: s contents.
-                  ].
-                ].
-              ] exit.
-            ].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: immediates\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          allocateImmediateMaps = ( |
@@ -1100,7 +985,8 @@ Was: mappedMapsThatHaveBeenCompiled
                                                           cmOop: objectsOracle oopForOriginalObject: cm]
               IfAbsentRecordExemplarOID: oid
                                   AndDo: [cm: m.
-                                          cmOop: allocateObject: cm].
+                                          cmOop: allocateObject: cm.
+                                          exemplarMirrorsLeftToCompile add: originalMirrorForOID: oid].
             blk value: cm With: cmOop).
         } | ) 
 
@@ -1248,9 +1134,9 @@ Was: mappedMapsThatHaveBeenCompiled
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: caching nmethods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         allocatePrototypeSimpleVector = ( |
+         allocatePrototypeNMethodCache = ( |
             | 
-            prototypeSimpleVectorOop: allocateObject: vector copy).
+            prototypeNMethodCacheOop: allocateObject: vmKit nmethodCache copy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -1259,7 +1145,7 @@ Was: mappedMapsThatHaveBeenCompiled
          allocateStartingPoints: sp = ( |
             | 
             sp do: [|:o| allocateObject: o].
-            allocatePrototypeSimpleVector.
+            allocatePrototypeNMethodCache.
             self).
         } | ) 
 
@@ -2093,67 +1979,57 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         compilationRequesterFor = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor.
+         compilationRequester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequester.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         abstract = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor abstract.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
-        
-         compiledBlockMirrorsBySourceLevelAllocator <- dictionary copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)'
         
          context.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)'
         
          couldReuseTheNMethod.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (reflectiveIdentitySet copyRemoveAll)'
+        
+         methodSlotsCompiled <- reflectiveIdentitySet copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)'
         
          nmethodOID.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)'
         
          objectMapper.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor abstract parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequester parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: this method\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          buildNMethod = ( |
              c.
              nm.
-             nmOID.
              nmOop.
              predictedOop.
             | 
@@ -2172,9 +2048,9 @@ SlotsToOmit: parent.
 
             objectMapper nmethodAllocationTime:
               objectMapper nmethodAllocationTime + [
-                nmOID: objectMapper vm nextFreeOID.
+                nmethodOID: objectMapper vm nextFreeOID.
                 nmOop: objectMapper allocateMemoryObjectForReflecteeOf: nm asMirror.
-                [objectMapper vm nextFreeOID = nmOID succ] assert.
+                [objectMapper vm nextFreeOID = nmethodOID succ] assert.
             ] cpuTime.
 
             klein relocators isEagerRelocationEnabled ifTrue: [
@@ -2184,16 +2060,20 @@ SlotsToOmit: parent.
               ] cpuTime.
             ].
 
-            c irNodeGenerator topBytecodeInterpreter allBytecodeInterpretersDo: [|:i. sla|
-              sla: i sourceLevelAllocator.
-              compiledBlockMirrorsBySourceLevelAllocator at: sla Put: sla memoizedBlockValues keys.
-            ].
-            objectMapper blockLiteralsThatWillNotBePushedByNMethodOID at: nmOID Put: c blockLiteralsThatWillNotBePushed.
+            objectMapper objectsOracle resendBytecodesByNMethodOID at: nmethodOID Put: c resendsByContextAndSelfMap.
 
-            nmOID).
+            c irNodeGenerator topBytecodeInterpreter allBytecodeInterpretersDo: [|:i. sla. bs|
+              sla: i sourceLevelAllocator.
+              bs: sla memoizedBlockValues keys copyMappedBy: [|:bm| bm reflectee].
+              compiledBlocksWithContextAndSelfMap add: (bs & sla context & selfMap) asVector.
+
+              sla context slot isMethod ifTrue: [methodSlotsCompiled add: sla context].
+            ].
+
+            nmethodOID).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          canReuseNMethod: nm = ( |
@@ -2201,71 +2081,99 @@ SlotsToOmit: parent.
             nm reusabilityConditions allSatisfy: [|:c| c isSatisfiedBy: self]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         checkWhetherNMethodWasAlreadyCompiled = ( |
+            | 
+            objectMapper alreadyCompiledLookupTime: objectMapper alreadyCompiledLookupTime + [
+              nmethodOIDIfPresent: [|:nmOID| nmethodOID: nmOID] IfAbsent: [].
+              wasAlreadyCompiled: nmethodOID isNotNil.
+            ] cpuTime.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: other methods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         compilationRequesterForResend: bc = ( |
-             c.
+         compilationRequesterForResend: bc Context: cntxt = ( |
              key.
+             resendContext.
              resentSlot.
             | 
             "Let missing resent methods be an error at runtime rather than compile time, now
              that we're exporting way more stuff - we've got lots of resends that are never
              getting called, and it's annoying to have to pull in an entire module just
              because we resend to one method in it. -- Adam & Alex, 5/04"
-            resentSlot: ((klein lookupKey copyForSendBC: bc) lookupSlotsUsing: protoSlotFinder Self: selfMap Holder: outermostMethodHolder)
+            resentSlot: ((klein lookupKey copyForSendBC: bc) lookupSlotsUsing: protoSlotFinder Self: cntxt selfMap Holder: cntxt outermostMethodHolder)
                                              ifNone: [ ^ nil]
                                              IfOne:  [|:s| s]
                                              IfMany: [error: 'ambiguous resend'].
 
             key: klein lookupKey copyForSelector: resentSlot name
                                       LookupType: bc kleinBaseLookupType
-                            ObjectDoingTheResend: outermostMethodHolder reflectee
+                            ObjectDoingTheResend: cntxt outermostMethodHolder reflectee
                                       SlotHolder: [resentSlot holder reflectee].
 
-            c: theVM compilerPrototype prototypes compilationContext
+            resendContext:
+              theVM compilerPrototype prototypes compilationContext
                            copyForSlot: (objectMapper objectsOracle kleinifySlot: resentSlot)
                                    Key: key
-                                  Self: selfMap
-                              Receiver: selfMap
-                   LexicalParentScopes: vector.
+                                  Self: cntxt selfMap
+                              Receiver: cntxt selfMap
+                    LexicalParentScope: nil.
 
-            objectMapper compilationRequesterFor outerMethod copyForObjectMapper: objectMapper Context: c).
+            objectMapper compilationRequester copyForObjectMapper: objectMapper Context: resendContext).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: other methods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          compilationRequestersForBlockLiterals = ( |
              crs.
             | 
             crs: list copyRemoveAll.
-            compiledBlockMirrorsBySourceLevelAllocator do: [|:mirs. :sla|
-              mirs do: [|:compiledBlockMir|
-               crs add: objectMapper compilationRequesterFor block
-                                        copyForBlockMirror: compiledBlockMir
+            compiledBlocksWithContextAndSelfMap do: [|:blocksAndContextAndSelfMap. c. m. bs|
+              "Need to replace the original selfMap with my selfMap, because if I'm reusing this
+               nmethod, the selfMap won't be right."
+              bs:  blocksAndContextAndSelfMap at: 0.
+              m:   blocksAndContextAndSelfMap at: 2.
+              c:  (blocksAndContextAndSelfMap at: 1) replaceMap: m With: selfMap.
+
+              bs do: [|:compiledBlock|
+               crs add: objectMapper compilationRequester
+                                        copyForBlockMirror: (reflect: compiledBlock)
                                               ObjectMapper: objectMapper
-                                    LexicalParentAllocator: sla.
+                                      LexicalParentContext: c.
               ].
             ].
             crs).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: other methods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          compilationRequestersForResends = ( |
              crs.
-             resends.
             | 
             slot isMethod ifFalse: [^ vector].
-            objectMapper resendDetectionTime: objectMapper resendDetectionTime + [resends:  objectMapper resendsInSlot: slot] cpuTime.
             crs: list copyRemoveAll.
-            resends do: [|:bc| (compilationRequesterForResend: bc) ifNotNil: [|:cr| crs add: cr]].
+            [nmethodOID isNotNil] assert.
+            (objectMapper objectsOracle resendsInNMethodWithOID: nmethodOID) do: [|:resends. :cntxtAndSelfMap. c. m|
+              "Need to replace the original selfMap with my selfMap, because if I'm reusing this
+               nmethod, the selfMap won't be right."
+              m:   cntxtAndSelfMap at: 1.
+              c:  (cntxtAndSelfMap at: 0) replaceMap: m With: selfMap.
+              resends do: [|:bc|
+                (compilationRequesterForResend: bc Context: c) ifNotNil: [|:cr|
+                  crs add: cr.
+                ].
+              ].
+            ].
             crs).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: profiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          compile: selector On: rcvr Times: n = ( |
@@ -2285,29 +2193,19 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          compileIfNecessary = ( |
             | 
-            hasAlreadyCompiledNMethodForThisMap ifFalse: [
-              compileThisMethod.
-              compileValueSlotsOfBlockLiterals.
-            ].
-            compileOuterMethodsNeededForResends.
+            slot isMethod ifTrue: [methodSlotsCompiled add: context].
+            checkWhetherNMethodWasAlreadyCompiled.
+            wasAlreadyCompiled ifFalse: [compileThisMethod].
+            objectMapper compilationRequestersThatHaveJustRun add: self.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fCategory: other methods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         compileOuterMethodsNeededForResends = ( |
-            | 
-            compilationRequestersForResends do: [|:cr| cr compileIfNecessary].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: this method\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          compileThisMethod = ( |
@@ -2322,24 +2220,21 @@ SlotsToOmit: parent.
 
             objectMapper recordingNMethodsTime: objectMapper recordingNMethodsTime + [
               recordNMethodOID: nmethodOID.
-              isOuterMethodForABlock ifTrue: [objectMapper recordBlockNMethodOID: nmethodOID LookupKey: lookupKey].
             ] cpuTime.
 
-            objectMapper fillInObjects. "To make sure that any compiledBlock objects have maps."
-
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fCategory: other methods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         compileValueSlotsOfBlockLiterals = ( |
+         compiledBlocksWithContextAndSelfMap = ( |
             | 
-            compilationRequestersForBlockLiterals do: [|:cr| cr compileIfNecessary].
-            self).
+            [nmethodOID isNotNil] assert.
+            objectMapper compiledBlocksByNMethodOID at: nmethodOID IfAbsentPut: [list copyRemoveAll]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: profiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          compilerForSlot: slot = ( |
@@ -2357,16 +2252,42 @@ SlotsToOmit: parent.
                            Optimize: klein compiler1 prototypes optimizationPolicies compileFastCode).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          copy = ( |
             | 
-            resend.copy
-               compiledBlockMirrorsBySourceLevelAllocator: compiledBlockMirrorsBySourceLevelAllocator copyRemoveAll).
+            resend.copy methodSlotsCompiled: methodSlotsCompiled copy).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForBlockMirror: bMir ObjectMapper: mapper LexicalParentContext: lpc = ( |
+             bMap.
+             bMapOID.
+             key.
+             oracle.
+             s.
+            | 
+
+            oracle: mapper objectsOracle.
+            s: oracle kleinifySlot: (reflect: bMir reflectee originalBlock_replaceThisSlotWithTheValueSlot) valueSlot.
+            s holder: bMir. "Holder should be the compiled block instead of the original block."
+            key: klein lookupKey copyForNormalSend: s name.
+            bMapOID: oracle mapOIDForExemplarMirror: bMir.
+            bMap: oracle kleinifiedObjectForOID: bMapOID.
+
+            copyForObjectMapper: mapper Context:
+                 theVM compilerPrototype prototypes compilationContext
+                           copyForSlot: s
+                                   Key: key
+                                  Self: lpc selfMap
+                              Receiver: bMap
+                    LexicalParentScope: bMir reflectee scopeDesc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          copyForObjectMapper: om Context: c = ( |
@@ -2374,7 +2295,21 @@ SlotsToOmit: parent.
             (copy objectMapper: om) context: c).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForReceiverMap: rMap TargetSlot: s OnBehalfOf: anObjectMapper = ( |
+            | 
+            copyForObjectMapper: anObjectMapper Context:
+               theVM compilerPrototype prototypes compilationContext
+                           copyForSlot: (anObjectMapper objectsOracle kleinifySlot: s)
+                                   Key: (klein lookupKey copyForNormalSend: s name)
+                                  Self: rMap
+                              Receiver: rMap
+                    LexicalParentScope: nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: this method\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          createCompiler = ( |
@@ -2388,34 +2323,23 @@ SlotsToOmit: parent.
                               Optimize: theVM compilerPrototype prototypes optimizationPolicies compileQuicklyButOptimizeKleinKernel).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         hasAlreadyCompiledNMethodForThisMap = ( |
+         isForABlockMethod = ( |
             | 
-            objectMapper alreadyCompiledLookupTime: objectMapper alreadyCompiledLookupTime + [
-              nmethodOIDIfPresent: [|:nmOID| nmethodOID: nmOID] IfAbsent: [].
-            ] cpuTime.
-            nmethodOID isNotNil).
+            context isForABlockMethod).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          isOuterMethodForABlock = ( |
             | 
-            rcvrMap isBlock && [rcvrMap == selfMap]).
+            context isOuterMethodForABlock).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         lexicalParentScopes = ( |
-            | 
-            context lexicalParentScopes).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          lookupKey = ( |
@@ -2423,7 +2347,7 @@ SlotsToOmit: parent.
             context lookupKey).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          mapOIDOfReceiver = ( |
@@ -2431,7 +2355,7 @@ SlotsToOmit: parent.
             objectMapper objectsOracle oidForOriginalObject: rcvrMap).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          mapOIDOfSelf = ( |
@@ -2439,7 +2363,7 @@ SlotsToOmit: parent.
             objectMapper objectsOracle oidForOriginalObject: selfMap).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          mySlot = ( |
@@ -2447,7 +2371,7 @@ SlotsToOmit: parent.
             context slot).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          nmethod = ( |
@@ -2455,7 +2379,7 @@ SlotsToOmit: parent.
             objectMapper objectsOracle originalObjectForOID: nmethodOID).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          nmethodOIDIfPresent: pBlk IfAbsent: aBlk = ( |
@@ -2472,7 +2396,7 @@ SlotsToOmit: parent.
                           IfAbsent: aBlk).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          outermostMethodHolder = ( |
@@ -2480,7 +2404,7 @@ SlotsToOmit: parent.
             context outermostMethodHolder).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          outermostMethodSlotName = ( |
@@ -2488,13 +2412,13 @@ SlotsToOmit: parent.
             context outermostMethodSlotName).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: profiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot'
         
          profileBuildingIRNodes = ( |
@@ -2507,7 +2431,7 @@ SlotsToOmit: parent.
             [cs do: [|:c| c makeSureIRNodesAreBuilt]] profileSlice).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: profiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot'
         
          profileCompilingOneMethod = ( |
@@ -2525,7 +2449,7 @@ SlotsToOmit: parent.
             ] profileSlice).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          protoSlotFinder = ( |
@@ -2533,7 +2457,7 @@ SlotsToOmit: parent.
             objectMapper policy slotFinder).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          rcvrMap = ( |
@@ -2541,7 +2465,7 @@ SlotsToOmit: parent.
             context rcvrMap).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: eager relocation\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          reassembleNMethod: nm WithOop: nmOop PredictedOop: predictedOop CodeGenerator: cg = ( |
@@ -2583,16 +2507,29 @@ SlotsToOmit: parent.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: this method\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          recordNMethodOID: nmOID = ( |
             | 
+            [aaaaaaa]. (context slot name = '=') && [context rcvrMap isInteger] ifTrue: [halt].
             objectMapper addNMethodOID: nmOID MapOID: mapOIDOfReceiver LookupKey: lookupKey.
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         requestAdditionalCompilations = ( |
+            | 
+            wasAlreadyCompiled ifFalse: [
+              compilationRequestersForBlockLiterals do: [|:cr| objectMapper compilationRequestersToRun add: cr].
+            ].
+            compilationRequestersForResends do: [|:cr| objectMapper compilationRequestersToRun add: cr].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          selfMap = ( |
@@ -2600,7 +2537,23 @@ SlotsToOmit: parent.
             context selfMap).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
+         'Category: displaying status\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         showCompilingSlot = ( |
+            | 
+            isForABlockMethod ifTrue: [
+              objectMapper showCompilingSlot: slot name
+                                     InBlock: rcvrMap
+                             OuterMethodSlot: outermostMethodSlotName
+                                        Self: selfMap
+            ] False: [
+              objectMapper showCompilingSlot: slot name
+                                   Receiving: rcvrMap
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          slot = ( |
@@ -2608,7 +2561,7 @@ SlotsToOmit: parent.
             mySlot).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fCategory: this method\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          slotToCompile = ( |
@@ -2616,159 +2569,20 @@ SlotsToOmit: parent.
             objectMapper objectsOracle kleinifySlot: slot).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)'
         
-         block = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             globals kleinAndYoda objectMapper1 parent compilationRequesterFor abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor block.
-
-CopyDowns:
-globals kleinAndYoda objectMapper1 parent compilationRequesterFor abstract. copy 
-SlotsToOmit: parent.
-
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor block parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForBlockMirror: bMir ObjectMapper: mapper LexicalParentAllocator: lpsla = ( |
-             bMap.
-             bMapOID.
-             key.
-             oracle.
-             s.
-            | 
-
-            oracle: mapper objectsOracle.
-            s: oracle kleinifySlot: (reflect: bMir reflectee originalBlock_replaceThisSlotWithTheValueSlot) valueSlot.
-            key: klein lookupKey copyForNormalSend: s name.
-            bMapOID: oracle mapOIDForExemplar: bMir reflectee.
-            bMap: oracle kleinifiedObjectForOID: bMapOID.
-
-            copyForObjectMapper: mapper Context:
-                 theVM compilerPrototype prototypes compilationContext
-                           copyForSlot: s
-                                   Key: key
-                                  Self: lpsla context selfMap
-                              Receiver: bMap
-                   LexicalParentScopes: lpsla context lexicalParentScopes copyAddLast: bMir reflectee scopeDesc).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> 'parent' -> () From: ( | {
-         'Category: displaying status\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         showCompilingSlot = ( |
-            | 
-            objectMapper showCompilingSlot: slot name
-                                   InBlock: rcvrMap
-                           OuterMethodSlot: outermostMethodSlotName
-                                      Self: selfMap).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'block' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         slot = ( |
-            | 
-            mySlot).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         outerMethod = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             globals kleinAndYoda objectMapper1 parent compilationRequesterFor abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor outerMethod.
-
-CopyDowns:
-globals kleinAndYoda objectMapper1 parent compilationRequesterFor abstract. copy 
-SlotsToOmit: parent.
-
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectMapper1 parent compilationRequesterFor outerMethod parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         compileIfNecessary = ( |
-            | 
-            "We always want to reach the block method through its outer method. -- Adam & Alex, 5/04"
-            "We've changed the mapping algorithm to skip over the block's value slot; see" [compileSlotsForBlock: b MapOID: o].
-            "So this check is no longer needed, but it seems worth leaving in as a safeguard anyway. -- Adam, 5/05"
-            slot contents isReflecteeBlockMethod ifTrue: [thisCodeIsNeverReached. ^ self].
-
-            resend.compileIfNecessary).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyForReceiver: rMir Map: rMap TargetSlot: s OnBehalfOf: anObjectMapper = ( |
-            | 
-            copyForObjectMapper: anObjectMapper Context:
-               theVM compilerPrototype prototypes compilationContext
-                           copyForSlot: (anObjectMapper objectsOracle kleinifySlot: s)
-                                   Key: (klein lookupKey copyForNormalSend: s name)
-                                  Self: rMap
-                              Receiver: rMap
-                   LexicalParentScopes: vector).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'abstract' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequesterFor' -> 'outerMethod' -> 'parent' -> () From: ( | {
-         'Category: displaying status\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         showCompilingSlot = ( |
-            | 
-            objectMapper showCompilingSlot: slot name
-                                 Receiving: rcvrMap).
+         wasAlreadyCompiled.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         compilationRequesterForOuterMethodOn: rMir TargetSlot: slot Map: rMap MapOID: rMapOID = ( |
+         compilationRequesterForOuterMethodOn: rMap TargetSlot: slot = ( |
             | 
-            compilationRequesterFor outerMethod
-                                       copyForReceiver: rMir
-                                                   Map: rMap
-                                            TargetSlot: slot
-                                            OnBehalfOf: self).
+            compilationRequester copyForReceiverMap: rMap
+                                         TargetSlot: slot
+                                         OnBehalfOf: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -2779,7 +2593,6 @@ SlotsToOmit: parent.
             ( (subtime copyNamed: 'Compilation'                         Ms: compilationTime)
             & (subtime copyNamed: 'Filling during compilation'          Ms: fillingDuringCompilationTime)
             & (subtime copyNamed: 'slotsToCompileForReceiver:'          Ms: slotsToCompileForReceiverTime)
-            & (subtime copyNamed: 'resend detection'                    Ms: resendDetectionTime)
             & (subtime copyNamed: 'selectorsToCompile lookup'           Ms: selectorsToCompileLookupTime)
             & (subtime copyNamed: 'reusable nmethod hit'                Ms: reusableNMethodHitTime)
             & (subtime copyNamed: 'hasAlreadyCompiledNMethodForThisMap' Ms: alreadyCompiledLookupTime)
@@ -2811,124 +2624,16 @@ SlotsToOmit: parent.
         
          compileAll = ( |
             | 
-            exemplarMirrorsToCompileByMapOIDDo: [|:exemplarMir. :map. :mapOID|
-              compileSlotsForReceiverMirror: exemplarMir Map: map MapOID: mapOID.
-            ].
-            self).
-        } | ) 
+            [aaaaaaa]. "Do I like this better than old_compileAll?"
+            [
+             case
+              if: [oopsToFillIn                         isEmpty not] Then: [fillInTheNextObject]
+              If: [compilationRequestersToRun           isEmpty not] Then: [compilationRequestersToRun           removeFirst compileIfNecessary]
+              If: [compilationRequestersThatHaveJustRun isEmpty not] Then: [compilationRequestersThatHaveJustRun removeFirst requestAdditionalCompilations]
+              If: [exemplarMirrorsLeftToCompile         isEmpty not] Then: [exemplarMirrorsLeftToCompile         removeFirst requestCompilationWithObjectMapper: self]
+              Else: [^ self].
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         compileSlot: slot ForReceiver: rMir Map: rMap MapOID: rMapOID = ( |
-            | 
-            (shouldCompileSlotNamed: slot name) ifTrue: [| compilationRequester |
-              compilationRequester:
-                compilationRequesterForOuterMethodOn: rMir
-                                          TargetSlot: slot
-                                                 Map: rMap
-                                              MapOID: rMapOID.
-              compilationRequester compileIfNecessary.
-              fillInObjects.
-            ] False: [
-              objectsOracle recordMapOID: rMapOID WithUncompiledSlotNamed: slot name.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         compileSlotsForBlock: rMir Map: rMap MapOID: rMapOID = ( |
-             d.
-             valueSlotName.
-            | 
-
-            "Optimization: We could just loop over cachedBlockNMethodOIDs and
-             call addNMethod:MapOID: for all the entries except the one for
-             the valueSlot, but all of these dictionaries are going
-             to end up almost identical to cachedBlockNMethodOIDs. So it's
-             faster (saves about 2-3% overall mapping time) to just copy
-             cachedBlockNMethodOIDs and then fix the valueSlot entry.
-             -- Adam, 2/05"
-
-            valueSlotName: rMap valueSlotName.
-
-            foundFirstBlock ifFalse: [|slots|
-              foundFirstBlock: true.
-              valueSlotNameOfFirstBlock: valueSlotName.
-              slots:  slotsToCompileForReceiver: rMir.
-              slots do: [|:slot|
-                "The value slot method is compiled from compilationRequesterFor block compile
-                 so that we have the lexical parent info. -- dmu 2/05"
-                slot name = valueSlotNameOfFirstBlock ifFalse: [
-                  compileSlot: slot ForReceiver: rMir Map: rMap MapOID: rMapOID.
-                ].
-              ].
-            ] True: [
-              foundSecondBlock ifFalse: [
-                valueSlotNameOfFirstBlock = valueSlotName ifFalse: [|slots. slot|
-                  foundSecondBlock: true.
-                  slots:  slotsToCompileForReceiver: rMir.
-                  "Since we skipped over the first block's valueSlot, we still need to compile the
-                   slot with that name. So grab a block that takes a different number of arguments
-                   than the first block, and compile the slot with that name."
-                  slot: traits block asMirror lookupSoleSlotNamed: valueSlotNameOfFirstBlock.
-                  (slots includes: slot) ifTrue: [
-                    compileSlot: slot ForReceiver: rMir Map: rMap MapOID: rMapOID.
-                  ].
-                ].
-              ].
-            ].
-
-            d: cachedBlockNMethodOIDs copy.
-            d removeKey:  (klein lookupKey copyForNormalSend: valueSlotName) IfAbsent: [].
-
-            objectsOracle
-              nmethodOIDDictionaryForMapOID: rMapOID
-                                  IfPresent: [|:nmOIDsAlreadyCompiledForThisBlock|
-                                               "nmOIDsAlreadyCompiledForThisBlock should have size 1, except in the
-                                                cases of the two blocks that we pre-compiled some nmethods for. So
-                                                this addAll: operation is almost always cheap. -- Adam, 2/05"
-                                               d addAll: nmOIDsAlreadyCompiledForThisBlock]
-                                   IfAbsent: [].
-
-            objectsOracle recordNMethodOIDDictionary: d ForMapOID: rMapOID.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         compileSlotsForReceiverMirror: rMir Map: rMap MapOID: rMapOID = ( |
-             slots.
-            | 
-
-            "Blocks go through here so that we can deal with their (non-value) methods
-             just like any other object. -- dmu 2/05"
-
-            "Self does not have method objects, should not need any methods on methods -- dmu 2/05"
-            rMir isReflecteeMethod ifTrue: [^ self].
-
-            "Optimization: Blocks do not all share the same map, but they do share all the
-             same nmethods except the value method. So we just keep a collection of block
-             nmethods and then add all those nmethods to every block. -- Adam, 2/05"
-            [aaaaaaa]. "Now they don't share the scopeDesc nmethod either."
-            rMap isBlock ifTrue: [
-              compileSlotsForBlock: rMir Map: rMap MapOID: rMapOID.
-              ^ self
-            ].
-
-            "Call slotsToCompileForReceiver: instead of slotsToCompileForReceiver:Do: just so that
-             the profile will turn out cleaner. -- Adam, 2/05"
-            slotsToCompileForReceiverTime: slotsToCompileForReceiverTime + [
-              slots:  slotsToCompileForReceiver: rMir.
-            ] cpuTime.
-
-            slots do: [|:slot|
-              compileSlot: slot ForReceiver: rMir Map: rMap MapOID: rMapOID.
-            ].
-            self).
+            ] loop).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -2936,25 +2641,26 @@ SlotsToOmit: parent.
         
          copy = ( |
             | 
-            ((((((((resend.copy
+            (((((((((resend.copy
               objectsOracle:                                objectsOracleProto                           copy)
               oopsToFillIn:                                 oopsToFillIn                                 copy)
-              cachedSlotsToCompileByReceiverMirror:         cachedSlotsToCompileByReceiverMirror         copy)
+              exemplarMirrorsLeftToCompile:                 exemplarMirrorsLeftToCompile                 copy)
+              compilationRequestersToRun:                   compilationRequestersToRun                   copy)
+              compilationRequestersThatHaveJustRun:         compilationRequestersThatHaveJustRun         copy)
               cachedResendsBySlot:                          cachedResendsBySlot                          copy)
-              cachedBlockNMethodOIDs:                       cachedBlockNMethodOIDs                       copy)
               cachedReusableNMethodOIDsBySlotAndKey:        cachedReusableNMethodOIDsBySlotAndKey        copy)
+              compiledBlocksByNMethodOID:                   compiledBlocksByNMethodOID                   copy)
               canonicalizedStrings:                         canonicalizedStrings                         copy)
-              kleinPrimitiveMirrorOops:                     kleinPrimitiveMirrorOops                     copy)
-              blockLiteralsThatWillNotBePushedByNMethodOID: blockLiteralsThatWillNotBePushedByNMethodOID copy).
+              kleinPrimitiveMirrorOops:                     kleinPrimitiveMirrorOops                     copy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         copyPolicy: aVMExportPolicy ReportTo: reporter = ( |
+         copyForVM: aVM ReportTo: reporter = ( |
             | 
             ((copy
-              policy:                  aVMExportPolicy)
+              myVM:                    aVM)
               statusReporter:          reporter)
               initializeCanonicalizedStrings).
         } | ) 
@@ -2966,12 +2672,12 @@ SlotsToOmit: parent.
              nmOIDVector.
              nmcOop.
             | 
-            nmOIDs isEmpty ifTrue: [^ prototypeSimpleVectorOop].
+            nmOIDs isEmpty ifTrue: [^ prototypeNMethodCacheOop].
 
             nmOIDVector: nmOIDs asVector.
 
             shouldOptimizeNMethodCacheCreation ifFalse: [ | nmc |
-              nmc:  nmOIDVector copyMappedBy: [|:oid| originalObjectForOID: oid].
+              nmc:  nmOIDVector mapBy: [|:oid| originalObjectForOID: oid] Into: vmKit nmethodCache copySize: nmOIDVector size.
               assert: [nmc allSatisfy: [|:nm| nm isKleinNMethod]].
               shouldSortNMethodCaches ifTrue: [
                 nmc: sortBy: (| element: a Precedes: b = (a lookupKey selector < b lookupKey selector) |).
@@ -2984,7 +2690,7 @@ SlotsToOmit: parent.
               shouldSortNMethodCaches ifTrue: [
                 nmethodsAndOops sortBy: (| element: a Precedes: b = (a x lookupKey selector < b x lookupKey selector) |).
               ].
-              nmc:    nmethodsAndOops copyMappedBy: [|:nmethodAndOop| nmethodAndOop x].
+              nmc:    nmethodsAndOops        mapBy: [|:nmethodAndOop| nmethodAndOop x] Into: vmKit nmethodCache copySize: nmethodsAndOops size.
               nmOops: nmethodsAndOops copyMappedBy: [|:nmethodAndOop| nmethodAndOop y].
               assert: [nmc allSatisfy: [|:nm| nm isKleinNMethod]].
               fillInObjects. "ensure everything is there"
@@ -3107,66 +2813,19 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         exemplarMirrorsToCompileByMapOIDDo: blk = ( |
-            | 
-            immediateExemplarsDo: [|:immediateExemplar|
-              (shouldCompileSlotsForImmediateExemplar: immediateExemplar) ifTrue: [| immMir. immMap |
-                immMir:  reflect: immediateExemplar.
-                immMap:  immMir vmKitMapForConversion.
-                blk value: immMir With: immMap With: objectsOracle oidForOriginalObject: immMap.
-              ].
-            ].
-
-            exemplarOIDsToCompile do: [|:exemplarOID. exemplarMir|
-              exemplarMir:  objectsOracle mirrorForExemplarOID: exemplarOID.
-              mapOIDForExemplarOID: exemplarOID
-                         IfPresent: [|:mapOID| blk value: exemplarMir With: (objectsOracle kleinifiedObjectForOID: mapOID) With: mapOID]
-                          IfAbsent: raiseError.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         exemplarOIDsToCompile = ( |
-             r.
-             stubHolderOIDs.
-            | 
-            r: list copyRemoveAll.
-            stubHolderOIDs: set copyRemoveAll.
-
-            "Optimization: compile stub nmethods early on so that eager relocation
-             will work for as many stub relocators as possible. -- Adam, 3/05"
-            vm exportPolicy shouldIncludeKleinPrimitives ifTrue: [
-              theVM vmKit primitives stubAndFakePrimitiveMethodHoldersDo: [|:h. oid|
-                oid: objectsOracle oidForOriginalObject: h.
-                stubHolderOIDs add: oid.
-                r add: oid.
-              ].
-            ].
-
-            objectsOracle exemplarOIDsDo: [|:exemplarOID|
-              (stubHolderOIDs includes: exemplarOID) ifFalse: [
-                r add: exemplarOID.
-              ].
-            ].
-
-            r).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          expectedNumberOfObjects: n = ( |
+             conservativeEstimateOfNumberOfObjectsInEdenSpace.
             | 
+
             objectsOracle expectedNumberOfObjects: n.
 
             "Leave some extra room so that we don't have
              to grow it inside the image, for now."
-            objectsOracle growOIDVectorsToAtLeast: n double + (theVM universe edenSpace sizeOfEntireRegion / oopSize).
+
+            conservativeEstimateOfNumberOfObjectsInEdenSpace: ((theVM universe edenSpace sizeOfEntireRegion / oopSize) / layouts block numberOfWordsInABlock succ).
+            objectsOracle growOIDVectorsToAtLeast: n double + conservativeEstimateOfNumberOfObjectsInEdenSpace.
 
             self).
         } | ) 
@@ -3174,13 +2833,51 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: filling in\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         fillInObjects = ( |
-             t.
+         fillInObjectAt: oop OID: oid AndCreateMapOfType: mapProto ForReflecteeOf: m = ( |
+             map.
+             slots.
+             slotsByName.
             | 
-            t: [
-              [oopsToFillIn isEmpty] whileFalse: [fillInTheNextObject].
-            ] cpuTime.
-            isInCompilationPhase ifTrue: [fillingDuringCompilationTime: fillingDuringCompilationTime + t].
+
+            "A bit of duplication with" [kleinifyReflecteeOf: m Mapper: self].
+
+            slots:  mapProto slotsToMapForReflecteeOf: m Mapper: self.
+            slotsByName: dictionary copyRemoveAll.
+            slots do: [|:s| slotsByName at: s kleinAndYodaSlotName Put: s].
+            [slots size = slotsByName size] assert.
+
+            map:  mapProto copySize: slots size.
+            initializeMap: map ForReflecteeOf: m Slots: slots.
+
+            allocateMap: map ForOID: oid AndDo: [|:canonicalMap. :canonicalMapOop|
+              map myLayout         for: oop
+                                   OID: oid
+                              UsingMap: canonicalMap
+                             AndMapOop: canonicalMapOop
+                       AdjustMarkValue: layouts mark defaultMarkValue
+              AndFillInHeaderFieldsFor: m
+                                Mapper: self.
+            ].
+
+            map objectSlotsDo: [|:slotName. :slotOffset. slot. contentsObj. contentsOop|
+              slot:         slotsByName at: slotName.
+              contentsObj:  policy initialContentsOfSlot: slot.
+              contentsOop:  allocateObject: contentsObj.
+
+              map myLayout for: oop At: slotOffset Put: contentsOop.
+            ].
+
+            map ifNeededFillInIndexableSlotsFor: m In: oop Mapper: self.
+
+            oop).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: mapping objects\x7fCategory: filling in\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         fillInObjects = ( |
+            | 
+            [oopsToFillIn isEmpty] whileFalse: [fillInTheNextObject].
             self).
         } | ) 
 
@@ -3195,11 +2892,11 @@ SlotsToOmit: parent.
             showFillingInObjectWithOID: oid.
             mir: kleinifiedMirrorForOID: oid.
 
-            mir vmKitMapForConversion
-                            fillInObjectAt: oop
-                                       OID: oid
-                AndCreateMapForReflecteeOf: mir
-                                    Mapper: self.
+                fillInObjectAt: oop
+                           OID: oid
+            AndCreateMapOfType: mir vmKitMapForConversion
+                ForReflecteeOf: mir.
+
             self).
         } | ) 
 
@@ -3323,6 +3020,25 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initializeExemplarMirrorsLeftToCompile = ( |
+            | 
+            "Optimization: compile stub nmethods early on so that eager relocation
+             will work for as many stub relocators as possible. -- Adam, 3/05"
+            vm exportPolicy shouldIncludeKleinPrimitives ifTrue: [| stubHolderMirs |
+              stubHolderMirs: set copyRemoveAll.
+              theVM vmKit primitives stubAndFakePrimitiveMethodHoldersDo: [|:h| stubHolderMirs add: reflect: h].
+              exemplarMirrorsLeftToCompile filterBy: [|:mir| (stubHolderMirs includes: mir) not].
+              stubHolderMirs do: [|:mir| exemplarMirrorsLeftToCompile addFirst: mir].
+            ].
+
+            immediateExemplarsDo: [|:imm| exemplarMirrorsLeftToCompile add: reflect: imm].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: transmogrifying bytecodes\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          initializeMap: map ForReflecteeOf: m Slots: slots = ( |
@@ -3353,7 +3069,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
             | 
             statusReporter show: 'Mapping NMethod caches'.
             isInNMethodCacheConstruction: true.
-            nmcMapOop: mapOf: prototypeSimpleVectorOop.
+            nmcMapOop: mapOf: prototypeNMethodCacheOop.
             nmcMap: originalObjectForOop: nmcMapOop.
 
             objectsOracle nmethodOIDDictionariesByMapOopDo: [|:nmOIDs. :mapOop. nmcOop|
@@ -3383,38 +3099,28 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
             allocateImmediateMaps.
             allocateStartingPoints: sp.
 
-            fill1Time: [fillInObjects. "do this now to ensure that all blocks have maps"] cpuTime.
+            fillInObjects. "do this now to ensure that all blocks have maps"
 
-            selectorsToCompileCreationTime: [createTableOfSelectorsToCompile] cpuTime.
+            createTableOfSelectorsToCompile.
 
-            "This phase is probably just temporary. Once we fix the bug described in the
-             comment in the allocateContentsOfSlotsToCompile method, we won't need this
-             extra phase anymore. -- Adam, 6/05"
-            unmappedSlotsTime: unmappedSlotsTime + [
-              allocateContentsOfSlotsToCompile.
-              fillInObjects.
-              createTableOfSelectorsToCompile. "recreate it because we just mapped more stuff"
-            ] cpuTime.
+            initializeExemplarMirrorsLeftToCompile.
 
-            compilationPhaseTime: [
-              isInCompilationPhase: true.
-              compileAll.
-              isInCompilationPhase: false.
-            ] cpuTime.
-            fill2Time: [fillInObjects. "do not charge next routine for mapping the nmethods, etc."] cpuTime.
-            nmethodCacheConstructionTime: [mapNMethodCaches] cpuTime.
-            fill3Time: [fillInObjects.] cpuTime.
+            compileAll.
+            fillInObjects.
 
-            stringTableTime: [createStringTable.] cpuTime.
-            fill4Time: [fillInObjects. "just to be sure"] cpuTime.
+            mapNMethodCaches.
+            fillInObjects.
 
-            fixingKleinMirrorsTime: [fixReflecteeOopsAndMapsInKleinMirrors] cpuTime.
+            createStringTable.
+            fillInObjects. "just to be sure"
+
+            fixReflecteeOopsAndMapsInKleinMirrors.
             [createNMethodTable]. [todo recompilation]. "Just for measuring -- breaks incremental update"
 
-            [todo variableSizeHeaders. compactMapTableTime: [fixupCompactMapTable] cpuTime].
+            [todo variableSizeHeaders. fixupCompactMapTable].
 
-            objectTableTime: [createObjectTable.] cpuTime.
-            fill5Time: [fillInObjects. "just to be sure"] cpuTime.
+            createObjectTable.
+            fillInObjects. "just to be sure"
 
             assert: [
               verifyOracles.
@@ -3439,7 +3145,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         
          nameOfMap: rMap = ( |
             | 
-            nameOfMirror: objectsOracle originalMirrorForOID: objectsOracle exemplarOIDForMap: rMap).
+            nameOfMirror: reflect: objectsOracle exemplarForMap: rMap).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3496,11 +3202,31 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot'
+        
+         old_compileAll = ( |
+            | 
+            [exemplarMirrorsLeftToCompile isEmpty] whileFalse: [
+              exemplarMirrorsLeftToCompile removeFirst requestCompilationWithObjectMapper: self.
+              runCompilationRequesters.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: eager relocation\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          oracleForEagerRelocation = ( |
             | 
             objectsOracle).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         policy = ( |
+            | 
+            myVM exportPolicy).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3517,7 +3243,6 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
               ' - CPU    time   : ', (asSeconds: mappingTimes  cpuTime) printString, ' s\n',
               '   - Fill 1 time: ', (asSeconds: fill1Time) printString, ' s\n',
               '   - SelectorsToCompile creation time: ', (asSeconds: selectorsToCompileCreationTime) printString, ' s\n',
-              '   - Unmapped slots hack time: '        , (asSeconds:              unmappedSlotsTime) printString, ' s\n',
               '   - Compilation Phase  time: '         , (asSeconds:           compilationPhaseTime) printString, ' s\n',
                       compilationSubtimesString,
               '     - unaccounted-for compilation time: ', (asSeconds: compilationPhaseTime - compilationTimeAccountedFor) printString, ' s\n',
@@ -3574,18 +3299,6 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fCategory: caching nmethods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         recordBlockNMethodOID: nmOID LookupKey: key = ( |
-            | 
-            "The lookup key is passed in just as a small optimization; we can find it
-             this other way too, as the assertion shows. -- Adam, 5/05"
-            assert: [(originalObjectForOID: nmOID) lookupKey = key].
-            cachedBlockNMethodOIDs at: key Put: nmOID.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: klein mirrors\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          recordKleinMirrorOop: oop = ( |
@@ -3622,6 +3335,33 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         requestAdditionalCompilations = ( |
+            | 
+            [compilationRequestersThatHaveJustRun isEmpty] whileFalse: [
+              fillInObjects. "To make sure that any compiledBlock objects have maps."
+              compilationRequestersThatHaveJustRun removeFirst requestAdditionalCompilations.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         requestCompilationForReceiverMirror: rMir Map: rMap MapOID: rMapOID = ( |
+            | 
+            (slotsToCompileForReceiver: kleinifiedMirrorForOriginalMirror: rMir) do: [|:slot|
+              (shouldCompileSlotNamed: slot name) ifTrue: [
+                compilationRequestersToRun add: compilationRequesterForOuterMethodOn: rMap TargetSlot: slot.
+              ] False: [
+                objectsOracle recordMapOID: rMapOID WithUncompiledSlotNamed: slot name.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: mapping objects\x7fCategory: resends\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          resendDetector = bootstrap define: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'resendDetector' -> () ToBe: bootstrap addSlotsTo: (
@@ -3642,11 +3382,26 @@ SlotsToOmit: parent.
         
          resendsInSlot: aSlot = ( |
             | 
+            [aaaaaaa]. "Am I sure this is worth caching? Let's try without it."
+            true ifTrue: [^ resendDetector resendsInSlot: aSlot].
+
             cachedResendProbes: cachedResendProbes succ.
             cachedResendsBySlot at: aSlot IfAbsentPut: [
               cachedResendMisses: cachedResendMisses succ.
               resendDetector resendsInSlot: aSlot
             ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         runCompilationRequesters = ( |
+            | 
+            [compilationRequestersToRun isEmpty] whileFalse: [
+              compilationRequestersToRun removeFirst compileIfNecessary.
+              requestAdditionalCompilations.
+            ].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3729,14 +3484,6 @@ SlotsToOmit: parent.
             b:  objectsOracle selectorsToCompile includes: n.
             b ifTrue: [selectorsToCompileHits: selectorsToCompileHits succ].
             b).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: compiling\x7fCategory: immedates\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
-        
-         shouldCompileSlotsForImmediateExemplar: immediateExemplar = ( |
-            | 
-            true).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3837,10 +3584,19 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
          'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          slotsToCompileForReceiver: rMir = ( |
+             slots.
             | 
-            cachedSlotsToCompileByReceiverMirror
-                      at: rMir
-             IfAbsentPut: [policy slotsToCompileForReceiver: rMir]).
+
+            "Self does not have method objects, should not need any methods on methods -- dmu 2/05"
+            rMir isReflecteeMethod ifTrue: [^ vector].
+
+            "Call slotsToCompileForReceiver: instead of slotsToCompileForReceiver:Do: just so that
+             the profile will turn out cleaner. -- Adam, 2/05"
+            slotsToCompileForReceiverTime: slotsToCompileForReceiverTime + [
+              slots:  policy slotsToCompileForReceiver: rMir.
+            ] cpuTime.
+
+            slots).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3921,6 +3677,89 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         breakDownObjectsBy: blk = ( |
+             r.
+            | 
+            r: dictionary copyRemoveAll.
+            myVM setTheVMAndDo: [
+              objectsOracle ensureAddressesByOIDIsUpdated.
+              oopsAndAddressesAndOriginalMirrorsAndKleinifiedMirrorsAndOIDsDo: [|:oop. :addr. :mir. :kMir. :oid. size. t. ts. os|
+                t: blk value: oop With: mir With: kMir With: oid.
+                size: objectSize copyWords: mir vmKitMapForConversion myLayout wordSizeOf: oop.
+                ts: r at: t IfAbsentPut: [typeStat copyForType: t Image: self].
+                ts objectStats add: objectStat copyForOop: oop OriginalMirror: mir KleinifiedMirror: kMir Size: size.
+              ].
+            ].
+            [typeStat size]. "browsing"
+            (r asVector copySortBySelector: 'size') reverse).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         breakDownObjectsByMap = ( |
+            | 
+            breakDownObjectsBy: [|:oop| vmKit layouts object mapOf: oop]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         breakDownObjectsBySelfPrototype = ( |
+            | 
+            breakDownObjectsBy: [|:oop. :mir. :kMir| selfPrototypeOf: kMir]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         codeSizeStatistics = ( |
+            | 
+            objectsOracle codeSizeStatistics).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fCategory: block inlining\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         doABunchOfInlining = ( |
+            | 
+            aaaaaaa.
+            "I think all of this code, including the blockInliningBytecodeTransmogrifier,
+             should die. -- Adam, May 2009"
+
+
+            [todo blockInlining]. "Where should this method go and what should it be called?"
+            objectsOracle methodMirrors do: [|:m. mm. f|
+              mm: m.
+              [f: blockInliningBytecodeTransmogrifier copyForMethod: mm.
+              f interpretMethod.
+              f matches isEmpty] whileFalse: [| match |
+                match: f matches first.
+                mm: match createMethodWithInlinedBlocks.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         invocationCounts = ( |
+            | 
+            myVM setTheVMAndDo: [| r |
+              r: list copyRemoveAll.
+              nmethodsDo: [|:nm. nmOop. map|
+                nmOop: oopForOriginalObject: nm.
+                map:  vmKit maps nmethodMap importMapFor: nmOop IfFail: raiseError.
+                r add: nm @ (map contentsOfSlotNamed: 'invocationCount' In: nmOop IfFail: raiseError).
+              ].
+              r
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: tracking objects\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          kleinifiedMirrorForOID: oid IfAbsent: ab = ( |
@@ -3931,9 +3770,43 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: tracking objects\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         mapOIDForExemplarOID: oid IfPresent: pb IfAbsent: ab = ( |
+         mapOIDForExemplarOID: exemplarOID = ( |
             | 
-            objectsOracle mapOIDForExemplarOID: oid IfPresent: pb IfAbsent: ab).
+            objectsOracle mapOIDForExemplarOID: exemplarOID).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: tracking objects\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         methodMirrorsAllowingDuplicates = ( |
+            | 
+            objectsOracle methodMirrorsAllowingDuplicates).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         moduleSizes = ( |
+             d.
+             r.
+            | 
+            d: dictionary copyRemoveAll.
+            wellKnownSlotsDo: [|:s| (d at: s module IfAbsentPut: [list copyRemoveAll]) add: s].
+            d: d copyMappedBy: [|:ss| (ss copyMappedBy: [|:s| myVM exportPolicy estimatedSizeOfSlot: s AssumingOopSizeIs: 2]) sum].
+            r: list copyRemoveAll.
+            d do: [|:size. :mName|
+              r add: size @ mName.
+            ].
+            (r asVector copySortBySelector: 'x') reverse).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: iterating\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nmethodsDo: blk = ( |
+            | 
+            objectsOracle nmethodsDo: blk.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
@@ -3961,6 +3834,15 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: iterating\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         oopsAndAddressesAndOriginalMirrorsAndKleinifiedMirrorsAndOIDsDo: blk = ( |
+            | 
+            objectsOracle oopsAndAddressesAndOriginalMirrorsAndKleinifiedMirrorsAndOIDsDo: blk.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: tracking objects\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          originalMirrorForOID: oid IfAbsent: ab = ( |
@@ -3984,11 +3866,171 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fCategory: block inlining\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         printBlockInliningStatistics = ( |
+             matchedBlockLiteralCountsBySelector.
+             matches.
+             mms.
+             poppedBlockLiteralBCs.
+             templates.
+             totalBlockCount <- 0.
+             unmatchedBlockCutoff = 10.
+             unmatchedBlockLiteralCount <- 0.
+             unmatchedBlockLiteralsBySelector.
+            | 
+            mms: objectsOracle methodMirrors.
+            matches: list copyRemoveAll.
+            poppedBlockLiteralBCs: list copyRemoveAll.
+            unmatchedBlockLiteralsBySelector: dictionary copyRemoveAll.
+            mms do: [|:mm. f|
+              f: vmKit objectMapper1 blockInliningBytecodeTransmogrifier copyForMethod: mm.
+              f interpretMethod.
+              matches addAll: f matches.
+              poppedBlockLiteralBCs addAll: f poppedBlockLiteralBCs.
+              f unmatchedSendBCsWithBlockLiteralArgs do: [|:p|
+                (unmatchedBlockLiteralsBySelector at: p x selector IfAbsentPut: [list copyRemoveAll]) addAll: p y.
+              ].
+            ].
+            templates: matches copyMappedBy: [|:m| m template].
+            matchedBlockLiteralCountsBySelector: dictionary copyRemoveAll.
+            templates occurrencesOfEachElement do: [|:n. :t. blockCount|
+              blockCount: n * t positionsThatMustBeBlocks size.
+              matchedBlockLiteralCountsBySelector if: t selector IsPresentPut: [|:c| c + blockCount] AndDo: []
+                                                                  IfAbsentPut: [         blockCount] AndDo: [].
+            ].
+            matchedBlockLiteralCountsBySelector sortedDo: [|:n. :s|
+              totalBlockCount: totalBlockCount + n.
+              ('There are ', (n printString padOnLeft: 4), '  block literal arguments of ', (s padOnRight: 30)) printLine.
+            ].
+            ('That adds up to ', totalBlockCount printString, ' blocks to inline in total (out of ',
+                  objectsOracle blockMirrors size printString, ' blocks in the image).') printLine.
+            '' printLine.
+            ('There are ', poppedBlockLiteralBCs size printString, ' browsing tags.') printLine.
+            ('Selectors that have over ', unmatchedBlockCutoff printString, ' uninlined block literal arguments:') printLine.
+            unmatchedBlockLiteralsBySelector do: [|:blockBCs. :s|
+              unmatchedBlockLiteralCount: unmatchedBlockLiteralCount + blockBCs size.
+              blockBCs size > unmatchedBlockCutoff ifTrue: [
+                ((blockBCs size printString padOnLeft: 3), ' uninlined block literals are arguments of ', s) printLine.
+              ].
+            ].
+            ('There are ', unmatchedBlockLiteralCount printString, ' uninlined block literal arguments in total.') printLine.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         printModuleSizes = ( |
+             r.
+             totalSize <- 0.
+            | 
+            r: list copyRemoveAll.
+            moduleSizes do: [|:size. :mName|
+              totalSize: totalSize + size.
+              r add: size @ mName.
+            ].
+            (totalSize printString, ' in total') printLine.
+            (r copySortBySelector: 'x') reverseDo: [|:p| ((p x printString padOnLeft: totalSize printString size), ': ', p y) printLine].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         statisticsMethodNames = ( |
+            | 
+            ( [breakDownObjectsByMap]
+            & [breakDownObjectsBySelfPrototype]
+            & [moduleSizes]
+            & [breakDownNMethodsByHolder]
+            & [breakDownNMethodsBySlotType]
+            & [breakDownRelocatorsByType]
+            & [sortedCodeSizeStats]
+            & [unsentSlotsByHolder]
+            ) asVector copyMappedBy: [|:b| b asMirror methodSource]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: oop offset\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          subtractOffsetFromOop: oop = ( |
             | 
             theVM objectLocator addOffset: heapOffset negate ToOop: oop).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         uninvokedNMethods = ( |
+            | 
+            (invocationCounts copyFilteredBy: [|:p| p y = 0]) copyMappedBy: [|:p| p x]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         uninvokedNMethodsByHolder = ( |
+             d.
+            | 
+            d: dictionary copyRemoveAll.
+            uninvokedNMethods do: [|:nm| (d at: (reflect: nm methodHolder) IfAbsentPut: [list copyRemoveAll]) add: nm].
+            d).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         unsentSlots = ( |
+             r.
+             sels.
+            | 
+            r: list copyRemoveAll.
+            sels: selectorsSent asSet.
+            wellKnownSlotsDo: [|:s| (sels includes: s name) ifFalse: [r add: s]].
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         unsentSlotsByHolder = ( |
+             d.
+             r.
+            | 
+            d: dictionary copyRemoveAll.
+            unsentSlots do: [|:s|
+              (d at: s holder IfAbsentPut: [list copyRemoveAll]) add: s.
+            ].
+
+            r: list copyRemoveAll.
+            d do: [|:ss. :m| r add: (ss copyMappedBy: [|:s| s name]) asVector copySort @ m].
+            r asVector copySortBy: (| element: a Precedes: b = (a x size > b x size) |)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         wellKnownSlotsDo: aBlock = ( |
+            | 
+            myVM setTheVMAndDo: [
+              theVM exportPolicy invalidateCachedModuleNameLists.
+              theVM exportPolicy modulesToMap allNamesOfIncludedModules do: [|:mName. m|
+                mName isEmpty ifFalse: [
+                  m: mName sendTo: modules.
+                  m slots do: [|:s|
+                    [|:exit. kleinMir. oop|
+                      oop:  oopForOriginalMirror: s holder IfAbsent: exit.
+                      kleinMir: theVM mirrorFor: oop.
+                      (kleinMir includesKey: s name) ifTrue: [
+                        aBlock value: s.
+                      ].
+                    ] exit.
+                  ].
+                ].
+              ].
+            ].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -4035,28 +4077,15 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+         'Category: object mapper state\x7fCategory: transient state\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         policy.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fComment: Oop for a regular vector: size is 0, parent is
-traits vector, no other named slots.\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         prototypeSimpleVectorOop.
+         prototypeNMethodCacheOop.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: times\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          recordingNMethodsTime <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: times\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
-        
-         resendDetectionTime <- 0.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
@@ -4123,18 +4152,6 @@ traits vector, no other named slots.\x7fModuleInfo: Module: vmKitObjMapper Initi
          'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: times\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
         
          stringTableTime <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: times\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
-        
-         unmappedSlotsTime <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fCategory: block nmethods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         valueSlotNameOfFirstBlock.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> () From: ( | {
@@ -4424,7 +4441,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
         
          copy = ( |
             | 
-            ((((((((((resend.copy
+            (((((((((((resend.copy
              oidsByOriginalObject:             oidsByOriginalObject             copy)
              oidsByOop:                        oidsByOop                        copy)
              exemplarOIDsByCanonicalMap:       exemplarOIDsByCanonicalMap       copy)
@@ -4434,6 +4451,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
              selectorsToCompile:               selectorsToCompile               copy)
              mappedSlots:                      mappedSlots                      copy)
              codeSizeStatistics:               codeSizeStatistics               copy)
+             resendBytecodesByNMethodOID:      resendBytecodesByNMethodOID      copy)
              nmethodOIDsByMapOID:              nmethodOIDsByMapOID              copyMappedBy: [|:nmOIDs|   nmOIDs copy])
              mapOIDsContainingUncompiledSlots: mapOIDsContainingUncompiledSlots copyMappedBy: [|:mapOIDs| mapOIDs copy]).
         } | ) 
@@ -4479,7 +4497,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
         
          copyRemoveAll = ( |
             | 
-            (((((((((((resend.copy invalidateCachedItems
+            ((((((((((((resend.copy invalidateCachedItems
              oidsByOriginalObject:             oidsByOriginalObject             copyRemoveAll)
              oidsByOop:                        oidsByOop                        copyRemoveAll)
              exemplarOIDsByCanonicalMap:       exemplarOIDsByCanonicalMap       copyRemoveAll)
@@ -4489,6 +4507,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
              selectorsToCompile:               selectorsToCompile               copyRemoveAll)
              mappedSlots:                      mappedSlots                      copyRemoveAll)
              codeSizeStatistics:               codeSizeStatistics               copyRemoveAll)
+             resendBytecodesByNMethodOID:      resendBytecodesByNMethodOID      copyRemoveAll)
              nmethodOIDsByMapOID:              nmethodOIDsByMapOID              copyRemoveAll)
              mapOIDsContainingUncompiledSlots: mapOIDsContainingUncompiledSlots copyRemoveAll)).
         } | ) 
@@ -4532,12 +4551,13 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
          'Category: tracking\x7fCategory: maps and exemplars\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         exemplarOIDForMap: m = ( |
+         exemplarForMap: map = ( |
             | 
-            exemplarOIDsByCanonicalMap
-                    at: m 
-              IfAbsent: [m isImmediate ifTrue: [error: 'should not be called for immediate maps']
-                                        False: raiseError]).
+            map isImmediate ifTrue: [
+              map myLayout exemplar
+            ] False: [
+              originalObjectForOID: exemplarOIDsByCanonicalMap at: map
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -4693,25 +4713,19 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
          'Category: tracking\x7fCategory: maps and exemplars\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         mapOIDForExemplar: e = ( |
-             mir.
+         mapOIDForExemplarMirror: mir = ( |
             | 
-            mir:  reflect: e.
             mir isReflecteeKleinAndYodaImmediate
                     ifTrue: [oidForOriginalObject: mir vmKitMapForConversion]
-                     False: [mapOIDForExemplarOID: oidForOriginalObject: e]).
+                     False: [mapOIDForExemplarOID: oidForOriginalMirror: mir]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
          'Category: tracking\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         mapOIDForExemplarOID: exemplarOID IfPresent: pb IfAbsent: ab = ( |
-             exemplarOop.
-             mapOop.
+         mapOIDForExemplarOID: exemplarOID = ( |
             | 
-            exemplarOop: oopForOID: exemplarOID IfAbsent: [^ ab value].
-            mapOop: vmKit layouts object mapOf: exemplarOop IfFail: [^ ab value].
-            pb value: oidForOop: mapOop IfAbsent: [^ ab value]).
+            oidForOop: vmKit layouts object mapOf: oopForOID: exemplarOID).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -4757,14 +4771,6 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
          methodMirrorsAllowingDuplicates = ( |
             | 
             originalMirrorsAllowingDuplicates copyFilteredBy: [|:m| m isReflecteeMethod]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
-         'Category: tracking\x7fCategory: maps and exemplars\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         mirrorForExemplarOID: exemplarOID = ( |
-            | 
-            kleinifiedMirrorForOID: exemplarOID).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -5190,11 +5196,27 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'remoteKleinMethodSlot' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         = s = ( |
+            | 
+            (holder = s holder) && [key = s key]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'remoteKleinMethodSlot' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          copyName: n Holder: h Contents: c = ( |
             | 
             ((copy name: n) holder: h) contents: c).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'remoteKleinMethodSlot' -> 'parent' -> () From: ( | {
+         'Category: comparing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         hash = ( |
+            | 
+            holder hash ^^ key hash).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'remoteKleinMethodSlot' -> 'parent' -> () From: ( | {
@@ -5213,6 +5235,14 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
          'Category: testing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          isMethod = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'remoteKleinMethodSlot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         key = ( |
+            | 
+            name).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'remoteKleinMethodSlot' -> 'parent' -> () From: ( | {
@@ -5251,6 +5281,14 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
 
             verifySizesOfDictionaries.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
+         'Category: tracking\x7fCategory: resends\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         resendsInNMethodWithOID: nmOID = ( |
+            | 
+            resendBytecodesByNMethodOID at: nmOID IfAbsent: [dictionary copyRemoveAll]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -5314,15 +5352,74 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
-         'Category: map OIDs by receiver\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         exemplarForMap: map = ( |
+         breakDownNMethodsByHolder = ( |
+             holders.
             | 
-            map isImmediate ifTrue: [
-              map myLayout exemplar
-            ] False: [
-              originalObjectForOID: exemplarOIDForMap: map
-            ]).
+            holders: list copyRemoveAll.
+            nmethodsDo: [|:nm. holder|
+              holder: reflect: nm topScope methodHolder.
+              holder isReflecteeBlock              ifTrue: [holder:         'block!!!' asMirror].
+              holder isReflecteeKleinCompiledBlock ifTrue: [holder: 'compiledBlock!!!' asMirror].
+              holders add: holder.
+            ].
+            sortedOccurrenceCountsFor: holders).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         breakDownNMethodsByHolderAndSlotName = ( |
+             holdersAndSelectors.
+            | 
+            holdersAndSelectors: list copyRemoveAll.
+            nmethodsDo: [|:nm. holder|
+              holder: reflect: nm topScope methodHolder.
+              holder isReflecteeBlock              ifTrue: [holder:         'block!!!' asMirror].
+              holder isReflecteeKleinCompiledBlock ifTrue: [holder: 'compiledBlock!!!' asMirror].
+              holdersAndSelectors add: holder @ nm lookupKey selector.
+            ].
+            sortedOccurrenceCountsFor: holdersAndSelectors).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         breakDownNMethodsBySlotType = ( |
+             accs.
+             meths.
+             muts.
+             rest.
+            | 
+            rest: list copyRemoveAll.
+            meths: list copyRemoveAll.
+            accs: list copyRemoveAll.
+            muts: list copyRemoveAll.
+            nmethodsDo: [|:nm. s|
+              s:  (reflect: nm topScope methodHolder) at: nm lookupKey selector.
+              case
+                if: [s isAssignable] Then: [accs add: nm]
+                If: [s isAssignment] Then: [muts add: nm]
+                If: [s isMethod    ] Then: [meths add: nm]
+                                     Else: [rest add: nm].
+            ].
+            (accs & muts & meths & rest) asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         breakDownRelocatorsByType = ( |
+             protos.
+            | 
+            protos: reflectiveIdentityDictionary copyRemoveAll.
+            nmethodsDo: [|:nm|
+              nm reconstructRelocators do: [|:r|
+                protos if: r prototype IsPresentPut: [|:n| n succ] AndDo: [] IfAbsentPut: 1 AndDo: [].
+              ].
+            ].
+            protos mapBy: [|:n. :r| r @ n] Into: vector copySize: protos size).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
@@ -5347,6 +5444,14 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
          kleinifiedMirrorForOop: oop IfAbsent: ab = ( |
             | 
             kleinifiedMirrorForOID: (oidForOop: oop IfAbsent: [^ ab value]) IfAbsent: ab).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: kleinified objects\x7fCategory: by original object\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         kleinifiedMirrorForOriginalMirror: origMir = ( |
+            | 
+            reflect: kleinifiedObjectForOriginalMirror: origMir).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
@@ -5386,7 +5491,10 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
         
          kleinifiedObjectForOriginalMirror: origMir = ( |
             | 
-            kleinifiedObjectForOID: oidForOriginalMirror: origMir).
+            kleinifiedObjectForOID: oidForOriginalMirror: origMir IfAbsent: [
+              [origMir isReflecteeKleinAndYodaImmediate] assert.
+              ^ origMir reflectee
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
@@ -5408,9 +5516,27 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
          'Category: map OIDs by receiver\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
-         mapOIDForExemplarOID: oid = ( |
+         mapOIDForExemplar: e = ( |
             | 
-            mapOIDForExemplarOID: oid IfPresent: [|:mapOID| mapOID] IfAbsent: raiseError).
+            mapOIDForExemplarMirror: reflect: e).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fCategory: prototypes\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         objectSize = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectSize' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectsOracle parent trackingObjects objectSize.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fCategory: prototypes\x7fComment: This is a terrible name for this object. -- Adam, 10/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         objectStat = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'objectStat' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectsOracle parent trackingObjects objectStat.
+'.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
@@ -5523,6 +5649,67 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
          originalObjectForOop: oop IfAbsent: fb = ( |
             | 
             originalObjectForOID: (oidForOop: oop IfAbsent: [^ fb value]) IfAbsent: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         selectorsSent = ( |
+             r.
+            | 
+            r: set copyRemoveAll.
+            methodMirrorsAllowingDuplicates do: [|:m|
+              m literalsDo: [|:lit|
+                (reflect: lit) isReflecteeString ifTrue: [
+                  r add: lit.
+                ].
+              ].
+            ].
+            r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         selfPrototypeOf: m = ( |
+            | 
+            m prototypeIfPresent: [|:p| p]
+                        IfAbsent: [case
+                                          if: [m isReflecteeBlockMethod] Then: [mirrors blockMethod ]
+                                          If: [m isReflecteeMethod     ] Then: [mirrors method      ]
+                                          If: [m isReflecteeBlock      ] Then: [mirrors block       ]
+                                          If: [m isReflecteeString     ] Then: [reflect: ''         ]
+                                          If: [m isReflecteeVector     ] Then: [reflect: vector     ]
+                                        Else:                                  [reflect: ()         ]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sortedCodeSizeStats = ( |
+            | 
+            (codeSizeStatistics copyMappedBy: [|:codeSize. :kindOfGeneration| codeSize @ kindOfGeneration])
+               asVector copySortBy: (| element: a Precedes: b = (a x > b x) |)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sortedOccurrenceCountsFor: aCollection = ( |
+             occurrences.
+            | 
+            occurrences: list copyRemoveAll.
+            aCollection occurrencesOfEachElement do: [|:n. :p| occurrences add: n @ p].
+            occurrences asVector copySortBy: (| element: a Precedes: b = (a x > b x) |)).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: statistics\x7fCategory: prototypes\x7fComment: This is a terrible name for this object. -- Adam, 10/05\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         typeStat = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> 'typeStat' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals kleinAndYoda objectsOracle parent trackingObjects typeStat.
+'.
+            | ) .
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -5641,6 +5828,12 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
+        
+         resendBytecodesByNMethodOID <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> () From: ( | {
          'Category: optimizations\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (set copyRemoveAll)\x7fVisibility: private'
         
          selectorsToCompile <- set copyRemoveAll.
@@ -5742,6 +5935,18 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
             "Most objects don't need to be changed when we map them
              to Klein."
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {
+         'Category: klein and yoda\x7fCategory: exporting\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         requestCompilationWithObjectMapper: mapper = ( |
+             map.
+             mapOID.
+            | 
+            mapOID:      mapper objectsOracle mapOIDForExemplarMirror: self.
+            map:         mapper objectsOracle kleinifiedObjectForOID:  mapOID.
+            mapper requestCompilationForReceiverMirror: self Map: map MapOID: mapOID).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {

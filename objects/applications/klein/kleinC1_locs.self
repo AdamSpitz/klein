@@ -416,6 +416,14 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
+         tell: aCodeGenerator ToLoadMeFromFrame: f AtSP: sp ToRegister: r = ( |
+            | 
+            tell: aCodeGenerator ToLoadMeToRegister: r).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
          tell: aCodeGenerator ToLoadMeToRegister: r = ( |
             | 
             aCodeGenerator loadConstantLocation: self ToRegister: r.

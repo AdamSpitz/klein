@@ -1,6 +1,7 @@
  '$Revision: 30.12 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -393,77 +394,6 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinBlockInlining InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
         
          unmatchedSendBCsWithBlockLiteralArgs <- list copyRemoveAll.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fCategory: block inlining\x7fModuleInfo: Module: kleinBlockInlining InitialContents: FollowSlot\x7fVisibility: public'
-        
-         doABunchOfInlining = ( |
-            | 
-            [todo blockInlining]. "Where should this method go and what should it be called?"
-            objectsOracle methodMirrors do: [|:m. mm. f|
-              mm: m.
-              [f: blockInliningBytecodeTransmogrifier copyForMethod: mm.
-              f interpretMethod.
-              f matches isEmpty] whileFalse: [| match |
-                match: f matches first.
-                mm: match createMethodWithInlinedBlocks.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'vmImage' -> 'parent' -> () From: ( | {
-         'Category: statistics\x7fCategory: block inlining\x7fModuleInfo: Module: kleinBlockInlining InitialContents: FollowSlot\x7fVisibility: public'
-        
-         printBlockInliningStatistics = ( |
-             matchedBlockLiteralCountsBySelector.
-             matches.
-             mms.
-             poppedBlockLiteralBCs.
-             templates.
-             totalBlockCount <- 0.
-             unmatchedBlockCutoff = 10.
-             unmatchedBlockLiteralCount <- 0.
-             unmatchedBlockLiteralsBySelector.
-            | 
-            mms: objectsOracle methodMirrors.
-            matches: list copyRemoveAll.
-            poppedBlockLiteralBCs: list copyRemoveAll.
-            unmatchedBlockLiteralsBySelector: dictionary copyRemoveAll.
-            mms do: [|:mm. f|
-              f: vmKit objectMapper1 blockInliningBytecodeTransmogrifier copyForMethod: mm.
-              f interpretMethod.
-              matches addAll: f matches.
-              poppedBlockLiteralBCs addAll: f poppedBlockLiteralBCs.
-              f unmatchedSendBCsWithBlockLiteralArgs do: [|:p|
-                (unmatchedBlockLiteralsBySelector at: p x selector IfAbsentPut: [list copyRemoveAll]) addAll: p y.
-              ].
-            ].
-            templates: matches copyMappedBy: [|:m| m template].
-            matchedBlockLiteralCountsBySelector: dictionary copyRemoveAll.
-            templates occurrencesOfEachElement do: [|:n. :t. blockCount|
-              blockCount: n * t positionsThatMustBeBlocks size.
-              matchedBlockLiteralCountsBySelector if: t selector IsPresentPut: [|:c| c + blockCount] AndDo: []
-                                                                  IfAbsentPut: [         blockCount] AndDo: [].
-            ].
-            matchedBlockLiteralCountsBySelector sortedDo: [|:n. :s|
-              totalBlockCount: totalBlockCount + n.
-              ('There are ', (n printString padOnLeft: 4), '  block literal arguments of ', (s padOnRight: 30)) printLine.
-            ].
-            ('That adds up to ', totalBlockCount printString, ' blocks to inline in total (out of ',
-                  objectsOracle blockMirrors size printString, ' blocks in the image).') printLine.
-            '' printLine.
-            ('There are ', poppedBlockLiteralBCs size printString, ' browsing tags.') printLine.
-            ('Selectors that have over ', unmatchedBlockCutoff printString, ' uninlined block literal arguments:') printLine.
-            unmatchedBlockLiteralsBySelector do: [|:blockBCs. :s|
-              unmatchedBlockLiteralCount: unmatchedBlockLiteralCount + blockBCs size.
-              blockBCs size > unmatchedBlockCutoff ifTrue: [
-                ((blockBCs size printString padOnLeft: 3), ' uninlined block literals are arguments of ', s) printLine.
-              ].
-            ].
-            ('There are ', unmatchedBlockLiteralCount printString, ' uninlined block literal arguments in total.') printLine.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

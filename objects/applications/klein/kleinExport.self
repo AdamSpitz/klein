@@ -130,12 +130,10 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
          isOkayToCompileMethodsForReflecteeOf: rMir = ( |
             | 
                 rMir isComplete
-            || [rMir isReflecteeBlock               "blocks  are not complete, but we want to compile block methods like assert:"
-            || [rMir isReflecteeKleinCompiledBlock  
             || [rMir isReflecteeVector              "vectors are not complete, but we want to compile vector methods"
             || [rMir isReflecteeByteVector
             || [(wellKnownIncompleteObjectsWithSlotsToCompile includes: rMir)
-            || [rMir isReflecteeEmptyBlock "when you type [], you don't get a real block" ]]]]]]).
+            || [rMir isReflecteeEmptyBlock "when you type [], you don't get a real block" ]]]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
@@ -143,6 +141,10 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
         
          isSlotToBeCompiled: s = ( |
             | 
+            [originalBlock_replaceThisSlotWithTheValueSlot.
+             originalBlock_replaceThisSlotWithTheValueSlot: nil]. "browsing"
+            s name = 'originalBlock_replaceThisSlotWithTheValueSlot' ifTrue: [^ false].
+
             (isSlotToBeMapped: s) && [modulesToCompile includesModuleNamed: s module]).
         } | ) 
 
@@ -345,7 +347,7 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'Category: object mapping policy\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
         
-         shouldEviscerateModuleObjects = bootstrap stub -> 'globals' -> 'false' -> ().
+         shouldEviscerateModuleObjects = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
@@ -576,6 +578,7 @@ filtered out.\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7f
          slotsToCompileForReceiver: rMir Do: blk = ( |
              slotNamesAlreadySeen.
             | 
+
             (isOkayToCompileMethodsForReflecteeOf: rMir) ifFalse: [^ self].
 
             slotNamesAlreadySeen: orderedSet copyRemoveAll.

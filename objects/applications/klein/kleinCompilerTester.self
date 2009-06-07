@@ -192,7 +192,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compilerTestPrograms' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: kleinCompilerTester InitialContents: FollowSlot\x7fVisibility: private'
         
-         compile: aSlot For: arch LexicalParentScopes: lpss = ( |
+         compile: aSlot For: arch LexicalParentScops: lps = ( |
              c.
              context.
             | 
@@ -200,7 +200,7 @@ See the LICENSE file for license information.
             context: c prototypes compilationContext
                                     copyForSlot: aSlot
                                            Self: myMap "won't work yet"
-                            LexicalParentScopes: lpss.
+                             LexicalParentScope: lps.
             c: c copyForContext: context
                    Architecture: arch
                          Oracle: c oracleThatCannotDoEagerRelocation
