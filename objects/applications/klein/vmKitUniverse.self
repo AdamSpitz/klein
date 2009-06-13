@@ -399,21 +399,6 @@ SlotsToOmit: parent.
          smiMap.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
-         'Category: unmapped\x7fCategory: initializing\x7fComment: Allocates a new heap from machineMemory of the
-specified size.  Must be called exactly once before
-objects are allocated within the space.\x7fModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot\x7fVisibility: public'
-        
-         allocateHeapAt: base Size: s = ( |
-            | 
-            [todo optimize gc multipleSpaces]. "What's the right way to divide the space? -- Adam, 5/06"
-
-            universe allocateHeapAt: base
-                         NewGenSize: s / 8
-                  ScavengeSpaceSize: s / 4  "big because the scavenger creates a lot of garbage for now -- Adam, Mar, 2009"
-                          TotalSize: s).
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {
          'ModuleInfo: Module: vmKitUniverse InitialContents: FollowSlot'
         

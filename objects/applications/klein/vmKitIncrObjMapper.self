@@ -109,7 +109,7 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
             r: copy.
             r myVM: aVM.
             r copyOfOldObjectLocator: aVM objectLocator copy.
-            r objectsOracle oldOopForObjectThatWasDefined: theVM image oopForOriginalObject: definee.
+            r objectsOracle oldOopForObjectThatWasDefined: aVM image oopForOriginalObject: definee.
             r objectsOracle ensureOIDVectorsHaveSizeAtLeast: r objectsOracle addressesByOID size.
             r statusReporter: reporter.
             r objectThatWasDefined: definee.
@@ -126,7 +126,7 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
              new one, rather than allocating a whole new object for it. -- Adam, 12/05"
 
             copyOfOldObjectLocator size = objectsOracle addressesByOID size ifTrue: [| oldObjectLocatorMir |
-              oldObjectLocatorMir:  theVM image mirrorOnTheObjectLocatorIfFail: raiseError.
+              oldObjectLocatorMir:  myVM image mirrorOnTheObjectLocatorIfFail: raiseError.
               exportContentsOf: (objectsOracle addressesByOID copyMappedBy: [|:x| (reflect: x) kleinAndYodaLayout oopForValue: x])
                IntoReflecteeOf: oldObjectLocatorMir.
             ].
@@ -166,7 +166,7 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
         
          image = ( |
             | 
-            theVM image).
+            myVM image).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {
@@ -174,7 +174,7 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
         
          initializeCanonicalizedStrings = ( |
             | 
-            canonicalizedStrings: theVM universe canonicalizedStrings copy.
+            canonicalizedStrings: myVM universe canonicalizedStrings copy.
             self).
         } | ) 
 
@@ -260,7 +260,7 @@ where the old object was. -- Adam, 5/05\x7fModuleInfo: Module: vmKitIncrObjMappe
         
          objectsOracleProto = ( |
             | 
-            vmKit incrementalUpdateObjectsOracle).
+            theVM vmKit incrementalUpdateObjectsOracle).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalObjectMapper1' -> 'parent' -> () From: ( | {

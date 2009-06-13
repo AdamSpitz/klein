@@ -1295,6 +1295,14 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
         
+         kleinCompilerPrototypeForMe = ( |
+            | 
+            klein compiler1).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> 'slot' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: public'
+        
          module = ( |
             | 
             parsedAnnotation moduleInfo module).

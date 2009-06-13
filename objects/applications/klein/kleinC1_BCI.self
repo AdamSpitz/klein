@@ -80,6 +80,12 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
          'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
         
+         localReturnBB.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
+         'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
+        
          nlrPointEpilogueBB.
         } | ) 
 
@@ -373,7 +379,7 @@ SlotsToOmit: parent.
          epilogue = ( |
              orv.
             | 
-            irNodeGenerator nodeToInsertAfter isNonlocalReturn ifTrue: [^ self]. "localReturn is not necessary."
+            irNodeGenerator nodeToInsertAfter canFallThrough ifFalse: ["localReturn is not necessary." ^ self].
 
             currentBC: nonexistentBCAt: method ifNil: 0 IfNotNil: [|:m| m codes size].
 
@@ -555,7 +561,7 @@ SlotsToOmit: parent.
             | 
             scopeDesc lookupKey: sourceLevelAllocator context lookupKey.
             scopeDesc lexicalParentScope: sourceLevelAllocator context lexicalParentScope.
-            scopeDesc method: slot isMethod ifTrue: [[slot contents isActivation] assert. slot contents] False: [slot contents reflectee].
+            scopeDesc method: slot isMethod ifTrue: [slot contents] False: [slot contents reflectee].
             scopeDesc methodHolder: compiler reflecteeOfHolderOfSlot: slot.
             self).
         } | ) 
@@ -722,14 +728,13 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             "This also gets called for ^'s in non-block methods.
              (for syntactical compatibility with Smalltalk),
               but in that case the bytecode is a nop. -- dmu 5/05"
-            method isReflecteeBlockMethod ifTrue: [| orv. hsv. hsdv |
-              orv:  sourceLevelAllocator newValueForOutgoingResult.
-              hsv:  machineLevelAllocator valueForNLRHomeScope.
-              hsdv: machineLevelAllocator valueForNLRHomeScopeDesc.
-              irNodeGenerator moveNLRHomeScopeTo:     hsv.
-              irNodeGenerator moveNLRHomeScopeDescTo: hsdv.
-              irNodeGenerator move: popStackValue To: orv.
-              irNodeGenerator nonlocalReturn: orv FramePointer: hsv ScopeDesc: hsdv.
+            method isReflecteeBlockMethod ifTrue: [| ep |
+              ep: nlrPointEpilogueBB endNode.
+              irNodeGenerator moveNLRHomeScopeTo:     ep framePointerValue.
+              irNodeGenerator moveNLRHomeScopeDescTo: ep scopeDescValue.
+              irNodeGenerator move: popStackValue To: ep outgoingResultValue.
+              irNodeGenerator branchToLabel: nlrPointEpilogueBB labelNode.
+              [aaaaaaa irNodeGenerator nonlocalReturn: orv FramePointer: hsv ScopeDesc: hsdv].
             ].
             bc).
         } | ) 
@@ -997,7 +1002,10 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                   preds: succ controlFlowPreds.
                   preds size > 1 ifTrue: [| bbToInsert |
                     bbToInsert: irNodeGenerator createNewBBBranchingTo: succ labelNode BC: bb endNode bc.
-                    bb endNode replaceDestinationNode: succ labelNode With: bbToInsert labelNode.
+                    bb endNode replaceControlFlowSucc: succ labelNode
+                                                 With: bbToInsert labelNode
+                                            IfSucceed: []
+                                               IfFail: raiseError.
                   ].
                 ].
               ].
@@ -1306,6 +1314,20 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
+         createLocalReturnBB = ( |
+             bc.
+             lbl.
+            | 
+            bc: currentBytecodeInterpreter nonexistentBCAt: -1.
+            lbl: irNodeProtos label copyBC: bc.
+            currentBytecodeInterpreter localReturnBB: newBBStartingWith: lbl EndingWith: nil.
+            "We'll hook it up later."
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
          createNLRPointEpilogue = ( |
              bc.
              ep.
@@ -1456,7 +1478,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                 ] exitValue.
 
             ss ifNone: noInlineBlk
-                IfOne: [|:s| (compiler optimizationPolicy shouldInlineSlot: s For: rcvrValue Key: key) ifTrue: [
+                IfOne: [|:s| (compiler optimizationPolicy shouldInlineSlot: s For: rcvrValue Into: currentBytecodeInterpreter context Key: key) ifTrue: [
                                inlineBlk value: s With: t
                              ] False: noInlineBlk
                        ]
@@ -1486,7 +1508,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             i currentBC: i nonexistentBCAt: 0.
             rcvrAndArgValues with: sla incomingRcvrAndArgValues Do: [|:srcV. :dstV| move: srcV To: dstV].
             interpretCurrentSlot.
-            [nodeToInsertAfter isReturn] assert.
+            [nodeToInsertAfter isLocalReturn] assert.
             move: nodeToInsertAfter outgoingResultValue To: resultValue.
             interpreterFinished.
             i).
@@ -1575,8 +1597,14 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          'Category: returning\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          localReturn: v = ( |
+             lbl.
+             localReturnBBEndNode.
             | 
+            lbl: defineLabel.
             addNode: irNodeProtos localReturn copyBC: currentBC Result: v.
+            localReturnBBEndNode: newBranchNodeForLabel: lbl.
+            localReturnBBEndNode insertAfter: currentBytecodeInterpreter localReturnBB labelNode.
+            currentBytecodeInterpreter localReturnBB endWith: localReturnBBEndNode.
             self).
         } | ) 
 
@@ -1612,9 +1640,11 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          'Category: moving data\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          moveConstant: o To: dst NameForComment: n = ( |
+             r.
             | 
-            [aaaaa]. "Make it remember the name for the comment."
-            moveConstant: o To: dst).
+            r: moveConstant: o To: dst.
+            nodeToInsertAfter sourceValue location explicitNameForComment: n.
+            r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -1762,6 +1792,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
               [i nodeToBranchToOnNLR controlFlowPreds isEmpty] assert.
             ].
             currentBytecodeInterpreter: i.
+            createLocalReturnBB.
             createNLRPointEpilogue.
             i).
         } | ) 

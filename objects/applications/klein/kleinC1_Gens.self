@@ -32,7 +32,7 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (dictionary copyRemoveAll)'
         
          codeSizeStatistics <- dictionary copyRemoveAll.
         } | ) 
@@ -44,15 +44,15 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (0)'
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)'
         
-         numberOfLocalsThatDoNotNeedToBeInitialized <- 0.
+         nodeToBeGeneratedAfterThisOne.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
-         'Category: statistics\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (0)'
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)'
         
-         numberOfLocalsThatNeedToBeInitialized <- 0.
+         nodeToGenerate.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
@@ -1542,14 +1542,15 @@ Returns an address into a bytes part masquerading as a small integer.
          'Category: gathering statistics\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generating: kindOfGeneration During: aBlock = ( |
-             sizeBefore.
             | 
-            sizeBefore: a assembledBytesSize.
-            aBlock onReturn: [| numberOfBytesGenerated |
-              numberOfBytesGenerated: a assembledBytesSize - sizeBefore.
-              codeSizeStatistics if: kindOfGeneration
-                       IsPresentPut: [|:n| n + numberOfBytesGenerated] AndDo: []
-                        IfAbsentPut: [         numberOfBytesGenerated] AndDo: [].
+            shouldGatherStatistics ifFalse: aBlock True: [| sizeBefore |
+              sizeBefore: a assembledBytesSize.
+              aBlock onReturn: [| numberOfBytesGenerated |
+                numberOfBytesGenerated: a assembledBytesSize - sizeBefore.
+                codeSizeStatistics if: kindOfGeneration value
+                         IsPresentPut: [|:n| n + numberOfBytesGenerated] AndDo: []
+                          IfAbsentPut: [         numberOfBytesGenerated] AndDo: [].
+              ]
             ]).
         } | ) 
 
@@ -1751,7 +1752,7 @@ Returns an address into a bytes part masquerading as a small integer.
         
          loadConstantLocation: loc ToRegister: r = ( |
             | 
-            loadOop: loc oopValue IntoRegister: r.
+            loadOop: loc oopValue IntoRegister: r NameForComment: [loc nameForComment].
             self).
         } | ) 
 
@@ -2415,7 +2416,15 @@ and may fail to compile otherwise.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         shouldDoInvocationCounts = bootstrap stub -> 'globals' -> 'false' -> ().
+         shouldDoInvocationCounts = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: gathering statistics\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         shouldGatherStatistics = ( |
+            | 
+            compiler shouldGatherStatistics).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2783,7 +2792,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedMethodStartInstruction <- bootstrap stub -> 'globals' -> 'nil' -> ().
+         cachedMethodStartInstruction.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -3335,31 +3344,33 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
               ] True: [
                 genBranchTo: node nodeToBranchToOnNLR.
               ].
-              ^ self
+            ] False: [
+              generateIf: [|:trueFork|
+                generateIf: machineLevelAllocator locationForIncomingNLRHomeScope DoesNotEqual: sp ThenBranchTo: trueFork.
+
+                [aaaaaaa]. "Possible optimization: this check isn't necessary if the topScope has no inlinedScopes, right?"
+                withTemporaryRegisterDo: [|:scopeDescReg|
+                  loadOop: node interpreter scopeDesc IntoRegister: scopeDescReg NameForComment: 'NLR home scopeDesc'.
+                  generateIf: machineLevelAllocator locationForIncomingNLRHomeScopeDesc DoesNotEqual: scopeDescReg ThenBranchTo: trueFork.
+                ].
+              ] Then: [
+                node sourceLevelAllocator isInlined ifFalse: [
+                  restoreFrameAndReturn: sendDesc nlrReturnIndex
+                ] True: [
+                  genBranchTo: node nodeToBranchToOnNLR.
+                ].
+              ] Else: [
+                node sourceLevelAllocator isInlined ifFalse: [
+                  restoreFrameAndReturn: sendDesc normalReturnIndex
+                ] True: [| localReturnNode |
+                  [aaaaaaa]. "Don't we have to hook up the data flow links?"
+                  localReturnNode: node interpreter localReturnBB endNode destinationNode sourceSucc.
+                  [localReturnNode isLocalReturn] assert.
+                  moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: localReturnNode outgoingResultValue location.
+                ]
+              ].
             ].
-
-            generateIf: [|:trueFork|
-              generateIf: machineLevelAllocator locationForIncomingNLRHomeScope DoesNotEqual: sp ThenBranchTo: trueFork.
-
-              [aaaaaaa]. "Possible optimization: this check isn't necessary if the topScope has no inlinedScopes, right?"
-              withTemporaryRegisterDo: [|:scopeDescReg|
-                loadOop: node interpreter scopeDesc IntoRegister: scopeDescReg.
-                generateIf: machineLevelAllocator locationForIncomingNLRHomeScopeDesc DoesNotEqual: scopeDescReg ThenBranchTo: trueFork.
-              ].
-            ] Then: [
-              node sourceLevelAllocator isInlined ifFalse: [
-                restoreFrameAndReturn: sendDesc nlrReturnIndex
-              ] True: [
-                [aaaaaaa]. halt.
-              ].
-            ] Else: [
-              node sourceLevelAllocator isInlined ifFalse: [
-                restoreFrameAndReturn: sendDesc normalReturnIndex
-              ] True: [
-                [aaaaaaa]. halt. "Just gotta maybe move the result value to the right place (or is it there already?)
-                                  and then branch to the end of the scope."
-              ]
-            ]).
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {

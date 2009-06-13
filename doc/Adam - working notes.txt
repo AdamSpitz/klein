@@ -53,30 +53,54 @@ Inlining plan:
 
 ----
 
-Whoa look at these nmethods we're compiling:
-7129@a mirrors canonicalString(on 'compiledBlock!!!')@'parent'
-7129@a mirrors canonicalString(on 'compiledBlock!!!')@'scopeDesc'
-7129@a mirrors canonicalString(on 'compiledBlock!!!')@'originalBlock_replaceThisSlotWithTheValueSlot'
-
-'Cause they've all got different maps. But... shouldn't the 'parent' nmethods be reusable? Oh - no, because they're really different slots, and the things are cached by slot and key, I think. Could I cache them by contents and key? No, not quite.
-
-
-Also, is there anything I can do to make it cheaper to produce an nmethod for a constant slot? Right now, each nmethod for a constant slot costs:
-
-  - Objects:
-    - the nmethod itself
-    - relocationInfo (which is of size 19 - the smiMap, the floatMap, the branch to the sendMessage_stub, and a loadAddress for the constant)
-    - topScope
-      - lookupKey
-
-----
-
-It's not cloning the block! Hooray! But now I've got this bug where the source-level UI crashes when inlined blocks are involved.
+Now I've got this bug where the source-level UI crashes when inlined blocks are involved.
 
 I've got a klein mirrors blockMethodActivation that gives me an error when I call lexicalParent on it.
 
 ----
 
-Latest bug: see the picture.
+Fix the copyright notices!!!
 
-With or without inlining, it looks like string canonicalization is broken. (Probably a symptom of some more fundamental problem.)
+----
+
+Call generatePrimitiveTranslationMethods when filing in the module, or something.
+
+----
+
+Um, why can't the normalReturnIndex in the sendDesc branch directly to the sourceSucc node? Why bother branching to the end of the send and then to the sourceSucc?
+
+----
+
+How hard would it be to do constant folding?
+
+----
+
+Awesome! The GC tests actually run. Now we fail during the compiling test.
+
+Oh, no, now we're not actually failing, just running for a really long time. (Forever?) I opened up a debugger at a point where we seem to be in the middle of figuring out an object's reflective safeName. Which is needed for a comment. Maybe turn off areCommentsEmitted when we compile at runtime, at least for now?
+
+Could also try inlining some of the fundamental things that I see in the stack - stuff needed by do: and stuff like that.
+
+to:ByPositive:Do:
+whileTrue:
+loop
+to:By:Do:
+to:Do:
+ifTrue:False:
+ifTrue:
+do:
+value:With:
+value:
+value
+
+shift
+shiftPast
+Oh, but to make that really help I might need constant folding.
+Whoa, to get a mutable string's hash we canonicalize it and use its identityHash??? Maybe I shouldn't do that generating:During: thing.
+maybe the set/dictionary stuff? Might not be necessary, though - fix the generating:During: thing first.
+
+Dammit, fix the sender of nodeName.
+
+Hmm, looks like shift is being inlined, but shiftPast isn't.
+
+Hey, the compiling test finished!

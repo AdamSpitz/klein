@@ -12,7 +12,7 @@ See the LICENSE file for license information.
         
          dataValue = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue.
-'.
+\x7fIsComplete: '.
             | ) .
         } | ) 
 
@@ -71,13 +71,24 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: copying & creating\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: renaming\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addRenaming: v = ( |
+            | 
+            renamings isEmpty ifTrue: [renamings: set copyRemoveAll].
+            renamings add: v.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: renaming\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          beRenamingOf: v = ( |
             | 
             description: v description.
             myLocation:  v myLocation.
             originalValueBeforeRenaming: v originalValueBeforeRenaming ifNil: [v].
+            originalValueBeforeRenaming addRenaming: self.
             self).
         } | ) 
 
@@ -396,6 +407,16 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: renaming\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         meAndAllRenamingsDo: blk = ( |
+            | 
+            blk value: self.
+            renamings do: blk.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          mergedType = ( |
@@ -479,6 +500,12 @@ See the LICENSE file for license information.
             strongUsers do: blk.
               weakUsers do: blk.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (vector)'
+        
+         renamings <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {

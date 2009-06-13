@@ -60,7 +60,7 @@ See the LICENSE file for license information.
             theVM universe oldGeneration spacesDo: [|:s|
               cardNumbersForSpace: s Do: [|:i|
                 (thereHaveBeenChangesToCardAt: i) ifTrue: [
-                  [aaa]. ('found changed card at ', i printString) printLine.
+                  [('found changed card at ', i printString) printLine].
                   oopsInCardAt: i Do: blk.
                 ].
                 markAsUnchangedCardAt: i.
@@ -93,7 +93,7 @@ See the LICENSE file for license information.
              oldAddr.
             | 
             oldAddr: layouts memoryObject addressOfMem: o.
-            ('about to copy object from ', oldAddr printString, ' to ', newAddr printString, '\n') _StringPrint.
+            [('about to copy object from ', oldAddr printString, ' to ', newAddr printString, '\n') _StringPrint].
 
             o _Map myLayout copyContentsOfLocalObject: o
                                 IntoObjectWithAddress: newAddr

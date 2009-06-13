@@ -27,12 +27,6 @@ See the LICENSE file for license information.
             mirror: mirr Do: block).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
-         'Category: unmapped\x7fCategory: reusability\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
-        
-         reusabilityConditions.
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'abstractUnsegregatedVector' -> () From: ( | {
          'Category: mapping objects (for export)\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -1058,7 +1052,7 @@ SlotsToOmit: parent parent:.
                 ifTrue: [allocateOops: totalWordCount AndBytes: kleinifiedMirror reflecteeSize]
                  False: [allocateOops: totalWordCount                                         ].
             oid: allocateOIDForOriginalMirror: originalMirror.
-            oop: theVM objectLocator oopForOID: oid Address: addr.
+            oop: myVM objectLocator oopForOID: oid Address: addr.
             objectsOracle recordOop: oop AndAddress: addr ForOID: oid KleinifiedMirror: kleinifiedMirror OriginalMirror: originalMirror.
             oop).
         } | ) 
@@ -1080,7 +1074,7 @@ SlotsToOmit: parent parent:.
 
             kMir isReflecteeKleinOrYodaPrimitiveMirror ifTrue: [
               kMir reflectee !== kMir reflectee prototype ifTrue: [
-                (kMir reflectee isForVM: theVM) ifTrue: [
+                (kMir reflectee isForVM: myVM) ifTrue: [
                   recordKleinMirrorOop: oop.
                 ].
               ].
@@ -1277,7 +1271,7 @@ SlotsToOmit: parent.
               slot:         slotsByName at: slotName.
               contentsObj:  exportPolicy initialContentsOfSlot: slot.
 
-              (reflect: contentsObj) = nilMir ifFalse: [| i |
+              [aaaaaaa]. "Why was this here?" false && [(reflect: contentsObj) = nilMir] ifFalse: [| i |
                 i: method indexOfLocalNamed: slot name IfFail: raiseError.
                 aList addAll: bytecodesToInitializeSlotWithIndex: i ToLiteral: contentsObj.
               ].
@@ -2077,8 +2071,10 @@ SlotsToOmit: parent.
          'Category: testing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          canReuseNMethod: nm = ( |
+             rcs.
             | 
-            nm reusabilityConditions allSatisfy: [|:c| c isSatisfiedBy: self]).
+            rcs: objectMapper objectsOracle reusabilityConditionsForNMethod: nm.
+            rcs allSatisfy: [|:c| c isSatisfiedBy: self]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
@@ -2512,7 +2508,6 @@ SlotsToOmit: parent.
         
          recordNMethodOID: nmOID = ( |
             | 
-            [aaaaaaa]. (context slot name = '=') && [context rcvrMap isInteger] ifTrue: [halt].
             objectMapper addNMethodOID: nmOID MapOID: mapOIDOfReceiver LookupKey: lookupKey.
             self).
         } | ) 
@@ -2717,7 +2712,7 @@ SlotsToOmit: parent.
             oldObjectTable:     objectsOracle addressesByOID.
 
             n: desiredStartingSizeForObjectTable: oldObjectTable.
-            oopForOldObjectTable: oopForOriginalObject: theVM objectLocator IfAbsent: nil.
+            oopForOldObjectTable: oopForOriginalObject: myVM objectLocator IfAbsent: nil.
                 oopForOldObjectTable isNotNil
             &&  [n = (layouts objVector indexableSizeOf: oopForOldObjectTable)]
              ifTrue: [
@@ -2728,7 +2723,7 @@ SlotsToOmit: parent.
                                                 (reflect: x) kleinAndYodaLayout oopForValue: x].
             ]
             False: [
-              theVM objectLocator ifDirect: [] IfIndirect: [
+              myVM objectLocator ifDirect: [] IfIndirect: [
                 [todo cleanup oopFormat]. halt.
                 "Even though we change the identity of the object locator,
                  we don't do a switchPointers, so compiled code might be wrong.
@@ -2746,7 +2741,7 @@ SlotsToOmit: parent.
               fillInObjects.
 
               setContentsOfSlotNamed: 'objectLocator'
-                               InOop: (oopForOriginalObject: theVM)
+                               InOop: (oopForOriginalObject: myVM)
                                ToOop: oopForObjectTable
                               IfFail: raiseError.
             ].
@@ -2761,9 +2756,9 @@ SlotsToOmit: parent.
         
          createStringTable = ( |
             | 
-            [theVM universe canonicalizedStrings: canonicalizedStrings]. "browsing"
+            [myVM universe canonicalizedStrings: canonicalizedStrings]. "browsing"
             setLocalAndRemoteContentsOfAssignableSlotNamed: 'canonicalizedStrings'
-                                                        In: theVM universe
+                                                        In: myVM universe
                                                         To: canonicalizedStrings
                                                     IfFail: raiseError.
             self).
@@ -2783,12 +2778,12 @@ SlotsToOmit: parent.
              the table. -- Adam, 02/05"
 
             r: set copyRemoveAll.
-            r add: theVM entryMethodName.
+            r add: myVM entryMethodName.
 
             [primitiveFailedError: '' Name: '']. "browsing"
             r add: 'primitiveFailedError:Name:'.
 
-            theVM vmKit primitives stubAndFakePrimitiveSelectorsDo: [|:s|
+            vmKit primitives stubAndFakePrimitiveSelectorsDo: [|:s|
               r add: s.
             ].
 
@@ -2817,6 +2812,7 @@ SlotsToOmit: parent.
         
          expectedNumberOfObjects: n = ( |
              conservativeEstimateOfNumberOfObjectsInEdenSpace.
+             conservativeEstimateOfNumberOfObjectsInScavSpace.
             | 
 
             objectsOracle expectedNumberOfObjects: n.
@@ -2824,8 +2820,9 @@ SlotsToOmit: parent.
             "Leave some extra room so that we don't have
              to grow it inside the image, for now."
 
-            conservativeEstimateOfNumberOfObjectsInEdenSpace: ((theVM universe edenSpace sizeOfEntireRegion / oopSize) / layouts block numberOfWordsInABlock succ).
-            objectsOracle growOIDVectorsToAtLeast: n double + conservativeEstimateOfNumberOfObjectsInEdenSpace.
+            conservativeEstimateOfNumberOfObjectsInEdenSpace: ((myVM universe            edenSpace sizeOfEntireRegion / oopSize) / layouts block numberOfWordsInABlock succ).
+            conservativeEstimateOfNumberOfObjectsInScavSpace: ((myVM universe scavengeGarbageSpace sizeOfEntireRegion / oopSize) / layouts block numberOfWordsInABlock     ).
+            objectsOracle growOIDVectorsToAtLeast: n double + conservativeEstimateOfNumberOfObjectsInEdenSpace + conservativeEstimateOfNumberOfObjectsInScavSpace.
 
             self).
         } | ) 
@@ -3028,7 +3025,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
              will work for as many stub relocators as possible. -- Adam, 3/05"
             vm exportPolicy shouldIncludeKleinPrimitives ifTrue: [| stubHolderMirs |
               stubHolderMirs: set copyRemoveAll.
-              theVM vmKit primitives stubAndFakePrimitiveMethodHoldersDo: [|:h| stubHolderMirs add: reflect: h].
+              vm vmKit primitives stubAndFakePrimitiveMethodHoldersDo: [|:h| stubHolderMirs add: reflect: h].
               exemplarMirrorsLeftToCompile filterBy: [|:mir| (stubHolderMirs includes: mir) not].
               stubHolderMirs do: [|:mir| exemplarMirrorsLeftToCompile addFirst: mir].
             ].
@@ -3198,7 +3195,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         
          objectsOracleProto = ( |
             | 
-            vmKit objectsOracle).
+            theVM vmKit objectsOracle).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -4040,9 +4037,9 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
              vOop.
             | 
             vOop: oopForOriginalObject: v.
-            theVM assert: [(layouts objVector indexableSizeOf: vOop) = v size].
+            myVM assert: [(layouts objVector indexableSizeOf: vOop) = v size].
             v do: [|:x. :i|
-              theVM assert: [(oopForOriginalObject: x) = (layouts objVector for: vOop IndexableAt: i)].
+              myVM assert: [(oopForOriginalObject: x) = (layouts objVector for: vOop IndexableAt: i)].
             ].
             self).
         } | ) 
@@ -4073,7 +4070,15 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         
          vm = ( |
             | 
-            theVM).
+            myVM).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
+        
+         vmKit = ( |
+            | 
+            myVM vmKit).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
@@ -4441,7 +4446,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
         
          copy = ( |
             | 
-            (((((((((((resend.copy
+            ((((((((((((resend.copy
              oidsByOriginalObject:             oidsByOriginalObject             copy)
              oidsByOop:                        oidsByOop                        copy)
              exemplarOIDsByCanonicalMap:       exemplarOIDsByCanonicalMap       copy)
@@ -4452,6 +4457,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
              mappedSlots:                      mappedSlots                      copy)
              codeSizeStatistics:               codeSizeStatistics               copy)
              resendBytecodesByNMethodOID:      resendBytecodesByNMethodOID      copy)
+             reusabilityConditionsByNMethod:   reusabilityConditionsByNMethod   copy)
              nmethodOIDsByMapOID:              nmethodOIDsByMapOID              copyMappedBy: [|:nmOIDs|   nmOIDs copy])
              mapOIDsContainingUncompiledSlots: mapOIDsContainingUncompiledSlots copyMappedBy: [|:mapOIDs| mapOIDs copy]).
         } | ) 
@@ -4497,7 +4503,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
         
          copyRemoveAll = ( |
             | 
-            ((((((((((((resend.copy invalidateCachedItems
+            (((((((((((((resend.copy invalidateCachedItems
              oidsByOriginalObject:             oidsByOriginalObject             copyRemoveAll)
              oidsByOop:                        oidsByOop                        copyRemoveAll)
              exemplarOIDsByCanonicalMap:       exemplarOIDsByCanonicalMap       copyRemoveAll)
@@ -4508,6 +4514,7 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
              mappedSlots:                      mappedSlots                      copyRemoveAll)
              codeSizeStatistics:               codeSizeStatistics               copyRemoveAll)
              resendBytecodesByNMethodOID:      resendBytecodesByNMethodOID      copyRemoveAll)
+             reusabilityConditionsByNMethod:   reusabilityConditionsByNMethod   copyRemoveAll)
              nmethodOIDsByMapOID:              nmethodOIDsByMapOID              copyRemoveAll)
              mapOIDsContainingUncompiledSlots: mapOIDsContainingUncompiledSlots copyRemoveAll)).
         } | ) 
@@ -5129,6 +5136,14 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
+         'Category: recording\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         recordReusabilityConditions: rcs ForNMethod: nm = ( |
+            | 
+            reusabilityConditionsByNMethod at: nm Put: rcs).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
          'Category: gathering statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          recordSlot: s = ( |
@@ -5289,6 +5304,14 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
          resendsInNMethodWithOID: nmOID = ( |
             | 
             resendBytecodesByNMethodOID at: nmOID IfAbsent: [dictionary copyRemoveAll]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
+         'Category: tracking\x7fCategory: nmethods\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         reusabilityConditionsForNMethod: nm = ( |
+            | 
+            reusabilityConditionsByNMethod at: nm).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -5831,6 +5854,12 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
          'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
         
          resendBytecodesByNMethodOID <- dictionary copyRemoveAll.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> () From: ( | {
+         'ModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (reflectiveIdentityDictionary copyRemoveAll)\x7fVisibility: private'
+        
+         reusabilityConditionsByNMethod <- reflectiveIdentityDictionary copyRemoveAll.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> () From: ( | {

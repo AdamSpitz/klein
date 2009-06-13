@@ -593,6 +593,12 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> 'registerUsage' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         assemblerFramework = bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'ppc' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> 'registerUsage' -> () From: ( | {
          'Category: globals\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          byteMapBaseRegister = ( |
@@ -606,6 +612,15 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
          firstTempRegister = ( |
             | 
             r11).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> 'registerUsage' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         gprFor: n = ( |
+            | 
+            "Optimization: Use the cachedAllRegisters vector."
+            assemblerFramework allRegisters at: n).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> 'registerUsage' -> () From: ( | {
@@ -1392,7 +1407,9 @@ access parent allocator\'s loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialCon
             localSlots do: [|:s. :i. v|
               v: namedValues at: s key.
               v hasLocation ifFalse: [
-                preallocatedLocationForNamedValue ifNotNil: [|:loc| v location: loc].
+                preallocatedLocationForNamedValue ifNotNil: [|:loc|
+                  v meAndAllRenamingsDo: [|:vv| vv location: loc].
+                ].
               ].
             ].
             self).

@@ -1,6 +1,7 @@
  '$Revision: 1.11 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -87,6 +88,12 @@ SlotsToOmit: parent.
              {} = 'ModuleInfo: Creator: globals yoda virtualMachines vmTestsImage parent.
 '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'yoda' -> 'virtualMachines' -> 'vmTestsImage' -> 'parent' -> () From: ( | {
+         'Category: unmapped\x7fModuleInfo: Module: yodaVMTests InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canCollectGarbage = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'yoda' -> 'virtualMachines' -> 'vmTestsImage' -> 'parent' -> () From: ( | {

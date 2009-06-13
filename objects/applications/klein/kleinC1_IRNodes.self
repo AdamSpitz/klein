@@ -25,12 +25,6 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (false)'
-        
-         hasBeenRemoved <- bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> () From: ( | {
          'Category: data flow links\x7fCategory: liveness\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
         
          incomingLiveValues.
@@ -220,20 +214,9 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
          generateCode = ( |
              n.
             | 
-            n: nodeName.
             bindLabel.
-            codeGenerator generating: n, ' addComment'           During: [addComment          ].
-            codeGenerator generating: n, ' generateSpecificCode' During: [
-              hasBeenRemoved ifTrue: [
-                codeGenerator generateExit: [|:exitFork|
-                  codeGenerator comment: 'REMOVED NODE:'.
-                  codeGenerator branchToLabel: exitFork.
-                  generateSpecificCode.
-                ].
-              ] False: [
-                generateSpecificCode.
-              ].
-            ].
+            codeGenerator generating: [n: nodeName. n, ' addComment'          ] During: [addComment          ].
+            codeGenerator generating: [             n, ' generateSpecificCode'] During: [generateSpecificCode].
             self).
         } | ) 
 
@@ -453,8 +436,6 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         
          remove = ( |
             | 
-            [aaaaaaa]. "Do I want to actually remove it from the chain or not?"
-            hasBeenRemoved: true.
             sourcePred sourceSucc: sourceSucc.
             sourceSucc sourcePred: sourcePred.
             self).
@@ -863,6 +844,19 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         generateSpecificCode = ( |
+            | 
+            isSpecialCompilationMode ifTrue: [^ self].
+            generateCodeForThisKindOfSendOrPrimitive.
+            codeGenerator nodeToBeGeneratedAfterThisOne == sourceSucc ifFalse: [
+              codeGenerator genBranchTo: sourceSucc.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          hasNoSideEffectsOtherThanDefining: v = ( |
@@ -1218,9 +1212,8 @@ allocation and can reduce register pressure, yielding better code.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractPrimitive' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         generateSpecificCode = ( |
+         generateCodeForThisKindOfSendOrPrimitive = ( |
             | 
-            isSpecialCompilationMode ifTrue: [^ self].
             generateCodeForThisKindOfPrimitive.
             self).
         } | ) 
@@ -2907,9 +2900,27 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         framePointerValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
+         'Category: control flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         nodeToBranchToOnLR.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
          'Category: control flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
         
          nodeToBranchToOnNLR.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         outgoingResultValue.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
@@ -2945,6 +2956,7 @@ SlotsToOmit: parent.
             | 
             sourceLevelAllocator isInlined ifTrue: [
               blk value: nodeToBranchToOnNLR.
+              blk value: nodeToBranchToOnLR.
             ].
             self).
         } | ) 
@@ -2989,6 +3001,19 @@ SlotsToOmit: parent.
          initialize = ( |
             | 
             nodeToBranchToOnNLR: interpreter nodeToBranchToOnNLR.
+            nodeToBranchToOnLR:  interpreter localReturnBB labelNode.
+
+            outgoingResultValue:  sourceLevelAllocator newValueForOutgoingResult.
+            framePointerValue:   machineLevelAllocator valueForNLRHomeScope.
+            scopeDescValue:      machineLevelAllocator valueForNLRHomeScopeDesc.
+
+            [aaaaaaa]. "Duplication with abstractReturn. Maybe localReturns should branch here too?"
+            valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks: set copyRemoveAll.
+            [aaaaa]. "Hack - I don't think this is the right way to make
+                      sure that these values are kept alive."
+            valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks add: sourceLevelAllocator valueForSelf.
+            valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks addAll: sourceLevelAllocator namedValues.
+
             self).
         } | ) 
 
@@ -3011,6 +3036,7 @@ SlotsToOmit: parent.
             | 
             case
               if: [labelNode = nodeToBranchToOnNLR] Then: [nodeToBranchToOnNLR: newLabelNode. sb value]
+              If: [labelNode = nodeToBranchToOnLR ] Then: [nodeToBranchToOnLR:  newLabelNode. sb value]
               Else: [error: 'what node is that?']).
         } | ) 
 
@@ -3019,8 +3045,18 @@ SlotsToOmit: parent.
         
          replaceUsedValue: v With: newV = ( |
             | 
-            blockValuesToZap remove: v.
-            blockValuesToZap add: newV.
+            case
+              if: [v = outgoingResultValue] Then: [outgoingResultValue: newV]
+              If: [v =   framePointerValue] Then: [  framePointerValue: newV]
+              If: [v =      scopeDescValue] Then: [     scopeDescValue: newV]
+              If: [valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks includes: v] Then: [
+                valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks remove: v.
+                valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks add: newV.
+              ]
+              Else: [
+                blockValuesToZap remove: v.
+                blockValuesToZap add: newV.
+              ].
             self).
         } | ) 
 
@@ -3029,6 +3065,9 @@ SlotsToOmit: parent.
         
          stronglyUsedValuesDo: blk = ( |
             | 
+            blk value: outgoingResultValue.
+            blk value: framePointerValue.
+            blk value: scopeDescValue.
             self).
         } | ) 
 
@@ -3039,6 +3078,18 @@ SlotsToOmit: parent.
             | 
             blockValuesToZap do: blk.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         scopeDescValue.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nlrPointEpilogue' -> () From: ( | {
+         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
+        
+         valuesThatNeedToBeVisibleToTheDebuggerAndToBlocks.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
@@ -3909,7 +3960,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'send' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         generateSpecificCode = ( |
+         generateCodeForThisKindOfSendOrPrimitive = ( |
             | 
             codeGenerator generateSendNode: self.
             self).

@@ -106,8 +106,12 @@ See the LICENSE file for license information.
          'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          compileSlot_stub = ( |
+             false = bootstrap stub -> 'globals' -> 'false' -> ().
              holderMir.
              key.
+             klein = bootstrap stub -> 'globals' -> 'klein' -> ().
+             nil = bootstrap stub -> 'globals' -> 'nil' -> ().
+             nm.
              rcvrMap.
              rcvrMir.
              sd.
@@ -132,35 +136,38 @@ See the LICENSE file for license information.
 
             rcvrMap isBlock ifTrue: [_Breakpoint: 'Not gonna work yet; gotta find the selfMir and enclosing scopes.'].
 
-            ss: key lookupSlotsUsing: rcvrMir slotFinder Self: rcvrMir Holder: holderMir.
+            ss: key lookupSlotsUsing: rcvrMir slotFinder Self: rcvrMap Holder: holderMir.
 
-            ss ifNone: [_Breakpoint: 'lookup failure: no slot']
-                IfOne: [|:s. c. nm|
-                        c: theVM compilerPrototype.
-                        c: c copyForContext: (c prototypes compilationContext
-                                                         copyForSlot: s
-                                                                 Key: key
-                                                                Self: rcvrMap
-                                                            Receiver: rcvrMap
-                                                  LexicalParentScope: nil)
-                                Architecture: theVM architecture
-                                      Oracle: oracleForEagerRelocationInsideKlein
-                                       Debug: true
-                                    Optimize: c prototypes optimizationPolicies compileQuickly.
-                        nm: c compileForcingNonLeafIfNecessary buildNMethod.
+            nm:
+              ss ifNone: [_Breakpoint: 'lookup failure: no slot']
+                  IfOne: [|:s. c. nm|
+                          c: _TheVM compilerPrototype.
+                          c: c copyForContext: (c prototypes compilationContext
+                                                           copyForSlot: s
+                                                                   Key: key
+                                                                  Self: rcvrMap
+                                                              Receiver: rcvrMap
+                                                    LexicalParentScope: nil)
+                                  Architecture: _TheVM architecture
+                                        Oracle: c oracleForEagerRelocationInsideKlein
+                                         Debug: false  "just because Klein runs so slowly for now"
+                                      Optimize: c prototypes optimizationPolicies compileQuickly.
+                          nm: c compileForcingNonLeafIfNecessary buildNMethod.
 
-                        "It would sure make me more comfortable to have
-                         a test case that demonstrates that this flushing
-                         stuff is actually working. -- Adam, 5/05"
-                        nm flushWhateverCachesAreNecessaryAfterModifyingMe.
+                          "It would sure make me more comfortable to have
+                           a test case that demonstrates that this flushing
+                           stuff is actually working. -- Adam, 5/05"
+                          nm flushWhateverCachesAreNecessaryAfterModifyingMe.
 
-                        rcvrMap installNewNMethod: nm.
-                        sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: rcvrMap.
-                        _Breakpoint: 'just dynamically compiled something; about to retry the sendDesc'.
-                        sd _RetrySendDesc.
-                        _Breakpoint: 'should never reach here'.
-                       ]
-               IfMany: [_Breakpoint: 'lookup failure: found multiple slots']).
+                          rcvrMap installNewNMethod: nm.
+                          nm
+                         ]
+                 IfMany: [_Breakpoint: 'lookup failure: found multiple slots'].
+
+            sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: rcvrMap.
+            _Breakpoint: 'just dynamically compiled something; about to retry the sendDesc'.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {

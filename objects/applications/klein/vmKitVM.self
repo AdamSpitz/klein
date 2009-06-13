@@ -210,6 +210,21 @@ is always globally scoped.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
+         'Category: unmapped\x7fCategory: heap size\x7fComment: Allocates a new heap from machineMemory of the
+specified size.  Must be called exactly once before
+objects are allocated within the space.\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         allocateHeapAt: base Size: s = ( |
+            | 
+            [todo optimize gc multipleSpaces]. "What's the right way to divide the space? -- Adam, 5/06"
+
+            universe allocateHeapAt: base
+                         NewGenSize: (canCollectGarbage ifTrue: [s / 16] False: [s / 8])  "leave room so we don't run out since no GC"
+                  ScavengeSpaceSize: (canCollectGarbage ifTrue: [s /  4] False: 0      )  "scavenger creates a lot of garbage for now"
+                          TotalSize: s).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
          'Category: mapped\x7fCategory: assertions\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
         
          assert: blk = ( |

@@ -1,6 +1,7 @@
  '$Revision: 30.14 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -105,6 +106,12 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: yodaSmallImage InitialContents: InitializeToExpression: (\'assignableSlot initial contents\')\x7fVisibility: private'
         
          assignableSlot <- 'assignableSlot initial contents'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'yoda' -> 'virtualMachines' -> 'smallImage' -> 'parent' -> () From: ( | {
+         'Category: unmapped\x7fModuleInfo: Module: yodaSmallImage InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canCollectGarbage = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'yoda' -> 'virtualMachines' -> 'smallImage' -> 'parent' -> () From: ( | {

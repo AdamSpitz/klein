@@ -39,12 +39,18 @@ Self programs.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> () From: ( | {
+         'Category: unmapped\x7fCategory: heap size\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canCollectGarbage = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> () From: ( | {
          'Category: unmapped\x7fCategory: heap size\x7fComment: I\'m sure there\'s a more clever way to get
 this number. For now it won\'t hurt much
 to just keep upping it by hand.
 -- Adam, 2/05\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
         
-         expectedNumberOfObjects = 100000.
+         expectedNumberOfObjects = 150000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> () From: ( | {
@@ -179,22 +185,22 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein mirrors)
-	& (reflect: klein sendDescs)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: scheduler)
+	& (reflect: klein stackFrames)
 	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
-	& (reflect: traits block)
+	& (reflect: kleinAndYoda maps)
 	& (reflect: traits abstractSet values)
+	& (reflect: traits block)
 	& (reflect: lobby)
 	& (reflect: slots)
-	& (reflect: kleinAndYoda maps)
 	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
-	& (reflect: scheduler)
 	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
-	& (reflect: kleinAndYoda layouts)
+	& (reflect: kleinAndYoda)
 	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
-	& (reflect: klein)
-	& (reflect: klein stackFrames)
-	& (reflect: kleinAndYoda)) asVmKitExportList) From: ( |
+	& (reflect: kleinAndYoda layouts)
+	& (reflect: klein sendDescs)
+	& (reflect: klein mirrors)
+	& (reflect: klein)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -3364,12 +3370,18 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> () From: ( | {
+         'Category: unmapped\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canCollectGarbage = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> () From: ( | {
          'Category: unmapped\x7fComment: I\'m sure there\'s a more clever way to get
 this number. For now it won\'t hurt much
 to just keep upping it by hand.
 -- Adam, 2/05\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
         
-         expectedNumberOfObjects = 275000.
+         expectedNumberOfObjects = 325000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> () From: ( | {
@@ -3524,59 +3536,59 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: transporter moduleInfo)
-	& (reflect: klein sendDescs)
-	& (reflect: klein)
-	& (reflect: assemblerSystems framework generators)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: assemblerSystems ppc fields)
+	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
+	& (reflect: traits)
+	& (reflect: assemblerSystems ppc crBits)
+	& (reflect: abstractBytecodeInterpreter bytecodes)
+	& (reflect: assemblerSystems ppc operands)
+	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
 	& (reflect: klein compiler1 prototypes optimizationPolicies)
 	& (reflect: assemblerSystems ppc)
-	& (reflect: assemblerSystems ppc operands)
-	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
-	& (reflect: assemblerSystems ppc crFields)
-	& (reflect: bytecodeFormat instructionSets)
 	& (reflect: lobby)
+	& (reflect: bytecodeFormat instructionSets)
 	& (reflect: klein compiler1 prototypes)
-	& (reflect: abstractBytecodeInterpreter bytecodes)
-	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
-	& (reflect: klein compiler1)
-	& (reflect: assemblerSystems ppc toMasks)
-	& (reflect: klein stackFrames)
+	& (reflect: assemblerSystems ppc crFields)
+	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
 	& (reflect: klein mirrors)
-	& (reflect: assemblerSystems)
-	& (reflect: assemblerSystems ppc fprs)
-	& (reflect: kleinAndYoda layouts)
-	& (reflect: assemblerSystems ppc generators)
-	& (reflect: klein compiler1 prototypes irNodeGenerator comparisons)
-	& (reflect: assemblerSystems ppc gprs)
-	& (reflect: klein compiler1 prototypes dataValue kindsOfPossibleTypes)
-	& (reflect: assemblerSystems ppc instructionTemplates)
-	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
-	& (reflect: globals)
-	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
 	& (reflect: assemblerSystems ppc sprs)
-	& (reflect: assemblerSystems framework)
-	& (reflect: traits block)
-	& (reflect: klein compiler1 prototypes machineLevelAllocators)
-	& (reflect: klein compiler1 prototypes locationAssigners)
-	& (reflect: kleinAndYoda maps)
-	& (reflect: traits slots)
-	& (reflect: klein compiler1 prototypes codeGenerators)
-	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
-	& (reflect: klein locations)
-	& (reflect: traits abstractSet values)
-	& (reflect: traits collection ascendingOrder)
-	& (reflect: kleinAndYoda lookupType)
-	& (reflect: slots)
+	& (reflect: klein stackFrames)
+	& (reflect: kleinAndYoda layouts)
+	& (reflect: assemblerSystems ppc gprs)
+	& (reflect: assemblerSystems ppc instructionTemplates)
+	& (reflect: assemblerSystems ppc fprs)
 	& (reflect: klein relocators)
-	& (reflect: klein virtualMachines)
+	& (reflect: assemblerSystems ppc generators)
+	& (reflect: assemblerSystems)
+	& (reflect: klein compiler1 prototypes dataValue kindsOfPossibleTypes)
+	& (reflect: klein compiler1 prototypes irNodeGenerator comparisons)
 	& (reflect: klein compiler1 prototypes irNodes)
-	& (reflect: assemblerSystems ppc fields)
-	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
-	& (reflect: assemblerSystems ppc crBits)
+	& (reflect: klein virtualMachines)
+	& (reflect: globals)
+	& (reflect: klein compiler1)
+	& (reflect: kleinAndYoda maps)
+	& (reflect: traits block)
+	& (reflect: traits slots)
+	& (reflect: assemblerSystems framework)
+	& (reflect: traits abstractSet values)
+	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
+	& (reflect: klein compiler1 prototypes machineLevelAllocators)
+	& (reflect: klein locations)
+	& (reflect: traits collection ascendingOrder)
+	& (reflect: klein compiler1 prototypes locationAssigners)
+	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
+	& (reflect: assemblerSystems ppc toMasks)
+	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
+	& (reflect: kleinAndYoda lookupType)
+	& (reflect: klein compiler1 prototypes codeGenerators)
+	& (reflect: slots)
+	& (reflect: klein sendDescs)
+	& (reflect: transporter moduleInfo)
+	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
+	& (reflect: assemblerSystems framework generators)
 	& (reflect: kleinAndYoda)
 	& (reflect: scheduler)
-	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
-	& (reflect: traits)) asVmKitExportList) From: ( |
+	& (reflect: klein)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -3804,16 +3816,16 @@ SlotsToOmit: parent.
          compileSlotNamed: slotName On: targetObject = ( |
              c.
              s.
-             targetMirror.
+             targetMap.
             | 
-            targetMirror: targetObject _Mirror.
-            s: targetMirror slotAt: slotName.
+            targetMap: targetObject _Map.
+            s: targetMap slotAt: slotName IfAbsent: raiseError.
             c: theVM compilerPrototype.
             c: c
                   copyForContext: (c prototypes compilationContext copyForSlot: s)
                     Architecture: theVM architecture
-                          Oracle: oracleForEagerRelocationInsideKlein
-                           Debug: true
+                          Oracle: c oracleForEagerRelocationInsideKlein
+                           Debug: false  "just because Klein runs so slowly for now"
                         Optimize: c prototypes optimizationPolicies compileQuickly.
 
             c compileForcingNonLeafIfNecessary buildNMethod).
@@ -3881,89 +3893,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         oracleForEagerRelocationInsideKlein = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( |
-             {} = 'Comment: Set linearizedObjects to me when you don\'t want to (or
-can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein virtualMachines selfVM parent tests compiling parent oracleForEagerRelocationInsideKlein.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         findOopForStubNMethodNamed: name IfPresent: pb IfAbsent: ab = ( |
-            | 
-            klein primitives _Map _NMethodCache
-                findFirst: [|:nm| nm lookupKey selector = name]
-                IfPresent: pb
-                 IfAbsent: ab).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         kleinifiedObjectForOriginalMirror: origMir = ( |
-            | 
-            origMir reflectee).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         kleinifySlot: s = ( |
-            | 
-            s).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         nextOopToAllocateForObjectOfSize: nOops = ( |
-            | 
-            -1).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         oopForOriginalObject: obj IfAbsent: fb = ( |
-            | 
-            obj).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         originalObjectForOop: oop IfAbsent: fb = ( |
-            | 
-            oop).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: gathering statistics\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         relocatorAssembledPlaceholderInstructions = ( |
-            | 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
-         'Category: gathering statistics\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         relocatorAssembledRealInstructions = ( |
-            | 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'abstract' -> 'parent' -> ().
@@ -3989,7 +3918,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             assert: [targetObject threePlusFourPrimitively _Eq: 7].
             ].
 
-            compileAndInstallSlotNamed: 'threePlusFour' On: targetObject.
+            [aaaaaaa. "Trying it with dynamic compilation." compileAndInstallSlotNamed: 'threePlusFour' On: targetObject.].
             assert: [targetObject threePlusFour _Eq: 7].
 
             ["These work, but for now I don't want to take the time at runtime to run them."
@@ -4107,12 +4036,15 @@ SlotsToOmit: parent.
         
          runAutomatedTestsForVM: aVM = ( |
             | 
+            [aaaaaaa]. "Run the compiling test first, since that's what I'm working on."
+            compiling run.          [todo cleanup testing kleinSpecific].
+            _Breakpoint: 'compiling test finished!'.
+
             resend.runAutomatedTestsForVM: aVM.
             [todo gc]. "Was in the middle of getting these activation tests
                         to work when we suspended work on Klein. -- Adam"
             activations run.        [todo cleanup testing kleinSpecific].
             garbageCollection run.  [todo cleanup testing kleinSpecific].
-            compiling run.          [todo cleanup testing kleinSpecific].
             self).
         } | ) 
 

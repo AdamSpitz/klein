@@ -329,6 +329,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> () From: ( | {
+         'Comment: Optimization. Getting the reflective name of an object is slow,
+so you can set this slot in advance if you have a faster way of
+knowing what name you want to appear in the comment.\x7fModuleInfo: Module: kleinC1_locs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         explicitNameForComment.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_locs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
          oopValue.
@@ -395,6 +403,14 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
+         nameForComment = ( |
+            | 
+            explicitNameForComment ifNil: [oopMirror name]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
          oopMirror = ( |
             | reflect: oopValue).
         } | ) 
@@ -410,7 +426,7 @@ SlotsToOmit: parent.
         
          statePrintString = ( |
             | 
-            oopMirror name).
+            nameForComment).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
