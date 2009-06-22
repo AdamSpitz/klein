@@ -2838,6 +2838,12 @@ SlotsToOmit: parent.
      ((bootstrap stub -> 'globals') \/-> 'vector') -> ())
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'blockMap') -> () From: ( | {
+         'Category: map state\x7fModuleInfo: Module: vmKitMaps InitialContents: InitializeToExpression: (0)'
+        
+         cloneCount <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'blockMap') -> () From: ( | {
          'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'blockMap') -> 'parent' -> () From: ( |

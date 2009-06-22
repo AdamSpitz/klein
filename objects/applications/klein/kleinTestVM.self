@@ -661,6 +661,34 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
+         firstTenIntegers = [ | x =  ( bootstrap setObjectAnnotationOf: vector _Clone From: ( |
+                     {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent firstTenIntegers.
+'.
+                    | ) ) _Clone: 10 Filler: 0| 
+             x _At: 0  Put: ().
+             x _At: 1  Put: ().
+             x _At: 2  Put: ().
+             x _At: 3  Put: ().
+             x _At: 4  Put: ().
+             x _At: 5  Put: ().
+             x _At: 6  Put: ().
+             x _At: 7  Put: ().
+             x _At: 8  Put: ().
+             x _At: 9  Put: ().
+             x] value.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         in: bv ByteAt: i IfAbsent: blk = ( |
+            | 
+            bv _ByteAt: i IfFail: [|:e. :p| blk value: e With: p]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
          loopAddingNumbersFromZeroTo: n = ( |
              i <- 0.
              sum <- 0.
@@ -955,25 +983,25 @@ SlotsToOmit: parent prototype safety.
         
          makeSureResentMethodsGetCompiled = ( |
             | 
-            resend.makeSureResentMethodsGetCompiled _IntAdd: resend.z _IntAdd: resend.w _IntAdd: parent.a _IntAdd: parentB.a).
+            resend.makeSureResentMethodsGetCompiled _IntAdd: resend.z _IntAdd: resend.w _IntAdd: parentA.a _IntAdd: parentB.a).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent performTester resendObj parent.
+         parentA* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent performTester resendObj parentA.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (55)'
         
          a <- 55.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          dynamicUndirectedResendInParent: sel = ( |
@@ -981,7 +1009,7 @@ SlotsToOmit: parent prototype safety.
             _PerformResend: sel).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          makeSureResentMethodsGetCompiled = ( |
@@ -990,35 +1018,35 @@ SlotsToOmit: parent prototype safety.
             resend.z _IntAdd: resend.w).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent performTester resendObj parent parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent performTester resendObj parentA parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          w = ( |
             | 7).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          z = 6.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          staticUndirectedResendInParent = ( |
@@ -1026,13 +1054,13 @@ SlotsToOmit: parent prototype safety.
             _PerformResend: 'z').
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          w = 8.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          z = 5.
@@ -1098,7 +1126,7 @@ SlotsToOmit: parent prototype safety.
               assert: (resendObj _Perform: 'a' DelegatingTo:           parentB) Is: 44.
               assert: (resendObj _Perform: 'a' DelegatingTo: resendObj parentB) Is: 44.
               assert: (send: 'a' To: resendObj DelegatingTo: resendObj parentB) Is: 44.
-              assert: (send: 'a' To: resendObj DelegatingTo: resendObj parent ) Is: 55.
+              assert: (send: 'a' To: resendObj DelegatingTo: resendObj parentA) Is: 55.
             ].
 
             resendObj makeSureResentMethodsGetCompiled.
@@ -1271,6 +1299,7 @@ SlotsToOmit: parent prototype safety.
             | 
             testReturnValueOfLocalAssignment.
             testLeafMethodWithBrowsingTag.
+            testArithmetic.
             testCallingBlocks.
             testInitializingLocals.
             testMethodWithManyArguments.
@@ -1299,8 +1328,21 @@ SlotsToOmit: parent prototype safety.
             three: one _IntAdd: two.
             b. "for incremental update test -- dmu 8/04"
             performTester run.
+            testVectors.
             _Breakpoint: 'done'.
             three).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testArithmetic = ( |
+            | 
+            assert: ( 3 _IntAdd: 4) Is: 7.
+            assert: ( 5 _IntSub: 6) Is: -1.
+            assert: ( 7 _IntMul: 8) Is: 56.
+            assert: (42 _IntDiv: 3) Is: 14.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1465,9 +1507,26 @@ SlotsToOmit: parent prototype safety.
          testPrimitiveFailure = ( |
              atPut.
              blah.
+             failBlockRan <- bootstrap stub -> 'globals' -> 'false' -> ().
+             seven.
             | 
             blah: primitiveFailureTester _Blah.
+
             atPut: primitiveFailureTester _At: 3 Put: 4.
+
+            seven: 3 _IntAdd: 4 IfFail: [error: 'lalala'].
+            assert: seven Is: 7.
+
+            "Test passing failblocks directly into primitives.
+             Failblocks should be cloned lazily."
+            3 _IntAdd: false IfFail: [|:e. :p| failBlockRan: true].
+            assert: failBlockRan Is: true.
+            failBlockRan: false.
+            'abc' _ByteAt: 3 IfFail: [|:e. :p| failBlockRan: true].
+            assert: failBlockRan Is: true.
+
+            assertFail: [|:fb| 'abc' _ByteAt: 3 IfFail: fb].
+            assertFail: [|:fb| in: 'abc' ByteAt: 3 IfAbsent: fb].
             self).
         } | ) 
 
@@ -1494,6 +1553,23 @@ SlotsToOmit: parent prototype safety.
             "Make sure the result is really self."
             shouldBeSelf universe.
 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testVectors = ( |
+            | 
+            assert: (firstTenIntegers _At:  4                          ) Is: 5.
+            assert: (firstTenIntegers _At:  7 IfFail: [error: 'lalala']) Is: 8.
+            assert: (firstTenIntegers _At: 10 IfFail: [|:e. :p| e     ]) Is: 'badIndexError'.
+            assert: (firstTenIntegers _At: -1 IfFail: [|:e. :p| e     ]) Is: 'badIndexError'.
+            assert: (19               _At:  3 IfFail: [|:e. :p| e     ]) Is: 'badTypeError'.
+            assert: (false            _At:  1 IfFail: [|:e. :p| e     ]) Is: 'badTypeError'.
+            assert: (firstTenIntegers _At:  2 Put: 'three'             ) Is: firstTenIntegers.
+            assert: (firstTenIntegers _At:  2                          ) Is: 'three'.
+            assert: (firstTenIntegers _At:  2 Put: 3                   ) Is: firstTenIntegers.
             self).
         } | ) 
 

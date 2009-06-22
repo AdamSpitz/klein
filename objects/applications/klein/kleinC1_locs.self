@@ -360,6 +360,12 @@ knowing what name you want to appear in the comment.\x7fModuleInfo: Module: klei
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: private'
+        
+         abstractTypeParent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'abstractMixin' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          copyForOop: o = ( |

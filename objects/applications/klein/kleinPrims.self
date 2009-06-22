@@ -67,9 +67,7 @@ See the LICENSE file for license information.
          'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is block to be cloned.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          cloneBlockHomeFrame_stub: fp = ( |
-             addr.
-             b.
-             numberOfWordsInABlock = 3.
+             map.
              oid.
              space.
              vm.
@@ -78,9 +76,11 @@ See the LICENSE file for license information.
             vm: _TheVM.
             oid: vm withoutCloningAnythingGetANewOID.
             space: vm universe allocationSpace.
+            map: _Map. map cloneCount: map cloneCount _IntAdd: 1.
 
             "Could use this code to do block cloning at the Self level, but for now is inefficient. -- Adam, 7/06"
-            [[todo blockCloning].
+            [| numberOfWordsInABlock = 3. addr |
+            [todo blockCloning].
               [todo cleanup blockCloning should be calling kleinAndYoda layouts block numberOfWordsInABlock].
               addr: space allocateOops: numberOfWordsInABlock IfFail: blockCloneFailureHandler.
 
@@ -119,8 +119,6 @@ See the LICENSE file for license information.
             | 
             _NoMapTest.
             _VariableArguments.
-
-            _Breakpoint: 'nmethod cache miss, about to try a dynamic lookup and compile'.
 
             [aaaaa]. "Fix the duplication between here and selfVM tests compiling."
 
@@ -174,12 +172,6 @@ See the LICENSE file for license information.
          'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (vector copySize: 1 FillingWith: \'nic\')\x7fVisibility: private'
         
          myCompilers <- vector copySize: 1 FillingWith: 'nic'.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
-         'Category: fake primitives (primitives that are just normal methods)\x7fCategory: VMs\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         myTheVM.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -684,27 +676,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
-         'Category: fake primitives (primitives that are just normal methods)\x7fCategory: VMs\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
-        
-         primReceiver: whoCares TheVM: vm IfFail: fb = ( |
-            | 
-            [ _TheVM: vm ]. "browsing"
-            [ _TheVM: vm IfFail: fb ]. "browsing"
-            myTheVM: vm.
-            whoCares).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
-         'Category: fake primitives (primitives that are just normal methods)\x7fCategory: VMs\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
-        
-         primReceiver: whoCares TheVMIfFail: fb = ( |
-            | 
-            [ _TheVM ]. "browsing"
-            [ _TheVMIfFail: fb ]. "browsing"
-            myTheVM).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          sendMessage_stub = ( |
@@ -793,7 +764,7 @@ See the LICENSE file for license information.
          stubAndFakePrimitiveMethodHoldersDo: blk = ( |
             | 
             blk value: self.
-            parent stubAndFakePrimitiveMethodHoldersDo: blk).
+            kleinAndYoda primitives stubAndFakePrimitiveMethodHoldersDo: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -830,6 +801,18 @@ See the LICENSE file for license information.
          'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
          endLabel.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         errMsgReg.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
+         'ModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+        
+         failureLabel.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> () From: ( | {
@@ -915,11 +898,11 @@ See the LICENSE file for license information.
          assertBounds: indexSmiReg InByteVector: byteVectReg = ( |
             | 
             cg generateIf: [|:trueFork|
-              cg byteVectorLayout generateFor:  byteVectReg
-                                      IfIndex:  indexSmiReg
-                                         Temp:  dstReg
-                    IsOutOfBoundsThenBranchTo:  trueFork
-                                         With:  cg.
+              cg       generateForVector:  byteVectReg
+                                 IfIndex:  indexSmiReg
+                                    Temp:  dstReg
+                            VectorLayout:  cg byteVectorLayout
+               IsOutOfBoundsThenBranchTo:  trueFork.
             ] Then: [
               boundsError.
             ].
@@ -932,11 +915,11 @@ See the LICENSE file for license information.
          assertBounds: indexSmiReg InVector: objVectReg = ( |
             | 
             cg generateIf: [|:trueFork|
-              layouts objVector generateFor:  objVectReg
-                                    IfIndex:  indexSmiReg
-                                       Temp:  dstReg
-                  IsOutOfBoundsThenBranchTo:  trueFork
-                                       With:  cg.
+              cg       generateForVector:  objVectReg
+                                 IfIndex:  indexSmiReg
+                                    Temp:  dstReg
+                            VectorLayout:  layouts objVector
+               IsOutOfBoundsThenBranchTo:  trueFork.
             ] Then: [
               boundsError.
             ].
@@ -1140,11 +1123,58 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         canSendErrorMessage = ( |
+            | 
+            errMsgReg isNotNil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: errors\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         cloneFailBlockIfNecessary = ( |
+            | 
+            cg shouldBeLazyAboutCloningPrimitiveFailBlocks ifTrue: [
+              cg failBlockLiteralNode ifNotNil: [|:fbln|
+                cg deferCloningOfPrimitiveFailBlockLiteral: fbln.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         compiler = ( |
+            | 
+            cg compiler).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
          'Category: copying\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          copyFor: aCodeGenerator Node: n Receiver: r FailBlock: f Dest: d = ( |
             | 
-            (((((copy cg: aCodeGenerator) node: n) rcvrReg: r) fbReg: f) dstReg: d) endLabel: aCodeGenerator newLabel).
+            (((((copy cg: aCodeGenerator) node: n) rcvrReg: r) fbReg: f) dstReg: d) initialize).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForMachineCodeGenerationForNode: n = ( |
+             c.
+            | 
+            c: copy.
+            c cg: n codeGenerator.
+            c node: n.
+            c endLabel: n successFork label.
+            c failureLabel: n failureFork label.
+            c errMsgReg: errMsgReg ifNotNil: [|:r| r location].
+            c rcvrReg: rcvrReg location.
+            c dstReg: dstReg location.
+            c fbReg: fbReg location.
+            c).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
@@ -1158,8 +1188,24 @@ See the LICENSE file for license information.
         
          fail: errorMessage = ( |
             | 
-            cg sendErrorTo: fbReg PutResultInto: dstReg Name: node selector Message: errorMessage Node: node.
-            cg branchToLabel: endLabel.
+            compiler noSendsAllowed ifTrue: [
+              cg breakpoint: errorMessage.
+              cg branchToLabel: endLabel.
+            ] False: [
+              errMsgReg ifNil: [errMsgReg: cg failBlockMessageArgument].
+              cg move: (cg constantArgument: errorMessage canonicalize) To: errMsgReg.
+              cg branchToLabel: failureLabel.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initialize = ( |
+            | 
+            failureLabel: cg newLabel whereDidIComeFrom: 'failureHandler failureLabel'.
+                endLabel: cg newLabel whereDidIComeFrom: 'failureHandler successLabel'.
             self).
         } | ) 
 
@@ -1183,6 +1229,25 @@ See the LICENSE file for license information.
          'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
+         'Category: errors\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sendErrorMessage = ( |
+             rcvrAndArgs.
+             sel.
+            | 
+            cloneFailBlockIfNecessary.
+
+            [value: ''                With: '']. "browsing"
+            [primitiveFailedError: '' Name: '']. "browsing"
+            sel: ('IfFail:' isSuffixOf: node selector) ifTrue: 'value:With:' False: 'primitiveFailedError:Name:'.
+            rcvrAndArgs: (fbReg
+                       &  errMsgReg
+                       &  (cg constantArgument: node selector canonicalize)) asVector.
+
+            cg send: sel RcvrAndArgs: rcvrAndArgs Result: dstReg For: node).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> 'failureHandler' -> 'parent' -> () From: ( | {
@@ -1241,29 +1306,6 @@ See the LICENSE file for license information.
                  With: (argsToPassIn at: 3 IfAbsent: nil)
                  With: (argsToPassIn at: 4 IfAbsent: nil)
                  With: (argsToPassIn at: 5 IfAbsent: nil)).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
-         'Category: failure handling\x7fComment: Send an error message to the specified fail block.
-\'fbReg\' may be \'nil\' in the case that no fail block
-was supplied by the user program.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
-        
-         sendErrorTo: fbReg PutResultInto: dstReg Name: name Message: message Node: node = ( |
-            | 
-            compiler noSendsAllowed ifTrue: [
-              breakpoint: message.
-            ] False: [|sel|
-              setUpSendArguments: (fbReg
-                                & (locationForConstant: message canonicalize)
-                                & (locationForConstant:    name canonicalize)) asVector.
-
-              [value: ''                With: '']. "browsing"
-              [primitiveFailedError: '' Name: '']. "browsing"
-              sel: ('IfFail:' isSuffixOf: node selector) ifTrue: 'value:With:' False: 'primitiveFailedError:Name:'.
-              genNormalCallSelector: sel LiveOopTracker: liveOopTracker copyForNode: node.
-
-              moveSendResultTo: dstReg.
-            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {
@@ -1512,6 +1554,11 @@ was supplied by the user program.\x7fModuleInfo: Module: kleinPrims InitialConte
             | 
             fh: failureHandler copyFor: codeGeneratorForFailureHandler Node: node Receiver: rcvrReg FailBlock: fbReg Dest: dstReg.
             result:  aBlock value: fh.
+            fh canSendErrorMessage ifTrue: [
+              fh cg branchToLabel: fh endLabel.
+              fh cg bindLabel: fh failureLabel.
+              fh sendErrorMessage.
+            ].
             fh cg bindLabel: fh endLabel.
             result).
         } | ) 

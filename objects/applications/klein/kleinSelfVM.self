@@ -1701,67 +1701,67 @@ shows sensible information.  -- jb 8/03\x7fModuleInfo: Module: kleinSelfVM Initi
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup parent.
+         traitsParent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup traitsParent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'abstract' -> 'parent' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         parentA* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentA' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup parent parentA.
+         parentA* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentA' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup traitsParent parentA.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentA' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          slotInBoth = 10.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentA' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          slotInJustA = 55.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentA' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (28)\x7fVisibility: private'
         
          slotToFindThroughResend <- 28.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         parentB* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentB' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup parent parentB.
+         parentB* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentB' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup traitsParent parentB.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentB' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentB' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          slotInBoth = 20.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> 'parentB' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> 'parentB' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          slotInJustB = 199.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
         
          run = ( |
@@ -1788,7 +1788,7 @@ shows sensible information.  -- jb 8/03\x7fModuleInfo: Module: kleinSelfVM Initi
             assert: [kleinAndYoda lookup succeeded].
             assert:  kleinAndYoda lookup contentsOfFoundSlot Is: 199.
 
-            kleinAndYoda lookup findObjectOnReceiver: self Selector: 'slotToFindThroughResend' Holder: parent IsUndirectedResend: true Delegatee: nil IsSelfImplicit: true.
+            kleinAndYoda lookup findObjectOnReceiver: self Selector: 'slotToFindThroughResend' Holder: traitsParent IsUndirectedResend: true Delegatee: nil IsSelfImplicit: true.
             assert:  kleinAndYoda lookup resultType Is: kleinAndYoda lookup foundOne.
             assert: [kleinAndYoda lookup slotReference1 holder _Eq: parentA].
             assert: (kleinAndYoda lookup slotReference1 holderMap nameAt: kleinAndYoda lookup slotReference1 index) Is: 'slotToFindThroughResend'.
@@ -1803,14 +1803,14 @@ shows sensible information.  -- jb 8/03\x7fModuleInfo: Module: kleinSelfVM Initi
             assert: (kleinAndYoda lookup slotReference2 holderMap nameAt: kleinAndYoda lookup slotReference1 index) Is: 'slotInBoth'.
             assert: [kleinAndYoda lookup succeeded not].
 
-            kleinAndYoda lookup findObjectOnReceiver: self Selector: 'slotInBoth' Holder: parent IsUndirectedResend: false Delegatee: 'parentA' IsSelfImplicit: true.
+            kleinAndYoda lookup findObjectOnReceiver: self Selector: 'slotInBoth' Holder: traitsParent IsUndirectedResend: false Delegatee: 'parentA' IsSelfImplicit: true.
             assert:  kleinAndYoda lookup resultType Is: kleinAndYoda lookup foundOne.
             assert: [kleinAndYoda lookup slotReference1 holder _Eq: parentA].
             assert: (kleinAndYoda lookup slotReference1 holderMap nameAt: kleinAndYoda lookup slotReference1 index) Is: 'slotInBoth'.
             assert: [kleinAndYoda lookup succeeded].
             assert:  kleinAndYoda lookup contentsOfFoundSlot Is: 10.
 
-            kleinAndYoda lookup findObjectOnReceiver: self Selector: 'slotInBoth' Holder: parent IsUndirectedResend: false Delegatee: 'parentB' IsSelfImplicit: true.
+            kleinAndYoda lookup findObjectOnReceiver: self Selector: 'slotInBoth' Holder: traitsParent IsUndirectedResend: false Delegatee: 'parentB' IsSelfImplicit: true.
             assert:  kleinAndYoda lookup resultType Is: kleinAndYoda lookup foundOne.
             assert: [kleinAndYoda lookup slotReference1 holder _Eq: parentB].
             assert: (kleinAndYoda lookup slotReference1 holderMap nameAt: kleinAndYoda lookup slotReference1 index) Is: 'slotInBoth'.
@@ -1820,13 +1820,13 @@ shows sensible information.  -- jb 8/03\x7fModuleInfo: Module: kleinSelfVM Initi
             self).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          slotToFind = 42.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> 'traitsParent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          slotToFindThroughResend = -1.
@@ -2330,19 +2330,19 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests performing parent resendObj parent.
+         parentA* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests performing parent resendObj parentA.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (55)'
         
          a <- 55.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          dynamicUndirectedResendInParent: sel = ( |
@@ -2350,35 +2350,35 @@ SlotsToOmit: parent.
             _PerformResend: sel).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests performing parent resendObj parent parent.
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests performing parent resendObj parentA parent.
 '.
             | ) .
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          w = ( |
             | 7).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          z = 6.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          staticUndirectedResendInParent = ( |
@@ -2386,13 +2386,13 @@ SlotsToOmit: parent.
             _PerformResend: 'z').
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          w = 8.
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          x = ( |
@@ -2401,7 +2401,7 @@ SlotsToOmit: parent.
             resend.z + resend.w).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parent' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> 'parentA' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
         
          z = 5.
@@ -2442,7 +2442,7 @@ SlotsToOmit: parent.
          y = ( |
             | 
             "Just to make sure the resent methods get compiled."
-            resend.z + resend.w + parent.a + parentB.a).
+            resend.z + resend.w + parentA.a + parentB.a).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'performing' -> 'parent' -> 'resendObj' -> () From: ( | {
@@ -2472,7 +2472,7 @@ SlotsToOmit: parent.
               assert: (resendObj _Perform: 'a' DelegatingTo:           parentB) Is: 44.
               assert: (resendObj _Perform: 'a' DelegatingTo: resendObj parentB) Is: 44.
               assert: ('a' sendTo: resendObj   DelegatingTo: resendObj parentB) Is: 44.
-              assert: ('a' sendTo: resendObj   DelegatingTo: resendObj parent ) Is: 55.
+              assert: ('a' sendTo: resendObj   DelegatingTo: resendObj parentA) Is: 55.
             ].
 
             assert:  resendObj  staticUndirectedResend               Is: 5.
@@ -3381,7 +3381,7 @@ this number. For now it won\'t hurt much
 to just keep upping it by hand.
 -- Adam, 2/05\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
         
-         expectedNumberOfObjects = 325000.
+         expectedNumberOfObjects = 275000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> () From: ( | {
@@ -3536,59 +3536,63 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: assemblerSystems ppc fields)
-	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
-	& (reflect: traits)
-	& (reflect: assemblerSystems ppc crBits)
-	& (reflect: abstractBytecodeInterpreter bytecodes)
-	& (reflect: assemblerSystems ppc operands)
-	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
-	& (reflect: klein compiler1 prototypes optimizationPolicies)
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein compiler1 prototypes irNodeGenerator binaryOperations integerArithmetic)
+	& (reflect: klein compiler1 prototypes irNodeGenerator binaryOperations)
 	& (reflect: assemblerSystems ppc)
-	& (reflect: lobby)
-	& (reflect: bytecodeFormat instructionSets)
-	& (reflect: klein compiler1 prototypes)
+	& (reflect: assemblerSystems ppc operands)
 	& (reflect: assemblerSystems ppc crFields)
+	& (reflect: klein compiler1 prototypes optimizationPolicies)
 	& (reflect: assemblerSystems framework generators fields intOperandField signDependentOperations)
-	& (reflect: klein mirrors)
-	& (reflect: assemblerSystems ppc sprs)
-	& (reflect: klein stackFrames)
-	& (reflect: kleinAndYoda layouts)
-	& (reflect: assemblerSystems ppc gprs)
-	& (reflect: assemblerSystems ppc instructionTemplates)
+	& (reflect: abstractBytecodeInterpreter bytecodes)
 	& (reflect: assemblerSystems ppc fprs)
-	& (reflect: klein relocators)
-	& (reflect: assemblerSystems ppc generators)
-	& (reflect: assemblerSystems)
-	& (reflect: klein compiler1 prototypes dataValue kindsOfPossibleTypes)
 	& (reflect: klein compiler1 prototypes irNodeGenerator comparisons)
+	& (reflect: klein relocators)
+	& (reflect: assemblerSystems ppc gprs)
+	& (reflect: assemblerSystems ppc sprs)
 	& (reflect: klein compiler1 prototypes irNodes)
-	& (reflect: klein virtualMachines)
-	& (reflect: globals)
 	& (reflect: klein compiler1)
-	& (reflect: kleinAndYoda maps)
 	& (reflect: traits block)
-	& (reflect: traits slots)
-	& (reflect: assemblerSystems framework)
 	& (reflect: traits abstractSet values)
-	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
 	& (reflect: klein compiler1 prototypes machineLevelAllocators)
-	& (reflect: klein locations)
-	& (reflect: traits collection ascendingOrder)
-	& (reflect: klein compiler1 prototypes locationAssigners)
-	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
-	& (reflect: assemblerSystems ppc toMasks)
-	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
-	& (reflect: kleinAndYoda lookupType)
 	& (reflect: klein compiler1 prototypes codeGenerators)
 	& (reflect: slots)
-	& (reflect: klein sendDescs)
-	& (reflect: transporter moduleInfo)
+	& (reflect: kleinAndYoda maps)
+	& (reflect: traits slots)
+	& (reflect: klein locations)
+	& (reflect: klein compiler1 prototypes locationAssigners)
+	& (reflect: traits collection ascendingOrder)
+	& (reflect: kleinAndYoda lookupType)
 	& (reflect: traits abstractSetOrDictionary reflectiveIdentityComparisonMixin)
 	& (reflect: assemblerSystems framework generators)
+	& (reflect: assemblerSystems ppc crBits)
+	& (reflect: assemblerSystems ppc fields)
+	& (reflect: assemblerSystems ppc instructionAssemblyMethods)
+	& (reflect: klein compiler1 prototypes)
+	& (reflect: lobby)
+	& (reflect: assemblerSystems ppc pseudoInstructionTemplates)
+	& (reflect: bytecodeFormat instructionSets)
+	& (reflect: assemblerSystems ppc toMasks)
+	& (reflect: traits abstractSetOrDictionary equalityComparisonMixin)
+	& (reflect: assemblerSystems ppc generators)
+	& (reflect: klein mirrors)
+	& (reflect: klein virtualMachines)
+	& (reflect: traits abstractSetOrDictionary identityComparisonMixin)
+	& (reflect: assemblerSystems ppc instructionTemplates)
+	& (reflect: klein stackFrames)
+	& (reflect: kleinAndYoda layouts)
+	& (reflect: assemblerSystems)
+	& (reflect: klein compiler1 prototypes irNodeGenerator binaryOperations objectComparisons)
+	& (reflect: globals)
+	& (reflect: klein compiler1 prototypes dataValue kindsOfPossibleTypes)
+	& (reflect: klein compiler1 prototypes irNodeGenerator binaryOperations integerComparisons)
+	& (reflect: assemblerSystems framework)
+	& (reflect: kleinAndYoda virtualMachines abstractVM stringComparisonMixin)
 	& (reflect: kleinAndYoda)
-	& (reflect: scheduler)
-	& (reflect: klein)) asVmKitExportList) From: ( |
+	& (reflect: traits)
+	& (reflect: klein sendDescs)
+	& (reflect: transporter moduleInfo)
+	& (reflect: klein)
+	& (reflect: scheduler)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:

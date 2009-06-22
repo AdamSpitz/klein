@@ -2137,10 +2137,14 @@ SlotsToOmit: parent.
               c:  (blocksAndContextAndSelfMap at: 1) replaceMap: m With: selfMap.
 
               bs do: [|:compiledBlock|
-               crs add: objectMapper compilationRequester
-                                        copyForBlockMirror: (reflect: compiledBlock)
-                                              ObjectMapper: objectMapper
-                                      LexicalParentContext: c.
+                "The compiledBlock might not have been mapped if it's a failblock for a primitive
+                 that can't fail."
+                (objectMapper objectsOracle includesOriginalObject: compiledBlock) ifTrue: [
+                  crs add: objectMapper compilationRequester
+                                           copyForBlockMirror: (reflect: compiledBlock)
+                                                 ObjectMapper: objectMapper
+                                         LexicalParentContext: c.
+                ].
               ].
             ].
             crs).
@@ -2280,7 +2284,7 @@ SlotsToOmit: parent.
                                    Key: key
                                   Self: lpc selfMap
                               Receiver: bMap
-                    LexicalParentScope: bMir reflectee scopeDesc).
+                    LexicalParentScope: bMir reflectee lexicalParentScopeDesc).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
@@ -2795,7 +2799,14 @@ SlotsToOmit: parent.
               ].
             ].
 
+            "HACK: Don't want to compile all the lexicalParentScopeDesc
+             slots; there's one for every compiledBlock, and they're only
+             ever called when inlining a block method, so we can always
+             just compile them just-in-time. -- Adam, June 2009"
+            r remove: 'lexicalParentScopeDesc' IfAbsent: ["fine"].
+
             objectsOracle selectorsToCompile: r.
+
             self).
         } | ) 
 
@@ -3349,7 +3360,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
          requestCompilationForReceiverMirror: rMir Map: rMap MapOID: rMapOID = ( |
             | 
             (slotsToCompileForReceiver: kleinifiedMirrorForOriginalMirror: rMir) do: [|:slot|
-              (shouldCompileSlotNamed: slot name) ifTrue: [
+              (shouldCompileSlot: slot) ifTrue: [
                 compilationRequestersToRun add: compilationRequesterForOuterMethodOn: rMap TargetSlot: slot.
               ] False: [
                 objectsOracle recordMapOID: rMapOID WithUncompiledSlotNamed: slot name.
@@ -3471,12 +3482,21 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
-         shouldCompileSlotNamed: n = ( |
+         shouldCompileSlot: s = ( |
              b.
+             n.
             | 
             "Optimization: Don't bother compiling any slot whose selector isn't
              called from any method inside Klein. -- Adam, 2/05"
             policy shouldOnlyCompileSelectorsCalledByMappedMethods ifFalse: [^ true].
+            n: s name.
+
+            [aaaaaaa].
+            "HACK: Don't want to compile most slots named 'parent'.
+             The only problem is the 'slots parent' slot. So for now
+             I'm gonna hard-code that one. -- Adam, June 2009"
+            (n = 'parent') && [s holder != (reflect: slots)] ifTrue: [^ false].
+
             selectorsToCompileProbes: selectorsToCompileProbes succ.
             b:  objectsOracle selectorsToCompile includes: n.
             b ifTrue: [selectorsToCompileHits: selectorsToCompileHits succ].
@@ -3676,6 +3696,36 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
+         blockCloneCounts = ( |
+            | 
+            myVM setTheVMAndDo: [| r |
+              r: list copyRemoveAll.
+              exemplarOIDsDo: [|:exemplarOID. :origMap|
+                origMap isBlock ifTrue: [| blk. mapOop |
+                  blk: originalObjectForOID: exemplarOID.
+                  mapOop: oopForOriginalObject: origMap.
+                  [origMap cloneCount]. "browsing"
+                  r add: blk @ ((myVM mirrorFor: mapOop) primitiveContentsAt: 'cloneCount') reflectee.
+                ].
+              ].
+              (r copySortBy: (| element: a Precedes: b = (a y > b y) |)) asVector
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         blockCloneCountsByOuterMethodSlot = ( |
+            | 
+            blockCloneCounts copyMappedBy: [|:p. s|
+              s: p x lexicalParentScopeDesc outermostLexicalParentScope slot.
+              s name @ s holder safeName @ p y
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
          breakDownObjectsBy: blk = ( |
              r.
             | 
@@ -3741,6 +3791,15 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
+         'Category: iterating\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exemplarOIDsDo: blk = ( |
+            | 
+            objectsOracle exemplarOIDsDo: blk.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          invocationCounts = ( |
@@ -3750,9 +3809,10 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
               nmethodsDo: [|:nm. nmOop. map|
                 nmOop: oopForOriginalObject: nm.
                 map:  vmKit maps nmethodMap importMapFor: nmOop IfFail: raiseError.
-                r add: nm @ (map contentsOfSlotNamed: 'invocationCount' In: nmOop IfFail: raiseError).
+                [nm invocationCount]. "browsing"
+                r add: nm @ (vmKit layouts smi decode: map contentsOfSlotNamed: 'invocationCount' In: nmOop IfFail: raiseError).
               ].
-              r
+              (r copySortBy: (| element: a Precedes: b = (a y > b y) |)) asVector
             ]).
         } | ) 
 
@@ -4353,6 +4413,14 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
             | 
             a = b ifFalse: [error: 'inconsistent'].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         blockMaps = ( |
+            | 
+            mapsOfMemoryObjects copyFilteredBy: [|:m| m isBlock]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
@@ -5446,6 +5514,15 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
+         'Category: OIDs\x7fCategory: by object\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         includesOriginalObject: aSelfObj = ( |
+            | 
+            oidForOriginalObject: aSelfObj IfAbsent: [^ false].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
          'Category: kleinified objects\x7fCategory: by OID\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          kleinifiedMirrorForOID: oid = ( |
@@ -5939,14 +6016,6 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          findReflecteeUsingOracle: oracle = ( |
             | 
             reflectee).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {
-         'Category: klein and yoda\x7fCategory: exporting\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         findVMKitMapUsingOracle: oracle = ( |
-            | 
-            oracle mapForOriginalMirror: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {

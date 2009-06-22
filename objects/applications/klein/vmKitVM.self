@@ -220,7 +220,7 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitVM InitialCo
 
             universe allocateHeapAt: base
                          NewGenSize: (canCollectGarbage ifTrue: [s / 16] False: [s / 8])  "leave room so we don't run out since no GC"
-                  ScavengeSpaceSize: (canCollectGarbage ifTrue: [s /  4] False: 0      )  "scavenger creates a lot of garbage for now"
+                  ScavengeSpaceSize: (canCollectGarbage ifTrue: [s /  8] False: 0      )  "scavenger creates a lot of garbage for now"
                           TotalSize: s).
         } | ) 
 
@@ -322,8 +322,8 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitVM InitialCo
         
          entryMethodName = ( |
             | 
-            [startAfterSettingTheVMAndLens]. "browsing"
-            'startAfterSettingTheVMAndLens').
+            [startAfterSettingTheLens]. "browsing"
+            'startAfterSettingTheLens').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
@@ -670,7 +670,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
          'Category: mapped\x7fCategory: startup\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
         
-         startAfterSettingTheVMAndLens = ( |
+         startAfterSettingTheLens = ( |
             | 
             _NoMapTest. "When we call this method to start the VM, there's
                          no calling sendDesc. But there's gotta be a solution
@@ -681,7 +681,6 @@ to just keep upping it by hand.
 
             lens:                   lensForExecution. "lens gets munged during export"
             machineMemory: machineMemoryForExecution.
-            _TheVM: self.
 
             start).
         } | ) 

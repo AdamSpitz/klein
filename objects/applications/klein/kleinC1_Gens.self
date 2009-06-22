@@ -265,6 +265,174 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         codeGenerationMixin* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes codeGenerators abstract parent codeGenerationMixin.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateExit: aBlock = ( |
+             end.
+            | 
+            end: newLabel.
+            aBlock value: end.
+            bindLabel: end.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: objReg Equals: otherObjReg Then: trueBlock Else: falseBlock = ( |
+            | 
+            generateIf: [|:trueFork|
+              generateIf: objReg Equals: otherObjReg ThenBranchTo: trueFork
+            ] Then: trueBlock Else: falseBlock).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: testBlock Then: trueBlock = ( |
+            | 
+            generateIf: testBlock Then: trueBlock Else: []).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: testBlock Then: trueBlock Else: falseBlock = ( |
+            | 
+            generateExit: [|:end. trueFork|
+              trueFork:  newLabel.
+
+              testBlock value: trueFork With: end.
+              "fall-through to false fork"
+
+              falseBlock value.
+              branchToLabel: end.
+
+              bindLabel: trueFork.
+              trueBlock value: end.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: test1Block Then: then1Block If: test2Block Then: then2Block Else: elseBlock = ( |
+            | 
+            generateExit: [|:end. case1Fork. case2Fork|
+              case1Fork:  newLabel.
+              case2Fork:  newLabel.
+
+              test1Block value: case1Fork.
+              "fall-through to second case test"
+
+              test2Block value: case2Fork.
+              "fall-through to else fork"
+
+              elseBlock value.
+              branchToLabel: end.
+
+              bindLabel: case1Fork.
+              then1Block value.
+              branchToLabel: end.
+
+              bindLabel: case2Fork.
+              then2Block value.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: test1Block Then: then1Block If: test2Block Then: then2Block If: test3Block Then: then3Block Else: elseBlock = ( |
+            | 
+            generateExit: [|:end. case1Fork. case2Fork. case3Fork|
+              case1Fork:  newLabel.
+              case2Fork:  newLabel.
+              case3Fork:  newLabel.
+
+              test1Block value: case1Fork.
+              "fall-through to second case test"
+
+              test2Block value: case2Fork.
+              "fall-through to third case test"
+
+              test3Block value: case3Fork.
+              "fall-through to else fork"
+
+              elseBlock value.
+              branchToLabel: end.
+
+              bindLabel: case1Fork.
+              then1Block value.
+              branchToLabel: end.
+
+              bindLabel: case2Fork.
+              then2Block value.
+              branchToLabel: end.
+
+              bindLabel: case3Fork.
+              then3Block value.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIs: objReg EqualTo: otherObjReg Into: dstBoolReg = ( |
+            | 
+            generateTest: [|:trueFork|
+              generateIf: objReg Equals: otherObjReg ThenBranchTo: trueFork
+            ] LoadBooleanInto: dstBoolReg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateSwitchForCases: cases If: testBlk Then: thenBlk Else: elseBlk = ( |
+             caseVector.
+             forks.
+            | 
+            generateExit: [|:end|
+              forks: cases copyMappedBy: [newLabel].
+              cases with: forks Do: [|:c. :f|
+                testBlk value: c With: f.
+                "fall through to next case"
+              ].
+              elseBlk value.
+              branchToLabel: end.
+
+              cases with: forks Do: [|:c. :f|
+                bindLabel: f.
+                thenBlk value: c.
+                branchToLabel: end.
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateTest: testBlock LoadBooleanInto: dstBoolReg = ( |
+            | 
+            generateIf: testBlock
+                  Then: [loadTrueInto:  dstBoolReg]
+                  Else: [loadFalseInto: dstBoolReg]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          codeGeneratorForFailureHandler = ( |
@@ -279,6 +447,14 @@ See the LICENSE file for license information.
             | 
             a comment: msg.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         constantArgument: o = ( |
+            | 
+            locationForConstant: o).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -314,6 +490,14 @@ See the LICENSE file for license information.
          defineLabel = ( |
             | 
             a defineLabel).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: error-handling\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         failBlockMessageArgument = ( |
+            | 
+            machineLevelAllocator locationForOutgoingRcvrOrArgAt: 1).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -373,6 +557,14 @@ See the LICENSE file for license information.
         
          genIndexedBranchTo: nodes IndexedBy: loc = ( |
             | childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         genNormalCallSelector: sel For: n = ( |
+            | 
+            genNormalCallSelector: sel LiveOopTracker: liveOopTracker copyForNode: n).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -454,18 +646,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateExit: aBlock = ( |
-             end.
-            | 
-            end: newLabel.
-            aBlock value: end.
-            bindLabel: end.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generateFakePrimitiveNode: n = ( |
@@ -486,13 +666,16 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: conditionals\x7fCategory: bounds checks\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateIf: objReg Equals: otherObjReg Then: trueBlock Else: falseBlock = ( |
+         generateForVector: vectReg IfIndex: indexSmiReg Temp: tempReg VectorLayout: layout IsOutOfBoundsThenBranchTo: trueFork = ( |
             | 
-            generateIf: [|:trueFork|
-              generateIf: objReg Equals: otherObjReg ThenBranchTo: trueFork
-            ] Then: trueBlock Else: falseBlock).
+            layout            generateFor: vectReg
+                                  IfIndex: indexSmiReg
+                                     Temp: tempReg
+                IsOutOfBoundsThenBranchTo: trueFork
+                                     With: self.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -523,93 +706,33 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: conditionals\x7fCategory: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: secondary (i.e. map) type tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateIf: testBlock Then: trueBlock = ( |
+         generateIf: objReg Temp: tempReg HasAnyMapTypeIn: maps ThenBranchTo: trueFork = ( |
             | 
-            generateIf: testBlock Then: trueBlock Else: []).
+            vmKit layouts object
+                   generateIfMapOf: objReg
+                   HasAnyMapTypeIn: maps
+                              Temp: tempReg
+                      ThenBranchTo: trueFork
+                              With: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: conditionals\x7fCategory: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: primary  (i.e. tag) type tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateIf: testBlock Then: trueBlock Else: falseBlock = ( |
+         generateIf: objReg Temp: tempReg HasTag: t IsLikely: isLikely ThenBranchTo: trueFork = ( |
             | 
-            generateExit: [|:end. trueFork|
-              trueFork:  newLabel.
-
-              testBlock value: trueFork With: end.
-              "fall-through to false fork"
-
-              falseBlock value.
-              branchToLabel: end.
-
-              bindLabel: trueFork.
-              trueBlock value: end.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateIf: test1Block Then: then1Block If: test2Block Then: then2Block Else: elseBlock = ( |
-            | 
-            generateExit: [|:end. case1Fork. case2Fork|
-              case1Fork:  newLabel.
-              case2Fork:  newLabel.
-
-              test1Block value: case1Fork.
-              "fall-through to second case test"
-
-              test2Block value: case2Fork.
-              "fall-through to else fork"
-
-              elseBlock value.
-              branchToLabel: end.
-
-              bindLabel: case1Fork.
-              then1Block value.
-              branchToLabel: end.
-
-              bindLabel: case2Fork.
-              then2Block value.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateIf: test1Block Then: then1Block If: test2Block Then: then2Block If: test3Block Then: then3Block Else: elseBlock = ( |
-            | 
-            generateExit: [|:end. case1Fork. case2Fork. case3Fork|
-              case1Fork:  newLabel.
-              case2Fork:  newLabel.
-              case3Fork:  newLabel.
-
-              test1Block value: case1Fork.
-              "fall-through to second case test"
-
-              test2Block value: case2Fork.
-              "fall-through to third case test"
-
-              test3Block value: case3Fork.
-              "fall-through to else fork"
-
-              elseBlock value.
-              branchToLabel: end.
-
-              bindLabel: case1Fork.
-              then1Block value.
-              branchToLabel: end.
-
-              bindLabel: case2Fork.
-              then2Block value.
-              branchToLabel: end.
-
-              bindLabel: case3Fork.
-              then3Block value.
+            t = 0 ifTrue: [
+              "Optimization: if we're looking for the kind of oop with tag 0,
+               we can do this with fewer instructions."
+              andImmMask: vmKit tag mask AndSetCCFrom: objReg To: tempReg.
+              isLikely ifTrue: [branchEQLikelyTo:   trueFork]
+                        False: [branchEQUnlikelyTo: trueFork].
+            ] False: [
+              andImmMask: vmKit tag mask MaybeSetCCFrom: objReg To: tempReg.
+              isLikely ifTrue: [generateIf: tempReg EqualsImmediate: t ThenLikelyBranchTo:   trueFork]
+                        False: [generateIf: tempReg EqualsImmediate: t ThenUnlikelyBranchTo: trueFork].
             ].
             self).
         } | ) 
@@ -642,27 +765,16 @@ See the LICENSE file for license information.
              put it in one time when we wanted to gather some
              statistics. --  Adam, 10/04"
 
-            shouldDoInvocationCounts ifTrue: [
-              withTemporaryRegisterDo: [|:nmReg|
-                "Someday, for performance, we might be able to
-                 avoid doing the loadNMethodIntoRegister: twice,
-                 by merging this code with the other code that
-                 calls loadNMethodIntoRegister:. -- Adam, 11/04"
-                loadNMethodIntoRegister: nmReg.
-                incrementInvocationCountForNMethod: nmReg.
-              ].
+            shouldDoInvocationCounts ifTrue: [| nmReg |
+              nmReg: r0. [aaaaaaa]. "Is that OK?"
+              "Someday, for performance, we might be able to
+               avoid doing the loadNMethodIntoRegister: twice,
+               by merging this code with the other code that
+               calls loadNMethodIntoRegister:. -- Adam, 11/04"
+              loadNMethodIntoRegister: nmReg.
+              incrementInvocationCountForNMethod: nmReg.
             ].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateIs: objReg EqualTo: otherObjReg Into: dstBoolReg = ( |
-            | 
-            generateTest: [|:trueFork|
-              generateIf: objReg Equals: otherObjReg ThenBranchTo: trueFork
-            ] LoadBooleanInto: dstBoolReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -835,14 +947,6 @@ See the LICENSE file for license information.
                                           AndValue: valueSmiReg
                                               Into: dstReg
                                               With: self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg Eq: argReg IfFail: fh = ( |
-            | 
-            generateIs: rcvrReg EqualTo: argReg Into: dstReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1434,31 +1538,6 @@ Returns an address into a bytes part masquerading as a small integer.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateSwitchForCases: cases If: testBlk Then: thenBlk Else: elseBlk = ( |
-             caseVector.
-             forks.
-            | 
-            generateExit: [|:end|
-              forks: cases copyMappedBy: [newLabel].
-              cases with: forks Do: [|:c. :f|
-                testBlk value: c With: f.
-                "fall through to next case"
-              ].
-              elseBlk value.
-              branchToLabel: end.
-
-              cases with: forks Do: [|:c. :f|
-                bindLabel: f.
-                thenBlk value: c.
-                branchToLabel: end.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: system calls\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generateSystemCallNode: n = ( |
@@ -1478,16 +1557,6 @@ Returns an address into a bytes part masquerading as a small integer.
             generateTrapInstructionForSystemCall: systemCallNumber.
             materializeDest: resultLoc AndDo: [|:dstReg| moveSystemCallResultToReg: dstReg].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateTest: testBlock LoadBooleanInto: dstBoolReg = ( |
-            | 
-            generateIf: testBlock
-                  Then: [loadTrueInto:  dstBoolReg]
-                  Else: [loadFalseInto: dstBoolReg]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2117,6 +2186,14 @@ and may fail to compile otherwise.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
+         move: src To: dst = ( |
+            | 
+            moveLocation: src ToLocation: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
          moveLocation: src ToLocation: dst = ( |
             | 
             src = dst ifTrue: [^ self].
@@ -2376,6 +2453,17 @@ and may fail to compile otherwise.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         send: sel RcvrAndArgs: rcvrAndArgRegs Result: dstReg For: node = ( |
+            | 
+            setUpSendArguments: rcvrAndArgRegs.
+            genNormalCallSelector: sel For: node.
+            moveSendResultTo: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: sends\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          setUpSendArguments: rcvrAndArgLocs = ( |
@@ -2411,6 +2499,12 @@ and may fail to compile otherwise.
             | 
             childMustImplement.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldBeLazyAboutCloningPrimitiveFailBlocks = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2951,21 +3045,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateComparisonPrimitiveInto: dstReg Receiver: rcvrReg Arg: argReg IfFail: fh Branch: aBlock = ( |
-            | 
-            fh assertInteger: rcvrReg.
-            fh assertInteger: argReg.
-
-            generateTest: [|:trueFork|
-              a cmpwFrom: rcvrReg
-                    With: argReg.
-              aBlock value: trueFork.
-            ] LoadBooleanInto: dstReg).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: perform\x7fComment: Get the address of the sendDesc into
  a register, in order to be able to backpatch the selector and
  delegatee of the sendDesc. So we generate code that looks like this:
@@ -3350,7 +3429,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
 
                 [aaaaaaa]. "Possible optimization: this check isn't necessary if the topScope has no inlinedScopes, right?"
                 withTemporaryRegisterDo: [|:scopeDescReg|
-                  loadOop: node interpreter scopeDesc IntoRegister: scopeDescReg NameForComment: 'NLR home scopeDesc'.
+                  loadOop: node interpreter myScopeDesc IntoRegister: scopeDescReg NameForComment: 'NLR home scopeDesc'.
                   generateIf: machineLevelAllocator locationForIncomingNLRHomeScopeDesc DoesNotEqual: scopeDescReg ThenBranchTo: trueFork.
                 ].
               ] Then: [
@@ -3461,18 +3540,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntAdd: argReg IfFail: fh = ( |
-            | 
-            fh assertInteger: rcvrReg.
-            fh assertInteger: argReg.
-            fh assertNoOverflow: 'addition' During: [
-              a addo_To: dstReg From: rcvrReg With: argReg.
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: logical operations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitiveInto: dstReg Receiver: rcvrReg IntAnd: argReg IfFail: fh = ( |
@@ -3518,88 +3585,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntDiv: argReg IfFail: fh = ( |
-            | 
-            fh assertInteger: rcvrReg.
-            fh assertInteger: argReg.
-
-            "Shifting the divisor first allows us to detect overflow
-             resulting from 16r20000000 / -1 because it gets computed as
-             (16r80000000 / -1) & ~3 instead of (16r80000000 / -4) & ~3.
-             -- jb 6/03"
-            layouts smi generateDecode: argReg Into: dstReg With: self.
-
-            fh assertNoOverflow: 'division' During: [
-              a divwo_To: dstReg From: rcvrReg With: dstReg.
-            ].
-
-            "clear out tag bits"
-            layouts object generateValueOf: dstReg Into: dstReg With: self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntEQ: argReg IfFail: fh = ( |
-            | 
-            generateComparisonPrimitiveInto: dstReg
-                                   Receiver: rcvrReg
-                                        Arg: argReg
-                                     IfFail: fh
-                                     Branch: [|:trueFork| a beqDisp: trueFork]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntGE: argReg IfFail: fh = ( |
-            | 
-            generateComparisonPrimitiveInto: dstReg
-                                   Receiver: rcvrReg
-                                        Arg: argReg
-                                     IfFail: fh
-                                     Branch: [|:trueFork| a bgeDisp: trueFork]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntGT: argReg IfFail: fh = ( |
-            | 
-            generateComparisonPrimitiveInto: dstReg
-                                   Receiver: rcvrReg
-                                        Arg: argReg
-                                     IfFail: fh
-                                     Branch: [|:trueFork| a bgtDisp: trueFork]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntLE: argReg IfFail: fh = ( |
-            | 
-            generateComparisonPrimitiveInto: dstReg
-                                   Receiver: rcvrReg
-                                        Arg: argReg
-                                     IfFail: fh
-                                     Branch: [|:trueFork| a bleDisp: trueFork]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntLT: argReg IfFail: fh = ( |
-            | 
-            generateComparisonPrimitiveInto: dstReg
-                                   Receiver: rcvrReg
-                                        Arg: argReg
-                                     IfFail: fh
-                                     Branch: [|:trueFork| a bltDisp: trueFork]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: bit shifts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitiveInto: dstReg Receiver: rcvrReg IntLogicalShiftLeft: argReg IfFail: fh = ( |
@@ -3632,6 +3617,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generatePrimitiveInto: dstReg Receiver: rcvrReg IntMod: argReg IfFail: fh = ( |
             | 
+            [aaaaaaa]. "Make this, and the rest of them, into translated prims."
             fh assertInteger: rcvrReg.
             fh assertInteger: argReg.
 
@@ -3652,31 +3638,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntMul: argReg IfFail: fh = ( |
-            | 
-            fh assertInteger: rcvrReg.
-            fh assertInteger: argReg.
-            layouts smi generateDecode: rcvrReg Into: dstReg With: self.
-            fh assertNoOverflow: 'multiplication' During: [
-              a mullwo_To: dstReg From: dstReg With: argReg.
-            ]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: comparisons\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntNE: argReg IfFail: fh = ( |
-            | 
-            generateComparisonPrimitiveInto: dstReg
-                                   Receiver: rcvrReg
-                                        Arg: argReg
-                                     IfFail: fh
-                                     Branch: [|:trueFork| a bneDisp: trueFork]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: logical operations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitiveInto: dstReg Receiver: rcvrReg IntOr: argReg IfFail: fh = ( |
@@ -3684,18 +3645,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             fh assertInteger: rcvrReg.
             fh assertInteger: argReg.
             a or_To: dstReg From: rcvrReg With: argReg).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: immediates\x7fCategory: small integers\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: rcvrReg IntSub: argReg IfFail: fh = ( |
-            | 
-            fh assertInteger: rcvrReg.
-            fh assertInteger: argReg.
-            fh assertNoOverflow: 'subtraction' During: [
-              a subo_To: dstReg From: rcvrReg With: argReg.
-            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -5689,30 +5638,10 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
         
          generateIf: objReg Temp: tempReg HasAnyMapTypeIn: maps ThenBranchTo: trueFork With: cg = ( |
             | 
-            generateIfMapOf: objReg
-            HasAnyMapTypeIn: maps
+            cg   generateIf: objReg
                        Temp: tempReg
-               ThenBranchTo: trueFork
-                       With: cg).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
-         'Category: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: primary  (i.e. tag) type tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateIf: objReg Temp: tempReg HasTag: t IsLikely: isLikely ThenBranchTo: trueFork With: cg = ( |
-            | 
-            t = 0 ifTrue: [
-              "Optimization: if we're looking for the kind of oop with tag 0,
-               we can do this with fewer instructions."
-              cg andImmMask: vmKit tag mask AndSetCCFrom: objReg To: tempReg.
-              isLikely ifTrue: [cg branchEQLikelyTo:   trueFork]
-                        False: [cg branchEQUnlikelyTo: trueFork].
-            ] False: [
-              cg andImmMask: vmKit tag mask MaybeSetCCFrom: objReg To: tempReg.
-              isLikely ifTrue: [cg generateIf: tempReg EqualsImmediate: t ThenLikelyBranchTo:   trueFork]
-                        False: [cg generateIf: tempReg EqualsImmediate: t ThenUnlikelyBranchTo: trueFork].
-            ].
-            self).
+            HasAnyMapTypeIn: maps
+               ThenBranchTo: trueFork).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
@@ -5744,12 +5673,11 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
         
          generateIf: objReg Temp: tempReg IsFloatThenBranchTo: trueFork With: cg = ( |
             | 
-              generateIf: objReg
-                    Temp: tempReg
-                  HasTag: vmKit tag float
-                IsLikely: true
-            ThenBranchTo: trueFork
-                    With: cg).
+            cg generateIf: objReg
+                     Temp: tempReg
+                   HasTag: vmKit tag float
+                 IsLikely: true
+             ThenBranchTo: trueFork).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
@@ -5757,12 +5685,11 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
         
          generateIf: objReg Temp: tempReg IsMarkThenBranchTo: trueFork With: cg = ( |
             | 
-              generateIf: objReg
-                    Temp: tempReg
-                  HasTag: vmKit tag mark
-                IsLikely: false
-            ThenBranchTo: trueFork
-                    With: cg).
+            cg generateIf: objReg
+                     Temp: tempReg
+                   HasTag: vmKit tag mark
+                 IsLikely: false
+             ThenBranchTo: trueFork).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
@@ -5770,12 +5697,11 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
         
          generateIf: objReg Temp: tempReg IsMemoryObjectThenBranchTo: trueFork With: cg = ( |
             | 
-              generateIf: objReg
-                    Temp: tempReg
-                  HasTag: vmKit tag mem
-                IsLikely: true
-            ThenBranchTo: trueFork
-                    With: cg).
+            cg generateIf: objReg
+                     Temp: tempReg
+                   HasTag: vmKit tag mem
+                 IsLikely: true
+             ThenBranchTo: trueFork).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
@@ -5796,16 +5722,15 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
         
          generateIf: objReg Temp: tempReg IsSmiThenBranchTo: trueFork With: cg = ( |
             | 
-              generateIf: objReg
-                    Temp: tempReg
-                  HasTag: vmKit tag smi
-                IsLikely: true
-            ThenBranchTo: trueFork
-                    With: cg).
+            cg generateIf: objReg
+                     Temp: tempReg
+                   HasTag: vmKit tag smi
+                 IsLikely: true
+             ThenBranchTo: trueFork).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'object' -> () From: ( | {
-         'Category: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: secondary (i.e. what kind of mem) tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: secondary (i.e. what kind of mem) tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIfMapOf: objReg HasAnyMapTypeIn: mapPrototypes Temp: temp1Reg ThenBranchTo: trueFork With: cg = ( |
              immediateMapProtos.

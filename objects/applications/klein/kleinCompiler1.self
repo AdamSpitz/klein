@@ -747,6 +747,22 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
+         mapForOriginalMirror: origMir = ( |
+            | 
+            mapForOriginalObject: origMir reflectee).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mapForOriginalObject: o = ( |
+            | 
+            o _Map).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'oracleForEagerRelocationInsideKlein' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
          nextOopToAllocateForObjectOfSize: nOops = ( |
             | 
             -1).
@@ -1301,12 +1317,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
          'ModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
          uniqueID.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> () From: ( | {
-         'Comment: useful for debugging\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
-        
-         whereDidIComeFrom.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> () From: ( | {
@@ -3297,7 +3307,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
-         maxMethodSizeForInlining = 6.
+         maxMethodSizeForInlining = 9.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
@@ -3370,6 +3380,49 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
+         calleesAndCallersToInlineDo: blk = ( |
+            | 
+            blk value: 'value'                            With: 'value:'.
+            blk value: 'value:'                           With: 'value:With:'.
+            blk value: 'value:With:'                      With: 'value:With:With:'.
+            blk value: 'ifTrue:False:'                    With: 'ifTrue:'.
+            blk value: 'ifTrue:False:'                    With: 'ifFalse:'.
+            blk value: 'ifTrue:False:'                    With: 'ifTrue:False:'.
+            blk value: 'to:Do:'                           With: 'do:'.
+            blk value: 'to:By:Do:'                        With: 'to:Do:'.
+            blk value: 'ifTrue:'                          With: 'to:By:Do:'.
+            blk value: 'whileTrue:'                       With: 'to:ByPositive:Do:'.
+            blk value: 'loop'                             With: 'whileTrue:'.
+            blk value: 'shift'                            With: 'shiftPast'.
+            blk value: 'shiftPast'                        With: 'shift'.
+            blk value: 'withoutCloningAnythingGetANewOID' With: 'cloneBlockHomeFrame_stub:'.
+            blk value: 'universe'                         With: 'cloneBlockHomeFrame_stub:'.
+            blk value: 'allocationSpace'                  With: 'cloneBlockHomeFrame_stub:'.
+            blk value: 'incrementTimestamp'               With: 'withoutCloningAnythingAllocateAnOID'.
+            blk value: 'nextFreeOID'                      With: 'withoutCloningAnythingAllocateAnOID'.
+            blk value: 'oidForInvalidEntry:'              With: 'nextFreeOID'.
+            blk value: 'theVM'                            With: 'oidForInvalidEntry:'.
+            blk value: 'lens'                             With: 'oidForInvalidEntry:'.
+            blk value: 'oidForInvalidEntry:In:'           With: 'oidForInvalidEntry:'.
+            blk value: 'oidForInvalidLocalEntry:'         With: 'oidForInvalidEntry:In:'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         calleesToInlineDo: blk = ( |
+            | 
+            blk value: 'ifTrue:'.
+            blk value: 'ifFalse:'.
+            blk value: 'to:ByPositive:Do:'.
+            blk value: 'withoutCloningAnythingAllocateAnOID'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> ().
         } | ) 
 
@@ -3385,27 +3438,15 @@ SlotsToOmit: parent.
          shouldInlineSlot: s For: rcvrValue Into: context Key: key = ( |
             | 
             s isMethod                                                ifFalse: [^ true ]. "Data slots are fine."
-            s contents codes size <= maxMethodSizeForInlining         ifFalse: [^ false]. "Just based on number of bytecodes for now."
+            [aaaaaaa s contents codes size <= maxMethodSizeForInlining         ifFalse: [^ false]. "Just based on number of bytecodes for now."].
             shouldInlineBlocks && [s contents isReflecteeBlockMethod]  ifTrue: [^ true ]. "Just for now, while I work on block inlining."
 
             [aaaaaaa]. "Figure out a clean way to write this."
-            (s name = 'ifTrue:') ifTrue: [^ true].
-            (s name = 'ifFalse:') ifTrue: [^ true].
-            (s name = 'value') && [context slot name = 'value:'] ifTrue: [^ true].
-            (s name = 'value:') && [context slot name = 'value:With:'] ifTrue: [^ true].
-            (s name = 'value:With:') && [context slot name = 'value:With:With:'] ifTrue: [^ true].
-            (s name = 'ifTrue:False:') && [context slot name = 'ifTrue:'] ifTrue: [^ true].
-            (s name = 'ifTrue:False:') && [context slot name = 'ifFalse:'] ifTrue: [^ true].
-            (s name = 'ifTrue:False:') && [context slot name = 'ifTrue:False:'] ifTrue: [^ true].
-            (s name = 'to:Do:') && [context slot name = 'do:'] ifTrue: [^ true].
-            (s name = 'to:By:Do:') && [context slot name = 'to:Do:'] ifTrue: [^ true].
-            (s name = 'ifTrue:') && [context slot name = 'to:By:Do:'] ifTrue: [^ true].
-            (s name = 'to:ByPositive:Do:') ifTrue: [^ true].
-            (s name = 'whileTrue:') && [context slot name = 'to:ByPositive:Do:'] ifTrue: [^ true].
-            (s name = 'loop') && [context slot name = 'whileTrue:'] ifTrue: [^ true].
+
+            calleesToInlineDo:           [|:calleeName|              (s name = calleeName)                                     ifTrue: [^ true]].
+            calleesAndCallersToInlineDo: [|:calleeName. :callerName| (s name = calleeName) && [context slot name = callerName] ifTrue: [^ true]].
+
             (s name = 'ifFalse:') && [(context slot name = 'value') && [context lexicalParentScope lookupKey selector = 'whileTrue:']] ifTrue: [^ true].
-            (s name = 'shift') && [context slot name = 'shiftPast'] ifTrue: [^ true].
-            (s name = 'shiftPast') && [context slot name = 'shift'] ifTrue: [^ true].
 
             "Otherwise, don't bother inlining; more important to keep compile times down."
             false).
@@ -3650,6 +3691,54 @@ determining the number of variadic parameters actually supplied.
          variableArguments <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotContentsFor: bm With: i = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'abstractLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotNameFor: bm With: i = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotContentsFor: bm With: i = ( |
+            | 
+            i localValueSlotContentsFor: bm).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotNameFor: bm With: i = ( |
+            | 
+            i localValueSlotNameFor: bm).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotContentsFor: bm With: i = ( |
+            | 
+            i remoteValueSlotContentsFor: bm).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'memoryLens' -> () From: ( | {
+         'Category: double-dispatch\x7fCategory: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueSlotNameFor: bm With: i = ( |
+            | 
+            i remoteValueSlotNameFor: bm).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot'
         
@@ -3712,6 +3801,14 @@ kleinC1_Gens
 kleinC1_BCI
 kleinC1_locs
 '.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'mirrors' -> 'abstractMirror' -> () From: ( | {
+         'Category: klein and yoda\x7fCategory: exporting\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         findVMKitMapUsingOracle: oracle = ( |
+            | 
+            oracle mapForOriginalMirror: self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'traits' -> 'slots' -> 'plain' -> () From: ( | {

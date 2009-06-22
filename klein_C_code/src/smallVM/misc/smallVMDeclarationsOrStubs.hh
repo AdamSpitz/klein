@@ -23,7 +23,7 @@
 
 # else
 
-  static const  int fixed_address_buffer_length = 128 * 1024 * 1024;
+  static const  int fixed_address_buffer_length = 192 * 1024 * 1024;
 
   static const int default_port = 9090;
   static const char initiation_request[]  =  "request_debug_server_1.5";

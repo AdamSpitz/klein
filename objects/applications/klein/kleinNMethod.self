@@ -17,6 +17,12 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
+        
+         lexicalParentScopeDesc = bootstrap stub -> 'globals' -> 'nil' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( | {
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot'
         
          originalBlock_replaceThisSlotWithTheValueSlot = bootstrap stub -> 'globals' -> 'nil' -> ().
@@ -26,12 +32,6 @@ See the LICENSE file for license information.
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'block' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiledBlock' -> () From: ( | {
-         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (nil)'
-        
-         scopeDesc = bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> () From: ( | {
@@ -614,6 +614,16 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         outermostLexicalParentScope = ( |
+             s.
+            | 
+            s: self.
+            [s lexicalParentScope ifNil: [^ s] IfNotNil: [|:lps| s: lps]] loop).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
@@ -650,6 +660,14 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'vector' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         slot = ( |
+            | 
+            (reflect: methodHolder) at: lookupKey selector).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> 'parent' -> 'scopeDesc' -> () From: ( | {
