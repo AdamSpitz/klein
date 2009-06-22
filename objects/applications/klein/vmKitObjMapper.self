@@ -3703,9 +3703,12 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
               exemplarOIDsDo: [|:exemplarOID. :origMap|
                 origMap isBlock ifTrue: [| blk. mapOop |
                   blk: originalObjectForOID: exemplarOID.
-                  mapOop: oopForOriginalObject: origMap.
-                  [origMap cloneCount]. "browsing"
-                  r add: blk @ ((myVM mirrorFor: mapOop) primitiveContentsAt: 'cloneCount') reflectee.
+                  "Just want the compiledBlocks, not the ordinary Self blocks."
+                  (reflect: blk) isReflecteeBlock ifFalse: [
+                    mapOop: oopForOriginalObject: origMap.
+                    [origMap cloneCount]. "browsing"
+                    r add: blk @ ((myVM mirrorFor: mapOop) primitiveContentsAt: 'cloneCount') reflectee.
+                  ].
                 ].
               ].
               (r copySortBy: (| element: a Precedes: b = (a y > b y) |)) asVector

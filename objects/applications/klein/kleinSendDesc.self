@@ -174,6 +174,7 @@ See the LICENSE file for license information.
             "Small optimization: define the pastme label in the correct position right now,
              because maintaining the set of unresolvedUses and then resolving it is
              slightly expensive. -- Adam, 11/04"
+            [todo optimization]. "Um, why not just branch directly to the next node?"
             labelPastMe: a defineLabelAt: start + (cg oopSize * indexPastMe).
 
             a locationCounter:   start + (cg oopSize * normalReturnIndex).  a bDisp: labelPastMe.

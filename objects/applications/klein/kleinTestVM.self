@@ -538,7 +538,10 @@ to just keep upping it by hand.
         
          isSlotToBeCompiled: s = ( |
             | 
-            (resend.isSlotToBeCompiled: s) || [(s name = 'value') && [s holder = (reflect: defaultBehavior)]]).
+                (resend.isSlotToBeCompiled: s)
+            || [(s name = 'cloneCount' )
+            || [(s name = 'cloneCount:')]
+            || [(s name = 'value'      ) && [s holder = (reflect: defaultBehavior)]]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
@@ -631,6 +634,10 @@ to just keep upping it by hand.
 
             [value]. "browsing"
             s name = 'value' ifTrue: [^ true].
+
+            [cloneCount. cloneCount: 0]. "browsing"
+            s name = 'cloneCount'  ifTrue: [^ true].
+            s name = 'cloneCount:' ifTrue: [^ true].
 
             "Don't want to include the whole defaultBehavior module, but
              there are a few slots on the defaultBehavior object (like 
@@ -1297,6 +1304,10 @@ SlotsToOmit: parent prototype safety.
              false = bootstrap stub -> 'globals' -> 'false' -> ().
              true = bootstrap stub -> 'globals' -> 'true' -> ().
             | 
+
+            [todo cleanup]. "Someday, merge this stuff (and the midiVM and
+                             selfVM tests) with the regular Self tests."
+
             testReturnValueOfLocalAssignment.
             testLeafMethodWithBrowsingTag.
             testArithmetic.

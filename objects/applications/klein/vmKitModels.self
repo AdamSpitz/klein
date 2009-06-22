@@ -1,6 +1,7 @@
  '$Revision: 30.8 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -131,7 +132,7 @@ globals generalProcessModel parent buttonDescriptions. _Clone
         
          buttonsToPutInMenu = ( |
             | 
-            resend.buttonsToPutInMenu , (nil & 'verify') asVector).
+            resend.buttonsToPutInMenu , (nil & 'verify' & nil & 'invocationCounts' & 'blockCloneCountsByOuterMethodSlot') asVector).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcessModel' -> 'parent' -> () From: ( | {

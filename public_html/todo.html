@@ -13,10 +13,10 @@
 <p>Here's a quick list of what works in Klein today:</p>
 
 <ul>
-  <li>The compiler can produce correct (but slow) machine code for most Self code (not including code that uses dynamic inheritance).</li>
+  <li>The compiler can produce correct machine code for most Self code (not including code that uses dynamic inheritance). It can also do inlining, and is used statically (but not dynamically yet) to optimize some of the most frequent message-sends.</li>
   <li>The export system can produce a Klein bootstrap image containing a given list of modules. (We have used this to create several Klein images; the two most interesting ones are the full selfVM image, which contains the Klein compiler and object system and enough of the core Self functionality to support them, and the Yoda smallImage, which is a stripped-down image that might someday be suitable for putting on some sort of small device.)</li>
-  <li>Reflection (inside the Klein image) seems to work.</li>
-  <li>The Klein compiler, running inside Klein, can compile simple methods. (It could probably compile more complex ones, but it runs out of memory, since there's no garbage collector yet.)</li>
+  <li>Reflecting on Klein objects (both inside the Klein image and remotely from the Self image used for development).</li>
+  <li>The Klein compiler can run inside Klein, and will dynamically compile uncompiled methods.</li>
   <li>The remote debugging environment allows source- and machine-level viewing and debugging of live Klein objects and processes.</li>
   <li>The incremental update system allows changes to be made to Klein objects (in either a not-yet-running bootstrap image or a live, running image) without needing to rebuild the entire Klein image.</li>
   <li>There is a half-written Self interpreter written in C++, called Yoda. (Some functionality seems to work, including a very rudimentary and unfinished garbage collector.) Yoda is not really part of the main Klein system; it was an experimental offshoot of it that we never got a chance to finish.</li>
@@ -27,15 +27,20 @@
 <p>There is a lot of stuff that would need to be done before Klein could be a useful VM for the Self language:</p>
 
 <ul>
-  <li>Garbage collection. We expect this to be trickier in Klein than in a normal VM, because of Klein's metacircularity. (For example, what if the GC runs out of memory during a collection? What if the GC moves its own code out from under itself?) An extremely-rudimentary collector exists, and passes the first couple of test cases, but it's just a simple scavenger - it needs to be fleshed out into a full generational collector.</li>
+  <li>Performance. We haven't implemented very many of Self's <a href="http://selflanguage.org/documentation/published/index.html#implementation">cool optimization tricks</a> yet. Here are some of the things we'd like to do soon:
+    <ul>
+      <li><a href="http://selflanguage.org/documentation/published/third-generation.html">Use the inlining compiler at runtime to optimize the hotspots.</a></li>
+      <li><a href="http://selflanguage.org/documentation/published/pics.html">Polymorphic inline caches.</a></li>
+    </ul>
+  </li>
+  <li>Garbage collection. We expect this to be trickier (and more fun!) in Klein than in a normal VM, because of Klein's metacircularity. (For example, what if the GC runs out of memory during a collection? What if the GC moves its own code out from under itself?) An extremely-rudimentary scavenger exists, and passes the first couple of test cases, but it needs to be fleshed out into a full generational collector.</li>
   <li>A lot of primitives (graphics, etc.).
-  <li>Performance. We've put almost no effort at all into making Klein run efficiently; at present, it's hideously inefficient (in both time and space). Some work has been done on an inlining compiler, but it's not completely working yet, and we haven't even begun to implement the rest of Self's <a href="http://selflanguage.org/documentation/published/index.html#implementation">cool optimization tricks</a>.</li>
+  <li>Floating-point numbers.</li>
   <li>We haven't implemented dependencies yet (which is fine for now because we haven't implemented recompilation either).</li>
   <li>Source-level single-stepping in the debugger. (There is a sometimes-useful approximation implemented now, but not proper source-level single-stepping.)</li>
   <li>Porting the assembler and compiler (so far there's only a PowerPC and SPARC assembler, and only a PowerPC compiler).</li>
   <li>Multiple processes inside Klein.</li>
   <li>Dynamic inheritance (though we hardly ever use it, and it may not be worth the cost).</li>
-  <li>Floating-point numbers.</li>
   <li>Many other things - search for senders of <code>todo</code> to find some of them.</li>
 </ul>
 

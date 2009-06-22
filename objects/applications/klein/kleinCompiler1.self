@@ -3782,7 +3782,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot'
         
          postFileIn = ( |
-            | resend.postFileIn).
+            | 
+            klein compiler1 prototypes bytecodeInterpreter generatePrimitiveTranslationMethods.
+            resend.postFileIn).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'kleinCompiler1' -> () From: ( | {

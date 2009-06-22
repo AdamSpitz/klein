@@ -1,8 +1,3 @@
-Speeding up the export cycle would be really nice. What's the strategy for that?
-
-  - Speed up incremental update? (I don't really understand why it's slow. Try profiling it.)
-  - Fix incremental update so that it can continue to work indefinitely.
-
 Cleanups to do:
 
   - Addresses. Factor it all so that I can easily switch to untagged addresses.
@@ -19,22 +14,7 @@ Remember to clean up the aaaaa and aaaaaaa things.
 
 ----
 
-Stuff I want to do:
-
-  - Turn the miniVM into a really good test of the basic VM's capabilities. And unify that stuff with the midiVM/selfVM tests AND with the Self "tests" object.
-  - Fix the compilerTester. Right, right - I broke it, made it require the compilationRequester.
-
-----
-
-Hey, if I wanted to experiment with heap-allocated activations, so that I could compare the speed, how hard would that be? To make it easy to switch back and forth? (Or maybe even to have them both side by side?)
-
-----
-
-Does the leaf-method optimization have to be implemented using that backout-block thing? Can't we just keep going and then figure out at the end (maybe at the locationAssigner phase) whether we need a stack frame or not? Maybe we don't need to redo the whole compilation, just the locationAssigner.
-
-----
-
-I hope it's not compiling methods for regular blocks (as opposed to compiledBlocks).
+Fix the compilerTester. Right, right - I broke it, made it require the compilationRequester.
 
 ----
 
@@ -47,87 +27,3 @@ Inlining plan:
 
 Fix the copyright notices!!!
 
-----
-
-Call generatePrimitiveTranslationMethods when filing in the module, or something.
-
-----
-
-Um, why can't the normalReturnIndex in the sendDesc branch directly to the sourceSucc node? Why bother branching to the end of the send and then to the sourceSucc?
-
-----
-
-Sigh... I guess I'm gonna need all the rest of the Self type-prediction stuff. :) We've got a bunch of assignable data slots, like lens or universe or objectLocator, which are usually the same type, but the VM can't assume that.
-
-Constant folding would help too.
-
-----
-
-model referrent myVM image
-  invocationCounts
-    (asList copyFilteredBy: [|:p| p y == 0]) copyMappedBy: [|:p| p x]
-      (copyMappedBy: [|:nm| nm topScope lookupKey selector]) occurrencesOfEachElement
-        mapBy: [|:n. :sel| n @ sel] Into: list copyRemoveAll
-          (copySortBy: (| element: a Precedes: b = (a x > b x) |)) asVector copySize: 100
-    (copySize: 100) do: [|:p| p printLine]
-
-Jeez - 21700 nmethods, 18900 of which aren't called.
-
-----
-
-What are my primary goals right now?
-
-  - Speed up the export cycle for the big selfVM.
-  - Put the plumbing in place so that the VM will ramp up.
-  - Pre-compile appropriately to make it ramp up faster.
-
-Here's what I'm scared of:
-
-  - To speed up the export cycle:
-    - I could write an interpreter, but I'm scared of doing a lookup cache or inline caching or whatever is necessary to make it run reasonably fast.
-      - But:
-        - A lookup cache might not be so hard.
-        - Inline caching might be possible through transmogrifying the bytecodes.
-    - I could figure out exactly which slots need to be compiled in order to make the compiler run dynamically, but I'm not really sure how to do that or how to cleanly specify the results.
-      - But:
-        - If I *could* figure it out, that might eliminate the need for an interpreter.
-        - And it seems like it might not be that hard.
-  - To get the VM optimizing dynamically:
-    - I could do the invocationCount thing, but:
-      - I'm not sure how to decay the counters. [How does the Self VM do it?]
-      - I'm scared of writing the code to walk up the stack and find the right method to optimize.
-      - I'm scared of writing the code to replace the stack frames while they're live. [Could I get away without it?]
-
-
-----
-
-OK, making a list of everything that needs to be compiled in order to make the compiler run dynamically. Requirements:
-
-  - I need to be able to run the thing once to generate the list, then say "Hey, use this list," and it uses the list the next time.
-  - I should *not* become dependent on it. It should always be possible to blow away the list and build the thing from scratch.
-  - It should be reasonably convenient to see what's on the list (to make sure that it makes sense, or whatever).
-  - It shouldn't be too brittle. If I'm working on the core stuff (and so I add new methods and whatever), I shouldn't have to build the whole thing the slow way in order to regenerate the list.
-
-Crap, how am I gonna manage that last one? Maybe I can't. Which means this list-of-stuff-to-compile probably makes more sense used just as a list of stuff to optimize; to figure out what to compile, maybe I should just try to pare down the list of modules (by splitting things into smaller submodules, etc.).
-
-----
-
-How do I do constant folding?
-
-Might be easier once I'm doing more primitives via translation to IR nodes?
-
-----
-
-Can I do PICs?
-
-----
-
-vector _At:IfFail: and byteVector _ByteAt:IfFail: are another couple of big ones.
-
-Inlining collection at: would help. And whileTrue:.
-
-----
-
-I'm getting annoyed with this translating-to-IR-nodes thing. Seems like I'm gonna end up creating a whole C-like layer in the IR nodes.
-
-What ever happened to nano-primitives? Maybe they'd be viable now that I can do inlining.

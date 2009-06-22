@@ -7,18 +7,20 @@
 <body>
 
 <h1>Klein Metacircular Virtual Machine Kit</h1>
+<p><a href="http://adamspitz.com">Adam Spitz</a>, Alex Ausch, and David Ungar</p>
 
-<p>Version 0.1<br/>
-<a href="http://adamspitz.com">Adam Spitz</a>, Alex Ausch, and David Ungar<br/>
-August 14, 2006</p>
 
+<table><tr>
+
+<td width="40%" style="vertical-align: top">
 <h2>What is this?</h2>
 
 <p>Klein is (or will be, someday, hopefully) a virtual machine for the <a href="http://selflanguage.org">Self language</a>, written entirely in Self, and a development environment for that VM. (The project is named after the <a href="http://en.wikipedia.org/wiki/Klein_bottle">Klein bottle</a>.)</p>
 
-<p>Here's <a href="running.html">how to download and build Klein</a>.</p>
 
-<p>There is a lot of <a href="todo.html">work left to be done</a> before Klein will be a usable VM for Self. For example, garbage collection has not been implemented yet. Also, the VM runs very, very slowly - we have put almost no effort into optimizing the generated code. And so far, the VM runs only on the PowerPC architecture (though the development environment can be run on any system that runs Self). This release is not intended to be used as a practical VM; our hope is that it will be of interest to people who are interested in developing metacircular virtual machines for dynamic object-oriented languages. (The Klein project has not been active at Sun since late 2005, and it was looking like Sun had no further interest in funding it, so we asked for permission to open-source it.) Following are some brief explanatory notes.</p>
+<h2><a href="running.html">How to download and build Klein</a></h2>
+
+<h2><a href="todo.html">What's done and what's not yet done</a></h2>
 
 
 <h2>Why build a VM this way?</h2>
@@ -34,6 +36,54 @@ August 14, 2006</p>
   <li>Faster turnaround when making changes to the VM (because the VM will no longer be tied to C++ and its compilation system).</li>
 </ul>
 
+</td>
+
+
+
+<td style="vertical-align: top">
+<h2>News</h2>
+
+
+<h3>June 22, 2009: Inlining compiler progress</h3>
+
+<p>I've written an inlining compiler (which was a lot of fun! I'd never done that before), and it seems to work correctly. I'm already using it statically to inline a (hard-coded) list of some of the most frequent message-sends. The GC and the compiler run significantly faster now (though still not <i>fast</i> - there's a lot more performance work left to be done).</p>
+
+<p>Between inlining and lazy primitive-failblock creation, Klein is cloning way fewer blocks than it used to, which is nice.</p>
+
+<p>I also hooked up the compiler so that it runs dynamically when it encounters an uncompiled method. So the time to build the Klein bootstrap image (which is mostly spent compiling) shouldn't grow any more, and we might even be able to shrink it (because there are a lot of uninvoked nmethods). That's a very good thing, because the build time has gotten way out of hand - it's up to about 40 minutes on my machine, which is very frustrating.</p>
+
+<p>The next step that I <i>want</i> to take is to get the compiler to dynamically recompile hotspots at runtime. But probably the next step that I <i>should</i> take is to figure out a way to avoid precompiling all those uninvoked nmethods. Anybody out there feel like doing the cool dynamic-recompilation work while I do the boring build-time-optimization work? :)</p>
+
+<p>-- Adam</p>
+
+
+<h3>April 6, 2009: First GC test case passes</h3>
+
+<p>It's been a while since I've done any work on Klein, but I took a couple of weeks to play around with it, and I think I just got the garbage collector to pass its first couple of test cases.</p>
+
+<p>I haven't done any fancy tests yet; all I did to test it was shrink edenSpace, so that the the tests would run out of memory partway through, plus I added a test that creates a bunch of large garbage objects (more than twice as many as will fit into edenSpace). The tests run to completion (invoking the GC several times along the way).</p>
+
+<p>It's not well-tested, it's not pretty, and it's certainly not fast. (On my machine, the GC pauses are on the order of ten minutes for a 16 MB edenSpace. Most of that time is spent recycling the dead OIDs.) And the collector is just a simple scavenger - it doesn't do anything except copy the live objects from edenSpace up to tenuredSpace (and there's no collector yet for tenuredSpace).</p>
+
+<p>But still, I'm excited. :)</p>
+
+<p>-- Adam</p>
+
+
+<h3>August 14, 2006: Version 0.1 released</h3>
+
+<p>The Klein project hasn't been active at Sun since late 2005, and it was looking like Sun had no further interest in funding it, so we asked for permission to open-source it.</p>
+
+<p>There is a lot of <a href="todo.html">work left to be done</a> before Klein will be a usable VM for Self. For example, garbage collection has not been implemented yet. Also, the VM runs very, very slowly - we have put almost no effort into optimizing the generated code. And so far, the VM runs only on the PowerPC architecture (though the development environment can be run on any system that runs Self). This release is not intended to be used as a practical VM; our hope is that it will be of interest to people who are interested in developing metacircular virtual machines for dynamic object-oriented languages.</p>
+
+<p>-- David, Adam, and Alex</p>
+
+
+</td>
+
+
+
+</tr></table>
 
 
 

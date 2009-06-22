@@ -1837,6 +1837,24 @@ text widget. -ma 3/02\x7fModuleInfo: Module: kleinModels InitialContents: Follow
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcessModel' -> 'parent' -> 'buttonDescriptions' -> () From: ( | {
+         'Category: statistics\x7fCategory: Block clone counts by outer method\x7fModuleInfo: Module: kleinModels InitialContents: FollowSlot\x7fVisibility: public'
+        
+         blockCloneCountsByOuterMethodSlot = ( |
+            | 
+            event sourceHand attach: target world outlinerForMirror:
+              reflect: target model referrent myVM image blockCloneCountsByOuterMethodSlot).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcessModel' -> 'parent' -> 'buttonDescriptions' -> () From: ( | {
+         'Category: statistics\x7fCategory: NMethod invocation counts\x7fModuleInfo: Module: kleinModels InitialContents: FollowSlot\x7fVisibility: public'
+        
+         invocationCounts = ( |
+            | 
+            event sourceHand attach: target world outlinerForMirror:
+              reflect: target model referrent myVM image invocationCounts).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'foreignProcessModel' -> 'parent' -> 'buttonDescriptions' -> () From: ( | {
          'Category: verifying\x7fCategory: Verify\x7fModuleInfo: Module: kleinModels InitialContents: FollowSlot\x7fVisibility: public'
         
          verify = ( |
