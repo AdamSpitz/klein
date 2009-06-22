@@ -37,7 +37,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
         
-         knownPossibleValues.
+         knownPossibleTypes.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
@@ -142,8 +142,7 @@ See the LICENSE file for license information.
         
          ifTypeIsClonedBlock: yesBlk Else: noBlk = ( |
             | 
-            [aaaaaaa]. "Rename all these guys - should be 'type', not 'possible value'."
-            possibleValues
+            possibleTypes
                ifNone: [noBlk value: 'undefined']
                 IfOne: [|:t| t isClonedBlock ifFalse: [noBlk value: 'not a block']
                                                 True: [yesBlk value: t]]
@@ -448,7 +447,7 @@ See the LICENSE file for license information.
         
          knownConstantValueIfFail: fb = ( |
             | 
-            possibleValues
+            possibleTypes
                ifNone: [fb value: 'undefined']
                 IfOne: [|:loc| loc isConstant ifFalse: [fb value: 'not a constant']
                                                  True: [loc oopValue]]
@@ -495,12 +494,12 @@ See the LICENSE file for license information.
          'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          mergedType = ( |
-             pvs.
+             pts.
             | 
-            pvs: possibleValues.
-            pvs ifNone: [kindsOfPossibleTypes undefined]
+            pts: possibleTypes.
+            pts ifNone: [kindsOfPossibleTypes undefined]
                  IfOne: [|:t| t]
-                IfMany: [kindsOfPossibleTypes union copyMerging: pvs]).
+                IfMany: [kindsOfPossibleTypes union copyMerging: pts]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -512,38 +511,38 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValues = ( |
-             pvs.
+         possibleTypes = ( |
+             pts.
             | 
-            pvs: list copyRemoveAll.
-            possibleValuesDo: [|:pv| pvs add: pv] AlreadySeen: set copyRemoveAll.
-            pvs).
+            pts: list copyRemoveAll.
+            possibleTypesDo: [|:t| pts add: t] AlreadySeen: set copyRemoveAll.
+            pts).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValues: pvs = ( |
+         possibleTypes: pts = ( |
             | 
-            [knownPossibleValues isNil] assert.
-            knownPossibleValues: pvs).
+            [knownPossibleTypes isNil] assert.
+            knownPossibleTypes: pts).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesDo: blk AlreadySeen: seen = ( |
+         possibleTypesDo: blk AlreadySeen: seen = ( |
             | 
             "Need the AlreadySeen set in case of loops." 
             seen if: self IsPresentDo: [^ self] IfAbsentAddAndDo: [].
 
-            [aaaaa]. "Not sure this is the right way to do this."
-            knownPossibleValues ifNotNil: [knownPossibleValues do: blk. ^ self].
+            "Not sure this is the right way to do this."
+            knownPossibleTypes ifNotNil: [knownPossibleTypes do: blk. ^ self].
 
             hasLocation && [location isConstant] ifTrue: [
               blk value: location.
             ] False: [
-              definers do: [|:n| n possibleValuesFor: self Do: blk AlreadySeen: seen].
+              definers do: [|:n| n possibleTypesFor: self Do: blk AlreadySeen: seen].
             ].
             self).
         } | ) 

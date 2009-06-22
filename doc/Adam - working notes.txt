@@ -27,3 +27,15 @@ Inlining plan:
 
 Fix the copyright notices!!!
 
+----
+
+Let's take a quick look to see if there's any low-hanging fruit w.r.t. avoiding compiling uninvoked nmethods.
+
+Bleh. OK, just two ideas:
+
+  - Make a faster compiler. (We'll need that anyway.)
+    - Don't calculateDominance.
+    - Don't convertToSSAForm.
+    - Don't doInlining.
+    - Don't calculateValueLiveness (but then will I need another register allocator?).
+  - Split the modules so that they're less coarse-grained.

@@ -210,27 +210,8 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
          'Category: generating code\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          basicBlocksInOrderForCodeGeneration = ( |
-             bbs.
-             nlrPointEps.
             | 
-
-            "Hack! Gotta do the nlrPointEpilogueBBs last, because sends don't actually include
-             a branch to their sourceSucc. Maybe they should, and then it should get
-             optimized away in cases where the sourceSucc follows the send?"
-
-            bbs: list copyRemoveAll.
-            nlrPointEps: list copyRemoveAll.
-
-            firstBB basicBlocksInControlFlowReversePostOrder do: [|:bb|
-              [aaaaaaa]. false && [bb endNode isNLRPointEpilogue || [bb endNode isUnconditionalBranch && [bb endNode destinationNode basicBlock endNode isNLRPointEpilogue]]] ifTrue: [
-                nlrPointEps addLast: bb.
-              ] False: [
-                bbs addLast: bb.
-              ].
-            ].
-            bbs addAll: nlrPointEps.
-
-            bbs).
+            firstBB basicBlocksInControlFlowReversePostOrder).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -2607,14 +2588,6 @@ SlotsToOmit: parent.
             vivs: allValuesThatInterfereWith: v.
             uivs add: canonicalValueFor: v.
             vivs add: canonicalValueFor: u.
-
-            "There can be many values with the same preallocated location. If one of them
-             interferes with v, they all do."
-            ["Shouldn't be necessary now that we do the caonnicalizing thing." [aaaaaaa].
-            u hasLocation ifTrue: [vivs addAll: (preallocatedValuesByLocation at: u location) colocatedValues].
-            v hasLocation ifTrue: [uivs addAll: (preallocatedValuesByLocation at: v location) colocatedValues].
-            ].
-
             self).
         } | ) 
 
@@ -3592,11 +3565,6 @@ SlotsToOmit: parent.
         
          shouldProfileCompilingThisSlot = ( |
             | 
-            [aaaaaaa].
-            true              ifTrue: [^ false].
-            slot isAssignable ifTrue: [^ true].
-            slot isAssignment ifTrue: [^ true].
-            slot isMethod     ifTrue: [^ true].
             false).
         } | ) 
 

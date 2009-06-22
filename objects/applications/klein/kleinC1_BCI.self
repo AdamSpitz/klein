@@ -969,7 +969,6 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
               irNodeGenerator moveNLRHomeScopeDescTo: ep scopeDescValue.
               irNodeGenerator move: popStackValue To: ep outgoingResultValue.
               irNodeGenerator branchToLabel: nlrPointEpilogueBB labelNode.
-              [aaaaaaa irNodeGenerator nonlocalReturn: orv FramePointer: hsv ScopeDesc: hsdv].
             ].
             bc).
         } | ) 
@@ -2528,15 +2527,6 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          newValue = ( |
             | 
             machineLevelAllocator newValue).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: returning\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
-        
-         nonlocalReturn: v FramePointer: fpv ScopeDesc: sdv = ( |
-            | 
-            addNode: irNodeProtos nonlocalReturn copyBC: currentBC Result: v FramePointer: fpv ScopeDesc: sdv.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {

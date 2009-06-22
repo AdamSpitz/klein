@@ -699,18 +699,6 @@ SlotsToOmit: parent parent:.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: cache stats\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
-        
-         cachedResendMisses <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
-         'Category: object mapper state\x7fCategory: compilation stats\x7fCategory: cache stats\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (0)\x7fVisibility: private'
-        
-         cachedResendProbes <- 0.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> () From: ( | {
          'Category: object mapper state\x7fCategory: transient state\x7fCategory: caches\x7fModuleInfo: Module: vmKitObjMapper InitialContents: InitializeToExpression: (dictionary copyRemoveAll)\x7fVisibility: private'
         
          cachedResendsBySlot <- dictionary copyRemoveAll.
@@ -1264,17 +1252,13 @@ SlotsToOmit: parent.
          'Category: transmogrifying\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          addInitializationBytecodesTo: aList = ( |
-             nilMir.
             | 
-            nilMir: reflect: nil.
-            newActivationMap objectSlotsDo: [|:slotName. slot. contentsObj|
+            newActivationMap objectSlotsDo: [|:slotName. slot. contentsObj. i|
               slot:         slotsByName at: slotName.
               contentsObj:  exportPolicy initialContentsOfSlot: slot.
+              i:            method indexOfLocalNamed: slot name IfFail: raiseError.
 
-              [aaaaaaa]. "Why was this here?" false && [(reflect: contentsObj) = nilMir] ifFalse: [| i |
-                i: method indexOfLocalNamed: slot name IfFail: raiseError.
-                aList addAll: bytecodesToInitializeSlotWithIndex: i ToLiteral: contentsObj.
-              ].
+              aList addAll: bytecodesToInitializeSlotWithIndex: i ToLiteral: contentsObj.
             ].
             aList).
         } | ) 
@@ -2623,7 +2607,8 @@ SlotsToOmit: parent.
         
          compileAll = ( |
             | 
-            [aaaaaaa]. "Do I like this better than old_compileAll?"
+            "I haven't decided yet whether I like this better than" [old_compileAll].
+            "It sure makes the profiles come out nicer, though. -- Adam, June 2009"
             [
              case
               if: [oopsToFillIn                         isEmpty not] Then: [fillInTheNextObject]
@@ -3276,7 +3261,6 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
               '   - SelectorsToCompile hits/misses: ', selectorsToCompileHits printString, '/', 
                                                       (selectorsToCompileProbes - selectorsToCompileHits) printString, '\n',
               '   - BlockNMethod$ hits/misses: ', blockNMethodHits printString, '/', blockNMethodMisses printString, '\n',
-              '   - CachedResend  hits/misses: ', (cachedResendProbes - cachedResendMisses) printString, '/', cachedResendMisses printString, '\n',
               '   - ReusableNMethod hits/misses: ', reusableNMethodHits printString, '/', reusableNMethodMisses printString, '\n',
               '   - NMethodsByMap hits/misses: ', nmethodsByMapHits printString, '/', nmethodsByMapMisses printString
             ).
@@ -3390,14 +3374,7 @@ SlotsToOmit: parent.
         
          resendsInSlot: aSlot = ( |
             | 
-            [aaaaaaa]. "Am I sure this is worth caching? Let's try without it."
-            true ifTrue: [^ resendDetector resendsInSlot: aSlot].
-
-            cachedResendProbes: cachedResendProbes succ.
-            cachedResendsBySlot at: aSlot IfAbsentPut: [
-              cachedResendMisses: cachedResendMisses succ.
-              resendDetector resendsInSlot: aSlot
-            ]).
+            resendDetector resendsInSlot: aSlot).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3771,29 +3748,6 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
-         'Category: statistics\x7fCategory: block inlining\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         doABunchOfInlining = ( |
-            | 
-            aaaaaaa.
-            "I think all of this code, including the blockInliningBytecodeTransmogrifier,
-             should die. -- Adam, May 2009"
-
-
-            [todo blockInlining]. "Where should this method go and what should it be called?"
-            objectsOracle methodMirrors do: [|:m. mm. f|
-              mm: m.
-              [f: blockInliningBytecodeTransmogrifier copyForMethod: mm.
-              f interpretMethod.
-              f matches isEmpty] whileFalse: [| match |
-                match: f matches first.
-                mm: match createMethodWithInlinedBlocks.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          exemplarOIDsDo: blk = ( |
@@ -3923,59 +3877,6 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
          'ModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {
-         'Category: statistics\x7fCategory: block inlining\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         printBlockInliningStatistics = ( |
-             matchedBlockLiteralCountsBySelector.
-             matches.
-             mms.
-             poppedBlockLiteralBCs.
-             templates.
-             totalBlockCount <- 0.
-             unmatchedBlockCutoff = 10.
-             unmatchedBlockLiteralCount <- 0.
-             unmatchedBlockLiteralsBySelector.
-            | 
-            mms: objectsOracle methodMirrors.
-            matches: list copyRemoveAll.
-            poppedBlockLiteralBCs: list copyRemoveAll.
-            unmatchedBlockLiteralsBySelector: dictionary copyRemoveAll.
-            mms do: [|:mm. f|
-              f: vmKit objectMapper1 blockInliningBytecodeTransmogrifier copyForMethod: mm.
-              f interpretMethod.
-              matches addAll: f matches.
-              poppedBlockLiteralBCs addAll: f poppedBlockLiteralBCs.
-              f unmatchedSendBCsWithBlockLiteralArgs do: [|:p|
-                (unmatchedBlockLiteralsBySelector at: p x selector IfAbsentPut: [list copyRemoveAll]) addAll: p y.
-              ].
-            ].
-            templates: matches copyMappedBy: [|:m| m template].
-            matchedBlockLiteralCountsBySelector: dictionary copyRemoveAll.
-            templates occurrencesOfEachElement do: [|:n. :t. blockCount|
-              blockCount: n * t positionsThatMustBeBlocks size.
-              matchedBlockLiteralCountsBySelector if: t selector IsPresentPut: [|:c| c + blockCount] AndDo: []
-                                                                  IfAbsentPut: [         blockCount] AndDo: [].
-            ].
-            matchedBlockLiteralCountsBySelector sortedDo: [|:n. :s|
-              totalBlockCount: totalBlockCount + n.
-              ('There are ', (n printString padOnLeft: 4), '  block literal arguments of ', (s padOnRight: 30)) printLine.
-            ].
-            ('That adds up to ', totalBlockCount printString, ' blocks to inline in total (out of ',
-                  objectsOracle blockMirrors size printString, ' blocks in the image).') printLine.
-            '' printLine.
-            ('There are ', poppedBlockLiteralBCs size printString, ' browsing tags.') printLine.
-            ('Selectors that have over ', unmatchedBlockCutoff printString, ' uninlined block literal arguments:') printLine.
-            unmatchedBlockLiteralsBySelector do: [|:blockBCs. :s|
-              unmatchedBlockLiteralCount: unmatchedBlockLiteralCount + blockBCs size.
-              blockBCs size > unmatchedBlockCutoff ifTrue: [
-                ((blockBCs size printString padOnLeft: 3), ' uninlined block literals are arguments of ', s) printLine.
-              ].
-            ].
-            ('There are ', unmatchedBlockLiteralCount printString, ' uninlined block literal arguments in total.') printLine.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'trackingObjectsInMyOracle' -> () From: ( | {

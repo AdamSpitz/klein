@@ -120,8 +120,6 @@ See the LICENSE file for license information.
             _NoMapTest.
             _VariableArguments.
 
-            [aaaaa]. "Fix the duplication between here and selfVM tests compiling."
-
             sd: _CallingSendDesc.
             key: klein lookupKey copyForSelector: sd _SendDescSelector
                                       LookupType: sd _SendDescLookupType
@@ -751,8 +749,6 @@ See the LICENSE file for license information.
             _Breakpoint: 'should never reach here'.
 
             __DefineLabel: 'miss'.
-
-            _Breakpoint: 'miss, about to backpatch to the compileSlot_stub'.
             sd _BackpatchSendDescTo: _EntryAddressOfCompileSlotStub Map: map.
             sd _RetrySendDesc.
             _Breakpoint: 'should never reach here').

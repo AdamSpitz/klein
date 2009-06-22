@@ -329,14 +329,6 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         isReturn = ( |
-            | 
-            isLocalReturn || [isNonlocalReturn]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
          isSend = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
@@ -1036,7 +1028,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [v == resultValue] assert.
 
@@ -1626,7 +1618,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'binaryOperation' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [v == destinationValue] assert.
             "Later on we could be smarter about this."
@@ -1861,7 +1853,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'blockLiteral' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             case
               if: v == outgoingMemoizedBlockValue Then: [blk value: v kindsOfPossibleTypes clonedBlock copyForLiteral: sourceValue]
@@ -1996,7 +1988,7 @@ SlotsToOmit: parent.
          addInterferenceInformationToValuesWith: la = ( |
             | 
             resend.addInterferenceInformationToValuesWith: la.
-            [aaaaa]. "This could probably be eliminated if we break down the perform node into multiple nodes."
+            "This could probably be eliminated if we break down the node into multiple nodes."
             tell: la ToRecordInterferenceBetweenDefinedValue: tempValue And: vectorValue.
             tell: la ToRecordInterferenceBetweenDefinedValue: tempValue And:  indexValue.
             self).
@@ -2488,7 +2480,7 @@ SlotsToOmit: holderValue parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'constantDataSlotAccess' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [v == dataValue] assert.
 
@@ -2587,7 +2579,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'dataSlotAccess' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [v == dataValue] assert.
 
@@ -3207,10 +3199,10 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'move' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [v == destinationValue] assert.
-            sourceValue possibleValuesDo: blk AlreadySeen: seen.
+            sourceValue possibleTypesDo: blk AlreadySeen: seen.
             self).
         } | ) 
 
@@ -3606,150 +3598,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
-         'Category: returns - includes epilogue\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         nonlocalReturn = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () ToBe: bootstrap addSlotsTo: (
-             bootstrap remove: 'parent' From:
-             globals klein compiler1 parent prototypes irNodes abstractReturn copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodes nonlocalReturn.
-
-CopyDowns:
-globals klein compiler1 parent prototypes irNodes abstractReturn. copy 
-SlotsToOmit: parent.
-
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
-        
-         framePointerValue.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
-         'Category: control flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
-        
-         nodeToBranchToOnNLR.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodes nonlocalReturn parent.
-'.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         canFallThrough = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         controlFlowSuccsDo: blk = ( |
-            | 
-            sourceLevelAllocator isInlined ifTrue: [
-              blk value: nodeToBranchToOnNLR.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         copyBC: aBC Result: r FramePointer: fp ScopeDesc: sd = ( |
-            | 
-            ((((copyBC: aBC) outgoingResultValue: r) framePointerValue: fp) scopeDescValue: sd) initialize).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         forgeControlFlowPredLinks = ( |
-            | 
-            controlFlowSuccsDo: [|:n| n controlFlowPreds add: self].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateSpecificCode = ( |
-            | 
-            codeGenerator generateNLR: self.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initialize = ( |
-            | 
-            nodeToBranchToOnNLR: interpreter nodeToBranchToOnNLR.
-            resend.initialize).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isNonlocalReturn = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstractReturn' -> 'parent' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: control-flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         replaceControlFlowSucc: labelNode With: newLabelNode IfSucceed: sb IfFail: fb = ( |
-            | 
-            case
-              if: [labelNode = nodeToBranchToOnNLR] Then: [nodeToBranchToOnNLR: newLabelNode. sb value]
-              Else: [error: 'what node is that?']).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
-        
-         replaceUsedValue: v With: newV = ( |
-            | 
-            case
-              if: [v = framePointerValue] Then: [framePointerValue: newV]
-              If: [v =    scopeDescValue] Then: [   scopeDescValue: newV]
-              Else: [resend.replaceUsedValue: v With: newV]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         stronglyUsedValuesDo: blk = ( |
-            | 
-            blk value: framePointerValue.
-            blk value: scopeDescValue.
-            resend.stronglyUsedValuesDo: blk).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> 'parent' -> () From: ( | {
-         'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         willZapMemoizedBlocks = bootstrap stub -> 'globals' -> 'true' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'nonlocalReturn' -> () From: ( | {
-         'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: InitializeToExpression: (nil)'
-        
-         scopeDescValue.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {
          'Category: sends & primitives\x7fCategory: primitives\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          primitive = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'primitive' -> () ToBe: bootstrap addSlotsTo: (
@@ -3901,10 +3749,10 @@ SlotsToOmit: parent.
          addInterferenceInformationToValuesWith: la = ( |
             | 
             resend.addInterferenceInformationToValuesWith: la.
-            [aaaaa]. "Hack; I think this won't be necessary after we make this
-                      primitive translate to lower-level IR nodes. But for now,
-                      gotta make sure the homeScopeValue isn't allocated to the
-                      same register as the rcvr and arg values. -- Adam, Apr. 2009"
+            "I think this won't be necessary after we make this
+             primitive translate to lower-level IR nodes. But for now,
+             gotta make sure the homeScopeValue isn't allocated to the
+             same register as the rcvr and arg values. -- Adam, Apr. 2009"
             tell: la ToRecordInterferenceBetweenDefinedValue: homeScopeValue And: homeScopeDescValue.
             rcvrAndArgValuesToMoveTo do: [|:v|
               tell: la ToRecordInterferenceBetweenDefinedValue: homeScopeValue     And: v.
@@ -4015,7 +3863,7 @@ SlotsToOmit: parent.
          addInterferenceInformationToValuesWith: la = ( |
             | 
             resend.addInterferenceInformationToValuesWith: la.
-            [aaaaa]. "This could probably be eliminated if we break down the perform node into multiple nodes."
+            "This could probably be eliminated if we break down the perform node into multiple nodes."
             tell: la ToRecordInterferenceBetweenDefinedValue: sendDescValue And: selectorValue.
             tell: la ToRecordInterferenceBetweenDefinedValue: sendDescValue And: delegateeValue.
             tell: la ToRecordInterferenceBetweenDefinedValue: selectorValue And: delegateeValue.
@@ -4361,11 +4209,11 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [v == destinationValue] assert.
 
-            sourceValues do: [|:sv| sv possibleValuesDo: blk AlreadySeen: seen]).
+            sourceValues do: [|:sv| sv possibleTypesDo: blk AlreadySeen: seen]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
@@ -4599,7 +4447,7 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'start' -> 'parent' -> () From: ( | {
          'Category: data flow links\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibleValuesFor: v Do: blk AlreadySeen: seen = ( |
+         possibleTypesFor: v Do: blk AlreadySeen: seen = ( |
             | 
             [blockValuesToInitialize includes: v] assert.
 

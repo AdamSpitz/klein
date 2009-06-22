@@ -3405,7 +3405,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules.
+         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -3800,44 +3800,6 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         compileAndInstallSlotNamed: slotName On: targetObject = ( |
-             newNM.
-            | 
-            newNM: compileSlotNamed: slotName On: targetObject.
-
-            "It would sure make me more comfortable to have
-             a test case that demonstrates that this flushing
-             stuff is actually working. -- Adam, 5/05"
-            newNM flushWhateverCachesAreNecessaryAfterModifyingMe.
-
-            targetObject _Map installNewNMethod: newNM.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         compileSlotNamed: slotName On: targetObject = ( |
-             c.
-             s.
-             targetMap.
-            | 
-            targetMap: targetObject _Map.
-            s: targetMap slotAt: slotName IfAbsent: raiseError.
-            c: theVM compilerPrototype.
-            c: c
-                  copyForContext: (c prototypes compilationContext copyForSlot: s)
-                    Architecture: theVM architecture
-                          Oracle: c oracleForEagerRelocationInsideKlein
-                           Debug: false  "just because Klein runs so slowly for now"
-                        Optimize: c prototypes optimizationPolicies compileQuickly.
-
-            c compileForcingNonLeafIfNecessary buildNMethod).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
-        
          incompleteObject = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'tests' -> 'compiling' -> 'parent' -> 'incompleteObject' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines selfVM parent tests compiling parent incompleteObject.
 '.
@@ -3912,24 +3874,15 @@ SlotsToOmit: parent.
             targetObject: incompleteObject.
 
             ["These work, but for now I don't want to take the time at runtime to run them."
-            compileAndInstallSlotNamed: 'returnSelf' On: targetObject.
             assert: [targetObject returnSelf _Eq: targetObject].
-
-            compileAndInstallSlotNamed: 'returnFive' On: targetObject.
             assert: [targetObject returnFive _Eq: 5].
-
-            compileAndInstallSlotNamed: 'threePlusFourPrimitively' On: targetObject.
             assert: [targetObject threePlusFourPrimitively _Eq: 7].
             ].
 
-            [aaaaaaa. "Trying it with dynamic compilation." compileAndInstallSlotNamed: 'threePlusFour' On: targetObject.].
             assert: [targetObject threePlusFour _Eq: 7].
 
             ["These work, but for now I don't want to take the time at runtime to run them."
-            compileAndInstallSlotNamed: 'add:To:' On: targetObject.
             assert: [(targetObject add: 3 To: 4) = 7].
-
-            compileAndInstallSlotNamed: 'locals' On: targetObject.
             assert: [targetObject locals = 6].
             ].
 
@@ -4040,13 +3993,8 @@ SlotsToOmit: parent.
         
          runAutomatedTestsForVM: aVM = ( |
             | 
-            [aaaaaaa]. "Run the compiling test first, since that's what I'm working on."
-            compiling run.          [todo cleanup testing kleinSpecific].
-            _Breakpoint: 'compiling test finished!'.
-
             resend.runAutomatedTestsForVM: aVM.
-            [todo gc]. "Was in the middle of getting these activation tests
-                        to work when we suspended work on Klein. -- Adam"
+            compiling run.          [todo cleanup testing kleinSpecific].
             activations run.        [todo cleanup testing kleinSpecific].
             garbageCollection run.  [todo cleanup testing kleinSpecific].
             self).

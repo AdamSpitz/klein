@@ -477,11 +477,6 @@ optimization and try again without it.  -- jb 8/03\x7fModuleInfo: Module: kleinC
         
          locationForOutgoingRcvrOrArgAt: index = ( |
             | 
-            [aaaaa. "Gotta take this out because we don't know how many actual sends happen
-                     until after we're done inlining. So move this check there, or something."
-            verifyIndex: index IsWithinAllocatedLimit:  frame outgoingRcvrAndArgWordCount.
-            ].
-
             locationForVolatileRcvrOrArgAt: index).
         } | ) 
 
@@ -1051,8 +1046,6 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             incomingVolatileRegRcvrAndArgLocationsDo: [|:vol. :nonVol. nonVolReg. nonVolMem|
               [nonVol isRegister] assert.
               nonVolReg: nonVol.
-              [aaaaa]. "I'm really confused. Let's try this hack."
-              [i = (machineLevelAllocator registerUsage indexOfNonVolLocalRegister: nonVolReg)] assert. "Just a sanity check for now, doesn't need to be true in the long run."
               nonVolMem: i < machineLevelAllocator incomingRcvrAndArgSavedRegisterCount ifTrue: [
                 machineLevelAllocator memLocationToSaveNonVolRegister: nonVolReg.
               ] False: nil.
@@ -1141,7 +1134,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
 
             valueAlreadyExisted ifFalse: [
               valueForSelf addDescription: 'self'.
-              valueForSelf possibleValues: vector copyAddFirst: valueForSelf kindsOfPossibleTypes selfValue copyForAllocator: self.
+              valueForSelf possibleTypes: vector copyAddFirst: valueForSelf kindsOfPossibleTypes selfValue copyForAllocator: self.
             ].
 
             self).
@@ -1330,7 +1323,6 @@ access parent allocator\'s loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialCon
             ] False: [
               isInlined ifFalse: [
                 i < machineLevelAllocator incomingRcvrAndArgVolatileRegisterCount ifTrue: [
-                  [aaaaa]. "Wait, what???"
                   machineLevelAllocator makeAnotherNonVolLocalRegLocation
                 ] False: [
                   machineLevelAllocator locationForIncomingMemRcvrOrArgAt: i

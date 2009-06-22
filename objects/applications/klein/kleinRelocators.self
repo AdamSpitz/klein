@@ -734,7 +734,6 @@ SlotsToOmit: originalObject parent.
         
          assemblePlaceholderInstructionsWith: cg = ( |
             | 
-            [aaaaaaa]. "Wait, how does eager relocation work? Does it?"
             cg a loadAddressTo: dstReg
                           From: initialAddress.
             self).

@@ -766,7 +766,7 @@ See the LICENSE file for license information.
              statistics. --  Adam, 10/04"
 
             shouldDoInvocationCounts ifTrue: [| nmReg |
-              nmReg: r0. [aaaaaaa]. "Is that OK?"
+              nmReg: r0.
               "Someday, for performance, we might be able to
                avoid doing the loadNMethodIntoRegister: twice,
                by merging this code with the other code that
