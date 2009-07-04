@@ -516,6 +516,18 @@ tests on data slot reading and writing.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         doCaseStatement = ( |
+            | 
+            case
+             if: [false] Then: [1]
+             If: [false] Then: [2]
+             If: [true]  Then: [3]
+             Else: [4]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: unmapped\x7fComment: I\'m sure there\'s a more clever way to get
 this number. For now it won\'t hurt much
 to just keep upping it by hand.
@@ -571,6 +583,7 @@ to just keep upping it by hand.
          namesOfIncludedModules = bootstrap setObjectAnnotationOf: ( (('')
 	& ('blockTests')
 	& ('boolean')
+	& ('caseStatement')
 	& ('klein')
 	& ('kleinFrames')
 	& ('kleinNMethod')
@@ -596,7 +609,8 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (('init')
+         namesOfModulesWhoseSubmodulesShouldBeIncludedToo = bootstrap setObjectAnnotationOf: ( (('block')
+	& ('init')
 	& ('languageTests')
 	& ('testSuite')) asSet) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent exportPolicy modulesToMap namesOfModulesWhoseSubmodulesShouldBeIncludedToo.
@@ -608,6 +622,18 @@ to just keep upping it by hand.
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> 'modulePartitioningProto' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         outerMethodSlotNamesToOptimizeDo: blk = ( |
+            | 
+            blk value: 'testTypePrediction'. [testTypePrediction]. "browsing"
+            blk value: 'inlinedNLR1'.        [inlinedNLR1].        "browsing"
+            blk value: 'inlinedNLR2'.        [inlinedNLR2].        "browsing"
+            blk value: 'inlinedNLR3'.        [inlinedNLR3].        "browsing"
+            resend.outerMethodSlotNamesToOptimizeDo: blk).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
@@ -652,9 +678,9 @@ to just keep upping it by hand.
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: klein)
-	& (reflect: kleinAndYoda)
-	& (reflect: kleinAndYoda layouts)) asVmKitExportList) From: ( |
+         wellKnownIncompleteObjectsWithSlotsToCompile = bootstrap setObjectAnnotationOf: ( ((reflect: kleinAndYoda)
+	& (reflect: kleinAndYoda layouts)
+	& (reflect: klein)) asVmKitExportList) From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent exportPolicy wellKnownIncompleteObjectsWithSlotsToCompile.
 
 CopyDowns:
@@ -668,21 +694,15 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
-         firstTenIntegers = [ | x =  ( bootstrap setObjectAnnotationOf: vector _Clone From: ( |
-                     {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent firstTenIntegers.
-'.
-                    | ) ) _Clone: 10 Filler: 0| 
-             x _At: 0  Put: ().
-             x _At: 1  Put: ().
-             x _At: 2  Put: ().
-             x _At: 3  Put: ().
-             x _At: 4  Put: ().
-             x _At: 5  Put: ().
-             x _At: 6  Put: ().
-             x _At: 7  Put: ().
-             x _At: 8  Put: ().
-             x _At: 9  Put: ().
-             x] value.
+         from: start To: end By: step Do: block = ( |
+             i.
+            | 
+            i: start.
+            [i _IntLE: end] whileTrue: [
+              block value: i.
+              i: i _IntAdd: step.
+            ].
+            start).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -691,6 +711,37 @@ SlotsToOmit: parent prototype safety.
          in: bv ByteAt: i IfAbsent: blk = ( |
             | 
             bv _ByteAt: i IfFail: [|:e. :p| blk value: e With: p]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         inlinedNLR1 = ( |
+            | 
+            (3 _IntLT: 4) ifTrue: [^ 5].
+            2).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         inlinedNLR2 = ( |
+            | 
+            (1 _IntLT: 2) ifTrue: [
+              (3 _IntLT: 4) ifTrue: [^ 15].
+              6
+            ] False: [
+              7
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         inlinedNLR3 = ( |
+            | 
+            from: 0 To: 4 By: 1 Do: [|:i| (i _IntEQ: 2) ifTrue: [^ 'two']].
+            'not two').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -732,7 +783,16 @@ SlotsToOmit: parent prototype safety.
          methodWithManyArguments: a And: b And: c And: d And: e And: f And: g And: h And: i And: j And: k = ( |
              x.
             | 
-            x: a _IntAdd: b _IntAdd: c _IntAdd: d _IntAdd: e _IntAdd: f _IntAdd: g _IntAdd: h _IntAdd: i _IntAdd: j _IntAdd: k.
+            x: a _IntAdd: b.
+            x: x _IntAdd: c.
+            x: x _IntAdd: d.
+            x: x _IntAdd: e.
+            x: x _IntAdd: f.
+            x: x _IntAdd: g.
+            x: x _IntAdd: h.
+            x: x _IntAdd: i.
+            x: x _IntAdd: j.
+            x: x _IntAdd: k.
             x _IntAdd: [a _IntAdd: k] value).
         } | ) 
 
@@ -1316,7 +1376,9 @@ SlotsToOmit: parent prototype safety.
             testMethodWithManyArguments.
             testIfTrueAndIfFalse.
             testInliningSimpleMethods.
+            testInlinedNLR.
             tryingToReplicateInliningBug run.
+            testCaseStatement.
             testCallingFakePrimitive.
             testPrimitiveFailure.
             testFixAndContinue: 10 With: 11 And: 6.
@@ -1339,7 +1401,7 @@ SlotsToOmit: parent prototype safety.
             three: one _IntAdd: two.
             b. "for incremental update test -- dmu 8/04"
             performTester run.
-            testVectors.
+            testTypePrediction.
             _Breakpoint: 'done'.
             three).
         } | ) 
@@ -1376,6 +1438,15 @@ SlotsToOmit: parent prototype safety.
             vm: 'cccccc' _TheVM.
             assert: [vm eleven _Eq: 11].
             vm: nil.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testCaseStatement = ( |
+            | 
+            assert: doCaseStatement Is: 3.
             self).
         } | ) 
 
@@ -1451,6 +1522,17 @@ SlotsToOmit: parent prototype safety.
             assert: a Is: nil.
             assert: b Is: 3.
             assert: [|x| x] value Is: nil.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testInlinedNLR = ( |
+            | 
+            assert: inlinedNLR1 Is: 5.
+            assert: inlinedNLR2 Is: 15.
+            assert: inlinedNLR3 Is: 'two'.
             self).
         } | ) 
 
@@ -1570,17 +1652,14 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
-         testVectors = ( |
+         testTypePrediction = ( |
+             x.
             | 
-            assert: (firstTenIntegers _At:  4                          ) Is: 5.
-            assert: (firstTenIntegers _At:  7 IfFail: [error: 'lalala']) Is: 8.
-            assert: (firstTenIntegers _At: 10 IfFail: [|:e. :p| e     ]) Is: 'badIndexError'.
-            assert: (firstTenIntegers _At: -1 IfFail: [|:e. :p| e     ]) Is: 'badIndexError'.
-            assert: (19               _At:  3 IfFail: [|:e. :p| e     ]) Is: 'badTypeError'.
-            assert: (false            _At:  1 IfFail: [|:e. :p| e     ]) Is: 'badTypeError'.
-            assert: (firstTenIntegers _At:  2 Put: 'three'             ) Is: firstTenIntegers.
-            assert: (firstTenIntegers _At:  2                          ) Is: 'three'.
-            assert: (firstTenIntegers _At:  2 Put: 3                   ) Is: firstTenIntegers.
+            x: 2.
+            "Can check at machine level to make sure no
+             block is actually getting cloned."
+            (3 _IntLT: 4) ifTrue: [x: 5].
+            assert: x Is: 5.
             self).
         } | ) 
 

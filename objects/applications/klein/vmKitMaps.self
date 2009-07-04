@@ -459,10 +459,12 @@ object.  Handles constant and object slots.\x7fModuleInfo: Module: vmKitMaps Ini
         
          hashAt: i = ( |
             | 
-               (               nameAt: i) hash
-            ^^ (               typeAt: i) hash
-            ^^ (reflect:       dataAt: i) hash
-            ^^ (reflect: annotationAt: i) hash).
+            "Optimization: use _IdentityHash instead of getting a
+             mirror and getting its hash."
+               (      nameAt: i) hash
+            ^^ (      typeAt: i) hash
+            ^^ (      dataAt: i) _IdentityHash
+            ^^ (annotationAt: i) _IdentityHash).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'map') -> 'parent' -> () From: ( | {

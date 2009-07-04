@@ -55,7 +55,7 @@ that it does not apply.  -- jb 8/03\x7fModuleInfo: Module: kleinCompiler1 Initia
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)'
+         'Category: IR nodes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
          irNodeGenerator.
         } | ) 
@@ -64,12 +64,6 @@ that it does not apply.  -- jb 8/03\x7fModuleInfo: Module: kleinCompiler1 Initia
          'Category: compilation modes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (false)'
         
          isLogUsed <- bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         locationAssigner.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
@@ -102,12 +96,6 @@ that it does not apply.  -- jb 8/03\x7fModuleInfo: Module: kleinCompiler1 Initia
          noSendsAllowed <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: compilation modes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)'
-        
-         optimizationPolicy.
-        } | ) 
-
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: oracle for eager relocation\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -121,7 +109,13 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
          'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (klein compiler1 oracleThatCannotDoEagerRelocation)\x7fVisibility: public'
         
-         oracleForEagerRelocation <- bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'oracleThatCannotDoEagerRelocation' -> ().
+         objectsOracle <- bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'oracleThatCannotDoEagerRelocation' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
+         'Category: compilation modes\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (nil)'
+        
+         optimizationPolicy.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
@@ -164,6 +158,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
          'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          allocateLocations = ( |
+             locationAssigner.
             | 
             locationAssigner: prototypes locationAssigners graphColoring copyForCompiler: self.
             locationAssigner go).
@@ -223,7 +218,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             nm: vmKit nmethod copySize: codeGenerator generatedCodeSize.
             codeGenerator copyGeneratedCodeInto: nm.
             nmethodRelocators do: [|:rl| rl beForObject: nm].
-            oracleForEagerRelocation recordReusabilityConditions: reusabilityConditions ForNMethod: nm.
+            objectsOracle recordReusabilityConditions: reusabilityConditions ForNMethod: nm.
             nm relocators: relocators.
             nm frame: frame copy.
             nm topScope: firstBB labelNode bc interpreter createScopeDescForNMethod: nm.
@@ -347,7 +342,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             c debug:                         d.
             c relocators:                    list copyRemoveAll.
             c nmethodRelocators:             list copyRemoveAll.
-            c oracleForEagerRelocation:      oracle.
+            c objectsOracle:                 oracle.
             c optimizationPolicy:            op.
 
             c).
@@ -360,6 +355,28 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             | 
             areCommentsEmitted:     bool.
             shouldGatherStatistics: bool.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         deferCloningBlocks = ( |
+             stillBroken = bootstrap stub -> 'globals' -> 'true' -> ().
+            | 
+            stillBroken ifTrue: [^ self].
+
+            optimizationPolicy shouldUseSSAForm ifFalse: [^ self].
+
+            nodesSatisfying: [|:n| n isBlockLiteral] Do: [|:n. chains|
+              chains: n outgoingMemoizedBlockValue strongUserChains.
+              [chains size >= 1] assert: 'already eliminated dead code'.
+              chains do: [|:chain|
+                chain addFirst: n.
+                chain removeLast prependACopyOfDeferredComputation: chain.
+                chain do: [|:nn| nn removeFromControlFlow].
+              ].
+            ].
             self).
         } | ) 
 
@@ -399,6 +416,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             allocateIncomingAndPreallocatedLocations.
             doInlining.
             eliminateDeadCode.
+            deferCloningBlocks.
             replacePhiFunctionsWithMoves.
             calculateValueLiveness.
             allocateLocations.
@@ -419,23 +437,12 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: optimizing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: inlining\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          doInlining = ( |
             | 
             optimizationPolicy shouldNeverDoInlining ifTrue: [^ self].
-            sendNodesDo: [|:n. key|
-              key: klein lookupKey copyForSendBC: n bc.
-              irNodeGenerator currentBytecodeInterpreter: n bc interpreter.
-              irNodeGenerator ifShouldInlineSend: key To: n findRcvrStackValue Then: [|:s. :rcvrType. rcvrAndArgStackValues. resultStackValue|
-                rcvrAndArgStackValues: n findRcvrAndArgStackValues.
-                resultStackValue:      n findResultStackValue.
-                n removeFromGraphInPreparationForInlining.
-                irNodeGenerator comment: 'inlining call to ', s name.
-                irNodeGenerator artificiallyInsertANewBasicBlock.
-                irNodeGenerator inline: n Slot: s Key: key ReceiverType: rcvrType RcvrAndArgs: rcvrAndArgStackValues Result: resultStackValue.
-              ] Else: [].
-            ].
+            [tryToInlineSomething] whileTrue.
             self).
         } | ) 
 
@@ -446,6 +453,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
              nodes.
              valuesLeftToCheck.
             | 
+            optimizationPolicy shouldUseSSAForm ifFalse: [^ self].
             nodes: nodesInControlFlowOrder asSet.
             valuesLeftToCheck: machineLevelAllocator allValues copy.
             [valuesLeftToCheck isEmpty] whileFalse: [| v |
@@ -613,8 +621,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
          'Category: accessing\x7fCategory: maps\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          mapOfHolderOfSlot: s = ( |
-            | 
-            s holder findVMKitMapUsingOracle: oracleForEagerRelocation).
+            | s holder findVMKitMapUsingOracle: objectsOracle).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -654,6 +661,20 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinCompil
             ns: list copyRemoveAll.
             firstBB depthFirstControlFlowTraversalPreorderDo: [] PostorderDo: [|:bb| bb reverseNodesDo: [|:n| ns addLast: n]] AlreadyDid: set copyRemoveAll.
             ns).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: iterating\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         nodesSatisfying: conditionBlk Do: blk = ( |
+            | 
+            "Could optimize this by keeping track of them as we generate them."
+            nodesInControlFlowOrder do: [|:n|
+              (conditionBlk value: n) ifTrue: [
+                blk value: n.
+              ].
+            ].
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -2072,7 +2093,7 @@ SlotsToOmit: parent.
               (allValuesThatInterfereWith: v) do: [|:iv| iv hasLocation ifTrue: [badLocs add: iv location]].
               allPossibleAvailableRegisterLocations
                      findFirst: [|:loc| (badLocs includes: loc) not]
-                     IfPresent: [|:loc| v description = 'savedSelf' ifTrue: [halt]. usedRegisterLocations add: loc. v location: loc]
+                     IfPresent: [|:loc| usedRegisterLocations add: loc. v location: loc]
                       IfAbsent: [       v location: machineLevelAllocator makeAnotherNonVolLocalMemLocation].
               valuesThatAlreadyHaveALocation add: v.
             ].
@@ -2184,14 +2205,18 @@ SlotsToOmit: parent.
          'Category: spilling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          chooseAValueToSpill = ( |
-             v.
+             s.
             | 
             [todo optimization]. "Use a better heuristic for choosing which one to spill."
-            v: valuesThatCannotBeFactoredOutYet removeFirst.
-            valuesThatHaveBeenFactoredOut addLast: v.
-            remainingValuesThatInterfereWith: v Do: [|:iv| decrementDegreeOf: iv].
-            freezeMovesOf: v.
-            v).
+            s: valuesThatCannotBeFactoredOutYet findFirst: [|:v| v mustBeLocatedInARegister not]
+                                                IfPresent: [|:v| v]
+                                                 IfAbsent: [valuesThatCannotBeFactoredOutYet first].
+            valuesThatCannotBeFactoredOutYet remove: s.
+
+            valuesThatHaveBeenFactoredOut addLast: s.
+            remainingValuesThatInterfereWith: s Do: [|:iv| decrementDegreeOf: iv].
+            freezeMovesOf: s.
+            s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'locationAssigners' -> 'graphColoring' -> 'parent' -> () From: ( | {
@@ -3280,13 +3305,21 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
-         maxMethodSizeForInlining = 9.
+         maxMethodSizeForInlining = 15.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldDoTypePrediction = ( |
+            | 
+            shouldNeverDoInlining not).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
@@ -3307,17 +3340,22 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         shouldInlineSlot: s For: rcvrValue Key: key = ( |
+         shouldInlineSlot: s For: rcvrValue Into: context Key: key = ( |
             | 
-            s isMethod                                         ifFalse: [^ true ]. "Data slots are fine."
-            s contents codes size <= maxMethodSizeForInlining  ifFalse: [^ false]. "Just based on number of bytecodes for now."
-            true).
+            s isMethod ifFalse: [^ true ]. "Data slots are fine."
+            s contents codes size <= maxMethodSizeForInlining  "For now just use bytecode count.").
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          shouldNeverDoInlining = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
+         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldUseSSAForm = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
@@ -3341,102 +3379,17 @@ SlotsToOmit: parent.
          shouldNeverDoInlining = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> () From: ( | {
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuickly' -> () From: ( | {
          'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
-         compileQuicklyButOptimizeKleinKernel = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( |
-             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies compileQuicklyButOptimizeKleinKernel.
-\x7fIsComplete: '.
-            | ) .
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         calleesAndCallersToInlineDo: blk = ( |
-            | 
-            blk value: 'value'                            With: 'value:'.
-            blk value: 'value:'                           With: 'value:With:'.
-            blk value: 'value:With:'                      With: 'value:With:With:'.
-            blk value: 'ifTrue:False:'                    With: 'ifTrue:'.
-            blk value: 'ifTrue:False:'                    With: 'ifFalse:'.
-            blk value: 'ifTrue:False:'                    With: 'ifTrue:False:'.
-            blk value: 'to:Do:'                           With: 'do:'.
-            blk value: 'to:By:Do:'                        With: 'to:Do:'.
-            blk value: 'ifTrue:'                          With: 'to:By:Do:'.
-            blk value: 'whileTrue:'                       With: 'to:ByPositive:Do:'.
-            blk value: 'loop'                             With: 'whileTrue:'.
-            blk value: 'shift'                            With: 'shiftPast'.
-            blk value: 'shiftPast'                        With: 'shift'.
-            blk value: 'withoutCloningAnythingGetANewOID' With: 'cloneBlockHomeFrame_stub:'.
-            blk value: 'universe'                         With: 'cloneBlockHomeFrame_stub:'.
-            blk value: 'allocationSpace'                  With: 'cloneBlockHomeFrame_stub:'.
-            blk value: 'incrementTimestamp'               With: 'withoutCloningAnythingAllocateAnOID'.
-            blk value: 'nextFreeOID'                      With: 'withoutCloningAnythingAllocateAnOID'.
-            blk value: 'oidForInvalidEntry:'              With: 'nextFreeOID'.
-            blk value: 'theVM'                            With: 'oidForInvalidEntry:'.
-            blk value: 'lens'                             With: 'oidForInvalidEntry:'.
-            blk value: 'oidForInvalidEntry:In:'           With: 'oidForInvalidEntry:'.
-            blk value: 'oidForInvalidLocalEntry:'         With: 'oidForInvalidEntry:In:'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         calleesToInlineDo: blk = ( |
-            | 
-            blk value: 'ifTrue:'.
-            blk value: 'ifFalse:'.
-            blk value: 'to:ByPositive:Do:'.
-            blk value: 'withoutCloningAnythingAllocateAnOID'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         shouldInlineBlocks = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
-        
-         shouldInlineSlot: s For: rcvrValue Into: context Key: key = ( |
-            | 
-            s isMethod                                                ifFalse: [^ true ]. "Data slots are fine."
-            [aaaaaaa s contents codes size <= maxMethodSizeForInlining         ifFalse: [^ false]. "Just based on number of bytecodes for now."].
-            shouldInlineBlocks && [s contents isReflecteeBlockMethod]  ifTrue: [^ true ]. "Just for now, while I work on block inlining."
-
-            [aaaaaaa]. "Figure out a clean way to write this."
-
-            calleesToInlineDo:           [|:calleeName|              (s name = calleeName)                                     ifTrue: [^ true]].
-            calleesAndCallersToInlineDo: [|:calleeName. :callerName| (s name = calleeName) && [context slot name = callerName] ifTrue: [^ true]].
-
-            (s name = 'ifFalse:') && [(context slot name = 'value') && [context lexicalParentScope lookupKey selector = 'whileTrue:']] ifTrue: [^ true].
-
-            "Otherwise, don't bother inlining; more important to keep compile times down."
-            false).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileQuicklyButOptimizeKleinKernel' -> () From: ( | {
-         'ModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
-        
-         shouldNeverDoInlining = bootstrap stub -> 'globals' -> 'false' -> ().
+         shouldUseSSAForm = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fCategory: maps\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          reflecteeOfHolderOfSlot: s = ( |
-            | 
-            s holder findReflecteeUsingOracle: oracleForEagerRelocation).
+            | s holder findReflecteeUsingOracle: objectsOracle).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -3452,6 +3405,7 @@ SlotsToOmit: parent.
         
          replacePhiFunctionsWithMoves = ( |
             | 
+            optimizationPolicy shouldUseSSAForm ifFalse: [^ self].
             firstBB basicBlocksInControlFlowReversePostOrder do: [|:bb|
               [bb immediateDominator isNil = (bb = firstBB)] assert.
               bb phiFunctionsVanishAndDo: [|:phi|
@@ -3531,20 +3485,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: optimizing\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         sendNodesDo: blk = ( |
-            | 
-            "Could optimize this by keeping track of them as we generate them."
-            nodesInControlFlowOrder do: [|:n|
-              n isSend ifTrue: [
-                blk value: n.
-              ].
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
          'Category: compiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          shouldAttemptLeafMethodOptimization = bootstrap stub -> 'globals' -> 'true' -> ().
@@ -3555,13 +3495,13 @@ SlotsToOmit: parent.
         
          shouldDisplayDebugInformation = ( |
             | 
-            "(selector = 'ifTrue:') && [context selfMirror = true asMirror]"
+            "(selector = 'at:') && [context selfMirror = traits mirrors abstractMirror asMirror]"
             "selector = 'sendMessage_stub'"
             false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: profiling\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: profiling the compiler\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          shouldProfileCompilingThisSlot = ( |
             | 
@@ -3582,6 +3522,17 @@ SlotsToOmit: parent.
          topSourceLevelAllocator = ( |
             | 
             machineLevelAllocator topSourceLevelAllocator).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         tryToInlineSomething = ( |
+            | 
+            nodesSatisfying: [|:n| n isSend] Do: [|:n|
+              (irNodeGenerator maybeInlineSend: n) ifTrue: [^ true].
+            ].
+            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -3625,7 +3576,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> () From: ( | {
-         'Category: compilation helpers\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
+         'Category: compiling other slots\x7fModuleInfo: Module: kleinCompiler1 InitialContents: InitializeToExpression: (list copyRemoveAll)\x7fVisibility: private'
         
          reusabilityConditions <- list copyRemoveAll.
         } | ) 
@@ -3751,7 +3702,6 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
         
          postFileIn = ( |
             | 
-            klein compiler1 prototypes bytecodeInterpreter generatePrimitiveTranslationMethods.
             resend.postFileIn).
         } | ) 
 

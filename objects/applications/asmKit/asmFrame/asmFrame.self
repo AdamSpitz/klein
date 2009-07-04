@@ -758,7 +758,6 @@ See the LICENSE file for license information.
          clearCaches = ( |
             | 
             cachedAllRegisters: nil.
-            cachedAllRegisterLocations: nil.
             self).
         } | ) 
 

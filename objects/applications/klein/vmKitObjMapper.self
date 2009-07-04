@@ -73,7 +73,7 @@ See the LICENSE file for license information.
             r: blk value: initialMarkValue.
 
             setValueFor: o
-                     To: (valueForReflecteeOf: m MapOop: mapOop Layout: aLayout Mapper: mapper) 
+                     To: (valueForReflecteeOf: m MapOop: mapOop Layout: aLayout Mapper: mapper)
                  Layout: aLayout
                  IfFail: raiseError.
 
@@ -950,7 +950,7 @@ SlotsToOmit: parent parent:.
             | 
             "Ensure that there will be maps for the immediates."
             immediateExemplarsDo: [|:imm| objectsOracle recordMapOID: (oidForOop: allocateMapForImmediate: imm)
-                                                ForImmediateExemplar: imm]. 
+                                                ForImmediateExemplar: imm].
             self).
         } | ) 
 
@@ -1669,7 +1669,7 @@ SlotsToOmit: parent.
               i < origCodes size  ifFalse: exit.
               bc: origCodes byteAt: i.
               n: origIS opcodeNameOf: bc.
-                  (n = 'lexicalLevel') 
+                  (n = 'lexicalLevel')
               || [(n = 'index')
               || [ n = 'argumentCount']]
                 ifFalse: [origNonILBCs: origNonILBCs succ].
@@ -1688,10 +1688,10 @@ SlotsToOmit: parent.
               i < reparseCodes size  ifFalse: exit.
               bc: reparseCodes byteAt: i.
               n: reparseIS opcodeNameOf: bc.
-                  (n = 'lexicalLevel') 
+                  (n = 'lexicalLevel')
               || [(n = 'index')
               || [ n = 'argumentCount']]
-               ifFalse: [ 
+               ifFalse: [
                  noSlotsNonILBCs: noSlotsNonILBCs succ.
                  [(origNonILBCsByBCI at: currentBCI) = noSlotsNonILBCs] whileTrue: [
                    positionsByBCI at: currentBCI Put: i.
@@ -2019,7 +2019,7 @@ SlotsToOmit: parent.
                 nm: c buildNMethod.
                 klein relocators isEagerRelocationEnabled ifTrue: [|twc|
                   twc: objectMapper totalWordCountForReflecteeOf: reflect: nm.
-                  predictedOop: c oracleForEagerRelocation nextOopToAllocateForObjectOfSize: twc.
+                  predictedOop: c objectsOracle nextOopToAllocateForObjectOfSize: twc.
                 ].
                 objectMapper incorporateCodeGenerationStatisticsFrom: c codeGenerator.
             ] cpuTime.
@@ -2302,9 +2302,11 @@ SlotsToOmit: parent.
             theVM compilerPrototype
                         copyForContext: context
                           Architecture: theVM architecture
-                                Oracle: objectMapper oracleForEagerRelocation
+                                Oracle: objectMapper objectsOracle
                                  Debug: theVM exportPolicy shouldCompileInDebugMode
-                              Optimize: theVM compilerPrototype prototypes optimizationPolicies compileQuicklyButOptimizeKleinKernel).
+                              Optimize: (theVM exportPolicy shouldOptimize: context)
+                                           ifTrue: [theVM compilerPrototype prototypes optimizationPolicies compileFastCode]
+                                            False: [theVM compilerPrototype prototypes optimizationPolicies compileQuickly]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> 'compilationRequester' -> 'parent' -> () From: ( | {
@@ -2707,7 +2709,7 @@ SlotsToOmit: parent.
              ifTrue: [
               oopForObjectTable: oopForOldObjectTable.
               layouts objVector
-                                 for:  oopForObjectTable 
+                                 for:  oopForObjectTable
                 PopulateIndexablesBy:  [|:i. x| x: oldObjectTable at: i.
                                                 (reflect: x) kleinAndYodaLayout oopForValue: x].
             ]
@@ -3191,7 +3193,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
         
          objectsOracleProto = ( |
             | 
-            theVM vmKit objectsOracle).
+            kleinAndYoda objectsOracle).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3204,14 +3206,6 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
               runCompilationRequesters.
             ].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
-         'Category: eager relocation\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
-        
-         oracleForEagerRelocation = ( |
-            | 
-            objectsOracle).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectMapper1' -> 'parent' -> () From: ( | {
@@ -3250,7 +3244,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
               '   - Fill 5 time: '               , (asSeconds:                    fill5Time) printString, ' s\n',
               ' - User   time   : ', (asSeconds: mappingTimes   userTime) printString, ' s\n',
               ' - System time   : ', (asSeconds: mappingTimes systemTime) printString, ' s\n',
-              ' - Objects mapped : ', objectsOracle numberOfObjectsMapped printString,   '\n', 
+              ' - Objects mapped : ', objectsOracle numberOfObjectsMapped printString,   '\n',
               '   - Maps         : ', objectsOracle    numberOfMapsMapped printString,   '\n',
               '   - NMethods     : ', objectsOracle          nmethodCount printString,   '\n',
               '   - Compilations : ',                        compileCount printString,   '\n',
@@ -3258,7 +3252,7 @@ with vmImage. -- Adam, 7/05\x7fModuleInfo: Module: vmKitObjMapper InitialContent
                                                    objectsOracle relocatorNeedsToDoPlaceholderInstructions       printString, '\n',
               '   - Eager nmethod optimism justified/unjustified: ', eagerNMethodOopAssignmentOptimismJustified    printString, '/',
                                                                      eagerNMethodOopAssignmentOptimismNotJustified printString, '\n',
-              '   - SelectorsToCompile hits/misses: ', selectorsToCompileHits printString, '/', 
+              '   - SelectorsToCompile hits/misses: ', selectorsToCompileHits printString, '/',
                                                       (selectorsToCompileProbes - selectorsToCompileHits) printString, '\n',
               '   - BlockNMethod$ hits/misses: ', blockNMethodHits printString, '/', blockNMethodMisses printString, '\n',
               '   - ReusableNMethod hits/misses: ', reusableNMethodHits printString, '/', reusableNMethodMisses printString, '\n',
@@ -3648,7 +3642,7 @@ update time, at least for some updates. Let\'s try turning it off. -- Adam, 10/0
         
          totalWordCountForReflecteeOf: aMir = ( |
             | 
-            aMir vmKitMapForConversion 
+            aMir vmKitMapForConversion
                totalWordCountForReflecteeOf: aMir
                                      Mapper: self).
         } | ) 
@@ -5722,7 +5716,7 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
          updatedAddressesByOIDIfFail: fb = ( |
             | 
             invalidateMyObsoleteCachedItems.
-            addressesByOID isEmpty ifTrue: [| m. v. newSize | 
+            addressesByOID isEmpty ifTrue: [| m. v. newSize |
                 m: vm image mirrorOnTheObjectLocatorIfFail: [|:e| ^ fb value: e].
                 v: importReflecteeOf: m AsVectorOfImmediatesIfFail: [|:e| ^ fb value: e].
                 newSize: v size max: sizeOfOIDVectors.

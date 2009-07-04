@@ -220,7 +220,7 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitVM InitialCo
 
             universe allocateHeapAt: base
                          NewGenSize: (canCollectGarbage ifTrue: [s / 16] False: [s / 8])  "leave room so we don't run out since no GC"
-                  ScavengeSpaceSize: (canCollectGarbage ifTrue: [s /  8] False: 0      )  "scavenger creates a lot of garbage for now"
+                  ScavengeSpaceSize: (canCollectGarbage ifTrue: [s /  4] False: 0      )  "scavenger creates a lot of garbage for now"
                           TotalSize: s).
         } | ) 
 

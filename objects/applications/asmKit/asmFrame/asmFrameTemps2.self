@@ -285,21 +285,22 @@ with having the specific instructionAssemblyMethods just call
 one of these more-abstract ones. -- Adam, Mar. 2009\x7fModuleInfo: Module: asmFrameTemps2 InitialContents: FollowSlot'
         
          sourceForAbstractAssemblyMethod = ( |
-             r.
+             s.
             | 
-            r: sourceForAbstractAssemblyHead.
-            r: r & '= (| r <- 0 |\n'.
-            r: r & 'r: '.
+            s: sourceForAbstractAssemblyHead.
+            s: s & '= (| r <- 0. fb |\n'.
+            operandFields isEmpty ifFalse: [s: s & 'fb: [|:e| ^ error: e].\n'].
+            s: s & 'r: '.
 
             operandFields do: [|:of|
-              r: r & intNNString & ' or: (' & of sourceForAssemblyMethod & ') With:\n'.
+              s: s & intNNString & ' or: (' & of sourceForAssemblyMethod & ') With:\n'.
             ].
             [intNN or: 0 With: 0]. "browsing"
-            r: r & 'instTemplate opcode.\n'.
-            r: r & 'data32: r.\n'.
-            r: r & 'r)'.
-            [error: nil. data32: nil]. "browsing"
-            r flatString).
+            s: s & 'instTemplate opcode.\n'.
+            s: s & 'data32: r.\n'.
+            s: s & 'r)'.
+            [error: ''. data32: nil]. "browsing"
+            s flatString).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'instructionTemplates' -> 'parent' -> 'proto' -> 'parent' -> () From: ( | {

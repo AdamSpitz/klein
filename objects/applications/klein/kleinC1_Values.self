@@ -17,6 +17,12 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (false)'
+        
+         canBeAccessedUplevel <- bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
         
          compiler.
@@ -38,6 +44,12 @@ See the LICENSE file for license information.
          'Category: data flow\x7fModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
         
          knownPossibleTypes.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (false)'
+        
+         mustBeLocatedInARegister <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
@@ -85,8 +97,10 @@ See the LICENSE file for license information.
         
          beRenamingOf: v = ( |
             | 
-            description: v description.
-            myLocation:  v myLocation.
+            description:          v description.
+            myLocation:           v myLocation.
+            canBeAccessedUplevel: v canBeAccessedUplevel.
+            knownPossibleTypes:   v knownPossibleTypes.
             originalValueBeforeRenaming: v originalValueBeforeRenaming ifNil: [v].
             originalValueBeforeRenaming addRenaming: self.
             self).
@@ -418,6 +432,22 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'union' -> 'parent' -> () From: ( | {
+         'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateFor: rcvrValue TypeCasesDo: blk Else: elseBlk With: irg = ( |
+            | 
+            irg generateSwitchForCases: possibilities If: [|:type. :trueFork|
+              type generateIfMatchesTypeOf: rcvrValue ThenBranchTo: trueFork With: irg.
+            ] Then: [|:type. rcvrValueWithKnownType|
+              rcvrValueWithKnownType: irg newValue.
+              irg move: rcvrValue To: rcvrValueWithKnownType.
+              rcvrValueWithKnownType knownPossibleTypes: vector copyAddFirst: type.
+              blk value: rcvrValueWithKnownType.
+            ] Else: elseBlk.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'union' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          knownMapUsingOracle: oracle IfFail: fb = ( |
@@ -458,8 +488,7 @@ See the LICENSE file for license information.
          'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          knownMapIfFail: fb = ( |
-            | 
-            mergedType knownMapUsingOracle: compiler oracleForEagerRelocation IfFail: fb).
+            | mergedType knownMapUsingOracle: compiler objectsOracle IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -477,6 +506,7 @@ See the LICENSE file for license information.
          location: loc = ( |
             | 
             [myLocation isNil] assert.
+            [mustBeLocatedInARegister not || [loc isRegister]] assert.
             myLocation: loc).
         } | ) 
 
@@ -564,6 +594,25 @@ See the LICENSE file for license information.
             description ifNotNil: [r: r & description & '[' & uniqueID printString & '] in ' ].
             r: r & myLocation printString.
             r flatString).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         strongUserChains = ( |
+             r.
+            | 
+            r: list copyRemoveAll.
+            strongUsers do: [|:u. chain|
+              u isMove && [u destinationValue canBeAccessedUplevel not] ifTrue: [
+                u destinationValue strongUserChains do: [|:chain|
+                  r add: chain addFirst: u.
+                ].
+              ] False: [
+                r add: list copyRemoveAll addFirst: u.
+              ].
+            ].
+            r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {

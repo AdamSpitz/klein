@@ -413,6 +413,17 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: deferring other nodes\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prependACopyOfDeferredComputation: nodes = ( |
+            | 
+            [aaaaaaa]. "Should probably have some checks here, to make
+                        sure this is safe."
+            nodes do: [|:n| n copy insertAfter: sourcePred].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          recordDefinersAndUsers = ( |
@@ -538,6 +549,17 @@ from the bytecode interpreter.\x7fModuleInfo: Module: kleinC1_IRNodes InitialCon
                usedValuesDo: blk.
             definedValuesDo: blk.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         usedLocations = ( |
+             r.
+            | 
+            r: set copyRemoveAll.
+            usedLocationsDo: [|:loc| r add: loc].
+            r).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1606,6 +1628,13 @@ SlotsToOmit: parent.
             | 
             failureFork: failureHandler failureLabel.
             successFork: failureHandler     endLabel.
+
+            [aaaaaaa]. "Hack - for now, we sometimes run out of temp
+                        registers if these guys all need their own temp
+                        registers."
+            "Gah, this doesn't seem to be helping. Try another way."
+            [destinationValue mustBeLocatedInARegister: true.].
+
             self).
         } | ) 
 
@@ -2971,6 +3000,21 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'localReturn' -> 'parent' -> () From: ( | {
+         'Category: deferring other nodes\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prependACopyOfDeferredComputation: nodes = ( |
+            | 
+            "Don't bother doing anything, we're just returning anyway."
+            "Um, except what if the deferred thing is the outgoing result?
+             Write a test case like that."
+            nodes last destinationValue = outgoingResultValue ifTrue: [
+              [aaaaaaa]. halt.
+              resend.prependACopyOfDeferredComputation: nodes.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'localReturn' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          willZapMemoizedBlocks = ( |
@@ -3461,7 +3505,11 @@ SlotsToOmit: parent.
             | 
             sourceLevelAllocator isInlined ifTrue: [
               blk value: nodeToBranchToOnNLR.
-              blk value: nodeToBranchToOnLR.
+
+              [aaaaaaa]. "I am not at ALL sure this is right."
+              interpreter localReturnBB endNode ifNotNil: [
+                blk value: nodeToBranchToOnLR.
+              ].
             ].
             self).
         } | ) 
@@ -4217,6 +4265,18 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
+         'Category: deferring other nodes\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prependACopyOfDeferredComputation: nodes = ( |
+            | 
+            basicBlock labelNode controlFlowPreds do: [|:pred|
+              [pred isUnconditionalBranch] assert.
+              pred prependACopyOfDeferredComputation: nodes.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'phiFunction' -> 'parent' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
         
          replaceDefinedValue: v With: newV = ( |
@@ -4345,6 +4405,19 @@ SlotsToOmit: parent.
          'ModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'sendOrPrimitive' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'send' -> 'parent' -> () From: ( | {
+         'Category: deferring other nodes\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: public'
+        
+         prependACopyOfDeferredComputation: nodes = ( |
+             last.
+            | 
+            last: nodes removeLast. "Don't want to move the setting-up node."
+            [last isMove] assert.
+            [   (last destinationValue isRegister && [machineLevelAllocator registerUsage isOutgoingArgumentRegister: last destinationValue location])
+             || [last destinationValue locationTypeName = 'outgoingMemoryArgument']].
+            firstNodeSettingUpTheSend prependACopyOfDeferredComputation: nodes).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> () From: ( | {

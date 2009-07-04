@@ -373,6 +373,18 @@ knowing what name you want to appear in the comment.\x7fModuleInfo: Module: klei
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
+         'Category: generating code\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIfMatchesTypeOf: r ThenBranchTo: trueFork With: aCodeGenerator = ( |
+            | 
+            aCodeGenerator withTemporaryRegisterDo: [|:temp|
+              tell: aCodeGenerator ToLoadMeToRegister: temp.
+              aCodeGenerator generateIf: r Equals: temp ThenBranchTo: trueFork.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
          'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          hash = ( |

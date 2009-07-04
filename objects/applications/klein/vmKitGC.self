@@ -59,10 +59,9 @@ See the LICENSE file for license information.
             [theVM byteVectorLayout isSegregated] assert. "This'll be harder if it's unsegregated."
             theVM universe oldGeneration spacesDo: [|:s|
               cardNumbersForSpace: s Do: [|:i|
-                (thereHaveBeenChangesToCardAt: i) ifTrue: [
-                  [('found changed card at ', i printString) printLine].
+                __BranchIfFalse: (thereHaveBeenChangesToCardAt: i) To: 'doneThisCard'.
                   oopsInCardAt: i Do: blk.
-                ].
+                __DefineLabel: 'doneThisCard'.
                 markAsUnchangedCardAt: i.
               ].
             ].

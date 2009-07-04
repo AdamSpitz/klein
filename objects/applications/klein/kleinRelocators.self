@@ -83,11 +83,11 @@ See the LICENSE file for license information.
                               phase. But keep in mind as an idea for later. -- Adam, 6/05"
             vmKit relocators isEagerRelocationEnabled ifFalse: [^ assemblePlaceholderInstructionsWith: cg].
 
-            initializeCompiledOop: cg compiler oracleForEagerRelocation IfFail: [
-              cg compiler oracleForEagerRelocation relocatorAssembledPlaceholderInstructions.
+            initializeCompiledOop: cg compiler objectsOracle IfFail: [
+              cg compiler objectsOracle relocatorAssembledPlaceholderInstructions.
               ^ assemblePlaceholderInstructionsWith: cg
             ].
-            cg compiler oracleForEagerRelocation relocatorAssembledRealInstructions.
+            cg compiler objectsOracle relocatorAssembledRealInstructions.
             reassembleWith: cg NewOop: compiledOop.
             self).
         } | ) 
@@ -449,7 +449,7 @@ SlotsToOmit: parent.
             "Optimistically assume that the nmethod will be the next object we allocate.
              We have to guess the size of the nmethod; no big deal if we get it wrong,
              except that we might have to tell this relocator to reassemble later. -- Adam, 5/06"
-            cg a loadAddressTo: dstReg From: cg compiler oracleForEagerRelocation nextOopToAllocateForObjectOfSize: 350.
+            cg a loadAddressTo: dstReg From: cg compiler objectsOracle nextOopToAllocateForObjectOfSize: 350.
 
             self).
         } | ) 

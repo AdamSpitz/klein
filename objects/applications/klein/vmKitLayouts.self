@@ -1501,9 +1501,11 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
          'Category: iterating\x7fModuleInfo: Module: vmKitLayouts InitialContents: FollowSlot\x7fVisibility: private'
         
          forBytesPart: bpRef Do: blk IfFail: fb = ( |
+             failBlock.
             | 
-            (indexableSizeOfBytesPart: bpRef IfFail: [|:e| ^ fb value: e]) do: [|:i|
-              blk value: (forBytesPart: bpRef At: i IfFail: [|:e| ^ fb value: e]) With: i
+            failBlock: [|:e| ^ fb value: e].
+            (indexableSizeOfBytesPart: bpRef IfFail: failBlock) do: [|:i|
+              blk value: (forBytesPart: bpRef At: i IfFail: failBlock) With: i.
             ].
             self).
         } | ) 

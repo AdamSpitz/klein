@@ -292,6 +292,36 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
+        
+         outerMethodSlotNamesToOptimizeDo: blk = ( |
+            | 
+            blk value: 'value:'.
+            blk value: 'value:With:'.
+            blk value: 'value:With:With:'.
+            blk value: 'ifTrue:'.
+            blk value: 'ifFalse:'.
+            blk value: 'ifFalse:True:'.
+            blk value: 'do:'.
+            blk value: 'to:Do:'.
+            blk value: 'to:By:Do:'.
+            blk value: 'to:ByPositive:Do:'.
+            blk value: 'whileTrue:'.
+            blk value: 'at:'.
+            blk value: 'shiftPast'.
+            blk value: 'shift'.
+            blk value: 'cloneBlockHomeFrame_stub:'.
+            blk value: 'withoutCloningAnythingAllocateAnOID'.
+            blk value: 'withoutCloningAnythingGetANewOID'.
+            blk value: 'nextFreeOID'.
+            blk value: 'oidForInvalidEntry:'.
+            blk value: 'oidForInvalidEntry:In:'.
+            blk value: 'forBytesPart:IfIndex:IsOutOfBoundsThen:'.
+            blk value: 'forLocalBytesPart:At:IfFail:'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'ModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -461,6 +491,20 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
          'Category: nmethod compilation policy\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
         
          shouldOnlyCompileSelectorsCalledByMappedMethods = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldOptimize: compilationContext = ( |
+             outermostMethodSlotName.
+            | 
+            outermostMethodSlotName: compilationContext outermostMethodSlotName.
+
+            outerMethodSlotNamesToOptimizeDo: [|:n|
+              outermostMethodSlotName = n ifTrue: [^ true].
+            ].
+            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {

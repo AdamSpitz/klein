@@ -29,13 +29,95 @@ Fix the copyright notices!!!
 
 ----
 
-Let's take a quick look to see if there's any low-hanging fruit w.r.t. avoiding compiling uninvoked nmethods.
+Could try manually splitting up the modules that have a lot of uninvoked nmethods, so that they're less coarse-grained.
 
-Bleh. OK, just two ideas:
+----
 
-  - Make a faster compiler. (We'll need that anyway.)
-    - Don't calculateDominance.
-    - Don't convertToSSAForm.
-    - Don't doInlining.
-    - Don't calculateValueLiveness (but then will I need another register allocator?).
-  - Split the modules so that they're less coarse-grained.
+Let's make a faster compiler. (We'll need that anyway.) Hopefully I can just reuse the existing compiler and turn off some stuff:
+  - Don't calculateDominance.
+  - Don't convertToSSAForm.
+  - Don't doInlining.
+  - Don't calculateValueLiveness (but then will I need another register allocator?).
+
+OK, I did some of that. Does it work?
+
+----
+
+How do I do PICs?
+
+I guess each one is just an nmethod, created on the fly. Could make them a fixed size and then just fill them up with branches to the sendMessage_stub, so that later we can extend them by overwriting in the middle. But check to see how the Self VM does it.
+
+I could do them statically, too - anytime I see a call to _Eq: I know it's likely to be a boolean, same with sends of && and ||, etc. (But only do this if the optimizationPolicy is to compileFastCode.)
+
+How does the Self VM do it?
+
+  - Looks like every sendDesc has a pic(), which is null if there are 0 or 1 target maps.
+  - The PIC is called a CacheStub. Which is a kind of OopNCode. And "OopNCode is the base class of all code containing oop references embedded in the code (e.g. sethi instructions)."
+  - Apparently nmethods are a kind of OopNCode too.
+
+OK, so I should make a parent of nmethod called nativeCodeContainingOops. Or maybe just nativeCode.
+
+But I guess I don't really know right now whether a lot of my time is being spent doing polymorphic lookups. Could I get a list of how often the sendMessage_stub is called with each selector? That'd tell me whether I need PICs yet or not.
+
+----
+
+How do I do dynamic optimization?
+
+  - I've got the invocationCount thing. I guess I could hook up something to run right there... but what if it's a leaf nmethod?
+  - Maybe during the sendMessage_stub? But then that'll fail if it's being called a lot from a call site that rarely changes targetMap.
+
+How does the Self VM do it?
+
+Hmm, I need way more temp registers. Maybe I need an IR node for the recompilation check?
+
+Seriously, how does the Self VM do it?
+
+----
+
+Submodules I could maybe split off from mirror:
+
+  - DONE: mirrorProgramming
+  - annotations?
+
+----
+
+Biggest sources of block cloning:
+
+  - REALLY big: can't inline ifTrue:False:, &&, ||, etc.
+  - aren't translated prims so can't delay failblock cloning:
+    - _At:
+    - _ByteAt:
+    - _Clone
+  - I don't understand, I thought the inliner would work on these:
+    - 'whileTrue:'@'traits block'@131799
+    - 'to:ByPositive:Do:'@'traits integer'@131799
+
+Hmm, are we doing more int32 stuff than we need to? Look at the screen captures.
+
+Uh-oh, isKleinOrYodaMirror isn't found? On a klein mirrors canonicalString? The slot is getting mapped, I see it right there. So it's not getting compiled. Why? It's not incomplete - the annotation says it's complete, and I see a bunch of stuff in the nmethodCache.
+
+----
+
+OK, so as a quick thing, can I do some simple type prediction?
+
+----
+
+Yikes, looks like we're sending ifFalse: to 0. The ifFalse: is coming from whileTrue:, I think. Is the call to value coming back with 0? Or is it being overwritten? (After a quick look at the machine code, it looks like the code isn't overwriting r25. So I'm confused.)
+
+Huh. Maybe it's trying to get the "self" of an inlined block?
+
+I think this might be what's happening:
+
+  - We're in the for:To:By:Do: method.
+  - The call to whileTrue: gets inlined. (So the "self" of that call is in some nonVolLocal location. And its creation could have been deferred because...?)
+  - The call to loop gets inlined.
+  - The call to value does *not* get inlined.
+  - So inside the "value" method, to access "self" we have to follow the block's homeFP (which is correct), which points to the frame containing the whole for:To:By:Do: method (which is correct). But the "self" value hasn't been cloned yet, because...
+
+OK, maybe I fixed it! I think the problem was that it was counting any move as a non-ultimate user, when really a move to an uplevel-accessible location should have counted as ultimate.
+
+----
+
+Hmm, but now there's a different problem. (Unless it's the same one. Can't tell yet.)
+
+Looks like maybe one of those argument guys is overwriting a "self"? Maybe the end node isn't keeping "self" alive? Or maybe there isn't actually an end node, since the method is inlined?

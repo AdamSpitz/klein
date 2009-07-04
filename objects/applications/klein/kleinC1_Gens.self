@@ -229,21 +229,39 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedNMethodInvocationCountAssignmentSlot.
+         cachedNMethodInvocationCountAssignmentSlot <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedNMethodInvocationCountSlot.
+         cachedNMethodInvocationCountSlot <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          checkForRecompilation = ( |
+             nmReg.
             | 
-            [todo recompilation].
+            nmReg: r0.
+            "Someday, for performance, we might be able to
+             avoid doing the loadNMethodIntoRegister: twice,
+             by merging this code with the other code that
+             calls loadNMethodIntoRegister:. -- Adam, 11/04"
+            loadNMethodIntoRegister: nmReg.
+            generateExit: [|:noRecompilationFork|
+              withTemporaryRegisterDo: [|:countReg|
+                incrementInvocationCountForNMethod: nmReg AndPutCountInRegister: countReg.
+                [todo recompilation.
+                withTemporaryRegisterDo: [|:thresholdReg|
+                  loadOop: invocationCountRecompilationThreshold IntoRegister: thresholdReg.
+                  generateIfUnsigned: countReg IsLessThan: thresholdReg ThenLikelyBranchTo: noRecompilationFork.
+                ].
+                ].
+              ].
+              [todo recompilation].
+            ].
             self).
         } | ) 
 
@@ -401,7 +419,6 @@ See the LICENSE file for license information.
          'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generateSwitchForCases: cases If: testBlk Then: thenBlk Else: elseBlk = ( |
-             caseVector.
              forks.
             | 
             generateExit: [|:end|
@@ -751,29 +768,6 @@ See the LICENSE file for license information.
          generateIfUnsigned: reg1 IsNotLessThan: reg2 ThenUnlikelyBranchTo: tooBig = ( |
             | 
             childMustImplement.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         generateInvocationCountCode = ( |
-            | 
-            [todo recompilation].
-
-            "This stuff isn't used for anything much yet - I just
-             put it in one time when we wanted to gather some
-             statistics. --  Adam, 10/04"
-
-            shouldDoInvocationCounts ifTrue: [| nmReg |
-              nmReg: r0.
-              "Someday, for performance, we might be able to
-               avoid doing the loadNMethodIntoRegister: twice,
-               by merging this code with the other code that
-               calls loadNMethodIntoRegister:. -- Adam, 11/04"
-              loadNMethodIntoRegister: nmReg.
-              incrementInvocationCountForNMethod: nmReg.
-            ].
             self).
         } | ) 
 
@@ -1635,13 +1629,11 @@ Returns an address into a bytes part masquerading as a small integer.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
-         incrementInvocationCountForNMethod: nmReg = ( |
+         incrementInvocationCountForNMethod: nmReg AndPutCountInRegister: countReg = ( |
             | 
-            withTemporaryRegisterDo: [|:countReg|
-              loadFromDataSlot: nmethodInvocationCountSlot OfHolderRegister: nmReg IntoRegister: countReg.
-              addImm: (layouts smi encode: 1) MaybeSetCCFrom: countReg To: countReg.
-              storeIntoDataSlot: nmethodInvocationCountAssignmentSlot OfHolderRegister: nmReg FromRegister: countReg IsGuaranteedNotToBeMemObj: true.
-            ].
+            loadFromDataSlot: nmethodInvocationCountSlot OfHolderRegister: nmReg IntoRegister: countReg.
+            addImm: (layouts smi encode: 1) MaybeSetCCFrom: countReg To: countReg.
+            storeIntoDataSlot: nmethodInvocationCountAssignmentSlot OfHolderRegister: nmReg FromRegister: countReg IsGuaranteedNotToBeMemObj: true.
             self).
         } | ) 
 
@@ -1683,6 +1675,13 @@ Returns an address into a bytes part masquerading as a small integer.
          invalidateInlineCache: sendDescReg = ( |
             | 
             childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fComment: We don\'t do invocation *rates* yet; we just count
+the total number. -- Adam, June 2009\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
+        
+         invocationCountRecompilationThreshold = 500000.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2505,12 +2504,6 @@ and may fail to compile otherwise.
          'Category: primitives\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          shouldBeLazyAboutCloningPrimitiveFailBlocks = bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
-        
-         shouldDoInvocationCounts = bootstrap stub -> 'globals' -> 'true' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -3373,21 +3366,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generateNLR: node = ( |
-            | 
-            [node sourceLevelAllocator context slot contents isReflecteeBlockMethod] assert.
-            moveLocation: node outgoingResultValue location ToLocation: machineLevelAllocator locationForOutgoingResult.
-            node sourceLevelAllocator isInlined ifFalse: [
-              generateEpilogue: node WordOffset: sendDesc nlrReturnIndex.
-            ] True: [
-              genBranchTo: node nodeToBranchToOnNLR.
-            ].
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: epilogue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
          generateNLRHomeScopeFor: node Into: dstLoc = ( |
              sla.
             | 
@@ -3413,8 +3391,9 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
              epilogue code because they are identical.
              -- jb 8/03"
 
-            [aaaaaaa]. "Do we need to do the zapping if this scope is inlined?"
-            generateCleanupForMemoizedBlocks: node.
+            node sourceLevelAllocator isInlined ifFalse: [
+              generateCleanupForMemoizedBlocks: node.
+            ].
 
             node sourceLevelAllocator context isForABlockMethod ifTrue: [
               "Optimization: block methods can't be the home scope of an NLR, so no point doing the checks."
@@ -3443,9 +3422,8 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
                   restoreFrameAndReturn: sendDesc normalReturnIndex
                 ] True: [| localReturnNode |
                   [aaaaaaa]. "Don't we have to hook up the data flow links?"
-                  localReturnNode: node interpreter localReturnBB endNode destinationNode sourceSucc.
-                  [localReturnNode isLocalReturn] assert.
-                  moveLocation: machineLevelAllocator locationForIncomingResult ToLocation: localReturnNode outgoingResultValue location.
+                  moveLocation: machineLevelAllocator locationForIncomingResult
+                    ToLocation: node interpreter localReturnOutgoingResultValue location.
                 ]
               ].
             ].
@@ -3515,10 +3493,10 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: send descs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
-         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfCompileSlotStubIfFail: fh = ( |
+         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfCompileStubIfFail: fh = ( |
             | 
-            [compileSlot_stub]. "browsing"
-            generateEntryAddressOfStubNamed: 'compileSlot_stub' Into: dstReg.
+            [compile_stub]. "browsing"
+            generateEntryAddressOfStubNamed: 'compile_stub' Into: dstReg.
             self).
         } | ) 
 
@@ -4097,7 +4075,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             machineLevelAllocator isLeafMethod  ifFalse: [
               generating: 'generateStackFramePrologue'   During: [generateStackFramePrologue].
             ].
-            generating: 'generateInvocationCountCode'    During: [generateInvocationCountCode].
             [generateLRUCodeIfNotAccessMethodAndNotRecomp. todo dynamicCompilation "LRU"].
             self).
         } | ) 

@@ -236,7 +236,7 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: nlr home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: locations\x7fCategory: non-local returns\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          valueForNLRHomeScope = ( |
             | 
@@ -244,11 +244,19 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: locations\x7fCategory: nlr home scope\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: locations\x7fCategory: non-local returns\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
          valueForNLRHomeScopeDesc = ( |
             | 
             (newValueWithLocation: locationForOutgoingNLRHomeScopeDesc) addDescription: 'NLR home scopeDesc').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: non-local returns\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForOutgoingResult = ( |
+            | 
+            (newValueWithLocation: locationForOutgoingResult) addDescription: 'outgoing result').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -688,6 +696,15 @@ pass arguments out of caller frame or into callee frame.\x7fModuleInfo: Module: 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> 'registerUsage' -> () From: ( | {
          'Category: outgoing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
         
+         isOutgoingArgumentRegister: r = ( |
+            | 
+            indexOfOutgoingArgumentRegister: r IfNoSuchIndex: [^ false].
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> 'registerUsage' -> () From: ( | {
+         'Category: outgoing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
          lastOutgoingArgumentRegister = ( |
             | 
             outgoingRcvrOrArgRegisterAt: maxArgumentRegisters).
@@ -867,6 +884,14 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             | 
             howMany = 0 ifTrue: [^ self].
             frame reserveSpaceForOutgoingRcvrAndArgs: howMany).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: locations\x7fCategory: stack pointer\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         valueForStackPointer = ( |
+            | 
+            newValueWithLocation: sp).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'machineLevelAllocators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -1067,6 +1092,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
               i = 0 ifFalse: [| s |
                 s: argSlots at: i pred.
                 v addDescription: s key.
+                v canBeAccessedUplevel: true.
                 namedValues if: s key IsPresentDo: [error: 'hmm'] IfAbsentPut: [v] AndDo: [].
               ].
               v addDescription: 'incoming_', i printString.
@@ -1082,6 +1108,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             localSlots do: [|:s. v|
               v: (preallocatedLocationForLocalSlot: s) ifNil: [newValue] IfNotNil: [|:loc| newValueWithLocation: loc].
               v addDescription: s key.
+              v canBeAccessedUplevel: true.
               namedValues if: s key IsPresentDo: [error: 'hmm'] IfAbsentPut: [v] AndDo: [].
             ].
             self).
@@ -1098,12 +1125,13 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
                 s slotSPOffsets with: s method slotNamesWithSPOffsetRecorded Do: [|:offset. :name|
                   namedValues at: name IfAbsentPut: [| loc |
                     loc: locationForUplevel: ll AccessTo: s locationForOffset: offset.
-                    (newValueWithLocation: loc) addDescription: name
+                    ((newValueWithLocation: loc) addDescription: name) canBeAccessedUplevel: true
                   ].
                 ].
               ] IfNotNil: [|:i|
                 i sourceLevelAllocator namedValues do: [|:v. :n|
                   namedValues at: n IfAbsentPut: v.
+                  [v canBeAccessedUplevel] assert.
                 ].
               ].
             ].
@@ -1136,6 +1164,8 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
               valueForSelf addDescription: 'self'.
               valueForSelf possibleTypes: vector copyAddFirst: valueForSelf kindsOfPossibleTypes selfValue copyForAllocator: self.
             ].
+
+            valueForSelf canBeAccessedUplevel: true.
 
             self).
         } | ) 

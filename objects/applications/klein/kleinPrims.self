@@ -105,7 +105,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
-         compileSlot_stub = ( |
+         compile_stub = ( |
              false = bootstrap stub -> 'globals' -> 'false' -> ().
              holderMir.
              key.
@@ -749,7 +749,8 @@ See the LICENSE file for license information.
             _Breakpoint: 'should never reach here'.
 
             __DefineLabel: 'miss'.
-            sd _BackpatchSendDescTo: _EntryAddressOfCompileSlotStub Map: map.
+            _Breakpoint: 'miss, about to call compile_stub'.
+            sd _BackpatchSendDescTo: _EntryAddressOfCompileStub Map: map.
             sd _RetrySendDesc.
             _Breakpoint: 'should never reach here').
         } | ) 
@@ -1702,7 +1703,9 @@ SlotsToOmit: directory fileInTimeString myComment postFileIn revision subpartNam
          'ModuleInfo: Module: kleinPrims InitialContents: FollowSlot'
         
          postFileIn = ( |
-            | resend.postFileIn).
+            | 
+            klein compiler1 prototypes bytecodeInterpreter generatePrimitiveTranslationMethods.
+            resend.postFileIn).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> 'kleinPrims' -> () From: ( | {

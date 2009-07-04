@@ -332,7 +332,7 @@ SlotsToOmit: parent.
          sourceForAssemblyMethod = ( |
             | 
             [assemble: nil At: 0 IT: nil IfFail: nil]. "browsing"
-            name & ' assemble: ' & argName & ' At: locationCounter IT: instTemplate IfFail: [|:e| ^ error: e]').
+            name & ' assemble: ' & argName & ' At: locationCounter IT: instTemplate IfFail: fb').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'assemblerSystems' -> 'framework' -> 'generators' -> 'fields' -> 'parent' -> 'operandField' -> 'parent' -> () From: ( | {
