@@ -1,6 +1,7 @@
  '$Revision: 30.7 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
@@ -130,15 +131,6 @@ SlotsToOmit: interpreter parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'abstractBytecodeInterpreter' -> 'parent' -> 'bytecodes' -> 'endInit' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinBytecodes InitialContents: FollowSlot\x7fVisibility: private'
         
-         browsingTagForName = ( |
-            | 
-            [endInit]. "browsing"
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'abstractBytecodeInterpreter' -> 'parent' -> 'bytecodes' -> 'endInit' -> 'parent' -> () From: ( | {
-         'ModuleInfo: Module: kleinBytecodes InitialContents: FollowSlot\x7fVisibility: private'
-        
          doIt = ( |
             | 
             interpreter endInit: self).
@@ -193,10 +185,19 @@ SlotsToOmit: interpreter parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'bytecodeFormat' -> 'instructionSets' -> 'kleinAndYoda' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinBytecodes InitialContents: FollowSlot\x7fVisibility: public'
         
-         browsingTagForName = ( |
+         browsingTagsSoKleinWillCompileSlotsThatAreOnlyPerformed = ( |
             | 
-            [bytecodeFormat instructionSets kleinAndYoda]. "browsing"
-            error: 'this method is not meant to be called').
+            error: 'this method is not meant to be called'.
+
+            bytecodeFormat instructionSets kleinAndYoda.
+
+            nonlocalReturn. pop.
+            branchAlways. branchIfFalse. branchIfTrue. branchIndexed.
+            endInit.
+            readLocal. writeLocal.
+            argumentCount. delegatee. index. lexicalLevel. undirectedResend.
+            literal. pushSelf.
+            implicitSelfSend. send).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'bytecodeFormat' -> 'instructionSets' -> 'kleinAndYoda' -> () From: ( | {

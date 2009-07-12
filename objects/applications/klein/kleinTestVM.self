@@ -625,18 +625,6 @@ to just keep upping it by hand.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
-         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
-        
-         outerMethodSlotNamesToOptimizeDo: blk = ( |
-            | 
-            blk value: 'testTypePrediction'. [testTypePrediction]. "browsing"
-            blk value: 'inlinedNLR1'.        [inlinedNLR1].        "browsing"
-            blk value: 'inlinedNLR2'.        [inlinedNLR2].        "browsing"
-            blk value: 'inlinedNLR3'.        [inlinedNLR3].        "browsing"
-            resend.outerMethodSlotNamesToOptimizeDo: blk).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> ().
@@ -675,6 +663,16 @@ to just keep upping it by hand.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldOptimizeOuterMethodWithName: n AndHolder: h = ( |
+            | 
+                ('inliningTest'       isPrefixOf: n)
+            || [('typePredictionTest' isPrefixOf: n)
+            || [resend.shouldOptimizeOuterMethodWithName: n AndHolder: h]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'Category: nmethod compilation policy\x7fComment: Objects that are not complete yet for which we would like to
 select the slots to compile by sending kleinSelectorsToCompile.\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -694,6 +692,34 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
+         in: bv ByteAt: i IfAbsent: blk = ( |
+            | 
+            bv _ByteAt: i IfFail: [|:e. :p| blk value: e With: p]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         inliningTester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent inliningTester.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         assert: x Is: y = ( |
+            | 
+            __BranchIfTrue: (x _Eq: y) To: 'fine'.
+            _Breakpoint: 'assertion failed'.
+            __DefineLabel: 'fine'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: nonlocal returns\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
          from: start To: end By: step Do: block = ( |
              i.
             | 
@@ -705,27 +731,19 @@ SlotsToOmit: parent prototype safety.
             start).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: nonlocal returns\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         in: bv ByteAt: i IfAbsent: blk = ( |
-            | 
-            bv _ByteAt: i IfFail: [|:e. :p| blk value: e With: p]).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         inlinedNLR1 = ( |
+         inliningTest_NLR1 = ( |
             | 
             (3 _IntLT: 4) ifTrue: [^ 5].
             2).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: nonlocal returns\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         inlinedNLR2 = ( |
+         inliningTest_NLR2 = ( |
             | 
             (1 _IntLT: 2) ifTrue: [
               (3 _IntLT: 4) ifTrue: [^ 15].
@@ -735,13 +753,111 @@ SlotsToOmit: parent prototype safety.
             ]).
         } | ) 
 
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: nonlocal returns\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         inlinedNLR3 = ( |
+         inliningTest_NLR3 = ( |
             | 
             from: 0 To: 4 By: 1 Do: [|:i| (i _IntEQ: 2) ifTrue: [^ 'two']].
             'not two').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: simple tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         inliningTest_inlineSimpleMethods = ( |
+            | 
+            simpleMethod1.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         inliningTest_mirror_at: n = ( |
+            | 
+            mirror_slotAt: n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         mirror_slotAt: n = ( |
+             raiseError = bootstrap stub -> 'globals' -> 'raiseError' -> ().
+            | 
+            mirror_slotAt: n IfAbsent: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         mirror_slotAt: n IfAbsent: block = ( |
+            | 
+            (mirror_slotProtoFor: n IfAbsent: [|:e| ^ block value: e])
+            copyMirror: self Name: n).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         run = ( |
+            | 
+            inliningTest_inlineSimpleMethods.
+            testInlinedNLR.
+            [aaaaaaa tryToRecreateWeirdMirrorBug].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: simple tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         simpleMethod1 = ( |
+            | 
+            simpleMethod2a.
+            simpleMethod2b.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: simple tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         simpleMethod2a = ( |
+            | 
+            3).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: simple tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         simpleMethod2b = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: nonlocal returns\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         testInlinedNLR = ( |
+            | 
+            assert: inliningTest_NLR1 Is: 5.
+            assert: inliningTest_NLR2 Is: 15.
+            assert: inliningTest_NLR3 Is: 'two'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         tryToRecreateWeirdMirrorBug = ( |
+            | 
+            assert: (inliningTest_mirror_at: 'run') Is: 'I dunno'.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1288,32 +1404,6 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         simpleMethod1 = ( |
-            | 
-            simpleMethod2a.
-            simpleMethod2b.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         simpleMethod2a = ( |
-            | 
-            3).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         simpleMethod2b = ( |
-            | 
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          slotFinderTesterObj = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'slotFinderTesterObj' -> () From: ( |
@@ -1375,8 +1465,7 @@ SlotsToOmit: parent prototype safety.
             testInitializingLocals.
             testMethodWithManyArguments.
             testIfTrueAndIfFalse.
-            testInliningSimpleMethods.
-            testInlinedNLR.
+            inliningTester run.
             tryingToReplicateInliningBug run.
             testCaseStatement.
             testCallingFakePrimitive.
@@ -1389,6 +1478,7 @@ SlotsToOmit: parent prototype safety.
             assert: (recursiveFactorial: 10) Is: 3628800.
             resendingTests run.
             dataSlotInliningTester run.
+            testWhileTrue.
             testMapsOfObjectLiterals.
             testControlFlowOrderCodeGeneration: true.
             testControlFlowOrderCodeGeneration: false.
@@ -1528,26 +1618,6 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
-         testInlinedNLR = ( |
-            | 
-            assert: inlinedNLR1 Is: 5.
-            assert: inlinedNLR2 Is: 15.
-            assert: inlinedNLR3 Is: 'two'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         testInliningSimpleMethods = ( |
-            | 
-            simpleMethod1.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
          testLeafMethodWithBrowsingTag = ( |
             | 
             [argle bargle]. "browsing"
@@ -1653,13 +1723,23 @@ SlotsToOmit: parent prototype safety.
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testTypePrediction = ( |
-             x.
             | 
-            x: 2.
-            "Can check at machine level to make sure no
-             block is actually getting cloned."
-            (3 _IntLT: 4) ifTrue: [x: 5].
-            assert: x Is: 5.
+            assert: typePredictionTest_1 Is: 5.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testWhileTrue = ( |
+             i <- 0.
+             n <- 0.
+            | 
+            [i _IntLT: 10] whileTrue: [
+              n: n _IntAdd: i.
+              i: i _IntAdd: 1.
+            ].
+            assert: n Is: 45.
             self).
         } | ) 
 
@@ -1701,6 +1781,16 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
+         inliningTest_shouldReturnOne = ( |
+            | 
+            true ifTrue: 0.
+            true ifTrue: [^ 1].
+            fail).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
@@ -1717,25 +1807,28 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
-         shouldReturnOne = ( |
-            | 
-            true ifTrue: 0.
-            true ifTrue: [^ 1].
-            fail).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'tryingToReplicateInliningBug' -> () From: ( | {
-         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
-        
          testCheckingReceiverMap = ( |
             | 
-            assert: shouldReturnOne Is: 1).
+            assert: inliningTest_shouldReturnOne Is: 1).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          two <- 2.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         typePredictionTest_1 = ( |
+             x.
+            | 
+            x: 2.
+            "Can check at machine level to make sure no
+             block is actually getting cloned."
+            (3 _IntLT: 4) ifTrue: [x: 5].
+            x).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {

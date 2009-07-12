@@ -362,7 +362,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
          'Category: data flow\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
         
          deferCloningBlocks = ( |
-             stillBroken = bootstrap stub -> 'globals' -> 'true' -> ().
+             stillBroken = bootstrap stub -> 'globals' -> 'false' -> ().
             | 
             stillBroken ifTrue: [^ self].
 
@@ -403,7 +403,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             | 
             shouldDisplayDebugInformation ifFalse: [^ self].
             printIRNodes.
-            halt.
             self).
         } | ) 
 
@@ -547,6 +546,18 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             machineLevelAllocator topSourceLevelAllocator initializeValues.
 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         inlineOneLevelDeep = ( |
+            | 
+            [aaaaaaa].
+            nodesSatisfying: [|:n| n isSend] Do: [|:n|
+              irNodeGenerator maybeInlineSend: n.
+            ].
+            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -884,7 +895,8 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             "It'd be even cooler if we had a morph so we could
              look at the real node objects."
 
-            ('IR nodes for ', machineLevelAllocator topSourceLevelAllocator slot name) printLine.
+            '' printLine.
+            ('IR nodes for ', machineLevelAllocator topSourceLevelAllocator slot printString) printLine.
             basicBlocksInOrderForCodeGeneration do: [|:bb|
               '' printLine.
               bb nodesDo: [|:n| n commentString printLine].
@@ -3343,7 +3355,9 @@ SlotsToOmit: parent.
          shouldInlineSlot: s For: rcvrValue Into: context Key: key = ( |
             | 
             s isMethod ifFalse: [^ true ]. "Data slots are fine."
-            s contents codes size <= maxMethodSizeForInlining  "For now just use bytecode count.").
+            s contents codes size <= maxMethodSizeForInlining ifTrue: [^ true]. "For now just use bytecode count."
+            ('if:Then:' isPrefixOf: s name) ifTrue: [^ true]. [aaaaaaa]. "Just a special-case hack for now."
+            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'compileFastCode' -> () From: ( | {
@@ -3496,8 +3510,8 @@ SlotsToOmit: parent.
          shouldDisplayDebugInformation = ( |
             | 
             "(selector = 'at:') && [context selfMirror = traits mirrors abstractMirror asMirror]"
-            "selector = 'sendMessage_stub'"
-            false).
+            selector = 'whileTrue:'
+            "false").
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {

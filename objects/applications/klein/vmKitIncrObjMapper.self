@@ -366,6 +366,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalUpdateObjectsOracle' -> 'parent' -> () From: ( | {
+         'Category: tracking\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exemplarOIDForNonImmediateMap: map = ( |
+            | 
+            exemplarOIDsByCanonicalMap at: map IfAbsent: [image objectsOracle exemplarOIDForNonImmediateMap: map]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'incrementalUpdateObjectsOracle' -> 'parent' -> () From: ( | {
          'Category: iterating\x7fModuleInfo: Module: vmKitIncrObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          exemplarOIDsDo: blk = ( |

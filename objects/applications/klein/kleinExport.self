@@ -294,6 +294,16 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
         
+         outerMethodSlotNamesAndHoldersToOptimizeDo: blk = ( |
+            | 
+            blk value:  'at:'  With:  traits collection.
+            blk value:  '='    With:  traits canonicalString.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: private'
+        
          outerMethodSlotNamesToOptimizeDo: blk = ( |
             | 
             blk value: 'value:'.
@@ -307,7 +317,6 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'to:By:Do:'.
             blk value: 'to:ByPositive:Do:'.
             blk value: 'whileTrue:'.
-            blk value: 'at:'.
             blk value: 'shiftPast'.
             blk value: 'shift'.
             blk value: 'cloneBlockHomeFrame_stub:'.
@@ -318,6 +327,9 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'oidForInvalidEntry:In:'.
             blk value: 'forBytesPart:IfIndex:IsOutOfBoundsThen:'.
             blk value: 'forLocalBytesPart:At:IfFail:'.
+            blk value: 'indexOfSlotNamed:IfPresent:IfAbsent:'.
+            blk value: 'primReceiver:ByteVectorCompare:IfFail:'.
+            blk value: 'primReceiver:IdentityHashIfFail:'.
             self).
         } | ) 
 
@@ -497,13 +509,18 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
          'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
         
          shouldOptimize: compilationContext = ( |
-             outermostMethodSlotName.
             | 
-            outermostMethodSlotName: compilationContext outermostMethodSlotName.
+            shouldOptimizeOuterMethodWithName: compilationContext outermostMethodSlotName
+                                    AndHolder: compilationContext outermostMethodHolder).
+        } | ) 
 
-            outerMethodSlotNamesToOptimizeDo: [|:n|
-              outermostMethodSlotName = n ifTrue: [^ true].
-            ].
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
+         'Category: nmethod compilation policy\x7fCategory: optimization\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shouldOptimizeOuterMethodWithName: n AndHolder: h = ( |
+            | 
+            outerMethodSlotNamesToOptimizeDo:           [|:n2     |  n = n2                         ifTrue: [^ true]].
+            outerMethodSlotNamesAndHoldersToOptimizeDo: [|:n2. :h2| (n = n2) && [(reflect: h2) = h] ifTrue: [^ true]].
             false).
         } | ) 
 

@@ -3394,16 +3394,6 @@ to just keep upping it by hand.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
-         'Category: nmethod compilation policy\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
-        
-         isSlotToBeCompiled: s = ( |
-            | 
-            [aaaaaaa isKleinOrYodaMirror]. s name = 'isKleinOrYodaMirror' ifTrue: [halt].
-
-            resend.isSlotToBeCompiled: s).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'Category: object mapping policy\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
         
          modulesToMap = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'selfVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( |
@@ -4004,8 +3994,9 @@ SlotsToOmit: parent.
         
          runAutomatedTestsForVM: aVM = ( |
             | 
-            resend.runAutomatedTestsForVM: aVM.
+            [aaaaaaa]. "Put the order back."
             compiling run.          [todo cleanup testing kleinSpecific].
+            resend.runAutomatedTestsForVM: aVM.
             activations run.        [todo cleanup testing kleinSpecific].
             garbageCollection run.  [todo cleanup testing kleinSpecific].
             self).

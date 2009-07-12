@@ -17,12 +17,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (false)'
-        
-         canBeAccessedUplevel <- bootstrap stub -> 'globals' -> 'false' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
         
          compiler.
@@ -41,9 +35,15 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (false)'
+        
+         isUplevelNamedValue <- bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
          'Category: data flow\x7fModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
         
-         knownPossibleTypes.
+         knownType.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
@@ -97,11 +97,13 @@ See the LICENSE file for license information.
         
          beRenamingOf: v = ( |
             | 
-            description:          v description.
-            myLocation:           v myLocation.
-            canBeAccessedUplevel: v canBeAccessedUplevel.
-            knownPossibleTypes:   v knownPossibleTypes.
-            originalValueBeforeRenaming: v originalValueBeforeRenaming ifNil: [v].
+            [aaaaaaa]. "Maybe copy v instead."
+            description:                  v description.
+            myLocation:                   v myLocation.
+            isUplevelNamedValue:          v isUplevelNamedValue.
+            sourceLevelAllocatorNamingMe: v sourceLevelAllocatorNamingMe.
+            knownType:                    v knownType.
+            originalValueBeforeRenaming:  v originalValueBeforeRenaming ifNil: [v].
             originalValueBeforeRenaming addRenaming: self.
             self).
         } | ) 
@@ -152,15 +154,13 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          ifTypeIsClonedBlock: yesBlk Else: noBlk = ( |
+             t.
             | 
-            possibleTypes
-               ifNone: [noBlk value: 'undefined']
-                IfOne: [|:t| t isClonedBlock ifFalse: [noBlk value: 'not a block']
-                                                True: [yesBlk value: t]]
-               IfMany: [noBlk value: 'not a block']).
+            t: mergedType.
+            t isClonedBlock ifTrue: [yesBlk value: t] False: [noBlk value: 'not a block']).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -172,13 +172,26 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         intersectTypes: ts = ( |
+            | 
+            [aaaaaaa]. "Um, what's a good way to write this?"
+            t1 ifNil: [^ t2].
+            t2 ifNil: [^ t1].
+            t1 isConstant && [t2 isSelf] ifTrue: [^ t1].
+            t2 isConstant && [t1 isSelf] ifTrue: [^ t2].
+            halt).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          isPlaceholder = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
         
          kindsOfPossibleTypes = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes.
@@ -199,6 +212,20 @@ See the LICENSE file for license information.
          'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          isClonedBlock = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'abstractMixin' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSelf = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'abstractMixin' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         theBlockIfFail: fb = ( |
+            | 
+            fb value: 'not a cloned block').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> () From: ( | {
@@ -276,7 +303,7 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'clonedBlock' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         theBlock = ( |
+         theBlockIfFail: fb = ( |
             | 
             blockLiteralValue location oopValue).
         } | ) 
@@ -313,6 +340,84 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
+         intersection = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes intersection.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes intersection parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyIntersecting: ts = ( |
+            | 
+            copy types: ts).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSelf = ( |
+            | 
+            types anySatisfy: [|:t| t isSelf]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         knownMapUsingOracle: oracle IfFail: fb = ( |
+            | 
+            types do: [|:t|
+              (t knownMapUsingOracle: oracle IfFail: nil) ifNotNil: [|:m| ^ m].
+            ].
+            fb value: 'no known map').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         sourceLevelAllocator = ( |
+            | 
+            types findFirst: [|:t| t isSelf]
+                  IfPresent: [|:t| t sourceLevelAllocator]
+                   IfAbsent: raiseError).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         theBlockIfFail: fb = ( |
+            | 
+            types do: [|:t|
+              (t theBlockIfFail: nil) ifNotNil: [|:b| ^ b].
+            ].
+            fb value: 'not a cloned block').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'intersection' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (vector)\x7fVisibility: public'
+        
+         types <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
          selfValue = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'selfValue' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes selfValue.
 \x7fIsComplete: '.
@@ -343,6 +448,12 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'selfValue' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         isSelf = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'selfValue' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          knownMapUsingOracle: oracle IfFail: fb = ( |
@@ -351,7 +462,7 @@ See the LICENSE file for license information.
              we're compiling an outer method for a block, because
              (as an optimization) we reuse those nmethods for all
              other blocks. (See cachedBlockNMethodOIDs.) -- Adam, Apr. 2009"
-            sourceLevelAllocator context isOuterMethodForABlock ifTrue: [^ fb value: 'hack - block nmethods are reused for other blocks'].
+            sourceLevelAllocator isInlined not && [sourceLevelAllocator context isOuterMethodForABlock] ifTrue: [^ fb value: 'hack - block nmethods are reused for other blocks'].
 
             sourceLevelAllocator isInlined not && [sourceLevelAllocator compiler noMapTest] ifTrue: [^ fb value: '_NoMapTest, so can\'t be sure of the receiver type'].
 
@@ -428,7 +539,7 @@ See the LICENSE file for license information.
         
          copyMerging: ts = ( |
             | 
-            copy possibilities: ts).
+            copy types: ts).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'union' -> 'parent' -> () From: ( | {
@@ -436,12 +547,12 @@ See the LICENSE file for license information.
         
          generateFor: rcvrValue TypeCasesDo: blk Else: elseBlk With: irg = ( |
             | 
-            irg generateSwitchForCases: possibilities If: [|:type. :trueFork|
+            irg generateSwitchForCases: types If: [|:type. :trueFork|
               type generateIfMatchesTypeOf: rcvrValue ThenBranchTo: trueFork With: irg.
             ] Then: [|:type. rcvrValueWithKnownType|
               rcvrValueWithKnownType: irg newValue.
               irg move: rcvrValue To: rcvrValueWithKnownType.
-              rcvrValueWithKnownType knownPossibleTypes: vector copyAddFirst: type.
+              rcvrValueWithKnownType knownType: type.
               blk value: rcvrValueWithKnownType.
             ] Else: elseBlk.
             self).
@@ -453,7 +564,7 @@ See the LICENSE file for license information.
          knownMapUsingOracle: oracle IfFail: fb = ( |
              map.
             | 
-            possibilities do: [|:p. m|
+            types do: [|:p. m|
               m: p knownMapUsingOracle: oracle IfFail: [|:e| ^ fb value: e].
               map ifNil: [map: m] IfNotNil: [map == m ifFalse: [^ fb value: 'different possible maps']].
             ].
@@ -469,23 +580,22 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'union' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
-         possibilities <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+         types <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          knownConstantValueIfFail: fb = ( |
+             t.
             | 
-            possibleTypes
-               ifNone: [fb value: 'undefined']
-                IfOne: [|:loc| loc isConstant ifFalse: [fb value: 'not a constant']
-                                                 True: [loc oopValue]]
-               IfMany: [fb value: 'not a constant']).
+            t: mergedType.
+            t isConstant ifFalse: [fb value: 'not a constant']
+                            True: [t oopValue]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          knownMapIfFail: fb = ( |
             | mergedType knownMapUsingOracle: compiler objectsOracle IfFail: fb).
@@ -521,60 +631,71 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mergeTypes: ts = ( |
+            | 
+            ts ifNone: [kindsOfPossibleTypes undefined]
+                IfOne: [|:t| t]
+               IfMany: [kindsOfPossibleTypes union copyMerging: ts]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
          mergedType = ( |
-             pts.
             | 
-            pts: possibleTypes.
-            pts ifNone: [kindsOfPossibleTypes undefined]
-                 IfOne: [|:t| t]
-                IfMany: [kindsOfPossibleTypes union copyMerging: pts]).
+            mergedType_AlreadySeen: set copyRemoveAll).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mergedTypeFromDefiners_AlreadySeen: seen = ( |
+             ts.
+            | 
+            "Need the AlreadySeen set in case of loops." 
+            seen if: self IsPresentDo: [^ nil] IfAbsentAddAndDo: [].
+
+            hasLocation && [location isConstant] ifTrue: [^ location].
+
+            ts: list copyRemoveAll.
+            definers do: [|:n|
+              (n mergedTypeFor: self AlreadySeen: seen) ifNotNil: [|:t|
+                ts add: t.
+              ].
+            ].
+            mergeTypes: ts).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: types\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mergedType_AlreadySeen: seen = ( |
+             t.
+            | 
+            t: mergedTypeFromDefiners_AlreadySeen: seen.
+            knownType ifNil: [t] IfNotNil: [kindsOfPossibleTypes intersection copyIntersecting: (t & knownType) asVector]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
+         'Category: testing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         mightBeAccessedUplevel = ( |
+            | 
+            "Could try to make this more precise."
+
+            isUplevelNamedValue ifTrue: [^ true].
+
+            sourceLevelAllocatorNamingMe
+                    ifNil: false
+                 IfNotNil: [|:sla| sla memoizedBlockValues isEmpty not]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
-        
-         possibleTypes = ( |
-             pts.
-            | 
-            pts: list copyRemoveAll.
-            possibleTypesDo: [|:t| pts add: t] AlreadySeen: set copyRemoveAll.
-            pts).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
-        
-         possibleTypes: pts = ( |
-            | 
-            [knownPossibleTypes isNil] assert.
-            knownPossibleTypes: pts).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
-         'Category: possible values\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
-        
-         possibleTypesDo: blk AlreadySeen: seen = ( |
-            | 
-            "Need the AlreadySeen set in case of loops." 
-            seen if: self IsPresentDo: [^ self] IfAbsentAddAndDo: [].
-
-            "Not sure this is the right way to do this."
-            knownPossibleTypes ifNotNil: [knownPossibleTypes do: blk. ^ self].
-
-            hasLocation && [location isConstant] ifTrue: [
-              blk value: location.
-            ] False: [
-              definers do: [|:n| n possibleTypesFor: self Do: blk AlreadySeen: seen].
-            ].
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> () From: ( | {
@@ -604,7 +725,7 @@ See the LICENSE file for license information.
             | 
             r: list copyRemoveAll.
             strongUsers do: [|:u. chain|
-              u isMove && [u destinationValue canBeAccessedUplevel not] ifTrue: [
+              u isMove && [u destinationValue mightBeAccessedUplevel not] ifTrue: [
                 u destinationValue strongUserChains do: [|:chain|
                   r add: chain addFirst: u.
                 ].
@@ -629,6 +750,12 @@ See the LICENSE file for license information.
          'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (vector)'
         
          renamings <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)'
+        
+         sourceLevelAllocatorNamingMe.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> () From: ( | {

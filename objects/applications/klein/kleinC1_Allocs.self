@@ -948,6 +948,12 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         myScopeDesc.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Allocs InitialContents: InitializeToExpression: (dictionary)\x7fVisibility: public'
         
          namedValues <- bootstrap stub -> 'globals' -> 'dictionary' -> ().
@@ -1017,7 +1023,8 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
         
          copy = ( |
             | 
-            ((resend.copy
+            (((resend.copy
+                        myScopeDesc:      klein nmethod scopeDesc copy)
                 memoizedBlockValues: memoizedBlockValues copyRemoveAll)
                         stackValues:         stackValues copyRemoveAll)
                         namedValues:         namedValues copyRemoveAll).
@@ -1092,7 +1099,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
               i = 0 ifFalse: [| s |
                 s: argSlots at: i pred.
                 v addDescription: s key.
-                v canBeAccessedUplevel: true.
+                v sourceLevelAllocatorNamingMe: self.
                 namedValues if: s key IsPresentDo: [error: 'hmm'] IfAbsentPut: [v] AndDo: [].
               ].
               v addDescription: 'incoming_', i printString.
@@ -1108,7 +1115,7 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
             localSlots do: [|:s. v|
               v: (preallocatedLocationForLocalSlot: s) ifNil: [newValue] IfNotNil: [|:loc| newValueWithLocation: loc].
               v addDescription: s key.
-              v canBeAccessedUplevel: true.
+              v sourceLevelAllocatorNamingMe: self.
               namedValues if: s key IsPresentDo: [error: 'hmm'] IfAbsentPut: [v] AndDo: [].
             ].
             self).
@@ -1120,18 +1127,21 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
          initializeUplevelValues = ( |
             | 
             "Might as well set the locations right here, since we know them."
-            context lexicalParentScopesReverseDo: [|:s. :ll. names|
-              names: (irNodeGenerator ifNotNil: [|:irg| irg bytecodeInterpreterWithScope: context outermostScope]) ifNil: [
+            context lexicalParentScopesReverseDo: [|:s. :ll|
+              (irNodeGenerator ifNotNil: [|:irg| irg bytecodeInterpreterWithScope: context outermostScope]) ifNil: [
                 s slotSPOffsets with: s method slotNamesWithSPOffsetRecorded Do: [|:offset. :name|
-                  namedValues at: name IfAbsentPut: [| loc |
+                  namedValues at: name IfAbsentPut: [| loc. v |
                     loc: locationForUplevel: ll AccessTo: s locationForOffset: offset.
-                    ((newValueWithLocation: loc) addDescription: name) canBeAccessedUplevel: true
+                    v: newValueWithLocation: loc.
+                    v addDescription: name.
+                    v isUplevelNamedValue: true.
+                    v
                   ].
                 ].
               ] IfNotNil: [|:i|
                 i sourceLevelAllocator namedValues do: [|:v. :n|
                   namedValues at: n IfAbsentPut: v.
-                  [v canBeAccessedUplevel] assert.
+                  [v sourceLevelAllocatorNamingMe isNotNil] assert.
                 ].
               ].
             ].
@@ -1162,10 +1172,10 @@ both in and out\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlo
 
             valueAlreadyExisted ifFalse: [
               valueForSelf addDescription: 'self'.
-              valueForSelf possibleTypes: vector copyAddFirst: valueForSelf kindsOfPossibleTypes selfValue copyForAllocator: self.
+              valueForSelf knownType: valueForSelf kindsOfPossibleTypes selfValue copyForAllocator: self.
             ].
 
-            valueForSelf canBeAccessedUplevel: true.
+            valueForSelf sourceLevelAllocatorNamingMe: self.
 
             self).
         } | ) 
@@ -1330,6 +1340,17 @@ access parent allocator\'s loc.\x7fModuleInfo: Module: kleinC1_Allocs InitialCon
          newValueWithLocation: loc = ( |
             | 
             machineLevelAllocator newValueWithLocation: loc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Allocs InitialContents: FollowSlot\x7fVisibility: public'
+        
+         outermostScope = ( |
+            | 
+            context outermostScope ifNil: [
+              [context isForABlockMethod not] assert.
+              myScopeDesc
+            ]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'sourceLevelAllocator' -> 'parent' -> () From: ( | {

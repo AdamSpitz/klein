@@ -86,12 +86,6 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
          'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
         
-         myScopeDesc.
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> () From: ( | {
-         'Category: compiler1\x7fModuleInfo: Module: kleinC1_BCI InitialContents: InitializeToExpression: (nil)'
-        
          nlrPointEpilogueBB.
         } | ) 
 
@@ -238,7 +232,7 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
-         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          context = ( |
             | 
@@ -260,8 +254,7 @@ SlotsToOmit: parent.
         
          copy = ( |
             | 
-            (((resend.copy
-                       myScopeDesc: klein nmethod scopeDesc copy)
+            ((resend.copy
                 currentStackValues: currentStackValues  copyRemoveAll)
                unresolvedMoveNodes: unresolvedMoveNodes copyRemoveAll)
                inlinedInterpreters: inlinedInterpreters copyRemoveAll).
@@ -397,28 +390,17 @@ SlotsToOmit: parent.
          'Category: prologue and epilogue\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          epilogue = ( |
-             lastNode.
              orv.
+             previousNode.
             | 
-            lastNode: irNodeGenerator nodeToInsertAfter.
-            lastNode canFallThrough ifFalse: [
-              "localReturn is not necessary."
-              lastNode sourceSucc ifNotNil: [
-                [isInlined] assert.
-                irNodeGenerator defineLabel. "To end the current BB."
-                irNodeGenerator nodeToInsertAfter: lastNode. [aaaaaaa]. "I'm going to kill somebody."
-              ].
-              ^ self
-            ].
-
+            previousNode: irNodeGenerator nodeToInsertAfter.
             currentBC: nonexistentBCAt: method ifNil: 0 IfNotNil: [|:m| m codes size].
-
             irNodesByBCI ifNotNil: [|:v| justReachedBCI: v lastKey].
             orv: sourceLevelAllocator newValueForOutgoingResult.
-            irNodeGenerator move: popStackValue To: orv.
-
+            previousNode canFallThrough ifTrue: [
+              irNodeGenerator move: popStackValue To: orv.
+            ].
             irNodeGenerator localReturn: orv.
-
             nil).
         } | ) 
 
@@ -851,17 +833,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
-         'Category: prologue and epilogue\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
-        
-         localReturnOutgoingResultValue = ( |
-             localReturnNode.
-            | 
-            localReturnNode: localReturnBB endNode destinationNode sourceSucc.
-            [localReturnNode isLocalReturn] whileFalse: [localReturnNode: localReturnNode sourceSucc].
-            localReturnNode outgoingResultValue).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
          'Category: blocks\x7fCategory: double dispatch\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          localValueSlotContentsFor: bm = ( |
@@ -895,6 +866,14 @@ SlotsToOmit: parent.
             rcvrAndArgs: popRcvrAndArgsForSend: bc.
             result: pushStackValue.
             blk value: result With: rcvrAndArgs asVector).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         myScopeDesc = ( |
+            | 
+            sourceLevelAllocator myScopeDesc).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -990,11 +969,18 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
               ep: nlrPointEpilogueBB endNode.
               irNodeGenerator moveNLRHomeScopeTo:     ep framePointerValue.
               irNodeGenerator moveNLRHomeScopeDescTo: ep scopeDescValue.
-              irNodeGenerator move: popStackValue To: ep outgoingResultValue. [aaaaaaa]. "Is outgoingResultValue still used?"
-              irNodeGenerator move: ep outgoingResultValue To: machineLevelAllocator valueForOutgoingResult.
+              irNodeGenerator move: popStackValue To: ep outgoingResultValue.
               irNodeGenerator branchToLabel: nlrPointEpilogueBB labelNode.
             ].
             bc).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         outermostScope = ( |
+            | 
+            sourceLevelAllocator outermostScope).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -2278,6 +2264,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             | 
             compiler optimizationPolicy shouldNeverDoInlining           ifTrue: [^ noInlineBlk value].
             machineLevelAllocator method isReflecteeBlockMethod         ifTrue: [^ noInlineBlk value]. "Would require customizing the block, which we don't do yet."
+
             t: rcvrValue mergedType.
             m: t knownMapUsingOracle: compiler objectsOracle IfFail: [^ noInlineBlk value].
 
@@ -2289,7 +2276,8 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                 ] exitValue.
 
             ss ifNone: noInlineBlk
-                IfOne: [|:s| (compiler optimizationPolicy shouldInlineSlot: s For: rcvrValue Into: currentBytecodeInterpreter context Key: key) ifTrue: [
+                IfOne: [|:s| s isMethod && [s contents isReflecteeBlockMethod && [(t theBlockIfFail: nil) isNil]] ifTrue: [^ noInlineBlk value].
+                             (compiler optimizationPolicy shouldInlineSlot: s For: rcvrValue Into: currentBytecodeInterpreter context Key: key) ifTrue: [
                                inlineBlk value: s With: t
                              ] False: noInlineBlk
                        ]
@@ -2315,7 +2303,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             | 
             sla: newSourceLevelAllocatorToInlineMethodSlot: s Key: key ReceiverType: rcvrType.
             i: pushNewInterpreterFor: sla InlinedSendNode: sendNode.
-            sla context isForABlockMethod ifTrue: [i inlinedBlock: rcvrType theBlock originalBlock_replaceThisSlotWithTheValueSlot].
+            sla context isForABlockMethod ifTrue: [i inlinedBlock: (rcvrType theBlockIfFail: raiseError) originalBlock_replaceThisSlotWithTheValueSlot].
             i currentBC: i nonexistentBCAt: 0.
             rcvrAndArgValues with: sla incomingRcvrAndArgValues Do: [|:srcV. :dstV| move: srcV To: dstV].
             interpretCurrentSlot.
@@ -2324,6 +2312,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                 move: nodeToInsertAfter outgoingResultValue To: resultValue.
               ]
               If: [nodeToInsertAfter sourcePred isMove] Then: [
+                halt. [aaaaaaa].
                 nodeToInsertAfter: nodeToInsertAfter sourcePred.
                 move: nodeToInsertAfter destinationValue To: resultValue.
                 nodeToInsertAfter: nodeToInsertAfter sourceSucc.
@@ -2339,7 +2328,13 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          inline: sendNode Slot: s Key: key ReceiverType: rcvrType RcvrAndArgs: rcvrAndArgValues Result: resultValue = ( |
             | 
-            compiler dependsOnKey: key ResolvingToSlot: s.
+            rcvrType isSelf && [rcvrType sourceLevelAllocator outermostScope == topBytecodeInterpreter outermostScope] ifTrue: [
+              [aaaaaaa]. "I think this is right. We don't need any reusabilityConditions for inlines from any context
+                          except the top one, because the top one is the only thing that we customize on."
+              [(compiler slot name = 'whileTrue:') && [key selector = 'value'] ifTrue: [halt].].
+              compiler dependsOnKey: key ResolvingToSlot: s.
+            ].
+
             s isMethod ifTrue: [
               "Temporarily unhook the following nodes, so that the dominance algorithm will be able to run on
                just the inlined nodes."
@@ -2466,11 +2461,17 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          localReturn: v = ( |
              lbl.
              localReturnBBEndNode.
+             moveNodeForNLRResult.
             | 
             lbl: defineLabel.
             addNode: irNodeProtos localReturn copyBC: currentBC Result: v.
+
+            moveNodeForNLRResult: newMoveNodeFrom: currentBytecodeInterpreter nlrPointEpilogueBB endNode outgoingResultValue
+                                               To: v
+                                               BC: currentBC.
             localReturnBBEndNode: newBranchNodeForLabel: lbl.
-            localReturnBBEndNode insertAfter: currentBytecodeInterpreter localReturnBB labelNode.
+            moveNodeForNLRResult insertAfter: currentBytecodeInterpreter localReturnBB labelNode.
+            localReturnBBEndNode insertAfter: moveNodeForNLRResult.
             currentBytecodeInterpreter localReturnBB endWith: localReturnBBEndNode.
             self).
         } | ) 
@@ -2646,7 +2647,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
              sla.
             | 
 
-            lps: s contents isReflecteeBlockMethod ifFalse: [nil] True: [rcvrType theBlock lexicalParentScopeDesc].
+            lps: s contents isReflecteeBlockMethod ifFalse: [nil] True: [(rcvrType theBlockIfFail: raiseError) lexicalParentScopeDesc].
             rcvrMap: rcvrType knownMapUsingOracle: compiler objectsOracle IfFail: raiseError.
             selfMap: s contents isReflecteeBlockMethod ifFalse: [rcvrMap] True: [(bytecodeInterpreterWithScope: lps) context selfMap].
 
@@ -2684,7 +2685,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          predictedTypeOfReceiver: rcvrValue ForSendsOf: sel = ( |
             | 
             compiler optimizationPolicy shouldDoTypePrediction ifFalse: [^ nil].
-            rcvrValue knownPossibleTypes ifNotNil: [^ nil].
+            rcvrValue knownType ifNotNil: [^ nil].
 
             (isReceiverProbablyABoolean: sel) ifTrue: [
               ^ kindsOfPossibleTypes union copyMerging:

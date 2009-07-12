@@ -227,18 +227,6 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         cachedNMethodInvocationCountAssignmentSlot <- bootstrap stub -> 'globals' -> 'nil' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: prologue & epilogue\x7fCategory: prologue\x7fCategory: nmethod invocation counts\x7fModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
-        
-         cachedNMethodInvocationCountSlot <- bootstrap stub -> 'globals' -> 'nil' -> ().
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          checkForRecompilation = ( |
@@ -2273,11 +2261,8 @@ and may fail to compile otherwise.
         
          nmethodInvocationCountAssignmentSlot = ( |
             | 
-            cachedNMethodInvocationCountAssignmentSlot ifNil: [
-              [invocationCount: 0]. "browsing"
-              cachedNMethodInvocationCountAssignmentSlot: vmKit nmethod asMirror slotAt: 'invocationCount:'.
-            ].
-            cachedNMethodInvocationCountAssignmentSlot).
+            [invocationCount: 0]. "browsing"
+            vmKit nmethod asMirror slotAt: 'invocationCount:').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2285,11 +2270,11 @@ and may fail to compile otherwise.
         
          nmethodInvocationCountSlot = ( |
             | 
-            cachedNMethodInvocationCountSlot ifNil: [
-              [invocationCount]. "browsing"
-              cachedNMethodInvocationCountSlot: vmKit nmethod asMirror slotAt: 'invocationCount'.
-            ].
-            cachedNMethodInvocationCountSlot).
+            [aaaaaaa]. "Used to cache these, but then mapping the slot object
+                        caused trouble on the Klein side. How do I get the transporter
+                        to initialize the Klein-side one to nil? -- Adam, July 2009"
+            [invocationCount]. "browsing"
+            vmKit nmethod asMirror slotAt: 'invocationCount').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -3395,6 +3380,9 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
               generateCleanupForMemoizedBlocks: node.
             ].
 
+            [aaaaaaa]. "I don't think this is always necessary, but I'm really confused."
+            moveLocation: node outgoingResultValue location ToLocation: machineLevelAllocator locationForOutgoingResult.
+
             node sourceLevelAllocator context isForABlockMethod ifTrue: [
               "Optimization: block methods can't be the home scope of an NLR, so no point doing the checks."
               node sourceLevelAllocator isInlined ifFalse: [
@@ -3421,9 +3409,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
                 node sourceLevelAllocator isInlined ifFalse: [
                   restoreFrameAndReturn: sendDesc normalReturnIndex
                 ] True: [| localReturnNode |
-                  [aaaaaaa]. "Don't we have to hook up the data flow links?"
-                  moveLocation: machineLevelAllocator locationForIncomingResult
-                    ToLocation: node interpreter localReturnOutgoingResultValue location.
+                  genBranchTo: node nodeToBranchToOnLR.
                 ]
               ].
             ].

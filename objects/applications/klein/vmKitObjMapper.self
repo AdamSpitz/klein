@@ -4529,8 +4529,16 @@ values: the object with that OID\x7fModuleInfo: Module: vmKitObjMapper InitialCo
             map isImmediate ifTrue: [
               map myLayout exemplar
             ] False: [
-              originalObjectForOID: exemplarOIDsByCanonicalMap at: map
+              originalObjectForOID: exemplarOIDForNonImmediateMap: map
             ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {
+         'Category: tracking\x7fCategory: maps and exemplars\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
+        
+         exemplarOIDForNonImmediateMap: map = ( |
+            | 
+            exemplarOIDsByCanonicalMap at: map).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> () From: ( | {

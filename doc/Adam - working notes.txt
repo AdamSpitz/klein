@@ -81,43 +81,7 @@ Submodules I could maybe split off from mirror:
 
 ----
 
-Biggest sources of block cloning:
-
-  - REALLY big: can't inline ifTrue:False:, &&, ||, etc.
-  - aren't translated prims so can't delay failblock cloning:
-    - _At:
-    - _ByteAt:
-    - _Clone
-  - I don't understand, I thought the inliner would work on these:
-    - 'whileTrue:'@'traits block'@131799
-    - 'to:ByPositive:Do:'@'traits integer'@131799
-
-Hmm, are we doing more int32 stuff than we need to? Look at the screen captures.
-
-Uh-oh, isKleinOrYodaMirror isn't found? On a klein mirrors canonicalString? The slot is getting mapped, I see it right there. So it's not getting compiled. Why? It's not incomplete - the annotation says it's complete, and I see a bunch of stuff in the nmethodCache.
-
-----
-
-OK, so as a quick thing, can I do some simple type prediction?
-
-----
-
-Yikes, looks like we're sending ifFalse: to 0. The ifFalse: is coming from whileTrue:, I think. Is the call to value coming back with 0? Or is it being overwritten? (After a quick look at the machine code, it looks like the code isn't overwriting r25. So I'm confused.)
-
-Huh. Maybe it's trying to get the "self" of an inlined block?
-
-I think this might be what's happening:
-
-  - We're in the for:To:By:Do: method.
-  - The call to whileTrue: gets inlined. (So the "self" of that call is in some nonVolLocal location. And its creation could have been deferred because...?)
-  - The call to loop gets inlined.
-  - The call to value does *not* get inlined.
-  - So inside the "value" method, to access "self" we have to follow the block's homeFP (which is correct), which points to the frame containing the whole for:To:By:Do: method (which is correct). But the "self" value hasn't been cloned yet, because...
-
-OK, maybe I fixed it! I think the problem was that it was counting any move as a non-ultimate user, when really a move to an uplevel-accessible location should have counted as ultimate.
-
-----
-
-Hmm, but now there's a different problem. (Unless it's the same one. Can't tell yet.)
-
-Looks like maybe one of those argument guys is overwriting a "self"? Maybe the end node isn't keeping "self" alive? Or maybe there isn't actually an end node, since the method is inlined?
+To avoid block cloning during the compiler and GC, it'll help to make these prims translated:
+  - _At:
+  - _ByteAt:
+  - _Clone
