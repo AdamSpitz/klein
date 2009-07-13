@@ -3510,8 +3510,8 @@ SlotsToOmit: parent.
          shouldDisplayDebugInformation = ( |
             | 
             "(selector = 'at:') && [context selfMirror = traits mirrors abstractMirror asMirror]"
-            selector = 'whileTrue:'
-            "false").
+            "selector = 'whileTrue:'"
+            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {

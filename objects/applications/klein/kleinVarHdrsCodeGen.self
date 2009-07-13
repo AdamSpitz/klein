@@ -37,7 +37,7 @@ See the LICENSE file for license information.
                                AndBranchTo: encodedFork
                                       With: cg.
               ].
-              cg addImm: n MaybeSetCCFrom: indexReg To: indexReg.
+              cg addImm: n From: indexReg To: indexReg.
             ].
             self).
         } | ) 
@@ -296,7 +296,7 @@ See the LICENSE file for license information.
         
          generateFor: objVectReg IndexableAt: indexSmiReg AssumingIndexableOriginIsConstant: origin Into: dstObjReg With: cg = ( |
             | 
-            cg addImm: (layouts smi encode: origin) MaybeSetCCFrom: indexSmiReg To: dstObjReg.
+            cg addImm: (layouts smi encode: origin) From: indexSmiReg To: dstObjReg.
             generateFor: objVectReg At: dstObjReg Into: dstObjReg With: cg).
         } | ) 
 

@@ -105,22 +105,6 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: vectors\x7fCategory: object vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
-        
-         aaa_notWorkingYet_generatePrimitiveInto: dstReg Receiver: objVectReg At: indexSmiReg IfFail: fh = ( |
-            | 
-            [aaaaaaa]. "Is this worth getting working? Or maybe try nano-primitives?"
-            fh assertVector:  objVectReg.
-            fh assertInteger: indexSmiReg.
-            fh assertBounds:  indexSmiReg InVector: objVectReg.
-            layouts objVector
-                  generateFor: objVectReg
-                  IndexableAt: indexSmiReg
-                         Into: dstReg
-                         With: fh cg).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
          'Category: interpreting particular codes, return bc by default\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot'
         
          accessLocal: bc = ( |
@@ -205,6 +189,14 @@ SlotsToOmit: parent.
             ].
             irNodeGenerator addNode: branchNode.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         byteVectorLayout = ( |
+            | 
+            theVM byteVectorLayout).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -518,6 +510,71 @@ SlotsToOmit: parent.
               branchToBCI: bci.
             ].
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: vectors\x7fCategory: object vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: objVectReg At: indexSmiReg IfFail: fh = ( |
+            | 
+            fh assertVector:  objVectReg.
+            fh assertInteger: indexSmiReg.
+            fh assertBounds:  indexSmiReg InVector: objVectReg.
+            layouts objVector
+                  generateFor: objVectReg
+                  IndexableAt: indexSmiReg
+                         Into: dstReg
+                         With: fh cg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: vectors\x7fCategory: object vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: objVectReg At: indexSmiReg Put: argReg IfFail: fh = ( |
+            | 
+            fh assertVector:  objVectReg.
+            fh assertInteger: indexSmiReg.
+            fh assertBounds:  indexSmiReg InVector: objVectReg.
+            layouts objVector
+                  generateFor: objVectReg
+                  IndexableAt: indexSmiReg
+                          Put: argReg
+                         Temp: dstReg
+                         With: fh cg.
+            fh cg move: objVectReg To: dstReg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: vectors\x7fCategory: byte vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: byteVectReg ByteAt: indexSmiReg IfFail: fh = ( |
+            | 
+            fh assertByteVector:  byteVectReg.
+            fh assertInteger:     indexSmiReg.
+            fh assertBounds:      indexSmiReg InByteVector: byteVectReg.
+            theVM byteVectorLayout
+                  generateFor: byteVectReg
+                  IndexableAt: indexSmiReg
+                         Into: dstReg
+                         With: fh cg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: vectors\x7fCategory: byte vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: byteVectReg ByteAt: indexSmiReg Put: argSmiReg IfFail: fh = ( |
+            | 
+            fh assertByteVector:  byteVectReg.
+            fh assertInteger:     indexSmiReg.
+            fh assertBounds:      indexSmiReg InByteVector: byteVectReg.
+            fh assert:              argSmiReg IsBetweenZeroAnd: 255.
+            theVM byteVectorLayout
+                  generateFor: byteVectReg
+                  IndexableAt: indexSmiReg
+                          Put: argSmiReg
+                         Temp: dstReg
+                         With: fh cg.
+            fh cg move: byteVectReg To: dstReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
@@ -1368,6 +1425,24 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         add: r1 From: r2 To: dst = ( |
+            | 
+            binaryOp: binaryOperations integerArithmetic addition Into: dst Operand1: r1 Operand2: r2 IfFail: nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addImm: anInt From: from To: dst = ( |
+            | 
+             add: from
+            From: (sourceLevelAllocator valueForConstant: anInt)
+              To: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          addNode: n = ( |
@@ -1449,7 +1524,8 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          binaryOp: op Into: dst Operand1: o1 Operand2: o2 IfFail: fh = ( |
             | 
-            addNode: irNodeProtos binaryOperation copyBC: currentBC Operation: op Operand1: o1 Operand2: o2 Destination: dst FailureHandler: fh).
+            addNode: (fh ifNil: [irNodeProtos binaryOperationThatCannotFail] IfNotNil: [irNodeProtos binaryOperationThatCanFail])
+                          copyBC: currentBC Operation: op Operand1: o1 Operand2: o2 Destination: dst FailureHandler: fh).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -1528,6 +1604,15 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'addition' -> () From: ( | {
          'Category: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
+         generateInto: dstReg Operand1: op1Reg ConstantOperand2: op2 With: cg = ( |
+            | 
+            cg addImm: op2 From: op1Reg To: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'addition' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
          generateInto: dstReg Operand1: op1Reg Operand2: op2Reg IfFail: fh With: cg = ( |
             | 
             fh assertNoOverflow: 'addition' During: [
@@ -1537,6 +1622,39 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'addition' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateInto: dstReg Operand1: op1Reg Operand2: op2Reg With: cg = ( |
+            | 
+            cg add: op1Reg From: op2Reg To: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'addition' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'abstract' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         arithmeticShiftRight = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'arithmeticShiftRight' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodeGenerator parent binaryOperations integerArithmetic arithmeticShiftRight.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'arithmeticShiftRight' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateInto: dstReg Operand1: op1Reg ConstantOperand2: nBits With: cg = ( |
+            | 
+            cg shiftRightArithImmBy: nBits From: op1Reg To: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'arithmeticShiftRight' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'abstract' -> ().
@@ -1604,6 +1722,30 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'multiplication' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'abstract' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shiftLeft = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'shiftLeft' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodeGenerator parent binaryOperations integerArithmetic shiftLeft.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'shiftLeft' -> () From: ( | {
+         'Category: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateInto: dstReg Operand1: op1Reg ConstantOperand2: nBits With: cg = ( |
+            | 
+            cg shiftLeftImmBy: nBits From: op1Reg To: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'shiftLeft' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'abstract' -> ().
@@ -1866,6 +2008,14 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             | 
             addNode: irNodeProtos breakpoint copyBC: currentBC String: msg value.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         byteVectorLayout = ( |
+            | 
+            theVM byteVectorLayout).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2159,6 +2309,58 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateAddressOf: memObjReg Into: dstUntaggedAddressReg = ( |
+            | 
+            addNode: irNodeProtos address copyBC: currentBC Object: memObjReg Destination: dstUntaggedAddressReg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Into: dstObjReg = ( |
+            | 
+            addNode: irNodeProtos readOopAtIndex copyBC: currentBC
+                                                   Base: memObjAddrReg
+                                                  Index: indexSmiReg
+                                            Destination: dstObjReg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier = ( |
+            | 
+            addNode: irNodeProtos writeOopAtIndex copyBC: currentBC
+                                                    Base: memObjAddrReg
+                                                   Index: indexSmiReg
+                                                    Data: dataObjReg
+                                   BypassingWriteBarrier: shouldBypassWriteBarrier).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg AtConstant: index Into: dstObjReg = ( |
+            | 
+            generateForObjectAtAddress: memObjAddrReg
+                                    At: (sourceLevelAllocator valueForConstant: index)
+                                  Into: dstObjReg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg AtConstant: index Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier = ( |
+            | 
+            generateForObjectAtAddress: memObjAddrReg
+                                    At: (sourceLevelAllocator valueForConstant: index)
+                                   Put: dataObjReg
+                 BypassingWriteBarrier: shouldBypassWriteBarrier).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateForVector: vectReg IfIndex: indexSmiReg Temp: tempReg VectorLayout: layout IsOutOfBoundsThenBranchTo: trueFork = ( |
@@ -2173,23 +2375,6 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                                              FalseFork: falseFork.
             ].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateForVector: vect IndexableAt: index Put: data VectorLayout: layout Into: dst = ( |
-            | 
-            addNode: irNodeProtos vectorIndexableWrite copyBC: currentBC Vector: vect Index: index Data: data VectorLayout: layout).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: vectors\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generateForVector: vect IndexableAt: index VectorLayout: layout Into: dst = ( |
-            | 
-            [aaaaaaa]. "This isn't used yet, is it?"
-            addNode: irNodeProtos vectorIndexableRead copyBC: currentBC Vector: vect Index: index VectorLayout: layout).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2226,16 +2411,35 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: smiValue IsBetweenZeroAnd: max ThenBranchTo: trueFork = ( |
+            | 
+            generateExit: [|:falseFork|
+              addNode: irNodeProtos integerRangeTest
+                                       copyBC: currentBC
+                                      Integer: smiValue
+                                          Max: max
+                                     TrueFork: trueFork
+                                    FalseFork: falseFork.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: secondary (i.e. map) type tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIf: obj Temp: temp HasAnyMapTypeIn: maps ThenBranchTo: trueFork = ( |
             | 
             generateExit: [|:falseFork|
-              addNode: irNodeProtos mapTypeTest copyBC: currentBC
-                                                Object: obj
-                                                  Maps: maps
-                                              TrueFork: trueFork
-                                             FalseFork: falseFork.
+              withTemporaryRegisterDo: [|:tempReg|
+                addNode: irNodeProtos mapTypeTest copyBC: currentBC
+                                                  Object: obj
+                                                    Maps: maps
+                                                    Temp: tempReg
+                                                TrueFork: trueFork
+                                               FalseFork: falseFork.
+              ].
             ]).
         } | ) 
 
@@ -2251,6 +2455,19 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                                           IsLikely: isLikely
                                           TrueFork: trueFork
                                          FalseFork: falseFork.
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: primary  (i.e. tag) type tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: objReg Temp: tempReg IsByteVectorThenBranchTo: trueFork = ( |
+            | 
+            generateExit: [|:falseFork|
+              addNode: irNodeProtos byteVectorTest copyBC: currentBC
+                                                   Object: objReg
+                                                 TrueFork: trueFork
+                                                FalseFork: falseFork.
             ]).
         } | ) 
 
@@ -2436,6 +2653,17 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          layouts = ( |
             | 
             vmKit layouts).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         loadByteAt: baseAddrReg IndexedBy: indexReg To: dstSmiReg = ( |
+            | 
+            addNode: irNodeProtos readByteAtIndex copyBC: currentBC
+                                                    Base: baseAddrReg
+                                                   Index: indexReg
+                                             Destination: dstSmiReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2765,6 +2993,42 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shiftLeftBy: shift From: src To: dst = ( |
+            | 
+            binaryOp: binaryOperations integerArithmetic shiftLeft Into: dst Operand1: src Operand2: shift IfFail: nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shiftLeftImmBy: nBits From: src To: dst = ( |
+            | 
+            shiftLeftBy: (sourceLevelAllocator valueForConstant: nBits)
+                   From: src
+                     To: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shiftRightArithBy: shift From: src To: dst = ( |
+            | 
+            binaryOp: binaryOperations integerArithmetic arithmeticShiftRight Into: dst Operand1: src Operand2: shift IfFail: nil).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         shiftRightArithImmBy: nBits From: src To: dst = ( |
+            | 
+            shiftRightArithBy: (sourceLevelAllocator valueForConstant: nBits)
+                         From: src
+                           To: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          shouldBeLazyAboutCloningPrimitiveFailBlocks = bootstrap stub -> 'globals' -> 'true' -> ().
@@ -2788,6 +3052,17 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: addressing objects\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+        
+         storeByteFrom: srcSmiReg To: baseAddrReg IndexedBy: indexReg = ( |
+            | 
+            addNode: irNodeProtos writeByteAtIndex copyBC: currentBC
+                                                     Base: baseAddrReg
+                                                    Index: indexReg
+                                                     Data: srcSmiReg).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          vmKit = ( |
@@ -2800,7 +3075,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          withTemporaryRegisterDo: blk = ( |
             | 
-            blk value: newValue).
+            blk value: newValue mustBeLocatedInARegister: true).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {

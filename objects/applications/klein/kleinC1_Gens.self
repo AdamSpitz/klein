@@ -67,10 +67,26 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: low-level operations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
+         add: r1 From: r2 To: dst = ( |
+            | 
+            add: r1 MaybeSetCCFrom: r2 To: dst).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: low-level operations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
          add: r1 MaybeSetCCFrom: r2 To: dst = ( |
             | 
             childMustImplement.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: low-level operations\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         addImm: anInt From: from To: dst = ( |
+            | 
+            addImm: anInt MaybeSetCCFrom: from To: dst).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -599,6 +615,15 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: addresses\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateAddressOf: memObjReg Into: dstUntaggedAddressReg = ( |
+            | 
+            theVM objectLocator generateAddressOf: memObjReg Into: dstUntaggedAddressReg With: self.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: prologue & epilogue\x7fCategory: prologue\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: private'
         
          generateAssignableParentsCheck = ( |
@@ -664,9 +689,60 @@ See the LICENSE file for license information.
         
          generateFlushMachineCachesAfterBackpatching: baseReg FromOffset: startOffset ToOffset: endOffset Temp1: t1 Temp2: t2 = ( |
             | 
-            addImm: startOffset * oopSize  MaybeSetCCFrom: baseReg To: t1.
-            addImm:   endOffset * oopSize  MaybeSetCCFrom: baseReg To: t2.
+            addImm: startOffset * oopSize  From: baseReg To: t1.
+            addImm:   endOffset * oopSize  From: baseReg To: t2.
             generateFlushMachineCachesFrom: t1 To: t2.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: addresses\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Into: dstObjReg = ( |
+            | 
+            [vmKit tag smi = 0] assert.
+            loadWordAt: memObjAddrReg IndexedBy: indexSmiReg To: dstObjReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: addresses\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier = ( |
+            | 
+            storeWordFrom: dataObjReg To: memObjAddrReg IndexedBy: indexSmiReg.
+            shouldBypassWriteBarrier ifFalse: [
+              writeBarrierForStoringOop: dataObjReg AtOffsetInRegister: indexSmiReg IntoObjectAtAddress: memObjAddrReg.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: addresses\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg AtConstant: index Into: dstObjReg = ( |
+            | 
+            moveLocation: (locations offsetFromOtherLocation
+                                  copyForOffset: index * oopSize
+                                   FromRegister: memObjAddrReg)
+              ToRegister: dstObjReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: addresses\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateForObjectAtAddress: memObjAddrReg AtConstant: index Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier = ( |
+            | 
+            moveRegister: dataObjReg
+              ToLocation: locations offsetFromOtherLocation
+                                copyForOffset: index * oopSize
+                                 FromRegister: memObjAddrReg.
+
+            shouldBypassWriteBarrier ifFalse: [
+              writeBarrierForStoringOop: dataObjReg AtOffset: index * oopSize IntoObjectAtAddress: memObjAddrReg.
+            ].
+
             self).
         } | ) 
 
@@ -743,6 +819,19 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: conditionals\x7fCategory: type tests -- placed here because we don\'t know the nature of a thing until we ask\x7fCategory: primary  (i.e. tag) type tests\x7fCategory: code generation\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIf: objReg Temp: tempReg IsByteVectorThenBranchTo: trueFork = ( |
+            | 
+            generateIf: [|:memFork|
+              layouts object generateIf: objReg Temp: tempReg IsMemoryObjectThenBranchTo: memFork With: self.
+            ] Then: [
+              layouts memoryObject generateIfMem: objReg Temp: tempReg IsByteVectorThenBranchTo: trueFork With: self.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: conditionals\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIfUnsigned: reg1 IsLessThan: reg2 ThenLikelyBranchTo: ltLabel = ( |
@@ -791,38 +880,6 @@ See the LICENSE file for license information.
               ifTrue: [ generateSendNode:           n ]
                False: [ generateDynamicPerformNode: n ].
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: vectors\x7fCategory: object vectors\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: objVectReg At: indexSmiReg IfFail: fh = ( |
-            | 
-            fh assertVector:  objVectReg.
-            fh assertInteger: indexSmiReg.
-            fh assertBounds:  indexSmiReg InVector: objVectReg.
-            layouts objVector
-                  generateFor: objVectReg
-                  IndexableAt: indexSmiReg
-                         Into: dstReg
-                         With: self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: vectors\x7fCategory: object vectors\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         generatePrimitiveInto: dstReg Receiver: objVectReg At: indexSmiReg Put: argReg IfFail: fh = ( |
-            | 
-            fh assertVector:  objVectReg.
-            fh assertInteger: indexSmiReg.
-            fh assertBounds:  indexSmiReg InVector: objVectReg.
-            layouts objVector
-                  generateFor: objVectReg
-                  IndexableAt: indexSmiReg
-                          Put: argReg
-                         Temp: dstReg
-                         With: self.
-            moveRegister: objVectReg ToRegister: dstReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1620,7 +1677,7 @@ Returns an address into a bytes part masquerading as a small integer.
          incrementInvocationCountForNMethod: nmReg AndPutCountInRegister: countReg = ( |
             | 
             loadFromDataSlot: nmethodInvocationCountSlot OfHolderRegister: nmReg IntoRegister: countReg.
-            addImm: (layouts smi encode: 1) MaybeSetCCFrom: countReg To: countReg.
+            addImm: (layouts smi encode: 1) From: countReg To: countReg.
             storeIntoDataSlot: nmethodInvocationCountAssignmentSlot OfHolderRegister: nmReg FromRegister: countReg IsGuaranteedNotToBeMemObj: true.
             self).
         } | ) 
@@ -2999,7 +3056,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          generateChangeTagOf: r From: origTagValue To: newTagValue Into: dstReg = ( |
             | 
-            addImm: newTagValue - origTagValue MaybeSetCCFrom: r To: dstReg.
+            addImm: newTagValue - origTagValue From: r To: dstReg.
             self).
         } | ) 
 
@@ -3124,7 +3181,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             a sync.
             a icbiFrom: 0 With: startReg.
 
-            addImm: 32 MaybeSetCCFrom: startReg To: startReg.
+            addImm: 32 From: startReg To: startReg.
             a cmplwFrom: startReg With: endReg.
             a bleUntakenDisp: oneMoreTime.
 
@@ -4698,7 +4755,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          writeBarrierForStoringOop: targetOopReg AtOffset: offset IntoObjectAtAddress: addressReg Temp: tempReg = ( |
             | 
-            addImm: offset MaybeSetCCFrom: addressReg To: tempReg.
+            addImm: offset From: addressReg To: tempReg.
             writeBarrierForStoringOop: targetOopReg AtAddress: tempReg.
             self).
         } | ) 
@@ -4719,7 +4776,7 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
         
          writeBarrierForStoringOop: targetOopReg AtOffsetInRegister: offsetReg IntoObjectAtAddress: addressReg Temp: tempReg = ( |
             | 
-            add: addressReg MaybeSetCCFrom: offsetReg To: tempReg.
+            add: addressReg From: offsetReg To: tempReg.
             writeBarrierForStoringOop: targetOopReg AtAddress: tempReg.
             self).
         } | ) 
@@ -4805,9 +4862,9 @@ SlotsToOmit: parent.
              this in a way that doesn't break indirect pointers.
              -- Adam, 7/06"
 
-            cg         addImm: vmKit layouts memoryObject myTag negate
-               MaybeSetCCFrom: memObjReg
-                           To: dstUntaggedAddressReg.
+            cg addImm: vmKit layouts memoryObject myTag negate
+                 From: memObjReg
+                   To: dstUntaggedAddressReg.
 
             self).
         } | ) 
@@ -4829,9 +4886,9 @@ SlotsToOmit: parent.
         
          generateAddressOf: memObjReg Into: dstUntaggedAddressReg With: cg = ( |
             | 
-            cg            add: memObjReg
-               MaybeSetCCFrom: cg registerUsage objectAddressesBaseRegister
-                           To: dstUntaggedAddressReg.
+            cg  add: memObjReg
+               From: cg registerUsage objectAddressesBaseRegister
+                 To: dstUntaggedAddressReg.
 
             cg     loadValueAtOffset: vmKit layouts memoryObject myTag negate
                FromAddressInRegister: dstUntaggedAddressReg
@@ -4957,7 +5014,7 @@ SlotsToOmit: parent.
             | 
             cg withTemporaryRegisterDo: [|:tempReg|
               generateLoadOffsetOfByteAt: indexSmiReg Into: tempReg With: cg.
-              cg add: tempReg MaybeSetCCFrom: bpRefReg To: dstAddressReg.
+              cg add: tempReg From: bpRefReg To: dstAddressReg.
             ].
             self).
         } | ) 
@@ -4967,7 +5024,7 @@ SlotsToOmit: parent.
         
          generateFor: bpRefReg AddressOfIndexableAtConstant: index Into: dstAddressReg With: cg = ( |
             | 
-            cg addImm: firstByteOffset + index MaybeSetCCFrom: bpRefReg To: dstAddressReg.
+            cg addImm: firstByteOffset + index From: bpRefReg To: dstAddressReg.
             self).
         } | ) 
 
@@ -5007,7 +5064,7 @@ SlotsToOmit: parent.
             | 
             layouts smi
               generateDecode: indexSmiReg Into: dstOffsetReg With: cg.
-            cg addImm: firstByteOffset MaybeSetCCFrom: dstOffsetReg To: dstOffsetReg.
+            cg addImm: firstByteOffset From: dstOffsetReg To: dstOffsetReg.
             self).
         } | ) 
 
@@ -5200,7 +5257,7 @@ SlotsToOmit: parent.
         
          generateAddressOf: memObjReg Into: dstUntaggedAddressReg With: cg = ( |
             | 
-            theVM objectLocator generateAddressOf: memObjReg Into: dstUntaggedAddressReg With: cg.
+            cg generateAddressOf: memObjReg Into: dstUntaggedAddressReg.
             self).
         } | ) 
 
@@ -5333,8 +5390,9 @@ SlotsToOmit: parent.
         
          generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Into: dstObjReg With: cg = ( |
             | 
-            [vmKit tag smi = 0] assert.
-            cg loadWordAt: memObjAddrReg IndexedBy: indexSmiReg To: dstObjReg.
+            cg generateForObjectAtAddress: memObjAddrReg
+                                       At: indexSmiReg
+                                     Into: dstObjReg.
             self).
         } | ) 
 
@@ -5343,11 +5401,10 @@ SlotsToOmit: parent.
         
          generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier With: cg = ( |
             | 
-            cg storeWordFrom: dataObjReg To: memObjAddrReg IndexedBy: indexSmiReg.
-            shouldBypassWriteBarrier ifFalse: [
-              cg writeBarrierForStoringOop: dataObjReg AtOffsetInRegister: indexSmiReg IntoObjectAtAddress: memObjAddrReg.
-            ].
-            self).
+            cg generateForObjectAtAddress: memObjAddrReg
+                                       At: indexSmiReg
+                                      Put: dataObjReg
+                    BypassingWriteBarrier: shouldBypassWriteBarrier).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -5367,10 +5424,9 @@ SlotsToOmit: parent.
         
          generateForObjectAtAddress: memObjAddrReg AtConstant: index Into: dstObjReg With: cg = ( |
             | 
-            cg moveLocation: (cg locations offsetFromOtherLocation
-                                        copyForOffset: index * oopSize
-                                         FromRegister: memObjAddrReg)
-                 ToRegister: dstObjReg.
+            cg generateForObjectAtAddress: memObjAddrReg
+                               AtConstant: index
+                                     Into: dstObjReg.
             self).
         } | ) 
 
@@ -5379,16 +5435,10 @@ SlotsToOmit: parent.
         
          generateForObjectAtAddress: memObjAddrReg AtConstant: index Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier With: cg = ( |
             | 
-            cg moveRegister: dataObjReg
-                 ToLocation: cg locations offsetFromOtherLocation
-                                   copyForOffset: index * oopSize
-                                    FromRegister: memObjAddrReg.
-
-            shouldBypassWriteBarrier ifFalse: [
-              cg writeBarrierForStoringOop: dataObjReg AtOffset: index * oopSize IntoObjectAtAddress: memObjAddrReg.
-            ].
-
-            self).
+            cg generateForObjectAtAddress: memObjAddrReg
+                               AtConstant: index
+                                      Put: dataObjReg
+                    BypassingWriteBarrier: shouldBypassWriteBarrier).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -5446,7 +5496,7 @@ SlotsToOmit: parent.
             | 
             [vmKit tag smi  = 0] assert.
             [vmKit tag size = 2] assert.
-            cg add: indexSmiReg MaybeSetCCFrom: dstUntaggedByteOffsetReg To: dstUntaggedByteOffsetReg.
+            cg add: indexSmiReg From: dstUntaggedByteOffsetReg To: dstUntaggedByteOffsetReg.
             self).
         } | ) 
 
@@ -5472,9 +5522,9 @@ SlotsToOmit: parent.
             cg withTemporaryRegisterDo: [|:indexSmiReg|
               generateIndexableOriginOf: objVectReg Into: indexSmiReg With: cg.
               (index != 0) ifTrue: [
-                cg         addImm: index * oopSize
-                   MaybeSetCCFrom: indexSmiReg
-                               To: indexSmiReg.
+                cg addImm: index * oopSize
+                     From: indexSmiReg
+                       To: indexSmiReg.
               ].
               generateFor: objVectReg At: indexSmiReg Into: dstObjReg With: cg.
             ]).
@@ -5487,9 +5537,9 @@ SlotsToOmit: parent.
             | 
             generateIndexableOriginOf: objVectReg Into: tempReg With: cg.
             (index != 0) ifTrue: [
-              cg         addImm: index * oopSize 
-                 MaybeSetCCFrom: tempReg
-                             To: tempReg
+              cg addImm: index * oopSize 
+                   From: tempReg
+                     To: tempReg
             ].
             cg withTemporaryRegisterDo: [|:tempReg2|
               generateFor: objVectReg At: tempReg Put: valueReg Temp: tempReg2 With: cg.
@@ -5529,9 +5579,9 @@ SlotsToOmit: parent.
          generateAddTagTo: srcReg Into: dstReg With: cg = ( |
             | 
             (myTag = 0) && [srcReg = dstReg]  ifFalse: [
-              cg         addImm: myTag
-                 MaybeSetCCFrom: srcReg
-                             To: dstReg
+              cg addImm: myTag
+                   From: srcReg
+                     To: dstReg
             ].
             self).
         } | ) 
@@ -5612,11 +5662,7 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
         
          generateIf: objReg Temp: tempReg IsByteVectorThenBranchTo: trueFork With: cg = ( |
             | 
-            cg generateIf: [|:trueFork|
-              generateIf: objReg Temp: tempReg IsMemoryObjectThenBranchTo: trueFork With: cg.
-            ] Then: [
-              layouts memoryObject generateIfMem: objReg Temp: tempReg IsByteVectorThenBranchTo: trueFork With: cg.
-            ].
+            cg generateIf: objReg Temp: tempReg IsByteVectorThenBranchTo: trueFork.
             self).
         } | ) 
 
@@ -5910,7 +5956,7 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
             | 
             cg withTemporaryRegisterDo: [|:tempReg|
               layouts smi generateDecode: indexSmiReg Into: tempReg With: cg.
-              cg add: tempReg MaybeSetCCFrom: dstUntaggedByteOffsetReg To: dstUntaggedByteOffsetReg.
+              cg add: tempReg From: dstUntaggedByteOffsetReg To: dstUntaggedByteOffsetReg.
             ].
             self).
         } | ) 
@@ -5975,9 +6021,9 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
               cg loadFromDataSlot: objsLimitSlot OfHolderRegister: spaceReg IntoRegister: temp2Reg.
 
               cg withTemporaryRegisterDo: [|:temp1Reg|
-                cg         addImm: (layouts smi encode: size * oopSize)
-                   MaybeSetCCFrom: dstUntaggedAddressReg
-                               To: temp1Reg.
+                cg addImm: (layouts smi encode: size * oopSize)
+                     From: dstUntaggedAddressReg
+                       To: temp1Reg.
 
                 cg generateIfUnsigned: temp1Reg  "objsTop + size * oopSize"
                         IsNotLessThan: temp2Reg  "objsLimit"
@@ -6106,7 +6152,7 @@ machine form that the processor can manipulate directly.\x7fModuleInfo: Module: 
             cg shiftRightImmBy: shift + (nBits - vmKit tag size "so that we can make dstReg contain a valid smi") From: dstReg To: dstReg.
             lowestEncodableNumber = 0 ifFalse: [
               [klein layouts smi myTag = 0] assert. "If this stops being true we'll have to fix this code."
-              cg addImm: (vmKit layouts smi encode: lowestEncodableNumber) MaybeSetCCFrom: dstReg To: dstReg.
+              cg addImm: (vmKit layouts smi encode: lowestEncodableNumber) From: dstReg To: dstReg.
             ].
             vmKit layouts smi generateAddTagTo: dstReg Into: dstReg With: cg.
             self).

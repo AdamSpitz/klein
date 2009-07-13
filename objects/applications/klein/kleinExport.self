@@ -317,6 +317,7 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'to:By:Do:'.
             blk value: 'to:ByPositive:Do:'.
             blk value: 'whileTrue:'.
+            blk value: 'whileFalse:'.
             blk value: 'shiftPast'.
             blk value: 'shift'.
             blk value: 'cloneBlockHomeFrame_stub:'.
@@ -327,9 +328,6 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'oidForInvalidEntry:In:'.
             blk value: 'forBytesPart:IfIndex:IsOutOfBoundsThen:'.
             blk value: 'forLocalBytesPart:At:IfFail:'.
-            blk value: 'indexOfSlotNamed:IfPresent:IfAbsent:'.
-            blk value: 'primReceiver:ByteVectorCompare:IfFail:'.
-            blk value: 'primReceiver:IdentityHashIfFail:'.
             self).
         } | ) 
 

@@ -81,7 +81,4 @@ Submodules I could maybe split off from mirror:
 
 ----
 
-To avoid block cloning during the compiler and GC, it'll help to make these prims translated:
-  - _At:
-  - _ByteAt:
-  - _Clone
+Not sure what to do. There's a bug where it fails to find a klein locations constant in a dictionary, even though it's actually there. It looks to me like it's in the wrong place - I think the identity hash comes out to 1 (mod 16), but it's actually inposition 5 (and there are a couple of emptyMarkers at position 1).

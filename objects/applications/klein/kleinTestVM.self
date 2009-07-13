@@ -1479,6 +1479,7 @@ SlotsToOmit: parent prototype safety.
             resendingTests run.
             dataSlotInliningTester run.
             testWhileTrue.
+            testByteVectors.
             testMapsOfObjectLiterals.
             testControlFlowOrderCodeGeneration: true.
             testControlFlowOrderCodeGeneration: false.
@@ -1505,6 +1506,20 @@ SlotsToOmit: parent prototype safety.
             assert: ( 5 _IntSub: 6) Is: -1.
             assert: ( 7 _IntMul: 8) Is: 56.
             assert: (42 _IntDiv: 3) Is: 14.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testByteVectors = ( |
+            | 
+            assert: ('abcde' _ByteAt: 3) Is: 100.
+            assert: ('abcde' _ByteAt: 4) Is: 101.
+
+            assertFail: [|:fb| 'abcde' _ByteAt: -1 IfFail: fb].
+            assertFail: [|:fb| 'abcde' _ByteAt: 5  IfFail: fb].
+
             self).
         } | ) 
 

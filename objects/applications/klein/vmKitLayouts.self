@@ -577,7 +577,7 @@ See the LICENSE file for license information.
             generateFor: vectReg UntaggedByteOffsetForIndex: indexSmiReg Into: dstAddressReg With: cg.
             cg withTemporaryRegisterDo: [|:vectAddressReg|
               generateAddressOf: vectReg Into: vectAddressReg With: cg.
-              cg add: vectAddressReg MaybeSetCCFrom: dstAddressReg To: dstAddressReg.
+              cg add: vectAddressReg From: dstAddressReg To: dstAddressReg.
             ].
             self).
         } | ) 
@@ -592,7 +592,7 @@ See the LICENSE file for license information.
               generateIndexableOriginOf: vectReg Into:  dstAddressReg With: cg.
               cg add: vectAddressReg MaybeSetCCFrom: dstAddressReg To: dstAddressReg.
               index = 0 ifFalse: [
-                cg addImm: index * elementByteSize MaybeSetCCFrom: dstAddressReg To: dstAddressReg.
+                cg addImm: index * elementByteSize From: dstAddressReg To: dstAddressReg.
               ].
             ].
             self).
