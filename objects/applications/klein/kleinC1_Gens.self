@@ -46,13 +46,13 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)'
         
-         nodeToBeGeneratedAfterThisOne.
+         nodeBeingGenerated.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)'
         
-         nodeToGenerate.
+         nodeToBeGeneratedAfterThisOne.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {

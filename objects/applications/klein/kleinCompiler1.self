@@ -525,7 +525,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             codeGenerator: protoCodeGenForMyPlatform copyForCompiler: self.
             ns: irNodesInOrderForCodeGeneration asVector.
             ns do: [|:n. :i|
-              codeGenerator nodeToGenerate: n.
+              codeGenerator nodeBeingGenerated: n.
               codeGenerator nodeToBeGeneratedAfterThisOne: ns at: i succ IfAbsent: nil.
               n generateCode.
             ].
@@ -1011,6 +1011,14 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
+         'Category: eliminating\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         canBeSafelyEliminated = ( |
+            | 
+            containsNothingButABranch && [labelNode marksStartOfBC not]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'basicBlock' -> 'parent' -> () From: ( | {
          'Category: invariants\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
         
          checkInvariants = ( |
@@ -1156,7 +1164,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
         
          eliminateIfPossible = ( |
             | 
-            containsNothingButABranch ifTrue: [| anyFailed <- false |
+            canBeSafelyEliminated ifTrue: [| anyFailed <- false |
               labelNode controlFlowPreds do: [|:pred|
                 pred replaceControlFlowSucc: labelNode
                                        With: endNode destinationNode

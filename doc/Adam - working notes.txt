@@ -85,3 +85,10 @@ Not sure what to do. There's a bug where it fails to find a klein locations cons
 
 ----
 
+On the debugger bug:
+
+Hey, I get it. The first labelNode is always unresolved. Can I just make sure to resolve it?
+
+Hmm, but for some reason the labelNode at index 0 in irNodesByBCI is NOT part of the nodes to be generated. Maybe it's never branched to? Hmm, it has a controlFlowPred, but that seems to be left over, because the pred points to someone different as his destination.
+
+Maybe it's getting eliminated because the BB is empty or something.

@@ -435,9 +435,10 @@ SlotsToOmit: parent.
          'Category: building scope descs for nmethods\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          findPCOffsetsByBCI = ( |
+             previousPCO <- -1.
              r.
             | 
-            r: irNodesByBCI mapBy: [|:n| n pcOffsetIfPresent: [|:o| o] IfAbsent: -1]
+            r: irNodesByBCI mapBy: [|:n. :i| n pcOffsetIfPresent: [|:o| previousPCO: o. o] IfAbsent: [i = 0 ifTrue: [[aaaaaaa]. halt]. previousPCO]]
                              Into: myScopeDesc pcOffsetVector copySize: irNodesByBCI size.
             r ifNone: myScopeDesc pcOffsetVector).
         } | ) 
@@ -863,6 +864,7 @@ SlotsToOmit: parent.
             ] IfNotNil: [|:lbl|
               irNodeGenerator bindLabel: lbl.
             ].
+            (irNodesByBCI at: bci) marksStartOfBC: true.
 
             self).
         } | ) 
@@ -2524,18 +2526,8 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             i currentBC: i nonexistentBCAt: 0.
             rcvrAndArgValues with: sla incomingRcvrAndArgValues Do: [|:srcV. :dstV| move: srcV To: dstV].
             interpretCurrentSlot.
-            case
-              if: nodeToInsertAfter isLocalReturn Then: [
-                move: nodeToInsertAfter outgoingResultValue To: resultValue.
-              ]
-              If: [nodeToInsertAfter sourcePred isMove] Then: [
-                halt. [aaaaaaa].
-                nodeToInsertAfter: nodeToInsertAfter sourcePred.
-                move: nodeToInsertAfter destinationValue To: resultValue.
-                nodeToInsertAfter: nodeToInsertAfter sourceSucc.
-              ] Else: [
-                error: 'what is going on here?'.
-              ].
+            [nodeToInsertAfter isLocalReturn] assert.
+            move: nodeToInsertAfter outgoingResultValue To: resultValue.
             interpreterFinished.
             i).
         } | ) 
