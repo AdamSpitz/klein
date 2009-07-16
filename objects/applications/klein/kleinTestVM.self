@@ -871,6 +871,7 @@ SlotsToOmit: parent prototype safety.
             | 
             simpleMethod2a.
             simpleMethod2b.
+            simpleMethod2c.
             self).
         } | ) 
 
@@ -888,6 +889,14 @@ SlotsToOmit: parent prototype safety.
          simpleMethod2b = ( |
             | 
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: simple tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         simpleMethod2c = ( |
+            | 
+            [self] value).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {

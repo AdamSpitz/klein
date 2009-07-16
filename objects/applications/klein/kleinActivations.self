@@ -592,14 +592,16 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
          'Category: accessing\x7fCategory: machine-level info\x7fCategory: sender\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
-         ancestorSenderWithSP: desiredSP IfAbsent: fb = ( |
+         ancestorSenderWithSP: desiredSP AndScopeMirror: desiredSM IfAbsent: fb = ( |
+             failBlock.
              rl.
-             senderRL.
             | 
+            failBlock: [|:e| ^ fb value: e].
             rl: myRegisterLocator.
-            [senderRL: registerLocator senderOf: rl IfAbsent: [|:e| ^ fb value: e].
-             senderRL sp = desiredSP ifTrue: [^ senderRL createActivationMirror].
-             rl: senderRL] loop).
+            [desiredSP = rl sp] whileFalse: [
+              rl: registerLocator senderOf: rl IfAbsent: failBlock.
+            ].
+            rl createActivationMirrorForScope: desiredSM).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'mirrors' -> 'copyDownParentForActivationPrototypes' -> 'kleinSpecificParent' -> () From: ( | {
@@ -725,9 +727,11 @@ SlotsToOmit: parent.
          lexicalParentSPIfFail: fb = ( |
             | 
             myVM setTheVMAndDo: [
-              klein layouts block
-                homeFramePointerOf: (receiverOopIfFail: [|:e| ^ fb value: e])
-                            IfFail: fb
+              ifScopeIsInlined: [sp] IfNotInlined: [
+                klein layouts block
+                  homeFramePointerOf: (receiverOopIfFail: [|:e| ^ fb value: e])
+                              IfFail: fb
+              ] IfFail: fb
             ]).
         } | ) 
 
@@ -1500,11 +1504,15 @@ SlotsToOmit: parent.
          'Category: different kinds of objects\x7fCategory: activations\x7fModuleInfo: Module: kleinActivations InitialContents: FollowSlot\x7fVisibility: public'
         
          forActivationMirror: m LexicalParentIfFail: fb = ( |
+             lpsm.
+             lpsp.
+             sm.
             | 
-            [aaaaa]. "This isn't gonna work with inlining."
-            m isReflecteeBlockMethodActivation ifFalse: [^ fb value: 'noParentError'].
-            m ancestorSenderWithSP: (m lexicalParentSPIfFail: [|:e| ^ fb value: e])
-                          IfAbsent: fb).
+            m isReflecteeBlockMethodActivation ifFalse:                [     ^ fb value: 'noParentError'].
+            sm: m scopeMirrorIfFail:                                   [|:e| ^ fb value: e].
+            lpsm: sm primitiveContentsAt: 'lexicalParentScope' IfFail: [|:e| ^ fb value: e].
+            lpsp: m lexicalParentSPIfFail:                             [|:e| ^ fb value: e].
+            m ancestorSenderWithSP: lpsp AndScopeMirror: lpsm IfAbsent: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'reflectionPrimitives' -> 'parent' -> () From: ( | {

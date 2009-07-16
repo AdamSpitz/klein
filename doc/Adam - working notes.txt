@@ -18,13 +18,6 @@ Fix the compilerTester. Right, right - I broke it, made it require the compilati
 
 ----
 
-Inlining plan:
-
-  - Fix the bug where the source-level UI crashes when inlined blocks are involved. (I've got a klein mirrors blockMethodActivation that gives me an error when I call lexicalParent on it.)
-  - Flesh out the list of stuff that needs to be pre-inlined to make the system ramp up quickly enough.
-
-----
-
 Fix the copyright notices!!!
 
 ----
@@ -83,12 +76,3 @@ Submodules I could maybe split off from mirror:
 
 Not sure what to do. There's a bug where it fails to find a klein locations constant in a dictionary, even though it's actually there. It looks to me like it's in the wrong place - I think the identity hash comes out to 1 (mod 16), but it's actually in position 5 (and there are a couple of emptyMarkers at position 1).
 
-----
-
-On the debugger bug:
-
-Hey, I get it. The first labelNode is always unresolved. Can I just make sure to resolve it?
-
-Hmm, but for some reason the labelNode at index 0 in irNodesByBCI is NOT part of the nodes to be generated. Maybe it's never branched to? Hmm, it has a controlFlowPred, but that seems to be left over, because the pred points to someone different as his destination.
-
-Maybe it's getting eliminated because the BB is empty or something.
