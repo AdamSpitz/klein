@@ -3386,6 +3386,15 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          generateMoveIncomingReceiverAndArgumentsToNonVolLocations = ( |
             | 
             "could use stswi someday"
+
+            [aaaaaaa].
+            [
+            compiler slot name = 'if:Then:If:Then:If:Then:Else:' ifTrue: [
+              breakpoint: 'let\'s step through'.
+              halt.
+            ].
+            ].
+
             topSourceLevelAllocator incomingVolatileRegRcvrAndArgLocationsToSaveDo: [|:vol. :nonVolReg. :nonVolMem|
               nonVolReg ifNotNil: [moveLocation: vol ToLocation: nonVolReg].
               nonVolMem ifNotNil: [moveLocation: vol ToLocation: nonVolMem].

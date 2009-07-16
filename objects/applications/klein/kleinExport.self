@@ -296,8 +296,9 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
         
          outerMethodSlotNamesAndHoldersToOptimizeDo: blk = ( |
             | 
-            blk value:  'at:'  With:  traits collection.
-            blk value:  '='    With:  traits canonicalString.
+            blk value:  'at:'      With:  traits collection.
+            blk value:  'at:Put:'  With:  traits mutableIndexable.
+            blk value:  '='        With:  traits canonicalString.
             self).
         } | ) 
 
@@ -328,6 +329,8 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'oidForInvalidEntry:In:'.
             blk value: 'forBytesPart:IfIndex:IsOutOfBoundsThen:'.
             blk value: 'forLocalBytesPart:At:IfFail:'.
+            blk value: 'byteAt:'.
+            blk value: 'at:PutByte:'.
             self).
         } | ) 
 

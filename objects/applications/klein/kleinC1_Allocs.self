@@ -71,8 +71,6 @@ See the LICENSE file for license information.
         
          allocateIncomingAndPreallocatedLocations = ( |
             | 
-            compiler nodesInControlFlowOrder do: [|:n| allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations].
-            setNonVolatileRegSaveArea.
             topSourceLevelAllocator allocateIncomingAndPreallocatedLocations.
             self).
         } | ) 

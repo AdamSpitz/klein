@@ -160,6 +160,8 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
          allocateLocations = ( |
              locationAssigner.
             | 
+            nodesInControlFlowOrder do: [|:n| machineLevelAllocator allocateOutgoingRcvrAndArgLocations: n requiredNumberOfOutgoingRcvrAndArgLocations].
+            machineLevelAllocator setNonVolatileRegSaveArea.
             locationAssigner: prototypes locationAssigners graphColoring copyForCompiler: self.
             locationAssigner go).
         } | ) 
@@ -3356,7 +3358,7 @@ SlotsToOmit: parent.
             | 
             s isMethod ifFalse: [^ true ]. "Data slots are fine."
             s contents codes size <= maxMethodSizeForInlining ifTrue: [^ true]. "For now just use bytecode count."
-            ('if:Then:' isPrefixOf: s name) ifTrue: [^ true]. [aaaaaaa]. "Just a special-case hack for now."
+            [('if:Then:' isPrefixOf: s name) ifTrue: [^ true]. [aaaaaaa]. "Just a special-case hack for now."].
             false).
         } | ) 
 

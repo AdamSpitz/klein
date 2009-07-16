@@ -3994,9 +3994,8 @@ SlotsToOmit: parent.
         
          runAutomatedTestsForVM: aVM = ( |
             | 
-            [aaaaaaa]. "Put the order back."
-            compiling run.          [todo cleanup testing kleinSpecific].
             resend.runAutomatedTestsForVM: aVM.
+            compiling run.          [todo cleanup testing kleinSpecific].
             activations run.        [todo cleanup testing kleinSpecific].
             garbageCollection run.  [todo cleanup testing kleinSpecific].
             self).

@@ -669,7 +669,8 @@ to just keep upping it by hand.
             | 
                 ('inliningTest'       isPrefixOf: n)
             || [('typePredictionTest' isPrefixOf: n)
-            || [resend.shouldOptimizeOuterMethodWithName: n AndHolder: h]]).
+            || [('inliningTest_mirror_at:' = n)
+            || [resend.shouldOptimizeOuterMethodWithName: n AndHolder: h]]]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
@@ -782,6 +783,14 @@ SlotsToOmit: parent prototype safety.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
          'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
+         mirror_primitiveIsArgumentAt: n IfFail: fb = ( |
+            | 
+            true).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
          mirror_slotAt: n = ( |
              raiseError = bootstrap stub -> 'globals' -> 'raiseError' -> ().
             | 
@@ -798,6 +807,24 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         mirror_slotProtoFor: n IfAbsent: failBlock = ( |
+            | 
+            case
+             if: [mirror_primitiveIsArgumentAt: n IfFail: [|:e| ^failBlock value: e]]
+             Then: [sillySlotProto]
+
+             If: [mirror_primitiveIsParentAt:   n IfFail: [|:e| ^ failBlock value: e]]
+             Then: [1]
+
+             If: [(mirror_primitiveContentsAt:  n IfFail: [|:e| ^ failBlock value: e]) isReflecteeMethod
+             &&  [(mirror_primitiveIsAssignableAt: n IfFail: true) not]] "_NakedMethods"
+             Then: [2]
+             Else: [3]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -810,8 +837,31 @@ SlotsToOmit: parent prototype safety.
             | 
             inliningTest_inlineSimpleMethods.
             testInlinedNLR.
-            [aaaaaaa tryToRecreateWeirdMirrorBug].
+            tryToRecreateWeirdMirrorBug.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: weird mirror bug\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sillySlotProto = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sillySlotProto' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent inliningTester sillySlotProto.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sillySlotProto' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyMirror: m Name: n = ( |
+            | 
+            'whatever').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sillySlotProto' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
@@ -856,7 +906,7 @@ SlotsToOmit: parent prototype safety.
         
          tryToRecreateWeirdMirrorBug = ( |
             | 
-            assert: (inliningTest_mirror_at: 'run') Is: 'I dunno'.
+            assert: (inliningTest_mirror_at: 'run') Is: 'whatever'.
             self).
         } | ) 
 
