@@ -1580,7 +1580,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot'
+         'ModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          abstract = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'binaryOperations' -> 'integerArithmetic' -> 'abstract' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodeGenerator parent binaryOperations integerArithmetic abstract.
@@ -2632,6 +2632,19 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: sends\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         isReceiverProbablyAnInteger: sel = ( |
+            | 
+                (sel = '+')
+            || [(sel = '-')
+            || [(sel = '*')
+            || [(sel = '/')
+            || [(sel = 'succ')
+            || [(sel = 'pred')]]]]]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: accessing\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          kindsOfPossibleTypes = ( |
@@ -2911,6 +2924,11 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
               ^ kindsOfPossibleTypes union copyMerging:
                   ( ((locations constant copyForOop:  true) explicitNameForComment:  'true')
                   & ((locations constant copyForOop: false) explicitNameForComment: 'false')) asVector
+            ].
+
+            (isReceiverProbablyAnInteger: sel) ifTrue: [
+              ^ kindsOfPossibleTypes union copyMerging:
+                  vector copyAddFirst: kindsOfPossibleTypes knownMap copyForMap: vmKit maps smiMap
             ].
 
             nil).

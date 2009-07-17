@@ -321,16 +321,32 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'whileFalse:'.
             blk value: 'shiftPast'.
             blk value: 'shift'.
+            blk value: 'fixedIndex'.
+            blk value: 'fixedIndexAfterMe'.
             blk value: 'cloneBlockHomeFrame_stub:'.
             blk value: 'withoutCloningAnythingAllocateAnOID'.
             blk value: 'withoutCloningAnythingGetANewOID'.
             blk value: 'nextFreeOID'.
+            blk value: 'incrementTimestamp'.
             blk value: 'oidForInvalidEntry:'.
             blk value: 'oidForInvalidEntry:In:'.
             blk value: 'forBytesPart:IfIndex:IsOutOfBoundsThen:'.
             blk value: 'forLocalBytesPart:At:IfFail:'.
             blk value: 'byteAt:'.
+            blk value: 'byteAt:IfAbsent:'.
             blk value: 'at:PutByte:'.
+            blk value: 'at:PutByte:IfAbsent:'.
+            blk value: 'lens'.
+            blk value: 'machineMemory'.
+            blk value: 'localAddressForOID:'.
+            blk value: 'localMemForAddress:'.
+            blk value: 'addressOfLocalMem:'.
+            blk value: 'addressOfLocalMem:IfFail:'.
+            blk value: 'invalidateEntryForLocalOID:'.
+            blk value: 'wordSizeOfObjectWithAddress:'.
+            blk value: 'isYoung:'.
+            blk value: 'decode:'.
+            blk value: 'encode:'.
             self).
         } | ) 
 

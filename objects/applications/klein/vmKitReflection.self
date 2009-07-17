@@ -2067,8 +2067,10 @@ See the LICENSE file for license information.
              selfLPMethodMir.
             | 
 
-            fSource: (selfMethodText copyForMethod: foreignMethodMir) asMethod asString.
-            foreignMethodMir isReflecteeOuterMethod ifTrue: [[fSource = (selfMethodText copyForMethod: foreignMethodMir) asMethod asString] assert. ^ selfMethodMir].
+            [aaaaaaa]. "Experimenting, because there was a bug where the text wouldn't quite match because of a <- nil."
+            [fSource: (selfMethodText copyForMethod: foreignMethodMir) asMethod asString.].
+            fSource: (selfMethodText copyForMethod: foreignMethodMir) copy formatMethodBodyWithoutSlots asString.
+            foreignMethodMir isReflecteeOuterMethod ifTrue: [^ selfMethodMir].
             lp: myMirror lexicalParent.
             foreignLPMethodMir: lp methodMirrorIfFail: raiseError.
                selfLPMethodMir: lp reflectionPrimitives selfMethodFor: foreignLPMethodMir In: selfMethodMir.
@@ -2079,7 +2081,7 @@ See the LICENSE file for license information.
               litMir isReflecteeBlock ifTrue: [| m. mNames. mSource |
                 m: litMir method.
                 mNames: m allSlotsOnThisMethod copyMappedBy: [|:s| s name].
-                mSource: (selfMethodText copyForMethod: m) asMethod asString.
+                mSource: (selfMethodText copyForMethod: m) copy formatMethodBodyWithoutSlots asString.
                 (fNames = mNames) && [fSource = mSource] ifTrue: [^ m].
               ].
             ].

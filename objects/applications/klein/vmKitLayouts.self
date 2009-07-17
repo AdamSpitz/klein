@@ -2942,7 +2942,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
         
          emptyObjectSizeFor: o = ( |
             | 
-            lastField indexAfterMeFor: o Layout: self).
+            lastField fixedIndexAfterMe).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -3144,6 +3144,7 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
          for: o StartingAt: firstIndex Until: untilBlk Do: blk IfFail: fb = ( |
              nextWordIndex.
              topWordIndex.
+             vm.
             | 
             "Note: We could walk right off of the end of the object heap
                    if the trailing mark is missing (due to a bug).
@@ -3152,16 +3153,17 @@ trailing mark is reached.  -- jb 7/03\x7fModuleInfo: Module: vmKitLayouts Initia
                    debugging a VM, unless the local copy of the universe
                    is kept up-to-date.  -- jb 7/03"
 
-            theVM assert: [| addr |
+            vm: theVM.
+            vm assert: [| addr |
               addr: addressOfMem: o.
-              topWordIndex: ((theVM universe objsTopFor: addr) - addr) / oopSize.
+              topWordIndex: ((vm universe objsTopFor: addr) - addr) / oopSize.
               true
             ].
 
             "Iterate until untilBlk returns true."
             nextWordIndex: firstIndex.
             [(untilBlk value: nextWordIndex) || [nextWordIndex = 0]]  whileFalse: [
-              theVM assert: [ nextWordIndex < topWordIndex ].
+              vm assert: [ nextWordIndex < topWordIndex ].
               blk value: (for: o At: nextWordIndex IfFail: [|:e| ^ fb value: e])
                    With: nextWordIndex.
               nextWordIndex: nextWordIndex succ.

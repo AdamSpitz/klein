@@ -2,7 +2,7 @@ Cleanups to do:
 
   - Addresses. Factor it all so that I can easily switch to untagged addresses.
   - Factor the layout stuff so that it's a bit more uniform and elegant about handling oops versus addresses. (C is really nice in that way; how close can we get to that?)
-  - Stuff that tries to avoid cloning... is there a way to make it clear which stuff that is? Draw a clear fence around it? And avoid duplication with regular stuff? (The problem is that there's some stuff that needs failblocks when running on a remote image, but needs to avoid cloning when running in a local image.)
+  - Stuff that tries to avoid cloning... is there a way to make it clear which stuff that is? Draw a clear fence around it? And avoid duplication with regular stuff? (The problem is that there's some stuff that needs failblocks when running on a remote image, but needs to avoid cloning when running in a local image.) Actually, now that I've got inlining and stuff, maybe just fix the code so that it doesn't bother trying to avoid cloning anymore.
 
 ----
 
@@ -52,6 +52,8 @@ OK, so I should make a parent of nmethod called nativeCodeContainingOops. Or may
 
 But I guess I don't really know right now whether a lot of my time is being spent doing polymorphic lookups. Could I get a list of how often the sendMessage_stub is called with each selector? That'd tell me whether I need PICs yet or not.
 
+Hmm, OK, I fixed the worst offenders. Not sure whether it's worth doing PICs now.
+
 ----
 
 How do I do dynamic optimization?
@@ -76,3 +78,12 @@ Submodules I could maybe split off from mirror:
 
 Not sure what to do. There's a bug where it fails to find a klein locations constant in a dictionary, even though it's actually there. It looks to me like it's in the wrong place - I think the identity hash comes out to 1 (mod 16), but it's actually in position 5 (and there are a couple of emptyMarkers at position 1).
 
+Hmm, has the bug gone away?
+
+Nope. But it seems to be flaky. Blecch.
+
+----
+
+Awesome! The whole GC pause is less than 30 seconds now, and it would be more like 10 seconds if it weren't for the oop recycling.
+
+Biggest problem now might be the environment pausing whenever I hit Continue, I think.

@@ -418,6 +418,73 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
         
+         knownMap = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes knownMap.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes knownMap parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         abstractTypeParent* = bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'abstractMixin' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyForMap: m = ( |
+            | 
+            copy theMap: m).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> 'parent' -> () From: ( | {
+         'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generateIfMatchesTypeOf: r ThenBranchTo: trueFork With: aCodeGenerator = ( |
+            | 
+            theMap isImmediate ifTrue: [
+              aCodeGenerator withTemporaryRegisterDo: [|:temp|
+                aCodeGenerator generateIf: r Temp: temp HasTag: theMap myLayout myTag IsLikely: true ThenBranchTo: trueFork.
+              ].
+            ] False: [
+              notImplementedYet
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
+         knownMapUsingOracle: oracle IfFail: fb = ( |
+            | 
+            theMap).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'clonable' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'knownMap' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
+        
+         theMap.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Values InitialContents: FollowSlot\x7fVisibility: public'
+        
          selfValue = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'dataValue' -> 'parent' -> 'kindsOfPossibleTypes' -> 'selfValue' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes dataValue parent kindsOfPossibleTypes selfValue.
 \x7fIsComplete: '.

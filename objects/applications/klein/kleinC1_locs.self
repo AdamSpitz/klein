@@ -356,7 +356,7 @@ knowing what name you want to appear in the comment.\x7fModuleInfo: Module: klei
         
          = x = ( |
             | 
-            x isConstant && [oopMirror = x oopMirror]).
+            x isConstant && [oopValue _Eq: x oopValue]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {
@@ -388,7 +388,8 @@ knowing what name you want to appear in the comment.\x7fModuleInfo: Module: klei
          'Category: comparing\x7fModuleInfo: Module: kleinC1_locs InitialContents: FollowSlot\x7fVisibility: public'
         
          hash = ( |
-            | oopMirror hash).
+            | 
+            oopValue _IdentityHash).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'locations' -> 'constant' -> 'parent' -> () From: ( | {

@@ -236,7 +236,7 @@ SlotsToOmit: parent.
         
          incrementTimestamp = ( |
             | 
-            "Use primitive to avoid cloning."
+            "Use the primitive so as to avoid cloning blocks."
             timestamp: timestamp _IntAdd: 1.
             self).
         } | ) 

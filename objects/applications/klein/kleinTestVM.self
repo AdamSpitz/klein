@@ -825,6 +825,57 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: customization (or at least not reusing when we shouldn\'t)\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         obj1WithSharedParent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'obj1WithSharedParent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent inliningTester obj1WithSharedParent.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: customization (or at least not reusing when we shouldn\'t)\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         sharedParent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sharedParent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent inliningTester sharedParent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'obj1WithSharedParent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sharedParent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'obj1WithSharedParent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         x = 6.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: customization (or at least not reusing when we shouldn\'t)\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         obj2WithSharedParent = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'obj2WithSharedParent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent inliningTester obj2WithSharedParent.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'obj2WithSharedParent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sharedParent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'obj2WithSharedParent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         x = 648.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
          'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -838,7 +889,22 @@ SlotsToOmit: parent prototype safety.
             inliningTest_inlineSimpleMethods.
             testInlinedNLR.
             tryToRecreateWeirdMirrorBug.
+            testNotInliningWhenWeShouldnt.
             self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sharedParent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         inliningTest_xPlusOne = ( |
+            | 
+            x _IntAdd: 1).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> 'sharedParent' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
@@ -907,6 +973,16 @@ SlotsToOmit: parent prototype safety.
             assert: inliningTest_NLR1 Is: 5.
             assert: inliningTest_NLR2 Is: 15.
             assert: inliningTest_NLR3 Is: 'two'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'inliningTester' -> () From: ( | {
+         'Category: customization (or at least not reusing when we shouldn\'t)\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         testNotInliningWhenWeShouldnt = ( |
+            | 
+            assert: obj1WithSharedParent inliningTest_xPlusOne Is: 7.
+            assert: obj2WithSharedParent inliningTest_xPlusOne Is: 649.
             self).
         } | ) 
 
@@ -1565,6 +1641,7 @@ SlotsToOmit: parent prototype safety.
             assert: ( 5 _IntSub: 6) Is: -1.
             assert: ( 7 _IntMul: 8) Is: 56.
             assert: (42 _IntDiv: 3) Is: 14.
+            assert: (add: 3  To: 4) Is: 7.
             self).
         } | ) 
 
