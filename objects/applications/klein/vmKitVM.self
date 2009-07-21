@@ -248,6 +248,12 @@ objects are allocated within the space.\x7fModuleInfo: Module: vmKitVM InitialCo
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
          'Category: mapped\x7fCategory: compiling\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
         
+         canDoCloning = bootstrap stub -> 'globals' -> 'true' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> () From: ( | {
+         'Category: mapped\x7fCategory: compiling\x7fModuleInfo: Module: vmKitVM InitialContents: FollowSlot\x7fVisibility: public'
+        
          compilerPrototype = ( |
             | 
             vmKit compiler1).

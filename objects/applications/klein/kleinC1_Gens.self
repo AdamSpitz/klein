@@ -1496,6 +1496,31 @@ Returns an address into a bytes part masquerading as a small integer.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitive_In_WhichIsOfType_Set_To_IfFail_: node = ( |
+             dataSlotName.
+             map.
+             prototype.
+            | 
+
+            [_In: target WhichIsOfType: 'blah' Set: 'parent'                 ]. "browsing"
+            [_In: target WhichIsOfType: 'blah' Set: 'parent' To: 0 IfFail: fb]. "browsing"
+
+            prototype:      node rcvrOrArgOopValueForConstantLocAt: 2 IfFail: raiseError.
+            dataSlotName:   node rcvrOrArgOopValueForConstantLocAt: 3 IfFail: raiseError.
+            map: (reflect: prototype) vmKitMapForConversion.
+            comment: ['setting slot named ', dataSlotName, ' on an object with map type ', map mapType].
+
+            materializeLocsAndFailureHandlerOf: node AndDo: [|:dstReg. :rcvrReg. :targetReg. :prototypeReg. :dataSlotNameReg. :objReg. :fh. slot|
+              fh assert: targetReg HasMapType: map.
+              slot:  prototype asMirror slotAt: dataSlotName.
+              storeIntoDataSlot: slot OfHolderRegister: targetReg FromRegister: objReg IsGuaranteedNotToBeMemObj: false.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: blocks\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitive_OnNonLocalReturn_IfFail_: node = ( |
@@ -1629,6 +1654,7 @@ Returns an address into a bytes part masquerading as a small integer.
          generateVerifiedEntryPoint = ( |
             | 
             comment: 'verified entry point'.
+            verifiedEntryPointIndex: a locationCounter.
             self).
         } | ) 
 
@@ -2748,6 +2774,12 @@ and may fail to compile otherwise.
          temporaryRegisters.
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (0)'
+        
+         verifiedEntryPointIndex <- 0.
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> () From: ( | {
          'ModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -2912,9 +2944,7 @@ SlotsToOmit: parent.
          branchToStubName: stubName UsingCTRAnd: r SetLink: shouldSetLink = ( |
             | 
             generateEntryAddressOfStubNamed: stubName Into: r.
-            a mtctrFrom: r.
-            shouldSetLink ifTrue: [a bctrl]
-                           False: [a bctr ].
+            usingCTRBranchToAddressIn: r SetLink: shouldSetLink.
             self).
         } | ) 
 
@@ -3514,6 +3544,46 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fCategory: send descs\x7fComment: Warning GC unsafe.
+-- jb 7/03\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: sdReg BackpatchSendDescTo: targetReg PNMC: pnmcReg IfFail: fh = ( |
+            | 
+            withTemporaryRegisterDo: [|:tempReg|
+              sendDesc generateBackpatchAndFlushMachineCaches: sdReg
+                                                     TargetTo: targetReg
+                                                         PNMC: pnmcReg
+                                                        Temp1: dstReg
+                                                        Temp2: tempReg
+                                                         With: self.
+              moveRegister: sdReg ToRegister: dstReg.
+            ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: objects\x7fCategory: memory objects\x7fCategory: nmethods\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: nmReg BranchToIndex: indexReg IfFail: fh = ( |
+            | 
+            fh assertNMethod: nmReg.
+
+            [verifiedEntryPointIndex]. "browsing"
+
+            withTemporaryRegisterDo: [|:addrReg|
+              byteVectorLayout
+                generateFor:            nmReg
+                  AddressOfIndexableAt: indexReg
+                                  Into: addrReg
+                                  With: self.
+
+              generateRestoreIncomingReceiverAndArgumentsFromNonVolRegisters.
+              haveStackFrame ifTrue: [restoreFrame: 0].
+              usingCTRBranchToAddressIn: addrReg SetLink: false.
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fComment: Warning GC unsafe.
 Returns an address into the caller\'s compiled code masquerading as a small integer.
 -- jb 7/03\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
@@ -3549,6 +3619,37 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             | 
             [compile_stub]. "browsing"
             generateEntryAddressOfStubNamed: 'compile_stub' Into: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfCreatePNMCStubIfFail: fh = ( |
+            | 
+            [createPolymorphicNMethodCache_stub]. "browsing"
+            generateEntryAddressOfStubNamed: 'createPolymorphicNMethodCache_stub' Into: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfNMethodLookupStubIfFail: fh = ( |
+            | 
+            [nmethodCacheLookup_stub]. "browsing"
+            generateEntryAddressOfStubNamed: 'nmethodCacheLookup_stub' Into: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfSendMessageStubIfFail: fh = ( |
+            | 
+            [aaaaaaa]. "Do I really want a separate primitive like this for each stub?"
+            [sendMessage_stub]. "browsing"
+            generateEntryAddressOfStubNamed: 'sendMessage_stub' Into: dstReg.
             self).
         } | ) 
 
@@ -4058,6 +4159,28 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             [_SendDescLookupType          ]. "browsing"
             [_SendDescLookupTypeIfFail: fb]. "browsing"
             generateSendDescOopAtIndex: sendDesc lookupTypeIndex ForNode: node).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fComment: Warning GC unsafe.
+-- jb 7/03\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitive_SendDescNMethodCacheIfFail_: node = ( |
+            | 
+            [_SendDescNMethodCache          ]. "browsing"
+            [_SendDescNMethodCacheIfFail: fb]. "browsing"
+            generateSendDescOopAtIndex: sendDesc nmethodCacheIndex ForNode: node).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fComment: Warning GC unsafe.
+-- jb 7/03\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitive_SendDescPreviousMapIfFail_: node = ( |
+            | 
+            [_SendDescPreviousMap          ]. "browsing"
+            [_SendDescPreviousMapIfFail: fb]. "browsing"
+            generateSendDescOopAtIndex: sendDesc previousMapIndex ForNode: node).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
@@ -4682,6 +4805,17 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          subImm: anInt MaybeSetCCFrom: from To: to = ( |
             | 
             a subiTo: to From: from With: anInt.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: stubs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         usingCTRBranchToAddressIn: r SetLink: shouldSetLink = ( |
+            | 
+            a mtctrFrom: r.
+            shouldSetLink ifTrue: [a bctrl]
+                           False: [a bctr ].
             self).
         } | ) 
 

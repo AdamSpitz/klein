@@ -35,6 +35,7 @@ See the LICENSE file for license information.
              failBlock.
              maxWordSize.
              nextWordIndex.
+             pnmcCreationOK <- bootstrap stub -> 'globals' -> 'true' -> ().
              theClone.
              theCloneAddress.
             | 
@@ -63,10 +64,14 @@ See the LICENSE file for license information.
               __DefineLabel: 'someOtherKindOfError'.
               r: fb value: e.
               __DefineLabel: 'done'.
+              _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
               ^ r
             ].
 
             nextWordIndex: indexToStartCopyingContents.
+
+            pnmcCreationOK: _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow.
+            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: true.
 
             theCloneAddress: _TheVM universe allocationSpace objsTop.
 
@@ -91,6 +96,7 @@ See the LICENSE file for license information.
             nextWordIndex:  copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex.
 
+            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
             theClone).
         } | ) 
 
@@ -101,6 +107,7 @@ See the LICENSE file for license information.
              failBlock.
              maxWordSize.
              nextWordIndex.
+             pnmcCreationOK <- bootstrap stub -> 'globals' -> 'true' -> ().
              theClone.
              theCloneAddress.
             | 
@@ -119,7 +126,7 @@ See the LICENSE file for license information.
 
             _NoGCAllowed.
 
-            [todo cleanup]. "Can we get rid of the duplication between this method and cloneLocalObject:IfFail: ?"
+            [todo cleanup aaaaaaa]. "Can we get rid of the duplication between this method and cloneLocalObject:IfFail: ?"
 
             "Clone primitive fail block before we start allocating space"
             failBlock: [|:e. r|
@@ -131,10 +138,14 @@ See the LICENSE file for license information.
               __DefineLabel: 'someOtherKindOfError'.
               r: fb value: e.
               __DefineLabel: 'done'.
+              _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
               ^ r
             ].
 
             nextWordIndex: indexToStartCopyingContents.
+
+            pnmcCreationOK: _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow.
+            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: true.
 
             theCloneAddress: _TheVM universe allocationSpace objsTop.
 
@@ -164,6 +175,7 @@ See the LICENSE file for license information.
 
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex.
 
+            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
             theClone).
         } | ) 
 
@@ -325,6 +337,7 @@ See the LICENSE file for license information.
              failBlock.
              maxWordSize.
              nextWordIndex.
+             pnmcCreationOK <- bootstrap stub -> 'globals' -> 'true' -> ().
              theClone.
              theCloneAddress.
             | 
@@ -358,10 +371,14 @@ See the LICENSE file for license information.
               __DefineLabel: 'someOtherKindOfError'.
               r: fb value: e.
               __DefineLabel: 'done'.
+              _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
               ^ r
             ].
 
             nextWordIndex: indexToStartCopyingContents.
+
+            pnmcCreationOK: _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow.
+            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: true.
 
             theCloneAddress: _TheVM universe allocationSpace objsTop.
 
@@ -393,6 +410,7 @@ See the LICENSE file for license information.
                                                IfFail: failBlock.
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex.
 
+            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
             theClone).
         } | ) 
 

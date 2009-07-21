@@ -727,6 +727,65 @@ SlotsToOmit: parent.
          topScope.
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> () From: ( | {
+         'Category: entry points\x7fModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (0)'
+        
+         verifiedEntryPointIndex <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> () From: ( | {
+         'Category: object prototypes, formats & pieces\x7fCategory: prototypes\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         polymorphicNMethodCache = bootstrap define: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals vector copy ) From: bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein polymorphicNMethodCache.
+
+CopyDowns:
+globals vector. copy 
+SlotsToOmit: parent.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: InitializeToExpression: (0)\x7fVisibility: public'
+        
+         nextUnusedIndex <- 0.
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein polymorphicNMethodCache parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: public'
+        
+         copyCapableOfHoldingThisManyMaps: n = ( |
+            | 
+            copySize: n * 2).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'vector' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot\x7fVisibility: private'
+        
+         prototype = ( |
+            | 
+            klein polymorphicNMethodCache).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {
          'ModuleInfo: Module: kleinNMethod InitialContents: FollowSlot'
         

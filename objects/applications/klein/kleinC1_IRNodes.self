@@ -1698,6 +1698,14 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'binaryOperation' -> 'parent' -> () From: ( | {
+         'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initialize = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'binaryOperation' -> 'parent' -> () From: ( | {
          'Category: generating code\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
         
          materializeValuesAndDo: blk = ( |
@@ -1846,7 +1854,7 @@ SlotsToOmit: parent.
             | 
             failureFork: failureHandler failureLabel.
             successFork: failureHandler     endLabel.
-            self).
+            resend.initialize).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'binaryOperationThatCanFail' -> 'parent' -> () From: ( | {
@@ -1916,14 +1924,6 @@ SlotsToOmit: parent.
          hasNoSideEffectsOtherThanDefining: v = ( |
             | 
             true).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'binaryOperationThatCannotFail' -> 'parent' -> () From: ( | {
-         'Category: copying\x7fModuleInfo: Module: kleinC1_IRNodes InitialContents: FollowSlot\x7fVisibility: private'
-        
-         initialize = ( |
-            | 
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodes' -> 'binaryOperationThatCannotFail' -> 'parent' -> () From: ( | {

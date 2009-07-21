@@ -2790,7 +2790,7 @@ teach Klein and Yoda how to optimize them away.) -- Adam, 4/06\x7fModuleInfo: Cr
             "Use _IntAdd: instead of + so as not to clone
              any blocks, so that this method can be called from
              the local cloning code. -- Adam, 4/06"
-            (offsetOfIndexZeroFor: o Layout: aLayout)  _IntAdd:  indexFor: o Layout: aLayout).
+            (offsetOfIndexZeroFor: o Layout: aLayout)  _IntAdd:  fixedIndex).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> 'abstractHeaderField' -> () From: ( | {

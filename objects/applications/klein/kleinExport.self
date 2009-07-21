@@ -336,6 +336,7 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'byteAt:IfAbsent:'.
             blk value: 'at:PutByte:'.
             blk value: 'at:PutByte:IfAbsent:'.
+            blk value: 'primReceiver:ByteVectorCompare:IfFail:'.
             blk value: 'lens'.
             blk value: 'machineMemory'.
             blk value: 'localAddressForOID:'.
@@ -347,6 +348,8 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
             blk value: 'isYoung:'.
             blk value: 'decode:'.
             blk value: 'encode:'.
+            blk value: 'vmKit'.
+            blk value: 'layouts'.
             self).
         } | ) 
 

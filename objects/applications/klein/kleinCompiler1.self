@@ -221,6 +221,7 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             codeGenerator copyGeneratedCodeInto: nm.
             nmethodRelocators do: [|:rl| rl beForObject: nm].
             objectsOracle recordReusabilityConditions: reusabilityConditions ForNMethod: nm.
+            nm verifiedEntryPointIndex: codeGenerator verifiedEntryPointIndex.
             nm relocators: relocators.
             nm frame: frame copy.
             nm topScope: firstBB labelNode bc interpreter createScopeDescForNMethod: nm.
@@ -3322,6 +3323,33 @@ SlotsToOmit: parent.
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes optimizationPolicies abstract.
 '.
             | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
+         'Category: polymorphic nmethod caches\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         commonMegamorphicSelectorsDo: blk = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
+         'Category: polymorphic nmethod caches\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
+        
+         commonPolymorphicSelectorsDo: blk = ( |
+            | 
+            blk value: 'polymorphicTestMessage' With: 2.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {
+         'Category: polymorphic nmethod caches\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: public'
+        
+         ifSelector: s IsLikelyToBePolymorphic: pBlk Megamorphic: mBlk Else: eBlk = ( |
+            | 
+            commonPolymorphicSelectorsDo: [|:s2. :n| s = s2 ifTrue: [^ pBlk value: n]].
+            commonMegamorphicSelectorsDo: [|:s2    | s = s2 ifTrue: [^ mBlk value   ]].
+            eBlk value).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'optimizationPolicies' -> 'abstract' -> () From: ( | {

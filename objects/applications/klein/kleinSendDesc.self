@@ -26,6 +26,18 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'abstract' -> () From: ( | {
+         'Category: compilation\x7fModuleInfo: Module: kleinSendDesc InitialContents: FollowSlot\x7fVisibility: private'
+        
+         initialNMethodCacheForSend: key With: cg = ( |
+            | 
+            cg compiler optimizationPolicy
+                                  ifSelector: key selector
+                     IsLikelyToBePolymorphic: [|:n| klein polymorphicNMethodCache copyCapableOfHoldingThisManyMaps: n]
+                                 Megamorphic: -1
+                                        Else: [theVM canDoCloning ifTrue: 0 False: -1]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'abstract' -> () From: ( | {
          'ModuleInfo: Module: kleinSendDesc InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
@@ -150,6 +162,18 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'ppc' -> () From: ( | {
          'Category: compilation\x7fModuleInfo: Module: kleinSendDesc InitialContents: FollowSlot\x7fVisibility: public'
         
+         generateBackpatchAndFlushMachineCaches: sendDescReg TargetTo: targReg PNMC: pnmcReg Temp1: t1 Temp2: t2 With: cg = ( |
+            | 
+            [aaaaaaa]. "Factor this with the other one. Also, maybe rearrange the offsets so that it's not so far from the retryIndex to the nmethodCacheIndex."
+            cg storeWordInRegister: pnmcReg ToOffset: nmethodCacheIndex * cg oopSize FromAddressInRegister: sendDescReg.
+
+            cg generateBackpatch:                           sendDescReg      Offset: retryIndex NewAddress: targReg         Temp1: t1 Temp2: t2.
+            cg generateFlushMachineCachesAfterBackpatching: sendDescReg  FromOffset: retryIndex ToOffset: nmethodCacheIndex Temp1: t1 Temp2: t2).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'ppc' -> () From: ( | {
+         'Category: compilation\x7fModuleInfo: Module: kleinSendDesc InitialContents: FollowSlot\x7fVisibility: public'
+        
          generateCallStubName: stubName LookupKey: key LiveOopTracker: aLiveOopTracker With: cg = ( |
              a.
              branchStart.
@@ -188,6 +212,7 @@ See the LICENSE file for license information.
               a locationCounter: start + (cg oopSize *   lookupTypeIndex).  cg assembleObject: key lookupType.
               a locationCounter: start + (cg oopSize *    nlrReturnIndex).  a bDisp: aLiveOopTracker node labelToBranchToOnNLR.
               a locationCounter: start + (cg oopSize *    delegateeIndex).  cg assembleObject: key delegatee.
+              a locationCounter: start + (cg oopSize * nmethodCacheIndex).  cg assembleObject: initialNMethodCacheForSend: key With: cg.
             ].
 
             a locationCounter:   start + (cg oopSize *       indexPastMe).
@@ -204,6 +229,12 @@ See the LICENSE file for license information.
          'Category: layout\x7fModuleInfo: Module: kleinSendDesc InitialContents: FollowSlot'
         
          nlrReturnIndex = 7.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'ppc' -> () From: ( | {
+         'Category: layout\x7fModuleInfo: Module: kleinSendDesc InitialContents: FollowSlot'
+        
+         nmethodCacheIndex = 9.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'sendDescs' -> 'ppc' -> () From: ( | {
@@ -259,7 +290,7 @@ See the LICENSE file for license information.
         
          size = ( |
             | 
-            delegateeIndex succ).
+            nmethodCacheIndex succ).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

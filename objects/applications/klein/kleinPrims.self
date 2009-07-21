@@ -167,9 +167,212 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: stubs (receiver may not be klein primitives)\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         createPolymorphicNMethodCache_stub = ( |
+             false = bootstrap stub -> 'globals' -> 'false' -> ().
+             kleinPrims = bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> ().
+             pnmc <- 0.
+             pnmcPrototype = ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> ().
+             sd.
+             true = bootstrap stub -> 'globals' -> 'true' -> ().
+            | 
+            _NoMapTest.
+            _VariableArguments.
+
+            __BranchIfTrue: kleinPrims shouldNotCreateAnyPolymorphicNMethodCachesForNow To: 'backpatchAndRetrySendDesc'.
+
+            kleinPrims shouldNotCreateAnyPolymorphicNMethodCachesForNow: true.
+            pnmc: pnmcPrototype copyCapableOfHoldingThisManyMaps: 10.
+            kleinPrims shouldNotCreateAnyPolymorphicNMethodCachesForNow: false.
+
+            __DefineLabel: 'backpatchAndRetrySendDesc'.
+            sd: _CallingSendDesc.
+            sd _BackpatchSendDescTo: _EntryAddressOfSendMessageStub PNMC: pnmc.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (vector copySize: 1 FillingWith: \'nic\')\x7fVisibility: private'
         
          myCompilers <- vector copySize: 1 FillingWith: 'nic'.
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         nmethodCacheLookup_stub = ( |
+             del.
+             i <- 0.
+             key.
+             lookupKeyPrototype = bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> ().
+             lt.
+             map.
+             maskedLT.
+             n.
+             newEntryAddress.
+             nm.
+             nmc.
+             nmethodPrototype = bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> ().
+             pnmc.
+             pnmcPrototype = ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> ().
+             pnmcSize.
+             sd.
+             sel.
+            | 
+
+            "Keep the sendMessage_stub in sync with klein compilerTestPrograms lookupStub."
+
+            _NoMapTest.
+            _VariableArguments.
+            _NoGCAllowed.
+            _NoSendsAllowed.
+
+            map: _Map.
+            sd: _CallingSendDesc.
+            sel:  sd _SendDescSelector.
+
+            " for debugging
+              _SystemCall: 4 With: (1 _IntForC)  With: ('AAA: ' _ByteVectorForC) With: (5             _IntForC).
+              _SystemCall: 4 With: (1 _IntForC)  With: (sel  _ByteVectorForC) With: (sel _ByteSize _IntForC).
+              _SystemCall: 4 With: (1 _IntForC)  With: ('\n' _ByteVectorForC) With: (1             _IntForC).
+            "
+
+            "Maybe use AltiVec for this loop someday. -- Dave and Adam and Alex, 3/04"
+
+            "We're doing a lot of boolean-loading. -- Adam & Alex, 4/04"
+
+            "Loop through the nmethod cache until we find an nmethod
+             with a matching lookupKey."
+
+            lt:  sd _SendDescLookupType.
+            del: sd _SendDescDelegatee.
+            nmc: map _NMethodCache.
+            maskedLT: lt _MaskedLookupType.
+
+            n: nmc _Size.
+            __DefineLabel: 'nmcLoopHead'.
+            __BranchIfTrue: (i _IntEQ: n) To: 'miss'.
+            nm:  nmc _At: i.
+            key:  _In: nm WhichIsOfType: nmethodPrototype Get: 'lookupKey'.
+            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'selector'  )                   _Eq: sel     ) To: 'nmNotFoundYet'.
+            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'lookupType') _MaskedLookupType _Eq: maskedLT) To: 'nmNotFoundYet'.
+            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'delegatee' )                   _Eq: del     ) To: 'nmNotFoundYet'.
+            __BranchTo: 'nmFound'.
+
+            __DefineLabel: 'nmNotFoundYet'.
+            i: i _IntAdd: 1.
+            __BranchTo: 'nmcLoopHead'.
+
+
+            __DefineLabel: 'nmFound'.
+
+            pnmc: sd _SendDescNMethodCache.
+            __BranchIfTrue: (pnmc _Eq:  0) To: 'setInlineCache'.
+            __BranchIfTrue: (pnmc _Eq: -1) To: 'setInlineCache'.
+            pnmcSize: _In: pnmc WhichIsOfType: pnmcPrototype Get: 'nextUnusedIndex'.
+            pnmc _At:  pnmcSize             Put: map.
+            pnmc _At: (pnmcSize _IntAdd: 1) Put: nm.
+            _In: pnmc WhichIsOfType: pnmcPrototype Set: 'nextUnusedIndex:' To: pnmcSize _IntAdd: 2.
+            newEntryAddress: _EntryAddressOfSendMessageStub.
+            __BranchTo: 'backpatchAndRetrySendDesc'.
+
+            __DefineLabel: 'setInlineCache'.
+            newEntryAddress: nm _NMethodEntryPoint.
+            __BranchTo: 'backpatchAndRetrySendDesc'.
+
+            __DefineLabel: 'miss'.
+            _Breakpoint: 'miss, about to call compile_stub'.
+            newEntryAddress: _EntryAddressOfCompileStub.
+            __BranchTo: 'backpatchAndRetrySendDesc'.
+
+            __DefineLabel: 'backpatchAndRetrySendDesc'.
+            sd _BackpatchSendDescTo: newEntryAddress Map: map.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         old_sendMessage_stub = ( |
+             del.
+             i <- 0.
+             key.
+             lookupKeyPrototype = bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> ().
+             lt.
+             map.
+             maskedLT.
+             n.
+             nilOop = bootstrap stub -> 'globals' -> 'nil' -> ().
+             nm.
+             nmc.
+             nmethodPrototype = bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> ().
+             sd.
+             sel.
+            | 
+
+            "Keep the sendMessage_stub in sync with klein compilerTestPrograms lookupStub."
+
+            _NoMapTest.
+            _VariableArguments.
+            _NoGCAllowed.
+            _NoSendsAllowed.
+
+            sd: _CallingSendDesc.
+            sel: sd _SendDescSelector.
+
+            " for debugging
+              _SystemCall: 4 With: (1 _IntForC)  With: (sel  _ByteVectorForC) With: (sel _ByteSize _IntForC).
+              _SystemCall: 4 With: (1 _IntForC)  With: ('\n' _ByteVectorForC) With: (1             _IntForC).
+            "
+
+            lt:  sd _SendDescLookupType.
+            del: sd _SendDescDelegatee.
+            map: _Map.
+            nmc: map _NMethodCache.
+            n: nmc _Size.
+
+            "Maybe use AltiVec for this loop someday. -- Dave and Adam and Alex, 3/04"
+
+            "We're doing a lot of boolean-loading. -- Adam & Alex, 4/04"
+
+            "Loop through the nmethod cache until we find an nmethod
+             with a matching lookupKey. We need to compare the selector,
+             lookup type, and delegatee. (Note that the 'delegatee'
+             for an undirected resend is really the object that holds
+             the method that is doing the resend. And for a normal
+             lookup, it's always nil. We should really name it
+             something better.)"
+
+            maskedLT: lt _MaskedLookupType.
+
+            __DefineLabel: 'loopHead'.
+            __BranchIfTrue: (i _IntEQ: n) To: 'miss'.
+            nm:  nmc _At: i.
+            key:  _In: nm WhichIsOfType: nmethodPrototype Get: 'lookupKey'.
+            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'selector'  )                   _Eq: sel     ) To: 'notFoundYet'.
+            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'lookupType') _MaskedLookupType _Eq: maskedLT) To: 'notFoundYet'.
+            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'delegatee' )                   _Eq: del     ) To: 'notFoundYet'.
+            __BranchTo: 'found'.
+
+            __DefineLabel: 'notFoundYet'.
+            i: i _IntAdd: 1.
+            __BranchTo: 'loopHead'.
+
+
+            __DefineLabel: 'found'.
+
+            sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: map.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here'.
+
+            __DefineLabel: 'miss'.
+            _Breakpoint: 'miss, about to call compile_stub'.
+            sd _BackpatchSendDescTo: _EntryAddressOfCompileStub Map: map.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here').
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -677,18 +880,15 @@ See the LICENSE file for license information.
          'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
         
          sendMessage_stub = ( |
-             del.
              i <- 0.
-             key.
-             lookupKeyPrototype = bootstrap stub -> 'globals' -> 'klein' -> 'lookupKey' -> ().
-             lt.
+             kleinPrims = bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> ().
              map.
-             maskedLT.
-             n.
-             nilOop = bootstrap stub -> 'globals' -> 'nil' -> ().
-             nm.
-             nmc.
+             newEntryAddress.
              nmethodPrototype = bootstrap stub -> 'globals' -> 'klein' -> 'nmethod' -> ().
+             pnmc.
+             pnmcNM.
+             pnmcPrototype = ((bootstrap stub -> 'globals' -> 'klein') \/-> 'polymorphicNMethodCache') -> ().
+             pnmcSize.
              sd.
              sel.
             | 
@@ -700,59 +900,62 @@ See the LICENSE file for license information.
             _NoGCAllowed.
             _NoSendsAllowed.
 
-            sd: _CallingSendDesc.
-            sel: sd _SendDescSelector.
-
-            " for debugging
-              _SystemCall: 4 With: (1 _IntForC)  With: (sel  _ByteVectorForC) With: (sel _ByteSize _IntForC).
-              _SystemCall: 4 With: (1 _IntForC)  With: ('\n' _ByteVectorForC) With: (1             _IntForC).
-            "
-
-            lt:  sd _SendDescLookupType.
-            del: sd _SendDescDelegatee.
             map: _Map.
-            nmc: map _NMethodCache.
-            n: nmc _Size.
+            sd: _CallingSendDesc.
+            sel:  sd _SendDescSelector.
+            pnmc: sd _SendDescNMethodCache.
 
-            "Maybe use AltiVec for this loop someday. -- Dave and Adam and Alex, 3/04"
+            __BranchIfTrue: (pnmc _Eq: -1) To: 'timeToDoTheLookup'. "megamorphic send"
+            __BranchIfTrue: (pnmc _Eq:  0) To: 'pnmcDoesNotExistYet'.
 
-            "We're doing a lot of boolean-loading. -- Adam & Alex, 4/04"
+            pnmcSize: _In: pnmc WhichIsOfType: pnmcPrototype Get: 'nextUnusedIndex'.
+            __DefineLabel: 'pnmcLoopHead'.
+            __BranchIfTrue: (i _IntEQ: pnmcSize) To: 'pnmcMatchNotFound'.
+            __BranchIfTrue: (map _Eq: pnmc _At: i) To: 'pnmcMatchFound'.
+            i: i _IntAdd: 2.
+            __BranchTo: 'pnmcLoopHead'.
 
-            "Loop through the nmethod cache until we find an nmethod
-             with a matching lookupKey. We need to compare the selector,
-             lookup type, and delegatee. (Note that the 'delegatee'
-             for an undirected resend is really the object that holds
-             the method that is doing the resend. And for a normal
-             lookup, it's always nil. We should really name it
-             something better.)"
-
-            maskedLT: lt _MaskedLookupType.
-
-            __DefineLabel: 'loopHead'.
-            __BranchIfTrue: (i _IntEQ: n) To: 'miss'.
-            nm:  nmc _At: i.
-            key:  _In: nm WhichIsOfType: nmethodPrototype Get: 'lookupKey'.
-            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'selector'  )                   _Eq: sel     ) To: 'notFoundYet'.
-            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'lookupType') _MaskedLookupType _Eq: maskedLT) To: 'notFoundYet'.
-            __BranchIfFalse: ((_In: key WhichIsOfType: lookupKeyPrototype Get: 'delegatee' )                   _Eq: del     ) To: 'notFoundYet'.
-            __BranchTo: 'found'.
-
-            __DefineLabel: 'notFoundYet'.
-            i: i _IntAdd: 1.
-            __BranchTo: 'loopHead'.
-
-
-            __DefineLabel: 'found'.
-
-            sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: map.
-            sd _RetrySendDesc.
+            __DefineLabel: 'pnmcMatchFound'.
+            pnmcNM: pnmc _At:  i _IntAdd: 1.
+            pnmcNM _BranchToIndex: _In: pnmcNM WhichIsOfType: nmethodPrototype Get: 'verifiedEntryPointIndex'.
             _Breakpoint: 'should never reach here'.
 
-            __DefineLabel: 'miss'.
-            _Breakpoint: 'miss, about to call compile_stub'.
-            sd _BackpatchSendDescTo: _EntryAddressOfCompileStub Map: map.
+
+            __DefineLabel: 'pnmcDoesNotExistYet'.
+
+            __BranchIfTrue:  (sd _SendDescPreviousMap _Eq: 0) To: 'timeToDoTheLookup'.  "This is the first time through this sendDesc, no need for a PNMC yet."
+            __BranchIfTrue: (_In: kleinPrims WhichIsOfType: kleinPrims Get: 'shouldNotCreateAnyPolymorphicNMethodCachesForNow') To: 'timeToDoTheLookup'. "Otherwise we loop forever."
+            " for debugging
+              _SystemCall: 4 With: (1 _IntForC)  With: ('Creating polymorphic nmethod cache: ' _ByteVectorForC) With: (36            _IntForC).
+              _SystemCall: 4 With: (1 _IntForC)  With: (sel                                    _ByteVectorForC) With: (sel _ByteSize _IntForC).
+              _SystemCall: 4 With: (1 _IntForC)  With: ('\n'                                   _ByteVectorForC) With: (1             _IntForC).
+            "
+            newEntryAddress: _EntryAddressOfCreatePNMCStub.
+            __BranchTo: 'backpatchAndRetrySendDesc'.
+
+            __DefineLabel: 'pnmcMatchNotFound'.
+            __BranchIfTrue: (pnmcSize _Eq: pnmc _Size) To: 'pnmcFull'.
+            __BranchTo: 'timeToDoTheLookup'.
+
+            __DefineLabel: 'pnmcFull'.
+            sd _BackpatchSendDescTo: _EntryAddressOfSendMessageStub PNMC: -1. "mark it as a megamorphic send"
+            __BranchTo: 'retrySendDesc'.
+
+            __DefineLabel: 'timeToDoTheLookup'.
+            newEntryAddress: _EntryAddressOfNMethodLookupStub.
+            __BranchTo: 'backpatchAndRetrySendDesc'.
+
+            __DefineLabel: 'backpatchAndRetrySendDesc'.
+            sd _BackpatchSendDescTo: newEntryAddress Map: map.
+            __DefineLabel: 'retrySendDesc'.
             sd _RetrySendDesc.
             _Breakpoint: 'should never reach here').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: stubs (receiver may not be klein primitives)\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (false)\x7fVisibility: private'
+        
+         shouldNotCreateAnyPolymorphicNMethodCachesForNow <- bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
@@ -1302,7 +1505,8 @@ See the LICENSE file for license information.
                  With: (argsToPassIn at: 2 IfAbsent: nil)
                  With: (argsToPassIn at: 3 IfAbsent: nil)
                  With: (argsToPassIn at: 4 IfAbsent: nil)
-                 With: (argsToPassIn at: 5 IfAbsent: nil)).
+                 With: (argsToPassIn at: 5 IfAbsent: nil)
+                 With: (argsToPassIn at: 6 IfAbsent: nil)).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> 'translatorMixin' -> () From: ( | {

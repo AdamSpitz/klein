@@ -395,6 +395,12 @@ tests on data slot reading and writing.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         canDoCloning = bootstrap stub -> 'globals' -> 'false' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          dataSlotInliningTester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'dataSlotInliningTester' -> () From: ( |
@@ -1498,6 +1504,60 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         polyObj1 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj1' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent polyObj1.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj1' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj1' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         polymorphicTestMessage = ( |
+            | 
+            1).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         polyObj2 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj2' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent polyObj2.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj2' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj2' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         polymorphicTestMessage = ( |
+            | 
+            returnTwo).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj2' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         returnTwo = ( |
+            | 
+            2).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          primitiveFailureTester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'primitiveFailureTester' -> () From: ( |
@@ -1536,6 +1596,14 @@ SlotsToOmit: parent prototype safety.
          'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          resendingTests = bootstrap stub -> 'globals' -> 'tests' -> 'resending' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         sendPolymorphicMessageTo: o = ( |
+            | 
+            o polymorphicTestMessage).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1628,6 +1696,7 @@ SlotsToOmit: parent prototype safety.
             b. "for incremental update test -- dmu 8/04"
             performTester run.
             testTypePrediction.
+            testPolymorphicCaches.
             _Breakpoint: 'done'.
             three).
         } | ) 
@@ -1813,6 +1882,18 @@ SlotsToOmit: parent prototype safety.
          testOnNonLocalReturn = ( |
             | 
             onNonLocalReturnTester test).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testPolymorphicCaches = ( |
+            | 
+            assert: (sendPolymorphicMessageTo: polyObj1) Is: 1.
+            assert: (sendPolymorphicMessageTo: polyObj2) Is: 2.
+            assert: (sendPolymorphicMessageTo: polyObj1) Is: 1.
+            assert: (sendPolymorphicMessageTo: polyObj2) Is: 2.
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
