@@ -393,9 +393,9 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             "I'm not completely sure about this, but I think that we don't need to worry about resends
              making the nmethod unreusable, since the resend lookup starts from the method holder rather
              than from self. -- Adam, Apr. 2009"
-            k isResend && [(mapOfHolderOfSlot: irNodeGenerator sourceLevelAllocator slot) !== irNodeGenerator sourceLevelAllocator context selfMap] ifFalse: [
-              reusabilityConditions add: reusableIfSlotIsTheSame copyForKey: k Slot: s.
-            ].
+            k isResend && [(mapOfHolderOfSlot: irNodeGenerator sourceLevelAllocator slot) !== irNodeGenerator sourceLevelAllocator context selfMap] ifTrue: [^ self].
+
+            reusabilityConditions add: reusableIfSlotIsTheSame copyForKey: k Slot: s.
             self).
         } | ) 
 
@@ -549,18 +549,6 @@ can\'t) do eager relocation. -- Adam, 3/05\x7fModuleInfo: Creator: globals klein
             machineLevelAllocator topSourceLevelAllocator initializeValues.
 
             self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
-         'Category: inlining\x7fModuleInfo: Module: kleinCompiler1 InitialContents: FollowSlot\x7fVisibility: private'
-        
-         inlineOneLevelDeep = ( |
-            | 
-            [aaaaaaa].
-            nodesSatisfying: [|:n| n isSend] Do: [|:n|
-              irNodeGenerator maybeInlineSend: n.
-            ].
-            false).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {
@@ -1940,7 +1928,7 @@ that we can improve performance later if necessary.
         
          getAvailableRegisters = ( |
             | 
-            allPossibleAvailableRegisterLocations: machineLevelAllocator availableRegisterLocations asSet.
+            allPossibleAvailableRegisterLocations: machineLevelAllocator availableRegisterLocations.
             usedRegisterLocations: set copyRemoveAll.
             self).
         } | ) 
@@ -3097,7 +3085,8 @@ SlotsToOmit: parent.
          getAvailableRegisters = ( |
             | 
             resend.getAvailableRegisters.
-            availableRegisterLocations: allPossibleAvailableRegisterLocations asList.
+                       availableRegisterLocations: allPossibleAvailableRegisterLocations asList.
+            allPossibleAvailableRegisterLocations: allPossibleAvailableRegisterLocations asSet.
             self).
         } | ) 
 
@@ -3394,7 +3383,6 @@ SlotsToOmit: parent.
             | 
             s isMethod ifFalse: [^ true ]. "Data slots are fine."
             s contents codes size <= maxMethodSizeForInlining ifTrue: [^ true]. "For now just use bytecode count."
-            [('if:Then:' isPrefixOf: s name) ifTrue: [^ true]. [aaaaaaa]. "Just a special-case hack for now."].
             false).
         } | ) 
 
@@ -3548,8 +3536,8 @@ SlotsToOmit: parent.
          shouldDisplayDebugInformation = ( |
             | 
             "(selector = 'at:') && [context selfMirror = traits mirrors abstractMirror asMirror]"
-            "selector = 'whileTrue:'"
-            false).
+            selector = 'inliningTest_nothingButVectorAt'
+            "false").
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> () From: ( | {

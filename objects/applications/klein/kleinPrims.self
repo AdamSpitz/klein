@@ -194,6 +194,81 @@ See the LICENSE file for license information.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
+         'Category: stubs (receiver may not be klein primitives)\x7fComment: Receiver is callee of message to be sent.\x7fModuleInfo: Module: kleinPrims InitialContents: FollowSlot\x7fVisibility: public'
+        
+         interpret_stub = ( |
+             args.
+             false = bootstrap stub -> 'globals' -> 'false' -> ().
+             holderMir.
+             i <- 0.
+             key.
+             klein = bootstrap stub -> 'globals' -> 'klein' -> ().
+             nil = bootstrap stub -> 'globals' -> 'nil' -> ().
+             nm.
+             raiseError = bootstrap stub -> 'globals' -> 'raiseError' -> ().
+             rcvr.
+             rcvrMap.
+             rcvrMir.
+             sd.
+             ss.
+             vector = ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+            | 
+            _NoMapTest.
+            _VariableArguments.
+
+            sd: _CallingSendDesc.
+            key: klein lookupKey copyForSelector: sd _SendDescSelector
+                                      LookupType: sd _SendDescLookupType
+                                       Delegatee: sd _SendDescDelegatee.
+
+            key isResend ifTrue: [_Breakpoint: 'Hmm. Do we have enough information to do this?'].
+
+            rcvrMap: _Map.
+            rcvrMir: _Mirror.
+
+            rcvrMap isBlock ifTrue: [_Breakpoint: 'Not gonna work yet; gotta find the selfMir and enclosing scopes.'].
+
+            ss: key lookupSlotsUsing: rcvrMir slotFinder Self: rcvrMap Holder: holderMir.
+
+            rcvr: _ArgAt: 0.
+            args: vector copySize: _ArgCount _IntSub: 1.
+            __DefineLabel: 'argLoopHead'.
+            __BranchIfTrue: (i _IntEQ: args size) To: 'argLoopDone'.
+            args at: i Put: _ArgAt: i _IntAdd: 1.
+            i: i _IntAdd: 1.
+            __BranchTo: 'argLoopHead'.
+            __DefineLabel: 'argLoopDone'.
+
+            nm:
+              ss ifNone: [_Breakpoint: 'lookup failure: no slot']
+                  IfOne: [|:s|
+                          s isMethod ifTrue: [| method. act. holder. sender. nakedMethods. true = true |
+                            nakedMethods: _NakedMethods.
+                            _NakedMethods: true. [aaaaaaa].
+                            method: s contents reflectee.
+                            _NakedMethods: nakedMethods. [aaaaaaa].
+                            [aaaaaaa holder: s holder   reflectee.]. "Dammit, it's one of those wacko slots with a map as the holder."
+                            [aaaaaaa]. "sender: _SomehowGetTheSender."
+                            args: args copySize: method argCount.
+                            act: method createLocalActivationForReceiver: rcvr
+                                                               Arguments: args
+                                                            MethodHolder: holder
+                                                                  Sender: sender
+                                                                  IfFail: raiseError.
+                            _Breakpoint: 'how do I return the result?'
+                          ] False: [
+                            _Breakpoint: 'how do I return the result?'
+                          ].
+                         ]
+                 IfMany: [_Breakpoint: 'lookup failure: found multiple slots'].
+
+            sd _BackpatchSendDescTo: nm _NMethodEntryPoint Map: rcvrMap.
+            _Breakpoint: 'just dynamically compiled something; about to retry the sendDesc'.
+            sd _RetrySendDesc.
+            _Breakpoint: 'should never reach here').
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'primitives' -> () From: ( | {
          'Category: fake primitives (primitives that are just normal methods)\x7fCategory: compilation\x7fModuleInfo: Module: kleinPrims InitialContents: InitializeToExpression: (vector copySize: 1 FillingWith: \'nic\')\x7fVisibility: private'
         
          myCompilers <- vector copySize: 1 FillingWith: 'nic'.
@@ -283,8 +358,8 @@ See the LICENSE file for license information.
             __BranchTo: 'backpatchAndRetrySendDesc'.
 
             __DefineLabel: 'miss'.
-            _Breakpoint: 'miss, about to call compile_stub'.
-            newEntryAddress: _EntryAddressOfCompileStub.
+            _Breakpoint: 'miss, about to call interpret_stub'.
+            newEntryAddress: _EntryAddressOfInterpretStub.
             __BranchTo: 'backpatchAndRetrySendDesc'.
 
             __DefineLabel: 'backpatchAndRetrySendDesc'.
@@ -1335,6 +1410,7 @@ See the LICENSE file for license information.
         
          cloneFailBlockIfNecessary = ( |
             | 
+            [aaaaaaa]. "Get rid of this redundant deferring mechanism."
             cg shouldBeLazyAboutCloningPrimitiveFailBlocks ifTrue: [
               cg failBlockLiteralNode ifNotNil: [|:fbln|
                 cg deferCloningOfPrimitiveFailBlockLiteral: fbln.

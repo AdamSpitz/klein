@@ -165,7 +165,7 @@ tests on data slot reading and writing.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          add: x To: y = ( |
             | 
@@ -522,7 +522,7 @@ tests on data slot reading and writing.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: case\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          doCaseStatement = ( |
             | 
@@ -697,7 +697,25 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: accessing arguments\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         getArgAt: i From: a2 And: a3 And: a4 And: a5 = ( |
+            | 
+            "Not-constant."
+            _ArgAt: i).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: accessing arguments\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         getFourthArgFrom: a2 And: a3 And: a4 And: a5 = ( |
+            | 
+            "Constant."
+            _ArgAt: 4).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: primitive failure\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          in: bv ByteAt: i IfAbsent: blk = ( |
             | 
@@ -1002,7 +1020,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: loops\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          loopAddingNumbersFromZeroTo: n = ( |
              i <- 0.
@@ -1015,7 +1033,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: live mutation\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          methodForLiveMutation = ( |
             | 
@@ -1023,7 +1041,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: live mutation\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          methodWithLocals: x AndArgs: a = ( |
              b <- 2.
@@ -1035,22 +1053,45 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: many arguments\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          methodWithManyArguments: a And: b And: c And: d And: e And: f And: g And: h And: i And: j And: k = ( |
+             l.
+             m.
+             n.
+             o.
+             p.
+             q.
+             r.
+             s.
+             t.
+             u.
+             vector = ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
              x.
             | 
-            x: a _IntAdd: b.
+            x: vector _At: 0 IfFail: [|:e. :p| 0].
+            x: x _IntAdd: a.
+            x: x _IntAdd: b.
             x: x _IntAdd: c.
             x: x _IntAdd: d.
             x: x _IntAdd: e.
             x: x _IntAdd: f.
             x: x _IntAdd: g.
             x: x _IntAdd: h.
-            x: x _IntAdd: i.
+            x: vector _At: -1 IfFail: [|:e. :p| x _IntAdd: i].
             x: x _IntAdd: j.
             x: x _IntAdd: k.
-            x _IntAdd: [a _IntAdd: k] value).
+            l: 13.
+            m: [l _IntAdd: a] value.
+            n: [m _IntAdd: b] value.
+            o: [n _IntAdd: c] value.
+            p: [o _IntAdd: d] value.
+            q: [p _IntAdd: e] value.
+            r:  q _IntAdd: f.
+            s: [r _IntAdd: g] value.
+            t:  s _IntAdd: h.
+            u: vector _At: 5 IfFail: [|:e. :p| t _IntAdd: i].
+            x _IntAdd: [u _IntAdd: k] value).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
@@ -1121,7 +1162,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'onNonLocalReturnTester' -> () From: ( | {
-         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
         } | ) 
@@ -1166,7 +1207,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'onNonLocalReturnTester' -> () From: ( | {
-         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
         
          test = ( |
             | 
@@ -1226,7 +1267,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: data slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          one = 1.
         } | ) 
@@ -1238,7 +1279,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: perform\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          performTester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'performTester' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent performTester.
@@ -1438,6 +1479,8 @@ SlotsToOmit: parent prototype safety.
             assert: two                    Is: 2. "Just make sure it gets compiled."
             assert: (_Perform: 'one')      Is: 1.
             assert: (_Perform: 'two')      Is: 2.
+            assert: ( perform: 'one')      Is: 1.
+            assert: ( perform: 'two')      Is: 2.
             assert: (send: 'one' To: self) Is: 1.
             assert: (send: 'two' To: self) Is: 2.
 
@@ -1504,7 +1547,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: polymorphic nmethod caches\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          polyObj1 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj1' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent polyObj1.
@@ -1527,7 +1570,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: polymorphic nmethod caches\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          polyObj2 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj2' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent polyObj2.
@@ -1558,7 +1601,30 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: polymorphic nmethod caches\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         polyObj3 = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj3' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent polyObj3.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj3' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'polyObj3' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         polymorphicTestMessage = ( |
+            | 
+            3).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: primitive failure\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          primitiveFailureTester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'primitiveFailureTester' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent primitiveFailureTester.
@@ -1581,7 +1647,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: recursion\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          recursiveFactorial: i = ( |
              j <- 1.
@@ -1599,7 +1665,15 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: polymorphic nmethod caches\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         sendMegamorphicMessageTo: o = ( |
+            | 
+            o polymorphicTestMessage).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: polymorphic nmethod caches\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          sendPolymorphicMessageTo: o = ( |
             | 
@@ -1667,6 +1741,7 @@ SlotsToOmit: parent prototype safety.
             testCallingBlocks.
             testInitializingLocals.
             testMethodWithManyArguments.
+            testArgAt.
             testIfTrueAndIfFalse.
             inliningTester run.
             tryingToReplicateInliningBug run.
@@ -1678,11 +1753,10 @@ SlotsToOmit: parent prototype safety.
             testOnNonLocalReturn.
             branchTester run.
             testRestart.
-            assert: (recursiveFactorial: 10) Is: 3628800.
+            testRecursion.
             resendingTests run.
             dataSlotInliningTester run.
             testWhileTrue.
-            testByteVectors.
             testMapsOfObjectLiterals.
             testControlFlowOrderCodeGeneration: true.
             testControlFlowOrderCodeGeneration: false.
@@ -1695,14 +1769,25 @@ SlotsToOmit: parent prototype safety.
             three: one _IntAdd: two.
             b. "for incremental update test -- dmu 8/04"
             performTester run.
-            testTypePrediction.
+            typePredictionTester run.
             testPolymorphicCaches.
             _Breakpoint: 'done'.
             three).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: accessing arguments\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testArgAt = ( |
+            | 
+            assert: (getArgAt: 2 From:  4 And:  9 And: 16 And: 25) Is:  4.
+            assert: (getArgAt: 3 From: 10 And: 20 And: 30 And: 40) Is: 20.
+            assert: (getFourthArgFrom: 11 And: 22 And: 33 And: 44) Is: 44.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testArithmetic = ( |
             | 
@@ -1711,25 +1796,13 @@ SlotsToOmit: parent prototype safety.
             assert: ( 7 _IntMul: 8) Is: 56.
             assert: (42 _IntDiv: 3) Is: 14.
             assert: (add: 3  To: 4) Is: 7.
+            assertFail: [|:fb. maxSmallInt = maxSmallInt| maxSmallInt _IntAdd: 1 IfFail: fb].
+            assertFail: [|:fb. minSmallInt = minSmallInt| minSmallInt _IntSub: 1 IfFail: fb].
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         testByteVectors = ( |
-            | 
-            assert: ('abcde' _ByteAt: 3) Is: 100.
-            assert: ('abcde' _ByteAt: 4) Is: 101.
-
-            assertFail: [|:fb| 'abcde' _ByteAt: -1 IfFail: fb].
-            assertFail: [|:fb| 'abcde' _ByteAt: 5  IfFail: fb].
-
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: blocks\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testCallingBlocks = ( |
             | 
@@ -1752,7 +1825,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: case\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testCaseStatement = ( |
             | 
@@ -1761,7 +1834,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: control flow\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testControlFlowOrderCodeGeneration: b = ( |
              x.
@@ -1781,7 +1854,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: data slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testDataSlots = ( |
             | 
@@ -1797,7 +1870,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: live mutation\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testFixAndContinue: b With: a And: x = ( |
              r <- 0.
@@ -1836,7 +1909,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: blocks\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testLeafMethodWithBrowsingTag = ( |
             | 
@@ -1866,13 +1939,13 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: many arguments\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testMethodWithManyArguments = ( |
              r.
             | 
             r: methodWithManyArguments: 1 And: 2 And: 3 And: 4 And: 5 And: 6 And: 7 And: 8 And: 9 And: 10 And: 11.
-            assert: r Is: 78.
+            assert: r Is: 135.
             self).
         } | ) 
 
@@ -1885,7 +1958,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: polymorphic nmethod caches\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testPolymorphicCaches = ( |
             | 
@@ -1893,11 +1966,19 @@ SlotsToOmit: parent prototype safety.
             assert: (sendPolymorphicMessageTo: polyObj2) Is: 2.
             assert: (sendPolymorphicMessageTo: polyObj1) Is: 1.
             assert: (sendPolymorphicMessageTo: polyObj2) Is: 2.
+
+            assert: (sendMegamorphicMessageTo: polyObj1) Is: 1.
+            assert: (sendMegamorphicMessageTo: polyObj2) Is: 2.
+            assert: (sendMegamorphicMessageTo: polyObj3) Is: 3.
+            assert: (sendMegamorphicMessageTo: polyObj1) Is: 1.
+            assert: (sendMegamorphicMessageTo: polyObj2) Is: 2.
+            assert: (sendMegamorphicMessageTo: polyObj3) Is: 3.
+
             self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: primitive failure\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testPrimitiveFailure = ( |
              atPut.
@@ -1926,7 +2007,16 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: recursion\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         testRecursion = ( |
+            | 
+            assert: (recursiveFactorial: 10) Is: 3628800.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
+         'Category: tests\x7fCategory: loops\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testRestart = ( |
             | 
@@ -1952,16 +2042,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
-        
-         testTypePrediction = ( |
-            | 
-            assert: typePredictionTest_1 Is: 5.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: loops\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          testWhileTrue = ( |
              i <- 0.
@@ -1976,7 +2057,7 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (nil)'
+         'Category: tests\x7fCategory: data slots\x7fModuleInfo: Module: kleinTestVM InitialContents: InitializeToExpression: (nil)'
         
          three.
         } | ) 
@@ -2045,13 +2126,96 @@ SlotsToOmit: parent prototype safety.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: data slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
         
          two <- 2.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {
-         'Category: tests\x7fCategory: helper slots\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+         'Category: tests\x7fCategory: type prediction\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot'
+        
+         typePredictionTester = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent typePredictionTester.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         ampersander = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> 'ampersander' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines miniVM parent typePredictionTester ampersander.
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> 'ampersander' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         && x = ( |
+            | 
+            thirteen _IntAnd: double: x).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> 'ampersander' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         double: x = ( |
+            | 
+            x _IntMul: 2).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> 'ampersander' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         fourteen = ( |
+            | 
+            14).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> 'ampersander' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> 'ampersander' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         thirteen = ( |
+            | 
+            fourteen _IntSub: 1).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( | {
+         'Category: assertions\x7fModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         assert: x Is: y = ( |
+            | 
+            __BranchIfTrue: (x _Eq: y) To: 'fine'.
+            _Breakpoint: 'assertion failed'.
+            __DefineLabel: 'fine'.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'traits' -> 'oddball' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         run = ( |
+            | 
+            assert: typePredictionTest_1 Is: 5.
+            assert: typePredictionTest_2 Is: 4.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
         
          typePredictionTest_1 = ( |
              x.
@@ -2061,6 +2225,14 @@ SlotsToOmit: parent prototype safety.
              block is actually getting cloned."
             (3 _IntLT: 4) ifTrue: [x: 5].
             x).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> 'typePredictionTester' -> () From: ( | {
+         'ModuleInfo: Module: kleinTestVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         typePredictionTest_2 = ( |
+            | 
+            ampersander && 3).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'miniVM' -> 'parent' -> () From: ( | {

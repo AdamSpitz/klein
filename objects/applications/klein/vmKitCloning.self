@@ -32,78 +32,26 @@ See the LICENSE file for license information.
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
          cloneLocalObject: theOriginal IfFail: fb = ( |
-             failBlock.
-             maxWordSize.
-             nextWordIndex.
-             pnmcCreationOK <- bootstrap stub -> 'globals' -> 'true' -> ().
-             theClone.
-             theCloneAddress.
             | 
-
-            "Duplication with" [cloneLocalObject: theOriginal          Size: 0 FillingWith: nil IfFail: fb].
-            "Duplication with" [cloneLocalObject: theOriginal IndexableSize: 0                  IfFail: fb].
-
-            "Warning: This method violates invariants:
-                      - theCloneAddress is a pointer that looks like a Smi.
-                      - theClone references uninitialized storage.
-                      - Using heap space before it has been allocated.
-                      - If the object we cloned held a bytes part pointer,
-                        then two objects will point to the same bytes part
-                        when this method exits.
-                        This condition must be fixed before the next GC run."
-
-            _NoGCAllowed.
-
-            "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e. r|
-              theClone: nil. "So that the GC doesn't try to keep it alive."
-              __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
-              vmKit garbageCollector scavenge.
-              r: cloneLocalObject: theOriginal IfFail: raiseError.
-              __BranchTo: 'done'.
-              __DefineLabel: 'someOtherKindOfError'.
-              r: fb value: e.
-              __DefineLabel: 'done'.
-              _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
-              ^ r
-            ].
-
-            nextWordIndex: indexToStartCopyingContents.
-
-            pnmcCreationOK: _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow.
-            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: true.
-
-            theCloneAddress: _TheVM universe allocationSpace objsTop.
-
-            "Note: From this point onwards we must not cause any further
-                   allocations from the heap.  Hence we use some primitives to
-                   avoid block cloning in place of theVM, +, /, *, -, and <=."
-
-            maxWordSize:   (_TheVM universe allocationSpace objsLimit
-                             _IntSub: theCloneAddress)
-                             _IntDiv: oopSize.
-
-            __BranchIfFalse: (maxWordSize _IntLE: nextWordIndex)
-                         To: 'enoughMemoryForHeader'.
-
-            failBlock value: 'outOfMemoryError'.
-            _Breakpoint: 'unreachable'.
-
-            __DefineLabel: 'enoughMemoryForHeader'.
-
-            theClone: copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
-
-            nextWordIndex:  copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
-            finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex.
-
-            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
-            theClone).
+            cloneLocalObject: theOriginal Size: 0 FillingWith: 0 IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
          cloneLocalObject: theOriginal Size: size FillingWith: filler IfFail: fb = ( |
+            | 
+                 cloneLocalObject: theOriginal
+                             Size: size
+                      FillingWith: filler
+            UnsegregatedBytesSize: (numberOfUnsegregatedBytesIn: theOriginal IfFail: fb)
+                           IfFail: fb).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
+        
+         cloneLocalObject: theOriginalObjectOrMarkValue Size: size FillingWith: filler UnsegregatedBytesSize: nBytes IfFail: fb = ( |
              failBlock.
              maxWordSize.
              nextWordIndex.
@@ -111,9 +59,6 @@ See the LICENSE file for license information.
              theClone.
              theCloneAddress.
             | 
-
-            "Duplication with" [cloneLocalObject: theOriginal                  IfFail: fb].
-            "Duplication with" [cloneLocalObject: theOriginal IndexableSize: 0 IfFail: fb].
 
             "Warning: This method violates invariants:
                       - theCloneAddress is a pointer that looks like a Smi.
@@ -126,14 +71,12 @@ See the LICENSE file for license information.
 
             _NoGCAllowed.
 
-            [todo cleanup aaaaaaa]. "Can we get rid of the duplication between this method and cloneLocalObject:IfFail: ?"
-
             "Clone primitive fail block before we start allocating space"
             failBlock: [|:e. r|
               theClone: nil. "So that the GC doesn't try to keep it alive."
               __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
               vmKit garbageCollector scavenge.
-              r: cloneLocalObject: theOriginal Size: size FillingWith: filler IfFail: raiseError.
+              r: cloneLocalObject: theOriginalObjectOrMarkValue Size: size FillingWith: filler UnsegregatedBytesSize: nBytes IfFail: raiseError.
               __BranchTo: 'done'.
               __DefineLabel: 'someOtherKindOfError'.
               r: fb value: e.
@@ -160,18 +103,38 @@ See the LICENSE file for license information.
             __BranchIfFalse: (maxWordSize _IntLE: nextWordIndex)
                          To: 'enoughMemoryForHeader'.
 
-            [todo optimize cloning]. "Can also check to see if there's enough memory for
-                                      the whole object, since we know the size."
-
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
 
             __DefineLabel: 'enoughMemoryForHeader'.
 
-            theClone: copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
+            __BranchIfTrue: theOriginalObjectOrMarkValue _IsSmi To: 'justCreateAnEmptyObject'.
 
-            nextWordIndex:  copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
-            nextWordIndex:  fillNewLocalObjectWithAddress: theCloneAddress With: filler Size: size  StartingFrom: nextWordIndex NotExceeding: maxWordSize IfFail: failBlock.
+            theClone:          copyMarkValue: (markValueOf: theOriginalObjectOrMarkValue)
+                       IntoObjectWithAddress: theCloneAddress
+                                      IfFail: failBlock.
+
+            nextWordIndex:  copyContentsOfLocalObject: theOriginalObjectOrMarkValue
+                                IntoObjectWithAddress: theCloneAddress
+                                         StartingFrom: nextWordIndex
+                                         NotExceeding: maxWordSize
+                                 AndLeaveRoomForBytes: nBytes
+                                               IfFail: failBlock.
+
+            __BranchTo: 'doneCopyingContents'.
+            __DefineLabel: 'justCreateAnEmptyObject'.
+
+            theClone: copyMarkValue: theOriginalObjectOrMarkValue IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
+
+            __DefineLabel: 'doneCopyingContents'.
+
+
+            nextWordIndex:  fillNewLocalObjectWithAddress: theCloneAddress
+                                                     With: filler
+                                                     Size: size
+                                             StartingFrom: nextWordIndex
+                                             NotExceeding: maxWordSize
+                                                   IfFail: failBlock.
 
             finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex.
 
@@ -190,19 +153,21 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
-         copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
+         copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: startingWordIndex NotExceeding: maxWordSize AndLeaveRoomForBytes: nBytes IfFail: failBlock = ( |
              mm.
              nextWordIndex.
              oop.
              theOriginalAddress.
             | 
 
-            mm: machineMemory.
-            theOriginalAddress: addressOfLocalMem: theOriginal.
-
-            "Remember that this method is overridden (for unsegregated byteVectors). -- Adam, 4/06"
+            __BranchIfTrue: (nBytes _IntEQ: 0) To: 'noBytes'.
+            _Breakpoint: 'hmm, this method should have been overridden for unsegregated byteVectors'.
+            __DefineLabel: 'noBytes'.
 
             nextWordIndex: startingWordIndex.
+
+            mm: machineMemory.
+            theOriginalAddress: addressOfLocalMem: theOriginal.
 
             "Copy contents until we reach the next mark word."
 
@@ -230,26 +195,36 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
          'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
-         copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock = ( |
+         copyMarkValue: markValue IntoObjectWithAddress: theCloneAddress IfFail: failBlock = ( |
              inPlaceOID.
-             markValue.
              newMarkValue.
              nonOIDMask.
              theClone.
              theCloneOID.
             | 
-            [todo cloning]. "Not implemented: must clear some bits in the copied mark."
 
             theCloneOID: _TheVM withoutCloningAnythingRecordNewObjectWithAddress: theCloneAddress IfFail: failBlock.
             theClone: memForAddress: theCloneAddress OID: theCloneOID.
 
-            markValue: markValueOf: theOriginal.
             nonOIDMask: -1 _IntSub: layouts mark oidField mask.
             inPlaceOID: layouts mark oidField wordForValue: theCloneOID.
             newMarkValue: inPlaceOID || (markValue && nonOIDMask).
+            [todo cloning]. "Not implemented: must clear some bits in the copied mark."
             for: theClone SetMarkValue: newMarkValue.
 
             theClone).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
+        
+         createEmptyObjectWithMarkValue: markValue Size: size FillingWith: filler IfFail: fb = ( |
+            | 
+                 cloneLocalObject: markValue
+                             Size: size
+                      FillingWith: filler
+            UnsegregatedBytesSize: 0
+                           IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
@@ -271,8 +246,8 @@ See the LICENSE file for license information.
 
               i: i _IntAdd: 1.
 
-              __BranchIfFalse: (maxWordSize _IntLE: i)
-                           To: 'fillerLoop'.
+              __BranchIfTrue: (i _IntLT: maxWordSize)
+                          To: 'fillerLoop'.
 
             failBlock value: 'outOfMemoryError'.
             _Breakpoint: 'unreachable'.
@@ -318,6 +293,14 @@ See the LICENSE file for license information.
             mapIndex).
         } | ) 
 
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'memoryObject' -> () From: ( | {
+         'Category: cloning\x7fCategory: double-dispatch\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
+        
+         numberOfUnsegregatedBytesIn: o IfFail: failBlock = ( |
+            | 
+            0).
+        } | ) 
+
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'objVector' -> () From: ( | {
          'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
@@ -334,84 +317,12 @@ See the LICENSE file for license information.
          'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
          cloneLocalObject: theOriginal IndexableSize: byteSize IfFail: fb = ( |
-             failBlock.
-             maxWordSize.
-             nextWordIndex.
-             pnmcCreationOK <- bootstrap stub -> 'globals' -> 'true' -> ().
-             theClone.
-             theCloneAddress.
             | 
-
-            "Duplication with" [cloneLocalObject: theOriginal                          IfFail: fb].
-            "Duplication with" [cloneLocalObject: theOriginal Size: 0 FillingWith: nil IfFail: fb].
-
-            "This method does not take a 'FillingWith:' argument because it doesn't bother
-             initializing the bytes part of the new object; that can be done elsewhere (in
-             regular Self code), since there are no invariants to worry about regarding the
-             contents of the bytes. -- Adam, 4/06"
-
-            "Warning: This method violates invariants:
-                      - theCloneAddress is a pointer that looks like a Smi.
-                      - theClone references uninitialized storage.
-                      - Using heap space before it has been allocated.
-                      - If the object we cloned held a bytes part pointer,
-                        then two objects will point to the same bytes part
-                        when this method exits.
-                        This condition must be fixed before the next GC run."
-
-            _NoGCAllowed.
-
-            "Clone primitive fail block before we start allocating space"
-            failBlock: [|:e. r|
-              theClone: nil. "So that the GC doesn't try to keep it alive."
-              __BranchIfFalse: (e _Eq: 'outOfMemoryError') To: 'someOtherKindOfError'.
-              vmKit garbageCollector scavenge.
-              r: cloneLocalObject: theOriginal IndexableSize: byteSize IfFail: raiseError.
-              __BranchTo: 'done'.
-              __DefineLabel: 'someOtherKindOfError'.
-              r: fb value: e.
-              __DefineLabel: 'done'.
-              _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
-              ^ r
-            ].
-
-            nextWordIndex: indexToStartCopyingContents.
-
-            pnmcCreationOK: _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow.
-            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: true.
-
-            theCloneAddress: _TheVM universe allocationSpace objsTop.
-
-            "Note: From this point onwards we must not cause any further
-                   allocations from the heap.  Hence we use some primitives to
-                   avoid block cloning in place of theVM, +, /, *, -, and <=."
-
-            maxWordSize:   (_TheVM universe allocationSpace objsLimit
-                             _IntSub: theCloneAddress)
-                             _IntDiv: oopSize.
-
-            __BranchIfFalse: (maxWordSize _IntLE: nextWordIndex)
-                         To: 'enoughMemoryForHeader'.
-
-            [todo gc]. "Not implemented: do a GC and try again."
-            _Breakpoint: 'ran out of memory'.
-            failBlock value: 'outOfMemoryError'.
-            _Breakpoint: 'unreachable'.
-
-            __DefineLabel: 'enoughMemoryForHeader'.
-
-            theClone: copyMarkFromLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress IfFail: failBlock.
-
-            nextWordIndex:  copyContentsOfLocalObject: theOriginal
-                                IntoObjectWithAddress: theCloneAddress
-                                         StartingFrom: nextWordIndex
-                                         NotExceeding: maxWordSize
-                                 AndLeaveRoomForBytes: byteSize
-                                               IfFail: failBlock.
-            finishInitializingLocalClone: theClone WithAddress: theCloneAddress SizeInWords: nextWordIndex.
-
-            _TheVM vmKit primitives shouldNotCreateAnyPolymorphicNMethodCachesForNow: pnmcCreationOK.
-            theClone).
+                 cloneLocalObject: theOriginal
+                             Size: 0   "unused"
+                      FillingWith: 666 "unused"
+            UnsegregatedBytesSize: byteSize
+                           IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
@@ -492,10 +403,10 @@ See the LICENSE file for license information.
              theOriginalAddress.
             | 
 
+            nextWordIndex: startingWordIndex.
+
             mm: machineMemory.
             theOriginalAddress: addressOfLocalMem: theOriginal.
-
-            nextWordIndex: startingWordIndex.
 
             "Can't copy contents until we reach the next mark word, because a sequence
              of bytes might look like a mark. So we've gotta only copy the oops over,
@@ -535,17 +446,18 @@ See the LICENSE file for license information.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
          'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
         
-         copyContentsOfLocalObject: theOriginal IntoObjectWithAddress: theCloneAddress StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
-             nBytes.
+         fillNewLocalObjectWithAddress: theCloneAddress With: filler Size: size StartingFrom: startingWordIndex NotExceeding: maxWordSize IfFail: failBlock = ( |
             | 
-            nBytes: for: theOriginal At: indexableSizeField fixedIndex IfFail: failBlock.
+            "Should not need to do anything here - not an obj vector."
+            startingWordIndex).
+        } | ) 
 
-            copyContentsOfLocalObject: theOriginal
-                IntoObjectWithAddress: theCloneAddress
-                         StartingFrom: startingWordIndex
-                         NotExceeding: maxWordSize
-                 AndLeaveRoomForBytes: nBytes
-                               IfFail: failBlock).
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'unsegregatedByteVector' -> () From: ( | {
+         'Category: cloning\x7fModuleInfo: Module: vmKitCloning InitialContents: FollowSlot\x7fVisibility: private'
+        
+         numberOfUnsegregatedBytesIn: o IfFail: failBlock = ( |
+            | 
+            for: o At: indexableSizeField fixedIndex IfFail: failBlock).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'localObjectLens' -> () From: ( | {

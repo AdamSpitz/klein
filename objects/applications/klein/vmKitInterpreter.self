@@ -1,10 +1,19 @@
  '$Revision: 30.2 $'
  '
-Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to license terms.
+Copyright 1992-2006 Sun Microsystems, Inc. and Stanford University.
+See the LICENSE file for license information.
 '
 
 
  '-- Module body'
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'activation' -> () From: ( | {
+         'Category: creating\x7fModuleInfo: Module: vmKitInterpreter InitialContents: FollowSlot\x7fVisibility: public'
+        
+         createLocalActivationOfSize: size FillingWith: filler IfFail: fb = ( |
+            | 
+            createEmptyObjectWithMarkValue: 0 Size: size FillingWith: filler IfFail: fb).
+        } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'activation' -> () From: ( | {
          'Category: interpreting\x7fModuleInfo: Module: vmKitInterpreter InitialContents: FollowSlot\x7fVisibility: public'
@@ -149,6 +158,21 @@ Copyright 2006 Sun Microsystems, Inc. All rights reserved. Use is subject to lic
             ].
 
             halt).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
+         'Category: creating activations\x7fModuleInfo: Module: vmKitInterpreter InitialContents: FollowSlot\x7fVisibility: public'
+        
+         createLocalActivationForReceiver: rcvr Arguments: args MethodHolder: holder Sender: sender IfFail: fb = ( |
+             a.
+            | 
+            _Breakpoint: 'about to create an activation'.
+            a: myLayout createLocalActivationOfSize: totalActivationSize FillingWith: nil IfFail: fb.
+            myLayout for: a SetMap: self.
+            [aaaaaaa]. _Breakpoint: 'NOT IMPLEMENTED YET: fill in the slots of the activation'.
+            "objectSlotsDo: [|:n. :d| myLayout for: a At: d Put: "
+            _Breakpoint: 'did it work OK?'.
+            a).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'modules' -> () From: ( | {

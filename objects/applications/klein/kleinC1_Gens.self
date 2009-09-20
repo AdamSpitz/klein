@@ -425,11 +425,12 @@ See the LICENSE file for license information.
          generateSwitchForCases: cases If: testBlk Then: thenBlk Else: elseBlk = ( |
              forks.
             | 
-            generateExit: [|:end|
+            generateExit: [|:end. i <- 0|
               forks: cases copyMappedBy: [newLabel].
               cases with: forks Do: [|:c. :f|
-                testBlk value: c With: f.
+                testBlk value: c With: f With: i.
                 "fall through to next case"
+                i: i succ.
               ].
               elseBlk value.
               branchToLabel: end.
@@ -451,6 +452,54 @@ See the LICENSE file for license information.
             generateIf: testBlock
                   Then: [loadTrueInto:  dstBoolReg]
                   Else: [loadFalseInto: dstBoolReg]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         loadByteAt: addr IndexedBy: indexReg To: dst = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         loadValueAtOffset: o FromAddressInRegister: addressReg ToRegister: dstReg = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         loadWordAt: addr IndexedBy: index To: dst = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         storeByteFrom: src To: addr IndexedBy: indexReg = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         storeWordFrom: src To: addr IndexedBy: index = ( |
+            | 
+            childMustImplement).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'codeGenerationMixin' -> () From: ( | {
+         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         storeWordInRegister: srcReg ToOffset: o FromAddressInRegister: addressReg = ( |
+            | 
+            childMustImplement).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -1408,13 +1457,39 @@ Returns an address into a bytes part masquerading as a small integer.
          'Category: primitives\x7fCategory: arguments\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          generatePrimitive_ArgAt_IfFail_: node = ( |
-             index.
+             indexValue.
             | 
             [_ArgAt: 0           ]. "browsing"
             [_ArgAt: 0 IfFail: fb]. "browsing"
-            index: node rcvrOrArgOopValueForConstantLocAt: 1 IfFail: raiseError.
-            moveLocation: (sourceLevelAllocator valueForIncomingRcvrOrArgAt: index) location
-              ToLocation: node resultLoc.
+            indexValue: node rcvrOrArgValueAt: 1.
+            indexValue ifTypeIsConstant: [|:index|
+              moveLocation: (node sourceLevelAllocator valueForIncomingRcvrOrArgAt: index) location
+                ToLocation: node resultLoc.
+            ] Else: [
+              materializeLocsAndFailureHandlerOf: node AndDo: [|:dstReg. :rcvrReg. :indexReg. :fh|
+                fh assertInteger: indexReg.
+                generateSwitchForCases: node sourceLevelAllocator incomingRcvrAndArgValues If: [|:v. :lbl. :i|
+                  generateIf: indexReg EqualsImmediate: (layouts smi encode: i) ThenBranchTo: lbl.
+                ] Then: [|:v|
+                  moveLocation: v location ToRegister: dstReg.
+                ] Else: [
+                  fh fail: 'invalid argument index'.
+                ].
+              ].
+            ].
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: arguments\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitive_ArgCountIfFail_: node = ( |
+            | 
+            [_ArgCount          ]. "browsing"
+            [_ArgCountIfFail: fb]. "browsing"
+            materializeDest: node resultLoc AndDo: [|:dstReg|
+              loadOop: node sourceLevelAllocator incomingRcvrAndArgValues size IntoRegister: dstReg.
+            ].
             self).
         } | ) 
 
@@ -1525,6 +1600,7 @@ Returns an address into a bytes part masquerading as a small integer.
         
          generatePrimitive_OnNonLocalReturn_IfFail_: node = ( |
              doneLabel.
+             locationsUsedAfterCall.
              nlrLabel.
              nlrLabelForProtectBlock.
             | 
@@ -1538,7 +1614,8 @@ Returns an address into a bytes part masquerading as a small integer.
             moveLocation: node rcvrLoc ToLocation: machineLevelAllocator locationForOutgoingRcvrOrArgAt: 0.
             nlrLabel: newLabel.
             node specialLabelToBranchToOnNLR: nlrLabel.
-            genNormalCallSelector: 'value' LiveOopTracker: liveOopTracker copyForNode: node.
+            locationsUsedAfterCall: (node homeScopeValue location & node homeScopeDescValue location) asVector.
+            genNormalCallSelector: 'value' LiveOopTracker: (liveOopTracker copyForNode: node) extraLocationsToPreserve: locationsUsedAfterCall.
             node specialLabelToBranchToOnNLR: nil.
 
             comment: 'no NLR happened, so return the result of running the block'.
@@ -1559,7 +1636,7 @@ Returns an address into a bytes part masquerading as a small integer.
 
             nlrLabelForProtectBlock: newLabel.
             node specialLabelToBranchToOnNLR: nlrLabelForProtectBlock.
-            genNormalCallSelector: 'value:' LiveOopTracker: liveOopTracker copyForNode: node.
+            genNormalCallSelector: 'value:' LiveOopTracker: (liveOopTracker copyForNode: node) extraLocationsToPreserve: locationsUsedAfterCall.
             node specialLabelToBranchToOnNLR: nil.
 
             bindLabel: nlrLabelForProtectBlock. "ignore protect block NLR"
@@ -1779,7 +1856,13 @@ the total number. -- Adam, June 2009\x7fModuleInfo: Module: kleinC1_Gens Initial
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> () From: ( | {
-         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (vector)\x7fVisibility: public'
+        
+         extraLocationsToPreserve <- ((bootstrap stub -> 'globals') \/-> 'vector') -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> 'liveOopTracker' -> () From: ( | {
+         'ModuleInfo: Module: kleinC1_Gens InitialContents: InitializeToExpression: (nil)\x7fVisibility: public'
         
          node.
         } | ) 
@@ -1835,7 +1918,7 @@ the total number. -- Adam, June 2009\x7fModuleInfo: Module: kleinC1_Gens Initial
              preserve.
             | 
             couldZap: node machineLevelAllocator locationsThatCouldBeDead.
-            preserve: node locationsThatNeedToBePreserved.
+            preserve: node locationsThatNeedToBePreserved, extraLocationsToPreserve.
             couldZap asSet copyFilteredBy: [|:loc|
                  (gcMaskLayout shouldLocationBeRepresentedInGCMask: loc)
               && [(preserve includes: loc) not]
@@ -1875,15 +1958,6 @@ the total number. -- Adam, June 2009\x7fModuleInfo: Module: kleinC1_Gens Initial
          load32BitsAtOffset: o FromAddressInRegister: addressReg ToRegister: dstReg = ( |
             | 
             childMustImplement).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         loadByteAt: addr IndexedBy: indexReg To: dst = ( |
-            | 
-            childMustImplement.
-            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -2044,23 +2118,6 @@ the total number. -- Adam, June 2009\x7fModuleInfo: Module: kleinC1_Gens Initial
          loadTrueInto: dstBoolReg = ( |
             | 
             loadOop: true IntoRegister: dstBoolReg NameForComment: 'true'.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         loadValueAtOffset: o FromAddressInRegister: addressReg ToRegister: dstReg = ( |
-            | 
-            childMustImplement).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         loadWordAt: addr IndexedBy: index To: dst = ( |
-            | 
-            childMustImplement.
             self).
         } | ) 
 
@@ -2353,9 +2410,6 @@ and may fail to compile otherwise.
         
          nmethodInvocationCountSlot = ( |
             | 
-            [aaaaaaa]. "Used to cache these, but then mapping the slot object
-                        caused trouble on the Klein side. How do I get the transporter
-                        to initialize the Klein-side one to nil? -- Adam, July 2009"
             [invocationCount]. "browsing"
             vmKit nmethod asMirror slotAt: 'invocationCount').
         } | ) 
@@ -2600,15 +2654,6 @@ and may fail to compile otherwise.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         storeByteFrom: src To: addr IndexedBy: indexReg = ( |
-            | 
-            childMustImplement.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
          'Category: accessing data slots\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
         
          storeIntoDataSlot: slot OfHolderInLocation: holderLoc FromLocation: srcLoc = ( |
@@ -2688,23 +2733,6 @@ and may fail to compile otherwise.
          storeRegister: r ToRegisterLocation: loc = ( |
             | 
             moveRegister: r ToRegister: loc register).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         storeWordFrom: src To: addr IndexedBy: index = ( |
-            | 
-            childMustImplement.
-            self).
-        } | ) 
-
- bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
-         'Category: moving data\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
-        
-         storeWordInRegister: srcReg ToOffset: o FromAddressInRegister: addressReg = ( |
-            | 
-            childMustImplement).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'abstract' -> 'parent' -> () From: ( | {
@@ -3416,15 +3444,6 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          generateMoveIncomingReceiverAndArgumentsToNonVolLocations = ( |
             | 
             "could use stswi someday"
-
-            [aaaaaaa].
-            [
-            compiler slot name = 'if:Then:If:Then:If:Then:Else:' ifTrue: [
-              breakpoint: 'let\'s step through'.
-              halt.
-            ].
-            ].
-
             topSourceLevelAllocator incomingVolatileRegRcvrAndArgLocationsToSaveDo: [|:vol. :nonVolReg. :nonVolMem|
               nonVolReg ifNotNil: [moveLocation: vol ToLocation: nonVolReg].
               nonVolMem ifNotNil: [moveLocation: vol ToLocation: nonVolMem].
@@ -3629,6 +3648,16 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
             | 
             [createPolymorphicNMethodCache_stub]. "browsing"
             generateEntryAddressOfStubNamed: 'createPolymorphicNMethodCache_stub' Into: dstReg.
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {
+         'Category: primitives\x7fCategory: send descs\x7fModuleInfo: Module: kleinC1_Gens InitialContents: FollowSlot\x7fVisibility: public'
+        
+         generatePrimitiveInto: dstReg Receiver: rcvrReg EntryAddressOfInterpretStubIfFail: fh = ( |
+            | 
+            [interpret_stub]. "browsing"
+            generateEntryAddressOfStubNamed: 'interpret_stub' Into: dstReg.
             self).
         } | ) 
 
@@ -4310,7 +4339,14 @@ Returns an address into the caller\'s compiled code masquerading as a small inte
          invalidateInlineCache: sendDescReg = ( |
             | 
             moveLocation: (locations constant copyForOop: 0)
-              ToLocation: locationForIndex: sendDesc previousMapIndex InSendDesc: sendDescReg).
+              ToLocation: locationForIndex: sendDesc previousMapIndex InSendDesc: sendDescReg.
+
+            "Don't bother doing a polymorphic nmethod cache at all - I'm guessing it'll cost
+             too much to keep recreating it, though we should really test that. -- Adam, July 2009"
+            moveLocation: (locations constant copyForOop: -1)
+              ToLocation: locationForIndex: sendDesc nmethodCacheIndex InSendDesc: sendDescReg.
+
+            self).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'codeGenerators' -> 'ppc' -> 'parent' -> () From: ( | {

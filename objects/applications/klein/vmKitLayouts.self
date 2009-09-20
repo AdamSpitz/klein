@@ -884,7 +884,7 @@ See the LICENSE file for license information.
         
          activation = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'activation' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals kleinAndYoda layouts activation.
-'.
+\x7fIsComplete: '.
             | ) .
         } | ) 
 

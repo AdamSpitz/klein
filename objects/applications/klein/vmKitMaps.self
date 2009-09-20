@@ -110,6 +110,8 @@ See the LICENSE file for license information.
         
          = aMap = ( |
             | 
+            == aMap ifTrue: [^ true]. "Optimization."
+
             mapType = aMap mapType  ifFalse: [^ false].
 
             ((reflect: annotation) = (reflect: aMap annotation))  ifFalse: [^ false].
@@ -1996,7 +1998,7 @@ SlotsToOmit: parent.
         
          argCountField = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> 'activationPartSizesLayout' -> 'argCountField' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals kleinAndYoda maps activationMap parent activationPartSizesLayout argCountField.
-'.
+\x7fIsComplete: '.
             | ) .
         } | ) 
 
@@ -2023,7 +2025,7 @@ SlotsToOmit: parent.
         
          assignableLocalCountField = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> 'activationPartSizesLayout' -> 'assignableLocalCountField' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals kleinAndYoda maps activationMap parent activationPartSizesLayout assignableLocalCountField.
-'.
+\x7fIsComplete: '.
             | ) .
         } | ) 
 
@@ -2050,7 +2052,7 @@ SlotsToOmit: parent.
         
          maxStackSizeField = bootstrap setObjectAnnotationOf: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> 'activationPartSizesLayout' -> 'maxStackSizeField' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals kleinAndYoda maps activationMap parent activationPartSizesLayout maxStackSizeField.
-'.
+\x7fIsComplete: '.
             | ) .
         } | ) 
 
@@ -2471,6 +2473,14 @@ SlotsToOmit: parent.
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
          'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
         
+         myLayout = ( |
+            | 
+            layouts activation).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
          parent* = ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'codeSlotsMap') -> 'parent' -> ().
         } | ) 
 
@@ -2519,6 +2529,14 @@ SlotsToOmit: parent.
               r add: argOrLocalFakeSlot copyForMirror: self Name: n Index: i.
             ].
             r).
+        } | ) 
+
+ bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> 'parent' -> () From: ( | {
+         'Category: accessing\x7fCategory: activation part sizes\x7fModuleInfo: Module: vmKitMaps InitialContents: FollowSlot\x7fVisibility: private'
+        
+         totalActivationSize = ( |
+            | 
+            argCount + assignableLocalCount + maxStackSize).
         } | ) 
 
  bootstrap addSlotsTo: ((bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'maps') \/-> 'activationMap') -> () From: ( | {

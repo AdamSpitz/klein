@@ -468,7 +468,7 @@ as ones that function as namespaces.  -- jb 8/03\x7fModuleInfo: Module: kleinExp
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {
          'Category: object mapping policy\x7fCategory: activation maps\x7fModuleInfo: Module: kleinExport InitialContents: FollowSlot\x7fVisibility: public'
         
-         shouldOmitActivationPartSizes = bootstrap stub -> 'globals' -> 'true' -> ().
+         shouldOmitActivationPartSizes = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'virtualMachines' -> 'abstractVM' -> 'parent' -> 'exportPolicy' -> () From: ( | {

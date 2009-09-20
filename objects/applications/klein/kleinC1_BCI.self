@@ -438,7 +438,7 @@ SlotsToOmit: parent.
              previousPCO <- -1.
              r.
             | 
-            r: irNodesByBCI mapBy: [|:n. :i| n pcOffsetIfPresent: [|:o| previousPCO: o. o] IfAbsent: [i = 0 ifTrue: [[aaaaaaa]. halt]. previousPCO]]
+            r: irNodesByBCI mapBy: [|:n. :i| n pcOffsetIfPresent: [|:o| previousPCO: o. o] IfAbsent: previousPCO]
                              Into: myScopeDesc pcOffsetVector copySize: irNodesByBCI size.
             r ifNone: myScopeDesc pcOffsetVector).
         } | ) 
@@ -834,12 +834,22 @@ SlotsToOmit: parent.
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
+         'Category: interpreting\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         interpretBodyOfSlot = ( |
+            | 
+            slot isMethod ifTrue: [interpretMethod]
+                           False: [dataSlot: slot]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'bytecodeInterpreter' -> 'parent' -> () From: ( | {
          'Category: interpreting\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          interpretSlot = ( |
             | 
-            slot isMethod ifTrue: [interpretMethod]
-                           False: [dataSlot: slot].
+            prologue.
+            interpretBodyOfSlot.
+            epilogue.
             self).
         } | ) 
 
@@ -1427,7 +1437,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: binary operations\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          add: r1 From: r2 To: dst = ( |
             | 
@@ -1435,7 +1445,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: binary operations\x7fCategory: arithmetic\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          addImm: anInt From: from To: dst = ( |
             | 
@@ -1449,10 +1459,9 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          addNode: n = ( |
             | 
-            n isLabel ifTrue: [| oldBB. oldBBEndNode |
-              oldBB: currentBB.
+            n isLabel ifTrue: [| oldBBEndNode |
               nodeToInsertAfter ifNotNil: [
-                oldBBEndNode: oldBB endNode.
+                oldBBEndNode: currentBB endNode.
                 nodeToInsertAfter canFallThrough ifTrue: [branchToLabel: n].
                 endCurrentBasicBlockWith: nodeToInsertAfter.
               ].
@@ -1492,7 +1501,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          artificiallyDetachTheRestOfTheCurrentBasicBlock = ( |
              brnch.
@@ -1509,7 +1518,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          artificiallyInsertANewBasicBlock = ( |
              labelOfInsertedBB.
@@ -1986,7 +1995,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: labels\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          bindLabel: n = ( |
             | 
@@ -1996,7 +2005,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: labels\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          branchToLabel: lbl = ( |
             | 
@@ -2065,7 +2074,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: branches\x7fCategory: conditionals\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          comparisons = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> 'comparisons' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein compiler1 parent prototypes irNodeGenerator parent comparisons.
@@ -2249,7 +2258,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: labels\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          defineLabel = ( |
              n.
@@ -2260,7 +2269,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          endCurrentBasicBlock = ( |
             | 
@@ -2268,7 +2277,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: building IR nodes\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+         'Category: control flow\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          endCurrentBasicBlockWith: n = ( |
             | 
@@ -2323,10 +2332,12 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Into: dstObjReg = ( |
             | 
-            addNode: irNodeProtos readOopAtIndex copyBC: currentBC
-                                                   Base: memObjAddrReg
-                                                  Index: indexSmiReg
-                                            Destination: dstObjReg).
+            addNode: irNodeProtos indexedReadOrWrite copyBC: currentBC
+                                                 KindOfData: irNodeProtos indexedReadOrWrite oopData
+                                               KindOfAccess: irNodeProtos indexedReadOrWrite read
+                                                       Base: memObjAddrReg
+                                                      Index: indexSmiReg
+                                                       Data: dstObjReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2334,11 +2345,14 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          generateForObjectAtAddress: memObjAddrReg At: indexSmiReg Put: dataObjReg BypassingWriteBarrier: shouldBypassWriteBarrier = ( |
             | 
-            addNode: irNodeProtos writeOopAtIndex copyBC: currentBC
-                                                    Base: memObjAddrReg
-                                                   Index: indexSmiReg
-                                                    Data: dataObjReg
-                                   BypassingWriteBarrier: shouldBypassWriteBarrier).
+            addNode: irNodeProtos indexedReadOrWrite copyBC: currentBC
+                                                 KindOfData: irNodeProtos indexedReadOrWrite oopData
+                                               KindOfAccess: (shouldBypassWriteBarrier
+                                                                ifTrue: [irNodeProtos indexedReadOrWrite writeBypassingBarrier]
+                                                                 False: [irNodeProtos indexedReadOrWrite write                ])
+                                                       Base: memObjAddrReg
+                                                      Index: indexSmiReg
+                                                       Data: dataObjReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2380,7 +2394,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: conditionals\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIf: objValue DoesNotEqual: otherObjValue ThenBranchTo: trueFork = ( |
             | 
@@ -2388,7 +2402,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: conditionals\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIf: objValue Equals: otherObjValue ThenBranchTo: trueFork = ( |
             | 
@@ -2396,7 +2410,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: conditionals\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIf: objValue Is: comparison With: otherObjValue ThenBranchTo: trueFork = ( |
             | 
@@ -2413,7 +2427,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: conditionals\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          generateIf: smiValue IsBetweenZeroAnd: max ThenBranchTo: trueFork = ( |
             | 
@@ -2477,6 +2491,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
          ifShouldInlineSend: key To: rcvrValue Then: inlineBlk Else: noInlineBlk = ( |
+             h.
              m.
              ss.
              t.
@@ -2486,6 +2501,9 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
 
             t: rcvrValue mergedType.
             m: t knownMapUsingOracle: compiler objectsOracle IfFail: [^ noInlineBlk value].
+
+            "Make sure that all nmethods on traits block are reusable."
+            ('value' isPrefixOf: key selector) && [(topBytecodeInterpreter slot holder findReflecteeUsingOracle: compiler objectsOracle) _Eq: traits block] ifTrue: [^ noInlineBlk value].
 
             ss: [|:exit|
                      key lookupSlotsUsing: sourceLevelAllocator context protoSlotFinder
@@ -2520,9 +2538,9 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
              nodeBefore.
              sla.
             | 
-            sla: newSourceLevelAllocatorToInlineMethodSlot: s Key: key ReceiverType: rcvrType.
+            sla: newSourceLevelAllocatorToInlineContext: newContextForMethodSlot: s Key: key ReceiverType: rcvrType.
             i: pushNewInterpreterFor: sla InlinedSendNode: sendNode.
-            sla context isForABlockMethod ifTrue: [i inlinedBlock: (rcvrType theBlockIfFail: raiseError) originalBlock_replaceThisSlotWithTheValueSlot].
+            sla context isForABlockMethod ifTrue: [i inlinedBlock: rcvrType theBlock originalBlock_replaceThisSlotWithTheValueSlot].
             i currentBC: i nonexistentBCAt: 0.
             rcvrAndArgValues with: sla incomingRcvrAndArgValues Do: [|:srcV. :dstV| move: srcV To: dstV].
             interpretCurrentSlot.
@@ -2537,10 +2555,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          inline: sendNode Slot: s Key: key ReceiverType: rcvrType RcvrAndArgs: rcvrAndArgValues Result: resultValue = ( |
             | 
-            rcvrType isSelf && [rcvrType sourceLevelAllocator outermostScope == topBytecodeInterpreter outermostScope] ifTrue: [
-              [aaaaaaa]. "I think this is right. We don't need any reusabilityConditions for inlines from any context
-                          except the top one, because the top one is the only thing that we customize on."
-              [(compiler slot name = 'whileTrue:') && [key selector = 'value'] ifTrue: [halt].].
+            (mightThisNMethodBeCustomizedForType: rcvrType) ifTrue: [
               compiler dependsOnKey: key ResolvingToSlot: s.
             ].
 
@@ -2553,7 +2568,8 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
                   inline: sendNode MethodSlot: s Key: key ReceiverType: rcvrType RcvrAndArgs: rcvrAndArgValues Result: resultValue.
 
                   "Gotta move the renamed resultValue to the original resultValue."
-                  [aaaaaaa "This is confusing."]. nodeToInsertAfter isMove ifTrue: [
+                  [aaaaaaa "This is confusing."].
+                  nodeToInsertAfter isMove ifTrue: [
                     move: nodeToInsertAfter destinationValue To: resultValue.
                     nodeToInsertAfter recordDefinersAndUsers. "Make sure the newly-inserted move node has its data-flow info hooked up properly."
                   ] False: [
@@ -2567,7 +2583,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
               ].
             ] False: [| nodeBefore. rcvrMap |
               nodeBefore: nodeToInsertAfter.
-              rcvrMap: rcvrType knownMapUsingOracle: compiler objectsOracle IfFail: raiseError.
+              rcvrMap: rcvrType knownMapUsingOracle: compiler objectsOracle.
               dataSlot: s InReceiverWithMap: rcvrMap RcvrAndArgs: rcvrAndArgValues Result: resultValue.
               forgeControlFlowLinksStartingFrom: nodeBefore Until: nodeToInsertAfter.
               nodeBefore until: nodeToInsertAfter Do: [|:n|
@@ -2583,9 +2599,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          interpretCurrentSlot = ( |
             | 
-            currentBytecodeInterpreter prologue.
             currentBytecodeInterpreter interpretSlot.
-            currentBytecodeInterpreter epilogue.
             self).
         } | ) 
 
@@ -2665,10 +2679,12 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          loadByteAt: baseAddrReg IndexedBy: indexReg To: dstSmiReg = ( |
             | 
-            addNode: irNodeProtos readByteAtIndex copyBC: currentBC
-                                                    Base: baseAddrReg
-                                                   Index: indexReg
-                                             Destination: dstSmiReg).
+            addNode: irNodeProtos indexedReadOrWrite copyBC: currentBC
+                                                 KindOfData: irNodeProtos indexedReadOrWrite byteData
+                                               KindOfAccess: irNodeProtos indexedReadOrWrite read
+                                                       Base: baseAddrReg
+                                                      Index: indexReg
+                                                       Data: dstSmiReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2748,6 +2764,17 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             ] Else: [
               false
             ]).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         mightThisNMethodBeCustomizedForType: t = ( |
+            | 
+            "I think we don't need any reusabilityConditions for inlines from any context except
+             the top one, because the top one is the only thing that we customize on. -- Adam, July 2009"
+
+            t isSelf && [t sourceLevelAllocator outermostScope == topBytecodeInterpreter outermostScope]).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -2846,7 +2873,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: branches\x7fCategory: labels\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          newBranchNodeForLabel: lbl = ( |
             | 
@@ -2854,7 +2881,27 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: branches\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
+        
+         newContextForMethodSlot: s Key: key ReceiverType: rcvrType = ( |
+             lpScope.
+             rcvrMap.
+             selfMap.
+            | 
+
+            rcvrMap: rcvrType knownMapUsingOracle: compiler objectsOracle.
+            lpScope: s contents isReflecteeBlockMethod ifFalse: [nil]     True: [rcvrType theBlock lexicalParentScopeDesc].
+            selfMap: s contents isReflecteeBlockMethod ifFalse: [rcvrMap] True: [(bytecodeInterpreterWithScope: lpScope) context selfMap].
+
+            compiler prototypes compilationContext copyForSlot: (compiler objectsOracle kleinifySlot: s)
+                                                           Key: key
+                                                          Self: selfMap
+                                                      Receiver: rcvrMap
+                                            LexicalParentScope: lpScope).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
+         'Category: branches\x7fCategory: labels\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          newLabel = ( |
             | 
@@ -2872,27 +2919,10 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: inlining\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: private'
         
-         newSourceLevelAllocatorToInlineMethodSlot: s Key: key ReceiverType: rcvrType = ( |
-             c.
-             lps.
-             rcvrMap.
-             selfMap.
+         newSourceLevelAllocatorToInlineContext: c = ( |
              sla.
             | 
-
-            lps: s contents isReflecteeBlockMethod ifFalse: [nil] True: [(rcvrType theBlockIfFail: raiseError) lexicalParentScopeDesc].
-            rcvrMap: rcvrType knownMapUsingOracle: compiler objectsOracle IfFail: raiseError.
-            selfMap: s contents isReflecteeBlockMethod ifFalse: [rcvrMap] True: [(bytecodeInterpreterWithScope: lps) context selfMap].
-
-            c: compiler prototypes compilationContext copyForSlot: (compiler objectsOracle kleinifySlot: s)
-                                                              Key: key
-                                                             Self: selfMap
-                                                         Receiver: rcvrMap
-                                               LexicalParentScope: lps.
-
-            sla: compiler prototypes sourceLevelAllocator
-                                 copyForMachineLevelAllocator: machineLevelAllocator
-                                                      Context: c.
+            sla: compiler prototypes sourceLevelAllocator copyForMachineLevelAllocator: machineLevelAllocator Context: c.
             sla initializeValues.
             sla allocateIncomingAndPreallocatedLocations.
             sla).
@@ -2943,14 +2973,17 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
             i: compiler prototypes bytecodeInterpreter
                                     copyForIRNodeGenerator: self
                                                  Allocator: aSourceLevelAllocator.
+
             currentBytecodeInterpreter ifNotNil: [|:ci|
               ci inlinedInterpreters addLast: i.
               i inliningInterpreter: ci.
             ].
+
             n ifNotNil: [
               i nodeToBranchToOnNLR: n nodeToBranchToOnNLR.
               [i nodeToBranchToOnNLR controlFlowPreds isEmpty] assert.
             ].
+
             currentBytecodeInterpreter: i.
             createLocalReturnBB.
             createNLRPointEpilogue.
@@ -2960,12 +2993,9 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: local variables\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
-         readLocalSlot: s Into: dst = ( |
-             localValue.
+         readLocalSlot: s Into: dstValue = ( |
             | 
-            localValue: sourceLevelAllocator valueForSlot: s.
-            move: localValue To: dst.
-            self).
+            move: (sourceLevelAllocator valueForSlot: s) To: dstValue).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -3003,7 +3033,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: binary operations\x7fCategory: shifting\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          shiftLeftBy: shift From: src To: dst = ( |
             | 
@@ -3011,7 +3041,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: binary operations\x7fCategory: shifting\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          shiftLeftImmBy: nBits From: src To: dst = ( |
             | 
@@ -3021,7 +3051,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: binary operations\x7fCategory: shifting\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          shiftRightArithBy: shift From: src To: dst = ( |
             | 
@@ -3029,7 +3059,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
-         'Category: binary operations\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
+         'Category: binary operations\x7fCategory: shifting\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          shiftRightArithImmBy: nBits From: src To: dst = ( |
             | 
@@ -3041,7 +3071,7 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
          'Category: primitives\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
-         shouldBeLazyAboutCloningPrimitiveFailBlocks = bootstrap stub -> 'globals' -> 'true' -> ().
+         shouldBeLazyAboutCloningPrimitiveFailBlocks = bootstrap stub -> 'globals' -> 'false' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -3066,10 +3096,12 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
         
          storeByteFrom: srcSmiReg To: baseAddrReg IndexedBy: indexReg = ( |
             | 
-            addNode: irNodeProtos writeByteAtIndex copyBC: currentBC
-                                                     Base: baseAddrReg
-                                                    Index: indexReg
-                                                     Data: srcSmiReg).
+            addNode: irNodeProtos indexedReadOrWrite copyBC: currentBC
+                                                 KindOfData: irNodeProtos indexedReadOrWrite byteData
+                                               KindOfAccess: irNodeProtos indexedReadOrWrite writeBypassingBarrier
+                                                       Base: baseAddrReg
+                                                      Index: indexReg
+                                                       Data: srcSmiReg).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> 'parent' -> () From: ( | {
@@ -3092,11 +3124,8 @@ included before at least one of its preds is.\x7fModuleInfo: Module: kleinC1_BCI
          'Category: local variables\x7fModuleInfo: Module: kleinC1_BCI InitialContents: FollowSlot\x7fVisibility: public'
         
          writeLocalSlot: s From: srcValue = ( |
-             localValue.
             | 
-            localValue: sourceLevelAllocator valueForSlot: s.
-            move: srcValue To: localValue.
-            self).
+            move: srcValue To: sourceLevelAllocator valueForSlot: s).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'compiler1' -> 'parent' -> 'prototypes' -> 'irNodeGenerator' -> () From: ( | {

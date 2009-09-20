@@ -74,7 +74,7 @@ to just keep upping it by hand.
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
          'ModuleInfo: Module: kleinSelfVM InitialContents: InitializeToExpression: (nil)\x7fVisibility: private'
         
-         cachedAllNamesOfIncludedModules.
+         cachedAllNamesOfIncludedModules <- bootstrap stub -> 'globals' -> 'nil' -> ().
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'exportPolicy' -> 'modulesToMap' -> () From: ( | {
@@ -152,6 +152,7 @@ to just keep upping it by hand.
 	& ('vmKitBase')
 	& ('vmKitCardTable')
 	& ('vmKitGC')
+	& ('vmKitInterpreter')
 	& ('vmKitMemInterface')
 	& ('vmKitMemory')
 	& ('vmKitObjects')
@@ -1692,6 +1693,113 @@ shows sensible information.  -- jb 8/03\x7fModuleInfo: Module: kleinSelfVM Initi
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
          'Category: test cases\x7fCategory: automated\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
         
+         interpreting = bootstrap define: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> () ToBe: bootstrap addSlotsTo: (
+             bootstrap remove: 'parent' From:
+             globals klein virtualMachines midiVM parent tests abstract copy ) From: bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests interpreting.
+
+CopyDowns:
+globals klein virtualMachines midiVM parent tests abstract. copy 
+SlotsToOmit: parent.
+
+\x7fIsComplete: '.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests interpreting parent.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         incompleteObject = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( |
+             {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests interpreting parent incompleteObject.
+'.
+            | ) .
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+        
+         add: x To: y = ( |
+            | 
+            x + y).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+        
+         locals = ( |
+             a <- 4.
+             b = 3.
+            | 
+            a: a + a succ.
+            a: a - b.
+            a).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+        
+         returnFive = ( |
+            | 
+            5).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+        
+         returnSelf = ( |
+            | 
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+        
+         threePlusFour = ( |
+            | 
+            3 + 4).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> 'incompleteObject' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot'
+        
+         threePlusFourPrimitively = ( |
+            | 
+            3 _IntAdd: 4).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: private'
+        
+         parent* = bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'abstract' -> 'parent' -> ().
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'interpreting' -> 'parent' -> () From: ( | {
+         'ModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
+        
+         run = ( |
+            | 
+            assert: [incompleteObject returnSelf _Eq: incompleteObject].
+            assert: [incompleteObject returnFive _Eq: 5].
+            assert: [incompleteObject threePlusFour _Eq: 7].
+            assert: [(incompleteObject add: 3 To: 4) = 7].
+            assert: [incompleteObject locals = 6].
+            assert: [incompleteObject threePlusFourPrimitively _Eq: 7].
+
+            self).
+        } | ) 
+
+ bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> () From: ( | {
+         'Category: test cases\x7fCategory: automated\x7fModuleInfo: Module: kleinSelfVM InitialContents: FollowSlot\x7fVisibility: public'
+        
          lookup = bootstrap setObjectAnnotationOf: bootstrap stub -> 'globals' -> 'klein' -> 'virtualMachines' -> 'midiVM' -> 'parent' -> 'tests' -> 'lookup' -> () From: ( |
              {} = 'ModuleInfo: Creator: globals klein virtualMachines midiVM parent tests lookup.
 \x7fIsComplete: '.
@@ -3052,6 +3160,7 @@ SlotsToOmit: parent.
             allocation run.
             lookup run.
             stringPrinting run.
+            interpreting run.
             self).
         } | ) 
 

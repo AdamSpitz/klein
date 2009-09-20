@@ -1,8 +1,19 @@
-Cleanups to do:
-
-  - Addresses. Factor it all so that I can easily switch to untagged addresses.
-  - Factor the layout stuff so that it's a bit more uniform and elegant about handling oops versus addresses. (C is really nice in that way; how close can we get to that?)
-  - Stuff that tries to avoid cloning... is there a way to make it clear which stuff that is? Draw a clear fence around it? And avoid duplication with regular stuff? (The problem is that there's some stuff that needs failblocks when running on a remote image, but needs to avoid cloning when running in a local image.) Actually, now that I've got inlining and stuff, maybe just fix the code so that it doesn't bother trying to avoid cloning anymore.
+Stuff to do:
+  - Turn off the translated vector prims so that the bug goes away for now (hopefully).
+  - Clean up some stuff? Maybe try documenting Klein so that other programmers can get into it. That ought to lead to a bunch of cleanups.
+  - Fix some stuff:
+    - The export cycle time.
+    - The debugger taking forever to open up or continue or whatever.
+  - Maybe by the time I'm done with those things I'll have some idea of what to do with this stuff:
+    - That bug with the hash table (or whatever it might be).
+    - The ran-out-of-temp-regs thing.
+  - Maybe make it optimize dynamically?
+  - Do a post to the Self blog, mentioning some stuff to be done:
+    - Porting the assembler and compiler.
+    - Traditional C-style compiler optimizations.
+    - A more mature GC.
+    - Various primitives - graphics, etc.
+    - Get rid of OIDs? But we'll need a different way for the remote environment to keep track of stuff.
 
 ----
 
@@ -24,35 +35,24 @@ Fix the copyright notices!!!
 
 Could try manually splitting up the modules that have a lot of uninvoked nmethods, so that they're less coarse-grained.
 
+Submodules I could maybe split off from mirror:
+
+  - DONE: mirrorProgramming
+  - annotations?
+
 ----
 
 Let's make a faster compiler. (We'll need that anyway.) Hopefully I can just reuse the existing compiler and turn off some stuff:
   - Don't calculateDominance.
-  - Don't convertToSSAForm.
-  - Don't doInlining.
   - Don't calculateValueLiveness (but then will I need another register allocator?).
-
-OK, I did some of that. Does it work?
 
 ----
 
-How do I do PICs?
+In updateLivenessInformation, could I speed things up by representing the sets in a different format?
 
-I guess each one is just an nmethod, created on the fly. Could make them a fixed size and then just fill them up with branches to the sendMessage_stub, so that later we can extend them by overwriting in the middle. But check to see how the Self VM does it.
+Same with buildInterferenceInformation?
 
-I could do them statically, too - anytime I see a call to _Eq: I know it's likely to be a boolean, same with sends of && and ||, etc. (But only do this if the optimizationPolicy is to compileFastCode.)
-
-How does the Self VM do it?
-
-  - Looks like every sendDesc has a pic(), which is null if there are 0 or 1 target maps.
-  - The PIC is called a CacheStub. Which is a kind of OopNCode. And "OopNCode is the base class of all code containing oop references embedded in the code (e.g. sethi instructions)."
-  - Apparently nmethods are a kind of OopNCode too.
-
-OK, so I should make a parent of nmethod called nativeCodeContainingOops. Or maybe just nativeCode.
-
-But I guess I don't really know right now whether a lot of my time is being spent doing polymorphic lookups. Could I get a list of how often the sendMessage_stub is called with each selector? That'd tell me whether I need PICs yet or not.
-
-Hmm, OK, I fixed the worst offenders. Not sure whether it's worth doing PICs now.
+Hmm, why is canReuseNMethod: taking up so much time?
 
 ----
 
@@ -69,21 +69,50 @@ Seriously, how does the Self VM do it?
 
 ----
 
-Submodules I could maybe split off from mirror:
-
-  - DONE: mirrorProgramming
-  - annotations?
-
-----
-
 Not sure what to do. There's a bug where it fails to find a klein locations constant in a dictionary, even though it's actually there. It looks to me like it's in the wrong place - I think the identity hash comes out to 1 (mod 16), but it's actually in position 5 (and there are a couple of emptyMarkers at position 1).
 
 Hmm, has the bug gone away?
 
 Nope. But it seems to be flaky. Blecch.
 
+I think it started when I made the _At: and _At:Put: primitives (and the byteVector ones, too) translate to IR nodes. So maybe I should start by writing a bunch of miniVM tests for those. Be really thorough.
+
+I wrote some tests, they didn't fail. But then I replaced the new translated prims with the old code-generator ones, and the bug went away. (At least, I think it did. The bug seemed to be intermittent, so I can't trust that just because I don't see it now it's actually gone.)
+
+So... now what? If the problem *is* with the translated vector prims, how can I find it?
+
+Hmm, let's look at the IR nodes generated by the prims, and see if there's a way that the register allocator could get screwed up or something if we defer cloning the block.
+
 ----
 
-Awesome! The whole GC pause is less than 30 seconds now, and it would be more like 10 seconds if it weren't for the oop recycling.
+How else could I deal with the uninvoked nmethod problem?
 
-Biggest problem now might be the environment pausing whenever I hit Continue, I think.
+What if I wrote an interpreter? That could at least reduce the amount of stuff that needs to be compiled.
+
+What would I have to do?
+
+  - In the lookup_stub or whatever it is, make it interpret the method instead of compiling it.
+  - Write an interpreter.
+    - Be able to create a new activation.
+    - Make sure that when the interpreter does a send, it's done in such a way that it can run compiled nmethods with no problem. Maybe a _Perform: would do it?
+  - Make the debugger smart enough to be able to view interpreted activations. Um... how? I dunno.
+
+Hmm, to create an activation, do I want to do it from scratch, or clone an existing one, or what? Meh, from scratch is probably better, space-wise.
+
+----
+
+Maybe prependACopyOfDeferredComputation: should have some safety checks.
+
+----
+
+On the location-hash bug: OK, seems like the hash is coming back 4 (though I'm not completely sure of that). So if hash: is returning the wrong thing, maybe it's in the "buckets pred &&" part.
+
+----
+
+Hmm. Seems like maybe we're trying to figure out if we canReuseNMethod: the whileFalse: and whileTrue: nmethods (and a few others). Because we're inlining... what?
+
+Wait, are we trying to inline 'value' for a block, in a method on traits block? That's bad, huh? Or is it? No, if the outermost slot is on traits block, it's bad.
+
+----
+
+Hmm, no copyForVM:Oop:IfFail: on a klein mirrors methodActivation. Do I need a different kind of mirror for interpreter activations?

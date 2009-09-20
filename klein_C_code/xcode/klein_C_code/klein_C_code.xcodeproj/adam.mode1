@@ -190,6 +190,46 @@
 			<key>Content</key>
 			<dict>
 				<key>PBXProjectModuleGUID</key>
+				<string>662396AA103C9B4000D70ABF</string>
+				<key>PBXProjectModuleLabel</key>
+				<string>activation.cpp</string>
+				<key>PBXSplitModuleInNavigatorKey</key>
+				<dict>
+					<key>Split0</key>
+					<dict>
+						<key>PBXProjectModuleGUID</key>
+						<string>662396AB103C9B4000D70ABF</string>
+						<key>PBXProjectModuleLabel</key>
+						<string>activation.cpp</string>
+						<key>_historyCapacity</key>
+						<integer>0</integer>
+						<key>bookmark</key>
+						<string>66659D8910668F55004063B4</string>
+						<key>history</key>
+						<array>
+							<string>6675E39C103EF1C000F25AEC</string>
+						</array>
+					</dict>
+					<key>SplitCount</key>
+					<string>1</string>
+				</dict>
+				<key>StatusBarVisibility</key>
+				<true/>
+			</dict>
+			<key>Geometry</key>
+			<dict>
+				<key>Frame</key>
+				<string>{{0, 20}, {1319, 880}}</string>
+				<key>PBXModuleWindowStatusBarHidden2</key>
+				<false/>
+				<key>RubberWindowFrame</key>
+				<string>15 102 1319 921 0 0 1680 1028 </string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Content</key>
+			<dict>
+				<key>PBXProjectModuleGUID</key>
 				<string>661E0F6C0FE458B3006515A6</string>
 				<key>PBXProjectModuleLabel</key>
 				<string>activation.hh</string>
@@ -204,10 +244,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>661E0F6E0FE458B3006515A6</string>
+						<string>66659D8A10668F55004063B4</string>
 						<key>history</key>
 						<array>
-							<string>661E0F690FE457B3006515A6</string>
+							<string>6675E39D103EF1C000F25AEC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -244,10 +284,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>661E0F700FE458B3006515A6</string>
+						<string>66659D8B10668F55004063B4</string>
 						<key>history</key>
 						<array>
-							<string>661E0F6F0FE458B3006515A6</string>
+							<string>6675E39E103EF1C000F25AEC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -284,10 +324,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>661E0F710FE458B3006515A6</string>
+						<string>66659D8C10668F55004063B4</string>
 						<key>history</key>
 						<array>
-							<string>6611A9EC0FE34AE000A4FBDA</string>
+							<string>6675E39F103EF1C000F25AEC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -324,10 +364,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>661E0F720FE458B3006515A6</string>
+						<string>66659D8D10668F55004063B4</string>
 						<key>history</key>
 						<array>
-							<string>6611A9ED0FE34AE000A4FBDA</string>
+							<string>6675E3A0103EF1C000F25AEC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -364,10 +404,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>661E0F730FE458B3006515A6</string>
+						<string>66659D8E10668F55004063B4</string>
 						<key>history</key>
 						<array>
-							<string>6611A9EE0FE34AE000A4FBDA</string>
+							<string>6675E3A1103EF1C000F25AEC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -404,10 +444,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>661E0F740FE458B3006515A6</string>
+						<string>66659D8F10668F55004063B4</string>
 						<key>history</key>
 						<array>
-							<string>6611A9EF0FE34AE000A4FBDA</string>
+							<string>6675E3A2103EF1C000F25AEC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -619,9 +659,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>661E0F6A0FE458B3006515A6</string>
+				<string>66659D8710668F55004063B4</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>661E0F6B0FE458B3006515A6</string>
+				<string>66659D8810668F55004063B4</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -760,8 +800,9 @@
 		<string>665B5D030F86DA82006C9C0B</string>
 		<string>6690F3AE0FE34A96007002BF</string>
 		<string>665B5D000F86DA82006C9C0B</string>
-		<string>/Users/adam/Desktop/git/klein/klein_C_code/xcode/klein_C_code/klein_C_code.xcodeproj</string>
 		<string>661E0F6C0FE458B3006515A6</string>
+		<string>662396AA103C9B4000D70ABF</string>
+		<string>/Users/adam/Desktop/git/klein/klein_C_code/xcode/klein_C_code/klein_C_code.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>0 59 1680 969 0 0 1680 1028 </string>

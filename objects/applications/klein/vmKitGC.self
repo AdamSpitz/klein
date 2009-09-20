@@ -427,7 +427,12 @@ See the LICENSE file for license information.
 
             forObjectWithAddress: targetObjAddr SetMarkValue: (markValueOf: o IfFail: failBlock) IfFail: failBlock.
 
-            copyContentsOfLocalObject: o IntoObjectWithAddress: targetObjAddr StartingFrom: markField fixedIndexAfterMe NotExceeding: aSpace objsLimit IfFail: fb).
+            copyContentsOfLocalObject: o
+                IntoObjectWithAddress: targetObjAddr
+                         StartingFrom: markField fixedIndexAfterMe
+                         NotExceeding: aSpace objsLimit
+                 AndLeaveRoomForBytes: (numberOfUnsegregatedBytesIn: o IfFail: failBlock)
+                               IfFail: fb).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'layouts' -> 'segregatedByteVector' -> () From: ( | {

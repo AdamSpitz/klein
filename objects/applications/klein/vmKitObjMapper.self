@@ -2057,6 +2057,11 @@ SlotsToOmit: parent.
          canReuseNMethod: nm = ( |
              rcs.
             | 
+
+            "To speed up the export cycle, we make sure that nmethods on
+             traits block are always reusable. -- Adam, Aug. 2009"
+            (nm topScope methodHolder _Eq: traits block) ifTrue: [^ true].
+
             rcs: objectMapper objectsOracle reusabilityConditionsForNMethod: nm.
             rcs allSatisfy: [|:c| c isSatisfiedBy: self]).
         } | ) 
@@ -5352,16 +5357,17 @@ waste the space. -- Adam, 11/05\x7fModuleInfo: Module: vmKitObjMapper InitialCon
          'Category: statistics\x7fModuleInfo: Module: vmKitObjMapper InitialContents: FollowSlot\x7fVisibility: public'
         
          breakDownNMethodsByHolder = ( |
-             holders.
+             nmsByHolder.
             | 
-            holders: list copyRemoveAll.
-            nmethodsDo: [|:nm. holder|
-              holder: reflect: nm topScope methodHolder.
-              holder isReflecteeBlock              ifTrue: [holder:         'block!!!' asMirror].
-              holder isReflecteeKleinCompiledBlock ifTrue: [holder: 'compiledBlock!!!' asMirror].
-              holders add: holder.
+            nmsByHolder: dictionary copyRemoveAll.
+            nmethodsDo: [|:nm. holder. scope|
+              scope:  nm topScope.
+              holder: reflect: scope outermostLexicalParentScope methodHolder.
+              [holder isReflecteeBlock              not] assert.
+              [holder isReflecteeKleinCompiledBlock not] assert.
+              (nmsByHolder at: holder IfAbsentPut: [list copyRemoveAll]) add: nm.
             ].
-            sortedOccurrenceCountsFor: holders).
+            nmsByHolder).
         } | ) 
 
  bootstrap addSlotsTo: bootstrap stub -> 'globals' -> 'kleinAndYoda' -> 'objectsOracle' -> 'parent' -> 'trackingObjects' -> () From: ( | {
